@@ -1,0 +1,47 @@
+import { StyleSheet, ViewStyle, Dimensions } from 'react-native';
+import {  } from 'react-native';
+import Colors from './Colors';
+
+const { width } = Dimensions.get('window');
+
+interface Style {
+  flexRow: ViewStyle;
+  flexColumn: ViewStyle;
+  backgroundColorDark: ViewStyle;
+  backgroundColorLight: ViewStyle;
+  textBoxLeft: ViewStyle;
+  textBoxCenter: ViewStyle;
+}
+
+const styles = StyleSheet.create<Style>({
+  flexRow: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  flexColumn: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+  },
+  backgroundColorDark: {
+    backgroundColor: Colors.blue,
+  },
+  backgroundColorLight: {
+    backgroundColor: Colors.white,
+  },
+  textBoxLeft: {
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    width: width * 0.8
+  },
+  textBoxCenter: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: width * 0.6
+  },
+});
+
+export default styles;
