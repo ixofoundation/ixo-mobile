@@ -5,17 +5,22 @@ import getTheme from './native-base-theme/components';
 
 import Stack from './Routes';
 
-const robotoFont = require('./assets/fonts/Roboto/Roboto-Light.ttf');
-const robotoFontBold = require('./assets/fonts/Roboto/Roboto-Regular.ttf');
-const robotoFontMedium = require('./assets/fonts/Roboto/Roboto-Medium.ttf');
+// const robotoFont = require('./assets/fonts/Roboto/Roboto-Light.ttf');
+// const robotoFontBold = require('./assets/fonts/Roboto/Roboto-Regular.ttf');
+// const robotoFontMedium = require('./assets/fonts/Roboto/Roboto-Medium.ttf');
+import Ionicons from './node_modules/@expo/vector-icons/fonts/Ionicons.ttf';
 
 export default class App extends React.Component<{}> {
 
   async componentDidMount() { // Update font style with spec
+    // await Font.loadAsync({
+    //   Roboto_medium: robotoFontMedium,
+    //   Roboto: robotoFont,
+    //   RobotoBold: robotoFontBold,
+    //   Iconicons: Icon,
+    // });
     await Font.loadAsync({
-      Roboto_medium: robotoFontMedium,
-      Roboto: robotoFont,
-      RobotoBold: robotoFontBold,
+      Ionicons
     });
     this.setState({ isReady: true });
   }

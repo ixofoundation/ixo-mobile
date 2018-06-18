@@ -75,6 +75,8 @@ export default class Login extends React.Component<PropTypes> {
             </View>
             <TouchableOpacity onPress={() => Platform.OS === 'android' ? this.showAndroidAlert() : this.scanFingerprint()} >
               <Icon style={{ fontSize: 60 }} ios='ios-finger-print' android="md-finger-print" />
+              {/* <Icon name="arrow-back" /> */}
+              {/* <Icon type="FontAwesome" name="home" /> */}
             </TouchableOpacity>
             
             <Text style={{ textAlign: 'left', color: Colors.grey, paddingBottom: 20, paddingTop: 20 }}>Forgot your password?</Text>
