@@ -38,7 +38,7 @@ export default class Projects extends React.Component<PropTypes> {
   static navigationOptions = () => {
     return {
       headerLeft: (
-        <Icon style={{ paddingLeft: 10 }} ios='ios-menu' android="md-menu" />
+        <Icon ios='ios-menu' android="md-menu" />
       ),
       headerRight: (
         <HeaderSync />
@@ -64,9 +64,12 @@ export default class Projects extends React.Component<PropTypes> {
                         <Text style={{ textAlign: 'left', color: Colors.grey, fontSize: 15  }}>{project.description}</Text>
                         <Text style={{ textAlign: 'left', color: Colors.grey, fontSize: 10 }}>Your last claim submitted on<Text style={{ textAlign: 'left', color: Colors.black, fontSize: 10 }}> {project.lastClaimDate}</Text></Text>
                       </View>
+                      
                     </View>
                   </View>
+                  
               </View>
+              <View style={[ContainerStyles.flexRow, { backgroundColor: 'red', height: 5 }]} />
             </TouchableOpacity>
           )
         })}

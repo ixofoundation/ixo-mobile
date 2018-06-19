@@ -8,12 +8,14 @@ import {
 import LoadingStyles from '../styles/Loading';
 import ContainerStyles from '../styles/Containers';
 
+import Colors from '../styles/Colors';
+
 const logo = require('../../assets/logo-white.png');
 
 class LoadingScreen extends Component {
   render() {
     return (
-      <View style={[ContainerStyles.flexColumn, ContainerStyles.backgroundColor]}>
+      <View style={[ContainerStyles.flexColumn, { backgroundColor: Colors.blue }]}>
         <StatusBar barStyle="light-content" />
         <View style={ContainerStyles.flexColumn}>
           <View style={ContainerStyles.flexRow}>
@@ -21,8 +23,8 @@ class LoadingScreen extends Component {
           </View>
         </View>
         <View style={{ flex: 1 }}>
-          <Text>Welcome loading...</Text>
-          <Spinner color={'white'} />
+          <Text>Loading...</Text>
+          <Spinner color={Colors.white} />
         </View>
       </View>
     );

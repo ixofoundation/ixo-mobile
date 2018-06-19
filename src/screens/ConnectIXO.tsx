@@ -37,7 +37,7 @@ export default class ConnectIXO extends React.Component<PropTypes> {
             </View>
             <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
               <View style={[ContainerStyles.flexColumn, { justifyContent: 'space-between' }]}>
-                <Button style={ConnectIXOStyles.buttons} bordered dark><Text>Scan QR code</Text></Button>
+                <Button onPress={() => this.props.navigation.navigate('ScanQR')} style={ConnectIXOStyles.buttons} bordered dark><Text>Scan QR code</Text></Button>
                 <View>
                   <Text style={{ textAlign: 'center', color: Colors.grey }}>Please note that you must be a verified ixo user to be able to use the mobile application</Text>
                 </View>
