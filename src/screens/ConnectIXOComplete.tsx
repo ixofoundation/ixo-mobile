@@ -16,6 +16,37 @@ const LogoView = () => (
   </View>
 );
 
+const SuccessView = (navigation: any) => (
+  <View style={[ContainerStyles.flexColumn, ContainerStyles.backgroundColorLight]}>
+    <LogoView />
+    <View style={ContainerStyles.flexRow}>
+        <Text style={{ textAlign: 'left', color: Colors.black, fontSize: 24 }}>Connected!</Text>
+    </View>
+    <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
+        <View style={[ContainerStyles.flexColumn]}>
+            <Text style={{ textAlign: 'left', color: Colors.black, paddingBottom: 20 }}>Secure your app with a password.</Text>
+            <Button onPress={() => navigation.navigate('Login')} style={ConnectIXOStyles.buttons} bordered dark><Text>Unlock</Text></Button>
+        </View>
+    </View>
+  </View>
+);
+
+const UnSuccessfulView = (navigation: any) => (
+  <View style={[ContainerStyles.flexColumn, ContainerStyles.backgroundColorLight]}>
+    <LogoView />
+    <View style={ContainerStyles.flexRow}>
+        <Text style={{ textAlign: 'left', color: Colors.black, fontSize: 20 }}>Your scan has been unsuccessful.</Text>
+    </View>
+    <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
+        <View style={[ContainerStyles.flexColumn, { height: '100%', justifyContent: 'space-between', paddingBottom: 20 }]}>
+            <Text style={{ textAlign: 'left', color: Colors.grey }}>Do you have a key?</Text>
+            <Button onPress={() => navigation.navigate('Login')} style={ConnectIXOStyles.buttons} bordered dark><Text>Try Again</Text></Button>
+            <Text style={{ textAlign: 'left', color: Colors.grey }}>Having issues logging in?</Text>
+        </View>
+    </View>
+  </View>
+);
+
 interface PropTypes {
   navigation: any,
 };
@@ -24,19 +55,8 @@ export default class ConnectIXOComplete extends React.Component<PropTypes> {
   render() {
     return (
       <View style={ConnectIXOStyles.wrapper}>
-      <StatusBar barStyle="dark-content" />
-          <View style={[ContainerStyles.flexColumn, ContainerStyles.backgroundColorLight]}>
-            <LogoView />
-            <View style={ContainerStyles.flexRow}>
-                <Text style={{ textAlign: 'left', color: Colors.black, fontSize: 24 }}>Connected!</Text>
-            </View>
-            <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
-                <View style={[ContainerStyles.flexColumn]}>
-                    <Text style={{ textAlign: 'left', color: Colors.black, paddingBottom: 20 }}>Secure your app with a password.</Text>
-                    <Button onPress={() => this.props.navigation.navigate('Login')} style={ConnectIXOStyles.buttons} bordered dark><Text>Unlock</Text></Button>
-                </View>
-            </View>
-          </View>
+        <StatusBar barStyle="dark-content" />
+          <UnSuccessfulView navigation={this.props.navigation} />
       </View>
     );
   }

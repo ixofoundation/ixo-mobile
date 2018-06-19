@@ -3,14 +3,7 @@ import React from 'react';
 import { Camera, Permissions } from 'expo';
 import { View, Text, Icon } from 'native-base';
 
-import Loading from '../screens/Loading';
 import Colors from '../styles/Colors';
-
-const SuccessView = () => (
-  <View>
-
-  </View>
-);
 
 interface ParentProps {
   navigation: any,

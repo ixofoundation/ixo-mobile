@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { StatusBar, TouchableOpacity } from 'react-native';
+import { Ixo } from 'ixo-module';
+
 import { Container, Header, Item, Icon, Input, Content, View, Text, Drawer } from 'native-base';
 import HeaderSync from '../components/HeaderSync';
 
@@ -38,7 +40,7 @@ export default class Projects extends React.Component<PropTypes> {
   static navigationOptions = () => {
     return {
       headerLeft: (
-        <Icon ios='ios-menu' android="md-menu" />
+        <Icon ios='ios-menu' android="md-menu" style={{ paddingLeft: 10 }} />
       ),
       headerRight: (
         <HeaderSync />
@@ -46,7 +48,20 @@ export default class Projects extends React.Component<PropTypes> {
     };
   };
 
-  
+  constructor(props: any) {
+    super(props);
+    
+  }
+
+  componentDidMount() {
+    // const ixo = new Ixo();
+    // ixo.project.listProjects().then((response: any) => {
+    //     console.log('Project list: ' + JSON.stringify(response.result, null, '\t'));
+    //     //expect(response.result).to.not.equal(null);
+    // }).catch((result: Error) => {
+    //     console.log(result);
+    // });
+  }
 
   renderProject() { // will become a mapping
     return (
@@ -64,12 +79,10 @@ export default class Projects extends React.Component<PropTypes> {
                         <Text style={{ textAlign: 'left', color: Colors.grey, fontSize: 15  }}>{project.description}</Text>
                         <Text style={{ textAlign: 'left', color: Colors.grey, fontSize: 10 }}>Your last claim submitted on<Text style={{ textAlign: 'left', color: Colors.black, fontSize: 10 }}> {project.lastClaimDate}</Text></Text>
                       </View>
-                      
                     </View>
                   </View>
-                  
               </View>
-              <View style={[ContainerStyles.flexRow, { backgroundColor: 'red', height: 5 }]} />
+              <View style={[ContainerStyles.flexRow, { backgroundColor: Colors.grey_sync, height: 3 }]} />
             </TouchableOpacity>
           )
         })}
