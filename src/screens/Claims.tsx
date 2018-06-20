@@ -87,7 +87,7 @@ export default class Claims extends React.Component<PropTypes> {
               <Text style={{ color: Colors.black, paddingTop: 5, paddingBottom: 5 }}>    Saved</Text>
             </ TouchableOpacity>
 
-            <TouchableOpacity style={[Containers.flexRow, ClaimsStyles.BoxContainer]}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('SubmittedClaims')} style={[Containers.flexRow, ClaimsStyles.BoxContainer]}>
               <Text style={{ color: Colors.black, paddingTop: 5, paddingBottom: 5 }}>Submitted</Text>
             </ TouchableOpacity>
 
