@@ -1,8 +1,8 @@
 // TODO styling needs to move to styling file
 
 import React from 'react';
-import { StatusBar, ListView, Alert, TouchableOpacity } from 'react-native';
-import { Container, Header, Item, Icon, Input, Content, Text, List, Button, View, Badge } from 'native-base';
+import { StatusBar, ListView, Alert, TouchableOpacity, Platform } from 'react-native';
+import { Container, Header, Item, Icon, Input, Content, Text, List, Button, View } from 'native-base';
 import HeaderSync from '../components/HeaderSync';
 
 import Containers from '../styles/Containers';
@@ -57,15 +57,17 @@ export default class Claims extends React.Component<PropTypes> {
             }, { text: 'Cancel' }]);
             }}
           >
-            <Text style={{ color: Colors.white, fontSize: 13, fontWeight: "700" }}>Delete</Text>
+            <Text style={ClaimsStyles.DeleteButtonText}>Delete</Text>
           </Button>}
         renderRow={claim =>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('ProjectDetails')} >
             <View style={[Containers.flexColumn, ClaimsStyles.ClaimBox]}>
               <Text style={{ color: Colors.grey, fontSize: 15 }}>{claim.address}</Text>
               <Text style={{ color: Colors.grey, fontSize: 10 }}>{claim.submitDate}</Text>
             </View>
-          }
-          >
+          </TouchableOpacity>
+        }
+      >
       </List>
     );
   }

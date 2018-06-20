@@ -54,12 +54,18 @@ export default class Projects extends React.Component<PropTypes> {
   }
 
   componentDidMount() {
-    // const ixo = new Ixo();
-    // ixo.project.listProjects().then((response: any) => {
-    //     console.log('Project list: ' + JSON.stringify(response.result, null, '\t'));
-    //     //expect(response.result).to.not.equal(null);
+    const ixo = new Ixo();
+    ixo.project.listProjects().then((response: any) => {
+      console.log('Project list: ' + JSON.stringify(response, null, '\t'));
+      //expect(response.result).to.not.equal(null);
+    }).catch((result: Error) => {
+      console.log(result);
+    });
+    // ixo.network.pingIxoExplorer().then((response: any) => {
+    //   console.log('Project list: ' + JSON.stringify(response, null, '\t'));
+    //   //expect(response.result).to.not.equal(null);
     // }).catch((result: Error) => {
-    //     console.log(result);
+    //   console.log(result);
     // });
   }
 

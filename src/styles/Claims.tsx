@@ -1,4 +1,4 @@
-import { StyleSheet, ViewStyle, Dimensions } from 'react-native';
+import { StyleSheet, ViewStyle, Dimensions, Platform } from 'react-native';
 
 import Colors from '../styles/Colors';
 const { height } = Dimensions.get('window');
@@ -6,6 +6,7 @@ const { height } = Dimensions.get('window');
 interface Style {
   ClaimBox: ViewStyle,
   DeleteButton: ViewStyle,
+  DeleteButtonText: ViewStyle,
   SubmitButton: ViewStyle,
   BadgeBoxContainer: ViewStyle,
   BoxContainer: ViewStyle,
@@ -18,6 +19,11 @@ const styles = StyleSheet.create<Style>({
     borderWidth: 1,
     borderColor: Colors.grey,
     borderLeftWidth: 0,
+  },
+  DeleteButtonText: {
+    color: Colors.white,
+    fontSize:(Platform.OS === 'ios') ? 13 : 10,
+    fontWeight: "700"
   },
   ClaimBox: {
     alignItems: 'flex-start',

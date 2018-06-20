@@ -23,7 +23,7 @@ class LoadingScreen extends Component {
           </View>
         </View>
         <View style={{ flex: 1 }}>
-          <Text>Loading...</Text>
+          <Text style={{ color: Colors.white }}>Loading...</Text>
           <Spinner color={Colors.white} />
         </View>
       </View>
