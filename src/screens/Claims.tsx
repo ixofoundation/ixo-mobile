@@ -80,14 +80,16 @@ export default class Claims extends React.Component<PropTypes> {
         <Header style={{ borderBottomWidth: 0 }}>
           <View style={[Containers.flexRow, { justifyContent: 'space-between' }]}>
           
-            <View style={[Containers.flexRow, ClaimsStyles.BadgeBoxContainer]}>
+            <TouchableOpacity style={[Containers.flexRow, ClaimsStyles.BadgeBoxContainer]}>
               <View style={[Containers.flexRow, ClaimsStyles.Badge]}>
                 <Text style={{ color: Colors.black, textAlign: 'left', padding: 5, fontSize: 13}}>67</Text>
               </View>
               <Text style={{ color: Colors.black, paddingTop: 5, paddingBottom: 5 }}>    Saved</Text>
-            </View>
+            </ TouchableOpacity>
 
-            <View style={[Containers.flexRow, ClaimsStyles.BoxContainer]}><Text style={{ color: Colors.black, paddingTop: 5, paddingBottom: 5 }}>Submitted</Text></View>
+            <TouchableOpacity style={[Containers.flexRow, ClaimsStyles.BoxContainer]}>
+              <Text style={{ color: Colors.black, paddingTop: 5, paddingBottom: 5 }}>Submitted</Text>
+            </ TouchableOpacity>
 
           </View>
         </Header>
@@ -100,7 +102,7 @@ export default class Claims extends React.Component<PropTypes> {
         <Content style={{ backgroundColor: Colors.white }}>
           {this.renderClaims()}
         </Content>
-        <TouchableOpacity style={ClaimsStyles.SubmitButton}>
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('NewClaim')} style={ClaimsStyles.SubmitButton}>
           <View style={Containers.flexColumn}>
             <Text style={{ color: Colors.black, fontSize: 15 }}>Submit Claim</Text>
           </View>

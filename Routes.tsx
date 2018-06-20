@@ -10,8 +10,12 @@ import ConnectIXO from './src/screens/ConnectIXO';
 import ConnectIXOComplete from './src/screens/ConnectIXOComplete';
 import ScanQR from './src/screens/ScanQR';
 import ProjectDetails from './src/screens/ProjectDetails';
+import NewClaim from './src/screens/NewClaim';
 
 const Stack = createStackNavigator({
+  NewClaim: {
+    screen: NewClaim
+  },
   ProjectDetails: {
     screen: ProjectDetails,
   },
@@ -47,7 +51,7 @@ const Stack = createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'Projects',
+  initialRouteName: 'OnBoarding',
 });
 
 export default Stack;

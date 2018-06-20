@@ -45,14 +45,14 @@ export default class OnBoarding extends React.Component<PropTypes> {
           <View style={[ContainerStyles.flexColumn, ContainerStyles.backgroundColorDark]}>
             <LogoView />
             <View style={{ flex: 1.5 }}>
-              <Text style={{ textAlign: 'center' }}>App onboarding screens</Text>
+              <Text style={{ textAlign: 'center', color: Colors.white }}>App onboarding screens</Text>
             </View>
           </View>
           <View style={[OnBoardingStyles.slide, ContainerStyles.backgroundColorDark]}>
             <LogoView />
             <View style={OnBoardingStyles.textBoxButtonContainer}>
               <View style={OnBoardingStyles.textBox}>
-                <Text style={{ textAlign: 'center' }}>Allow push notifications for important updates</Text>
+                <Text style={{ textAlign: 'center', color: Colors.white }}>Allow push notifications for important updates</Text>
               </View>
               <View style={[ContainerStyles.flexRow]}>
                 <Button style={OnBoardingStyles.buttons} onPress={() => this.getNotifications()} bordered light><Text>Allow notifications</Text></Button>
@@ -63,7 +63,7 @@ export default class OnBoarding extends React.Component<PropTypes> {
             <LogoView />
             <View style={OnBoardingStyles.textBoxButtonContainer}>
               <View style={OnBoardingStyles.textBox}>
-                <Text style={{ textAlign: 'center' }}>Allow Location for location logging</Text>
+                <Text style={{ textAlign: 'center', color: Colors.white }}>Allow Location for location logging</Text>
               </View>
               <View style={[ContainerStyles.flexRow]}>
                 <Button style={OnBoardingStyles.buttons} onPress={() => this.getLocation()} bordered light><Text>Allow location</Text></Button>
