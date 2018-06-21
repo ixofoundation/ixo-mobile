@@ -4,7 +4,7 @@ import { Text, Button } from 'native-base';
 
 import ConnectIXOStyles from '../styles/ConnectIXO';
 import ContainerStyles from '../styles/Containers';
-import Colors from '../styles/Colors';
+import { ThemeColors } from '../styles/Colors';
 
 const logo = require('../../assets/logo.png');
 
@@ -29,17 +29,17 @@ export default class ConnectIXO extends React.Component<PropTypes> {
             <LogoView />
             <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
               <View style={[ContainerStyles.flexColumn, { alignItems: 'flex-start' }]}>
-                <Text style={{ textAlign: 'left', color: Colors.black }}>Connect with ixo</Text>
-                <Text style={{ textAlign: 'left', color: Colors.grey }}>1. Open ixo credential manager on your desktop</Text>
-                <Text style={{ textAlign: 'left', color: Colors.grey }}>2. Go to account > Show QR code</Text>
-                <Text style={{ textAlign: 'left', color: Colors.grey }}>3. Point your phone to the QR code to capture and connect</Text>
+                <Text style={{ textAlign: 'left', color: ThemeColors.black }}>Connect with ixo</Text>
+                <Text style={{ textAlign: 'left', color: ThemeColors.grey }}>1. Open ixo credential manager on your desktop</Text>
+                <Text style={{ textAlign: 'left', color: ThemeColors.grey }}>2. Go to account > Show QR code</Text>
+                <Text style={{ textAlign: 'left', color: ThemeColors.grey }}>3. Point your phone to the QR code to capture and connect</Text>
               </View>
             </View>
             <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
               <View style={[ContainerStyles.flexColumn, { justifyContent: 'space-between' }]}>
                 <Button onPress={() => this.props.navigation.navigate('ScanQR')} style={ConnectIXOStyles.buttons} bordered dark><Text>Scan QR code</Text></Button>
                 <View>
-                  <Text style={{ textAlign: 'center', color: Colors.grey }}>Please note that you must be a verified ixo user to be able to use the mobile application</Text>
+                  <Text style={{ textAlign: 'center', color: ThemeColors.grey }}>Please note that you must be a verified ixo user to be able to use the mobile application</Text>
                 </View>
               </View>
             </View>

@@ -8,7 +8,7 @@ import HeaderSync from '../components/HeaderSync';
 import Containers from '../styles/Containers';
 import SubmittedClaimsStyles from '../styles/SubmittedClaims';
 import ContainerStyles from '../styles/Containers';
-import Colors from '../styles/Colors';
+import { ThemeColors } from '../styles/Colors';
 
 const dummyData = [ // TODO get correct data structure
     { id: '1',
@@ -50,11 +50,11 @@ export default class SubmittedClaims extends React.Component<PropTypes> {
       ),
       title: 'Project Name',
       headerTitleStyle : {
-        color: Colors.black,
+        color: ThemeColors.black,
         textAlign: 'center',
         alignSelf:'center'
       },
-      headerTintColor: Colors.black,
+      headerTintColor: ThemeColors.black,
     };
   };
 
@@ -68,10 +68,10 @@ export default class SubmittedClaims extends React.Component<PropTypes> {
                         <View style={[ContainerStyles.flexColumn, { padding: 5 }]}>
                             <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
                                 <View style={[ContainerStyles.flexColumn, { alignItems: 'flex-start' }]}>
-                                <Text style={{ textAlign: 'left', color: Colors.black, fontSize: 19, fontWeight: '400'  }}>{project.projectName}</Text>
-                                <Text style={{ textAlign: 'left', color: Colors.grey, fontSize: 15  }}>{project.description}</Text>
+                                <Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 19, fontWeight: '400'  }}>{project.projectName}</Text>
+                                <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 15  }}>{project.description}</Text>
                                 <View style={{ height: 20 }} />
-                                <Text style={{ textAlign: 'left', color: Colors.grey, fontSize: 10 }}>Your last claim submitted on<Text style={{ textAlign: 'left', color: Colors.black, fontSize: 10 }}> {project.lastClaimDate}</Text></Text>
+                                <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 10 }}>Your last claim submitted on<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 10 }}> {project.lastClaimDate}</Text></Text>
                                 </View>
                             </View>
                         </View>
@@ -94,13 +94,13 @@ export default class SubmittedClaims extends React.Component<PropTypes> {
           
             <TouchableOpacity style={[Containers.flexRow, SubmittedClaimsStyles.BadgeBoxContainer]}>
               <View style={[Containers.flexRow, SubmittedClaimsStyles.Badge]}>
-                <Text style={{ color: Colors.black, textAlign: 'left', padding: 5, fontSize: 13}}>67</Text>
+                <Text style={{ color: ThemeColors.black, textAlign: 'left', padding: 5, fontSize: 13}}>67</Text>
               </View>
-              <Text style={{ color: Colors.black, paddingTop: 5, paddingBottom: 5 }}>    Saved</Text>
+              <Text style={{ color: ThemeColors.black, paddingTop: 5, paddingBottom: 5 }}>    Saved</Text>
             </ TouchableOpacity>
 
             <TouchableOpacity style={[Containers.flexRow, SubmittedClaimsStyles.BoxContainer]}>
-              <Text style={{ color: Colors.black, paddingTop: 5, paddingBottom: 5 }}>Submitted</Text>
+              <Text style={{ color: ThemeColors.black, paddingTop: 5, paddingBottom: 5 }}>Submitted</Text>
             </ TouchableOpacity>
 
           </View>
@@ -111,12 +111,12 @@ export default class SubmittedClaims extends React.Component<PropTypes> {
             <Input placeholder="Search my claims" />
           </Item>
         </Header>
-        <Content style={{ backgroundColor: Colors.white }}>
+        <Content style={{ backgroundColor: ThemeColors.white }}>
           {this.renderClaims()}
         </Content>
         <TouchableOpacity onPress={() => this.props.navigation.navigate('NewClaim')} style={SubmittedClaimsStyles.SubmitButton}>
           <View style={Containers.flexColumn}>
-            <Text style={{ color: Colors.black, fontSize: 15 }}>Submit Claim</Text>
+            <Text style={{ color: ThemeColors.black, fontSize: 15 }}>Submit Claim</Text>
           </View>
         </TouchableOpacity>
       </Container>

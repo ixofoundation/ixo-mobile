@@ -55,7 +55,7 @@ const Stack = createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'SubmittedClaims',
+  initialRouteName: 'Projects',
 });
 
 export default Stack;

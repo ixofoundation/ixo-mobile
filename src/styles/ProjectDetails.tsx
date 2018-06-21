@@ -1,6 +1,6 @@
 import { StyleSheet, ViewStyle, Dimensions } from 'react-native';
 
-import Colors from '../styles/Colors';
+import { ThemeColors } from '../styles/Colors';
 
 const { width } = Dimensions.get('window');
 
@@ -16,16 +16,16 @@ const styles = StyleSheet.create<Style>({
         width: width / 4,
         height: width / 4,
         borderWidth: 1,
-        borderColor: Colors.grey,
+        borderColor: ThemeColors.grey,
         margin: 10,
         padding: 4
     },
     photoBoxCloseIcon: {
-        color: Colors.grey,
+        color: ThemeColors.grey,
         fontSize: 15
     },
     photoBoxCameraIcon: {
-        color: Colors.grey,
+        color: ThemeColors.grey,
         fontSize: 50
     },
     

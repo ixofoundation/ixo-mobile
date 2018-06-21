@@ -3,7 +3,7 @@ import React from 'react';
 import { Camera, Permissions } from 'expo';
 import { View, Text, Icon } from 'native-base';
 
-import Colors from '../styles/Colors';
+import { ThemeColors } from '../styles/Colors';
 
 interface ParentProps {
   navigation: any,
@@ -24,11 +24,11 @@ export default class ScanQR extends React.Component<ParentProps, State> {
       ),
       title: 'Scan',
       headerTitleStyle : {
-        color: Colors.black,
+        color: ThemeColors.black,
         textAlign: 'center',
         alignSelf:'center'
       },
-      headerTintColor: Colors.grey,
+      headerTintColor: ThemeColors.grey,
     };
   };
 

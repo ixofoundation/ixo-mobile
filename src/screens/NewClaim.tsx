@@ -3,7 +3,7 @@ import { StatusBar } from 'react-native';
 import { Container, Icon, Content, View, Text, Button, Item, Input, Label } from 'native-base';
 
 import ContainerStyles from '../styles/Containers';
-import Colors from '../styles/Colors';
+import { ThemeColors, ProjectStatus } from '../styles/Colors';
 
 
 interface PropTypes {
@@ -22,11 +22,11 @@ class NewClaim extends React.Component<PropTypes> {
             ),
             title: 'New',
             headerTitleStyle : {
-            color: Colors.black,
+            color: ThemeColors.black,
             textAlign: 'center',
             alignSelf:'center'
             },
-            headerTintColor: Colors.black,
+            headerTintColor: ThemeColors.black,
         };
     };
 
@@ -34,7 +34,7 @@ class NewClaim extends React.Component<PropTypes> {
         return (
             <Container>
                 <StatusBar barStyle="light-content" />
-                <Content contentContainerStyle={{ backgroundColor: Colors.white, padding: 20, flexDirection: 'column', justifyContent: 'space-between', flex: 1 }}>
+                <Content contentContainerStyle={{ backgroundColor: ThemeColors.white, padding: 20, flexDirection: 'column', justifyContent: 'space-between', flex: 1 }}>
                 
                     <View>
                         <Item floatingLabel>
@@ -43,7 +43,7 @@ class NewClaim extends React.Component<PropTypes> {
                         </Item>
                         <Item style={{ marginTop: 20 }}>
                             <Input placeholder='Type of panel installed'/>
-                            <Icon active name='arrow-down' style={{ color: Colors.grey }} />
+                            <Icon active name='arrow-down' style={{ color: ThemeColors.grey }} />
                         </Item>
                         <Item style={{ marginTop: 20 }}>
                             <Input placeholder='Comments'/>
@@ -51,7 +51,7 @@ class NewClaim extends React.Component<PropTypes> {
                     </View>
 
                     <View style={[ContainerStyles.flexColumn]}>
-                        <Button style={{ width: '100%', justifyContent: 'center' }} iconLeft bordered dark><Icon name='camera' style={{ color: Colors.grey }} /><Text>Attach image</Text></Button>
+                        <Button style={{ width: '100%', justifyContent: 'center' }} iconLeft bordered dark><Icon name='camera' style={{ color: ThemeColors.grey }} /><Text>Attach image</Text></Button>
                         <Button style={{ width: '100%', justifyContent: 'center', marginTop: 20 }} bordered dark><Text>Scan QR code</Text></Button>
                     </View>
                         

@@ -1,42 +1,25 @@
-// TODO styling needs to move to styling file
-
 import React from 'react';
 import { StatusBar, TouchableOpacity } from 'react-native';
 import { Ixo } from 'ixo-module';
-
-import { Container, Header, Item, Icon, Input, Content, View, Text, Drawer } from 'native-base';
+import _ from 'underscore';
+import { Container, Header, Item, Icon, Input, Content, View, Text } from 'native-base';
 import HeaderSync from '../components/HeaderSync';
 
 import ContainerStyles from '../styles/Containers';
 import ProjectsStyles from '../styles/Projects';
-import Colors from '../styles/Colors';
-
-const dummyData = [ // TODO get correct data structure
-  { id: '1',
-    projectName: 'India solar project',
-    percentage: '2/1298',
-    description: 'solar panels installed',
-    lastClaimDate: '05-05-18',
-    status: '#FCBA3F' },
-    { id: '2',
-      projectName: 'Sea turtle project',
-    percentage: '10/1298',
-    description: 'sea turtles tagged',
-    lastClaimDate: '28-02-18',
-    status: '#377243' },
-    { id: '3',
-      projectName: 'Greece refugee food program',
-    percentage: '50/85',
-    description: '15kg bread flour bags purchased',
-    lastClaimDate: '23-01-18',
-    status: '#FCBA3F' },
-];
+import { IProject } from '../components/models/Project';
+import { ThemeColors, ProjectStatus } from '../styles/Colors';
 
 interface PropTypes {
   navigation: any,
+  projects: IProject[],
 };
 
 export default class Projects extends React.Component<PropTypes> {
+  state = {
+    projects: []
+  };
+
   static navigationOptions = () => {
     return {
       headerLeft: (
@@ -48,49 +31,42 @@ export default class Projects extends React.Component<PropTypes> {
     };
   };
 
-  constructor(props: any) {
-    super(props);
-    
-  }
-
   componentDidMount() {
     const ixo = new Ixo();
     ixo.project.listProjects().then((response: any) => {
-      console.log('Project list: ' + JSON.stringify(response, null, '\t'));
-      //expect(response.result).to.not.equal(null);
+      const { result = [] } = response;
+      const projects: IProject[] = [];
+      _.each(result, (item: IProject) => {
+        projects.push(item);
+      });
+      this.setState({ projects });
     }).catch((result: Error) => {
       console.log(result);
     });
-    // ixo.network.pingIxoExplorer().then((response: any) => {
-    //   console.log('Project list: ' + JSON.stringify(response, null, '\t'));
-    //   //expect(response.result).to.not.equal(null);
-    // }).catch((result: Error) => {
-    //   console.log(result);
-    // });
   }
 
   renderProject() { // will become a mapping
     return (
       <View>
-        {dummyData.map((project) => {
+        {this.state.projects.map((project: IProject) => {
           return (
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('Claims')} key={project.id} style={ProjectsStyles.projectBox}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('Claims')} key={project.projectDid} style={ProjectsStyles.projectBox}>
               <View style={ContainerStyles.flexRow}>
-                <View style={[ProjectsStyles.projectBoxStatusBar, { backgroundColor: project.status}]} />
+                <View style={[ProjectsStyles.projectBoxStatusBar, { backgroundColor: ProjectStatus.inProgress }]} />
                   <View style={[ContainerStyles.flexColumn, { padding: 5 }]}>
                     <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
                       <View style={[ContainerStyles.flexColumn, { alignItems: 'flex-start' }]}>
-                        <Text style={{ textAlign: 'left', color: Colors.black, fontSize: 19  }}>{project.projectName}</Text>
-                        <Text style={{ textAlign: 'left', color: Colors.grey, fontSize: 17  }}>{project.percentage}</Text>
-                        <Text style={{ textAlign: 'left', color: Colors.grey, fontSize: 15  }}>{project.description}</Text>
-                        <Text style={{ textAlign: 'left', color: Colors.grey, fontSize: 10 }}>Your last claim submitted on<Text style={{ textAlign: 'left', color: Colors.black, fontSize: 10 }}> {project.lastClaimDate}</Text></Text>
+                        <Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 19, fontWeight: '500'   }}>{project.data.title}</Text>
+                        <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 17  }}>{project.data.claimStats.currentSuccessful}<Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 17, fontWeight: '500' }}>/{project.data.requiredClaims}</Text></Text>
+                        <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 15  }}>{project.data.impactAction}</Text>
+                        <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 10 }}>Your last claim submitted on<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 10 }}> 2019-02-01</Text></Text>
                       </View>
                     </View>
                   </View>
               </View>
-              <View style={[ContainerStyles.flexRow, { backgroundColor: Colors.grey_sync, height: 3 }]} />
+              <View style={[ContainerStyles.flexRow, { backgroundColor: ThemeColors.grey_sync, height: 3 }]} />
             </TouchableOpacity>
-          )
+          );
         })}
         
       </View>
@@ -107,7 +83,7 @@ export default class Projects extends React.Component<PropTypes> {
             <Input placeholder="Search my projects" />
           </Item>
         </Header>
-        <Content style={{ backgroundColor: Colors.white }}>
+        <Content style={{ backgroundColor: ThemeColors.white }}>
           {this.renderProject()}
         </Content>
       </Container>

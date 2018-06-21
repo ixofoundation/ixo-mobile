@@ -5,7 +5,7 @@ import { Text, Button, Icon } from 'native-base';
 
 import LoginStyles from '../styles/Login';
 import ContainerStyles from '../styles/Containers';
-import Colors from '../styles/Colors';
+import { ThemeColors, ProjectStatus } from '../styles/Colors';
 
 const logo = require('../../assets/logo.png');
 
@@ -65,9 +65,9 @@ export default class Login extends React.Component<PropTypes> {
             <LogoView />
             <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
               <View style={[ContainerStyles.flexColumn, { alignItems: 'center' }]}>
-                <Text style={{ textAlign: 'center', color: Colors.black }}>Welcome back Mike</Text>
+                <Text style={{ textAlign: 'center', color: ThemeColors.black }}>Welcome back Mike</Text>
                 <Text></Text>
-                <Text style={{ textAlign: 'left', color: Colors.black }}>You have 7 alerts for your attention.</Text>
+                <Text style={{ textAlign: 'left', color: ThemeColors.black }}>You have 7 alerts for your attention.</Text>
               </View>
             </View>
             <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
@@ -79,7 +79,7 @@ export default class Login extends React.Component<PropTypes> {
               {/* <Icon type="FontAwesome" name="home" /> */}
             </TouchableOpacity>
             
-            <Text style={{ textAlign: 'left', color: Colors.grey, paddingBottom: 20, paddingTop: 20 }}>Forgot your password?</Text>
+            <Text style={{ textAlign: 'left', color: ThemeColors.grey, paddingBottom: 20, paddingTop: 20 }}>Forgot your password?</Text>
           </View>
       </View>
     );

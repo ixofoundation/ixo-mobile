@@ -7,7 +7,7 @@ import Swiper from 'react-native-swiper';
 
 import OnBoardingStyles from '../styles/OnBoarding';
 import ContainerStyles from '../styles/Containers';
-import Colors from '../styles/Colors';
+import { ThemeColors, ProjectStatus } from '../styles/Colors';
 
 const logo = require('../../assets/logo-white.png');
 
@@ -41,18 +41,18 @@ export default class OnBoarding extends React.Component<PropTypes> {
     return (
       <View style={OnBoardingStyles.wrapper}>
       <StatusBar barStyle="light-content" />
-        <Swiper activeDotColor={Colors.white} dotColor={Colors.blue_light} showsButtons={false}>
+        <Swiper activeDotColor={ThemeColors.white} dotColor={ThemeColors.blue_light} showsButtons={false}>
           <View style={[ContainerStyles.flexColumn, ContainerStyles.backgroundColorDark]}>
             <LogoView />
             <View style={{ flex: 1.5 }}>
-              <Text style={{ textAlign: 'center', color: Colors.white }}>App onboarding screens</Text>
+              <Text style={{ textAlign: 'center', color: ThemeColors.white }}>App onboarding screens</Text>
             </View>
           </View>
           <View style={[OnBoardingStyles.slide, ContainerStyles.backgroundColorDark]}>
             <LogoView />
             <View style={OnBoardingStyles.textBoxButtonContainer}>
               <View style={OnBoardingStyles.textBox}>
-                <Text style={{ textAlign: 'center', color: Colors.white }}>Allow push notifications for important updates</Text>
+                <Text style={{ textAlign: 'center', color: ThemeColors.white }}>Allow push notifications for important updates</Text>
               </View>
               <View style={[ContainerStyles.flexRow]}>
                 <Button style={OnBoardingStyles.buttons} onPress={() => this.getNotifications()} bordered light><Text>Allow notifications</Text></Button>
@@ -63,7 +63,7 @@ export default class OnBoarding extends React.Component<PropTypes> {
             <LogoView />
             <View style={OnBoardingStyles.textBoxButtonContainer}>
               <View style={OnBoardingStyles.textBox}>
-                <Text style={{ textAlign: 'center', color: Colors.white }}>Allow Location for location logging</Text>
+                <Text style={{ textAlign: 'center', color: ThemeColors.white }}>Allow Location for location logging</Text>
               </View>
               <View style={[ContainerStyles.flexRow]}>
                 <Button style={OnBoardingStyles.buttons} onPress={() => this.getLocation()} bordered light><Text>Allow location</Text></Button>

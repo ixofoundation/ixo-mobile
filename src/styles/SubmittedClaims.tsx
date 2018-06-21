@@ -1,6 +1,6 @@
 import { StyleSheet, ViewStyle, Dimensions, Platform } from 'react-native';
 
-import Colors from '../styles/Colors';
+import { ThemeColors } from '../styles/Colors';
 const { height } = Dimensions.get('window');
 
 interface Style {
@@ -15,35 +15,35 @@ interface Style {
 const styles = StyleSheet.create<Style>({
   SubmitButton: {
     borderTopWidth: 1,
-    borderColor: Colors.grey,
+    borderColor: ThemeColors.grey,
     height: height * 0.1,
-    backgroundColor: Colors.white
+    backgroundColor: ThemeColors.white
   },
   BadgeBoxContainer: { 
     borderWidth: 1,
-    borderColor: Colors.grey_sync,
+    borderColor: ThemeColors.grey_sync,
     borderRadius: 20,
     justifyContent: 'flex-start',
-    backgroundColor: Colors.white,
+    backgroundColor: ThemeColors.white,
     marginLeft: 10,
     marginRight: 10
   },
   Badge: {
-    backgroundColor: Colors.grey_sync,
+    backgroundColor: ThemeColors.grey_sync,
     borderRadius: 30,
     flex: 0.32
   },
   BoxContainer: {
     borderWidth: 1,
-    backgroundColor: Colors.grey_sync,
-    borderColor: Colors.grey_sync,
+    backgroundColor: ThemeColors.grey_sync,
+    borderColor: ThemeColors.grey_sync,
     borderRadius: 20,
     marginLeft: 10,
     marginRight: 10
   },
   ProjectBox: {
     margin: 5,
-    borderColor: Colors.grey,
+    borderColor: ThemeColors.grey,
     borderWidth: 1,
   },
   ProjectBoxStatusBar: {

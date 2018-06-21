@@ -1,6 +1,6 @@
 import { StyleSheet, ViewStyle, Dimensions } from 'react-native';
 import {  } from 'react-native';
-import Colors from './Colors';
+import { ThemeColors } from '../styles/Colors';
 
 const { width } = Dimensions.get('window');
 
@@ -27,10 +27,10 @@ const styles = StyleSheet.create<Style>({
     flexDirection: 'column',
   },
   backgroundColorDark: {
-    backgroundColor: Colors.blue,
+    backgroundColor: ThemeColors.blue,
   },
   backgroundColorLight: {
-    backgroundColor: Colors.white,
+    backgroundColor: ThemeColors.white,
   },
   textBoxLeft: {
     alignItems: 'flex-start',

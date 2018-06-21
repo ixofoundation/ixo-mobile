@@ -7,7 +7,7 @@ import HeaderSync from '../components/HeaderSync';
 
 import Containers from '../styles/Containers';
 import ClaimsStyles from '../styles/Claims';
-import Colors from '../styles/Colors';
+import { ThemeColors, ProjectStatus } from '../styles/Colors';
 
 const dummyData = [ // TODO get correct data structure
   { id: '1',
@@ -33,11 +33,11 @@ export default class Claims extends React.Component<PropTypes> {
       ),
       title: 'Project Name',
       headerTitleStyle : {
-        color: Colors.black,
+        color: ThemeColors.black,
         textAlign: 'center',
         alignSelf:'center'
       },
-      headerTintColor: Colors.black,
+      headerTintColor: ThemeColors.black,
     };
   };
 
@@ -62,8 +62,8 @@ export default class Claims extends React.Component<PropTypes> {
         renderRow={claim =>
           <TouchableOpacity onPress={() => this.props.navigation.navigate('ProjectDetails')} >
             <View style={[Containers.flexColumn, ClaimsStyles.ClaimBox]}>
-              <Text style={{ color: Colors.grey, fontSize: 15 }}>{claim.address}</Text>
-              <Text style={{ color: Colors.grey, fontSize: 10 }}>{claim.submitDate}</Text>
+              <Text style={{ color: ThemeColors.grey, fontSize: 15 }}>{claim.address}</Text>
+              <Text style={{ color: ThemeColors.grey, fontSize: 10 }}>{claim.submitDate}</Text>
             </View>
           </TouchableOpacity>
         }
@@ -82,13 +82,13 @@ export default class Claims extends React.Component<PropTypes> {
           
             <TouchableOpacity style={[Containers.flexRow, ClaimsStyles.BadgeBoxContainer]}>
               <View style={[Containers.flexRow, ClaimsStyles.Badge]}>
-                <Text style={{ color: Colors.black, textAlign: 'left', padding: 5, fontSize: 13}}>67</Text>
+                <Text style={{ color: ThemeColors.black, textAlign: 'left', padding: 5, fontSize: 13}}>67</Text>
               </View>
-              <Text style={{ color: Colors.black, paddingTop: 5, paddingBottom: 5 }}>    Saved</Text>
+              <Text style={{ color: ThemeColors.black, paddingTop: 5, paddingBottom: 5 }}>    Saved</Text>
             </ TouchableOpacity>
 
             <TouchableOpacity onPress={() => this.props.navigation.navigate('SubmittedClaims')} style={[Containers.flexRow, ClaimsStyles.BoxContainer]}>
-              <Text style={{ color: Colors.black, paddingTop: 5, paddingBottom: 5 }}>Submitted</Text>
+              <Text style={{ color: ThemeColors.black, paddingTop: 5, paddingBottom: 5 }}>Submitted</Text>
             </ TouchableOpacity>
 
           </View>
@@ -99,12 +99,12 @@ export default class Claims extends React.Component<PropTypes> {
             <Input placeholder="Search my claims" />
           </Item>
         </Header>
-        <Content style={{ backgroundColor: Colors.white }}>
+        <Content style={{ backgroundColor: ThemeColors.white }}>
           {this.renderClaims()}
         </Content>
         <TouchableOpacity onPress={() => this.props.navigation.navigate('NewClaim')} style={ClaimsStyles.SubmitButton}>
           <View style={Containers.flexColumn}>
-            <Text style={{ color: Colors.black, fontSize: 15 }}>Submit Claim</Text>
+            <Text style={{ color: ThemeColors.black, fontSize: 15 }}>Submit Claim</Text>
           </View>
         </TouchableOpacity>
       </Container>

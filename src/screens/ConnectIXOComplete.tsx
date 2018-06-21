@@ -4,7 +4,7 @@ import { Text, Button } from 'native-base';
 
 import ConnectIXOStyles from '../styles/ConnectIXO';
 import ContainerStyles from '../styles/Containers';
-import Colors from '../styles/Colors';
+import { ThemeColors, ProjectStatus } from '../styles/Colors';
 
 const logo = require('../../assets/logo.png');
 
@@ -20,11 +20,11 @@ const SuccessView = (navigation: any) => (
   <View style={[ContainerStyles.flexColumn, ContainerStyles.backgroundColorLight]}>
     <LogoView />
     <View style={ContainerStyles.flexRow}>
-        <Text style={{ textAlign: 'left', color: Colors.black, fontSize: 24 }}>Connected!</Text>
+        <Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 24 }}>Connected!</Text>
     </View>
     <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
         <View style={[ContainerStyles.flexColumn]}>
-            <Text style={{ textAlign: 'left', color: Colors.black, paddingBottom: 20 }}>Secure your app with a password.</Text>
+            <Text style={{ textAlign: 'left', color: ThemeColors.black, paddingBottom: 20 }}>Secure your app with a password.</Text>
             <Button onPress={() => navigation.navigate('Login')} style={ConnectIXOStyles.buttons} bordered dark><Text>Unlock</Text></Button>
         </View>
     </View>
@@ -35,13 +35,13 @@ const UnSuccessfulView = (navigation: any) => (
   <View style={[ContainerStyles.flexColumn, ContainerStyles.backgroundColorLight]}>
     <LogoView />
     <View style={ContainerStyles.flexRow}>
-        <Text style={{ textAlign: 'left', color: Colors.black, fontSize: 20 }}>Your scan has been unsuccessful.</Text>
+        <Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 20 }}>Your scan has been unsuccessful.</Text>
     </View>
     <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
         <View style={[ContainerStyles.flexColumn, { height: '100%', justifyContent: 'space-between', paddingBottom: 20 }]}>
-            <Text style={{ textAlign: 'left', color: Colors.grey }}>Do you have a key?</Text>
+            <Text style={{ textAlign: 'left', color: ThemeColors.grey }}>Do you have a key?</Text>
             <Button onPress={() => navigation.navigate('Login')} style={ConnectIXOStyles.buttons} bordered dark><Text>Try Again</Text></Button>
-            <Text style={{ textAlign: 'left', color: Colors.grey }}>Having issues logging in?</Text>
+            <Text style={{ textAlign: 'left', color: ThemeColors.grey }}>Having issues logging in?</Text>
         </View>
     </View>
   </View>
