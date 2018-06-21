@@ -7,7 +7,7 @@ import HeaderSync from '../components/HeaderSync';
 
 import ContainerStyles from '../styles/Containers';
 import ProjectsStyles from '../styles/Projects';
-import { IProject } from '../components/models/Project';
+import { IProject, IClaim } from '../components/models/Project';
 import { ThemeColors, ProjectStatus } from '../styles/Colors';
 
 interface PropTypes {
@@ -59,7 +59,7 @@ export default class Projects extends React.Component<PropTypes> {
                         <Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 19, fontWeight: '500'   }}>{project.data.title}</Text>
                         <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 17  }}>{project.data.claimStats.currentSuccessful}<Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 17, fontWeight: '500' }}>/{project.data.requiredClaims}</Text></Text>
                         <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 15  }}>{project.data.impactAction}</Text>
-                        <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 10 }}>Your last claim submitted on<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 10 }}> 2019-02-01</Text></Text>
+                        <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 10 }}>Your last claim submitted on<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 10 }}> {_.sortBy(project.data.claims, (claim: IClaim) => claim.date).date}</Text></Text>
                       </View>
                     </View>
                   </View>
