@@ -1,33 +1,29 @@
 require("node-libs-react-native/globals");
-import * as React from "react";
-import { StyleProvider, Root } from "native-base";
-import { Font } from "expo";
-import getTheme from "./native-base-theme/components";
+import * as React from 'react';
+import { StyleProvider, Root } from 'native-base';
+import { Font } from 'expo';
 
-import Loading from "./src/screens/Loading";
+import getTheme from './native-base-theme/components';
+import Loading from './src/screens/Loading';
+import Stack from './Routes';
 
-import Stack from "./Routes";
-// import './shim.js';
+import { ConfigProvider } from './src/components/context/ConfigContext';
 
-// const robotoFont = require('./assets/fonts/Roboto/Roboto-Light.ttf');
-// const robotoFontBold = require('./assets/fonts/Roboto/Roboto-Regular.ttf');
-const Roboto_medium = require("./assets/fonts/Roboto/Roboto-Medium.ttf");
-import Ionicons from "./node_modules/@expo/vector-icons/fonts/Ionicons.ttf";
+
+import Ionicons from './node_modules/@expo/vector-icons/fonts/Ionicons.ttf';
+const Roboto_medium = require('./assets/fonts/Roboto/Roboto-Medium.ttf');
 
 interface State {
-  isReady: boolean;
-}
+  isReady: boolean,
+};
 
 export default class App extends React.Component<{}, State> {
-  constructor(props) {
-    super(props);
 
-    this.state = {
-      isReady: false
-    };
-  }
+  state = {
+    isReady: false,
+  };
 
-  async componentDidMount() {
+  async componentDidMount() { 
     await Font.loadAsync({
       Ionicons,
       Roboto_medium
@@ -40,7 +36,9 @@ export default class App extends React.Component<{}, State> {
       return (
         <Root>
           <StyleProvider style={getTheme()}>
-            <Stack />
+            <ConfigProvider>
+              <Stack />
+            </ConfigProvider>
           </StyleProvider>
         </Root>
       );
