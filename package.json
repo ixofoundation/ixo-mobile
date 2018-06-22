@@ -61,6 +61,7 @@
     "expo": "^27.0.1",
     "https-browserify": "0.0.1",
     "ixo-module": "^1.4.40",
+    "moment": "^2.22.2",
     "native-base": "^2.5.2",
     "path-browserify": "0.0.0",
     "process": "^0.11.10",

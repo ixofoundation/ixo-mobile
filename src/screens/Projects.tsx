@@ -1,8 +1,9 @@
 import React from 'react';
 import { StatusBar, TouchableOpacity } from 'react-native';
-
 import _ from 'underscore';
-import { Container, Header, Item, Icon, Input, Content, View, Text } from 'native-base';
+import moment from 'moment';
+import { Container, Header, Item, Icon, Input, Content, View, Text, Spinner } from 'native-base';
+
 import HeaderSync from '../components/HeaderSync';
 import Consumer from '../components/context/ConfigContext';
 
@@ -15,15 +16,7 @@ interface PropTypes {
   navigation: any,
 };
 
-interface States {
-  projects: IProject[],
-}
-
-export default class Projects extends React.Component<PropTypes, States> {
-  state = {
-    projects: []
-  };
-
+export default class Projects extends React.Component<PropTypes> {
   static navigationOptions = () => {
     return {
       headerLeft: (
@@ -35,28 +28,26 @@ export default class Projects extends React.Component<PropTypes, States> {
     };
   };
 
-  componentDidMount() {
-
-    // const ixo = new Ixo();
-    // ixo.project.listProjects().then((response: any) => {
-    //   const { result = [] } = response;
-    //   const projects: IProject[] = [];
-    //   _.each(result, (item: IProject) => {
-    //     projects.push(item);
-    //   });
-    //   this.setState({ projects });
-    // }).catch((result: Error) => {
-    //   console.log(result);
-    // });
+  getLatestClaim(claims: IClaim[]): Date | undefined {
+    const claim: IClaim | undefined = _.first(_.sortBy(claims, (claim: IClaim) => claim.date));
+  
+    if (claim) {
+      return claim.date;
+    }
+    return undefined;
   }
 
   renderProject() { // will become a mapping
     return (
       <Consumer>
-        {(context: any) =>
-          (
+        {({ projects, getProjects }: { projects: IProject[], getProjects: any}) => {
+          if (!projects) {
+            getProjects();
+          }
+          if (projects) {
+            return (
             <React.Fragment>
-              {context.projects.map((project: IProject) => {
+              {projects.map((project: IProject) => {
                 return (
                   <TouchableOpacity onPress={() => this.props.navigation.navigate('Claims')} key={project.projectDid} style={ProjectsStyles.projectBox}>
                     <View style={ContainerStyles.flexRow}>
@@ -67,7 +58,7 @@ export default class Projects extends React.Component<PropTypes, States> {
                               <Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 19, fontWeight: '500'   }}>{project.data.title}</Text>
                               <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 17  }}>{project.data.claimStats.currentSuccessful}<Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 17, fontWeight: '500' }}>/{project.data.requiredClaims}</Text></Text>
                               <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 15  }}>{project.data.impactAction}</Text>
-                              <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 10 }}>Your last claim submitted on<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 10 }}> {_.sortBy(project.data.claims, (claim: IClaim) => claim.date).date}</Text></Text>
+                              <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 10 }}>Your last claim submitted on<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 10 }}> {moment(this.getLatestClaim(project.data.claims)).format('YYYY-MM-DD')}</Text></Text>
                             </View>
                           </View>
                         </View>
@@ -77,8 +68,10 @@ export default class Projects extends React.Component<PropTypes, States> {
                 );
               })}
             </React.Fragment>
-          )
-        }
+          );
+          }
+          return <Spinner color={ThemeColors.black} />;
+        }}
       </ Consumer>
     );
   }
