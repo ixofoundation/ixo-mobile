@@ -1,10 +1,10 @@
-import React from 'react';
+import * as React from 'react';
 import { View, StatusBar, Image } from 'react-native';
 import { Text, Button } from 'native-base';
 
 import ConnectIXOStyles from '../styles/ConnectIXO';
 import ContainerStyles from '../styles/Containers';
-import { ThemeColors, ProjectStatus } from '../styles/Colors';
+import { ThemeColors } from '../styles/Colors';
 
 const logo = require('../../assets/logo.png');
 
@@ -51,7 +51,7 @@ interface PropTypes {
   navigation: any,
 };
 
-export default class ConnectIXOComplete extends React.Component<PropTypes> {
+class ConnectIXOComplete extends React.Component<PropTypes, {}, {}> {
   render() {
     return (
       <View style={ConnectIXOStyles.wrapper}>
@@ -61,3 +61,5 @@ export default class ConnectIXOComplete extends React.Component<PropTypes> {
     );
   }
 }
+
+export default ConnectIXOComplete;

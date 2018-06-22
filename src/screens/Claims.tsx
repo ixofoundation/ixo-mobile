@@ -1,13 +1,12 @@
 // TODO styling needs to move to styling file
-
-import React from 'react';
-import { StatusBar, ListView, Alert, TouchableOpacity, Platform } from 'react-native';
+import * as React from 'react';
+import { StatusBar, ListView, Alert, TouchableOpacity } from 'react-native';
 import { Container, Header, Item, Icon, Input, Content, Text, List, Button, View } from 'native-base';
 import HeaderSync from '../components/HeaderSync';
 
 import Containers from '../styles/Containers';
 import ClaimsStyles from '../styles/Claims';
-import { ThemeColors, ProjectStatus } from '../styles/Colors';
+import { ThemeColors } from '../styles/Colors';
 
 const dummyData = [ // TODO get correct data structure
   { id: '1',
@@ -25,7 +24,7 @@ interface PropTypes {
   navigation: any,
 };
 
-export default class Claims extends React.Component<PropTypes> {
+class Claims extends React.Component<{}, PropTypes> {
   static navigationOptions = () => {
     return {
       headerRight: (
@@ -42,7 +41,7 @@ export default class Claims extends React.Component<PropTypes> {
   };
 
   renderClaims() {
-    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    const ds = new ListView.DataSource({ rowHasChanged: (r1: any, r2: any) => r1 !== r2 });
     return (
       <List
         style={{ marginLeft: 6, marginRight: 6 }}
@@ -111,3 +110,5 @@ export default class Claims extends React.Component<PropTypes> {
     );
   }
 }
+
+export default Claims;

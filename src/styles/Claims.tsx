@@ -32,7 +32,7 @@ const styles = StyleSheet.create<Style>({
     paddingTop: 15,
     borderWidth: 1,
     borderColor: ThemeColors.grey,
-    marginTop: 10
+    marginTop: 10,
   },
   SubmitButton: {
     borderTopWidth: 1,
