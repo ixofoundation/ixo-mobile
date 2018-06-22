@@ -6,6 +6,9 @@ const { width } = Dimensions.get('window');
 
 interface Style {
   wrapper: ViewStyle,
+  photoBoxContainer: ViewStyle,
+  photoBoxCloseIcon: ViewStyle,
+  photoBoxCameraIcon: ViewStyle,
 }
 
 const styles = StyleSheet.create<Style>({

@@ -55,7 +55,7 @@ const Stack = createStackNavigator({
     }
   }
 }, {
-  initialRouteName: 'Projects',
+  initialRouteName: 'OnBoarding',
 });
 
 export default Stack;

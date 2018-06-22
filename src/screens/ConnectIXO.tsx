@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { View, StatusBar, Image } from 'react-native';
 import { Text, Button } from 'native-base';
 
@@ -20,7 +20,7 @@ interface PropTypes {
   navigation: any,
 };
 
-export default class ConnectIXO extends React.Component<PropTypes> {
+export default class ConnectIXO extends React.Component<PropTypes,{}> {
   render() {
     return (
       <View style={ConnectIXOStyles.wrapper}>

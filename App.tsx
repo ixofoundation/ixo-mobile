@@ -1,31 +1,26 @@
 import * as React from 'react';
 import { StyleProvider, Root } from 'native-base';
 import { Font } from 'expo';
+
 import getTheme from './native-base-theme/components';
-
 import Loading from './src/screens/Loading';
-
 import Stack from './Routes';
-// import './shim.js';
 
-// const robotoFont = require('./assets/fonts/Roboto/Roboto-Light.ttf');
-// const robotoFontBold = require('./assets/fonts/Roboto/Roboto-Regular.ttf');
-const Roboto_medium = require('./assets/fonts/Roboto/Roboto-Medium.ttf');
+import { ConfigProvider } from './src/components/context/ConfigContext';
+
+
 import Ionicons from './node_modules/@expo/vector-icons/fonts/Ionicons.ttf';
+const Roboto_medium = require('./assets/fonts/Roboto/Roboto-Medium.ttf');
 
 interface State {
-  isReady: boolean
+  isReady: boolean,
 };
 
 export default class App extends React.Component<{}, State> {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isReady: false,
-    };
-  }
+  state = {
+    isReady: false,
+  };
 
   async componentDidMount() { 
     await Font.loadAsync({
@@ -38,9 +33,13 @@ export default class App extends React.Component<{}, State> {
   render() {
     if (this.state.isReady) {
       return (
-        <Root><StyleProvider style={getTheme()}>
+        <Root>
+          <StyleProvider style={getTheme()}>
+            <ConfigProvider>
               <Stack />
-        </StyleProvider></Root>
+            </ConfigProvider>
+          </StyleProvider>
+        </Root>
       );
     }
     return <Loading />;
