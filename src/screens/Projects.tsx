@@ -2,14 +2,15 @@ import React from 'react';
 import { StatusBar, TouchableOpacity } from 'react-native';
 import _ from 'underscore';
 import moment from 'moment';
-import { Container, Header, Item, Icon, Input, Content, View, Text, Spinner } from 'native-base';
+import { Container, Header, Item, Icon, Input, Content, View, Text, Spinner, Drawer } from 'native-base';
 
 import HeaderSync from '../components/HeaderSync';
+import SideBar from '../components/SideBar';
 import Consumer from '../components/context/ConfigContext';
 
 import ContainerStyles from '../styles/Containers';
 import ProjectsStyles from '../styles/Projects';
-import { IProject, IClaim } from '../components/models/Project';
+import { IProject, IClaim } from '../models/project';
 import { ThemeColors, ProjectStatus } from '../styles/Colors';
 
 interface PropTypes {
@@ -17,15 +18,26 @@ interface PropTypes {
 };
 
 export default class Projects extends React.Component<PropTypes> {
-  static navigationOptions = () => {
+  static navigationOptions = ({ navigation }: { navigation: any }) => {
+    const { params = {} } = navigation.state;
     return {
       headerLeft: (
-        <Icon ios='ios-menu' android="md-menu" style={{ paddingLeft: 10 }} />
+        <Icon ios='ios-menu' onPress={() => params.drawer._root.open()} android="md-menu" style={{ paddingLeft: 10 }} />
       ),
       headerRight: (
         <HeaderSync />
       ),
     };
+  }
+
+  componentDidMount() {
+    this.props.navigation.setParams({
+      drawer: this.drawer,
+    });
+  }
+
+  closeDrawer() {
+    this.drawer._root.close()
   };
 
   getLatestClaim(claims: IClaim[]): Date | undefined {
@@ -78,18 +90,23 @@ export default class Projects extends React.Component<PropTypes> {
 
   render() {
     return (
-      <Container>
-        <StatusBar barStyle="light-content" />
-        <Header searchBar rounded style={{ borderBottomWidth: 0 }}>
-          <Item>
-            <Icon name="ios-search" />
-            <Input placeholder="Search my projects" />
-          </Item>
-        </Header>
-        <Content style={{ backgroundColor: ThemeColors.white }}>
-          {this.renderProject()}
-        </Content>
-      </Container>
+      <Drawer
+        ref={(ref) => { this.drawer = ref; }}
+        content={<SideBar navigation={this.props.navigation} />}
+        onClose={() => this.closeDrawer()}>
+        <Container>
+          <StatusBar barStyle="light-content" />
+          <Header searchBar rounded style={{ borderBottomWidth: 0 }}>
+            <Item>
+              <Icon name="ios-search" />
+              <Input placeholder="Search my projects" />
+            </Item>
+          </Header>
+          <Content style={{ backgroundColor: ThemeColors.white }}>
+            {this.renderProject()}
+          </Content>
+        </Container>
+      </Drawer>
     );
   }
 }

@@ -12,6 +12,7 @@ import ScanQR from './src/screens/ScanQR';
 import ProjectDetails from './src/screens/ProjectDetails';
 import NewClaim from './src/screens/NewClaim';
 import SubmittedClaims from './src/screens/SubmittedClaims';
+import Settings from './src/screens/Settings';
 
 const Stack = createStackNavigator({
   SubmittedClaims: {
@@ -53,6 +54,8 @@ const Stack = createStackNavigator({
     navigationOptions: {
       header: null,
     }
+  },
+  Settings: { screen: Settings,
   }
 }, {
   initialRouteName: 'OnBoarding',

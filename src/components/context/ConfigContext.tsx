@@ -1,5 +1,5 @@
 import React from 'react';
-import { IProject } from '../models/Project';
+import { IProject } from '../../models/project';
 import { Ixo } from 'ixo-module';
 import _ from 'underscore';
 
