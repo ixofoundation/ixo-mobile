@@ -15,7 +15,7 @@ class SideBar extends React.Component<PropTypes> {
     return (
       <View style={{ backgroundColor: ThemeColors.white, height: deviceHeight, paddingTop: 40, paddingLeft: 20 }}>
         <TouchableOpacity onPress={() => this.props.navigation.navigate('Settings')}><Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 19, fontWeight: '500', padding: 5 }}>Settings</Text></TouchableOpacity>
-        <TouchableOpacity><Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 19, fontWeight: '500', padding: 5 }}>Help</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('Help')}><Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 19, fontWeight: '500', padding: 5 }}>Help</Text></TouchableOpacity>
       </View>
     );
   }

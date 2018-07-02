@@ -42,7 +42,7 @@ export default class Projects extends React.Component<PropTypes> {
 
   getLatestClaim(claims: IClaim[]): Date | undefined {
     const claim: IClaim | undefined = _.first(_.sortBy(claims, (claim: IClaim) => claim.date));
-  
+    debugger;
     if (claim) {
       return claim.date;
     }
