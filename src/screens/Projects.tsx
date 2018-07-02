@@ -2,6 +2,7 @@ import React from 'react';
 import { StatusBar, TouchableOpacity } from 'react-native';
 import _ from 'underscore';
 import moment from 'moment';
+import { LinearGradient } from 'expo';
 import { Container, Header, Item, Icon, Input, Content, View, Text, Spinner, Drawer } from 'native-base';
 
 import HeaderSync from '../components/HeaderSync';
@@ -42,17 +43,28 @@ export default class Projects extends React.Component<PropTypes> {
 
   getLatestClaim(claims: IClaim[]): Date | undefined {
     const claim: IClaim | undefined = _.first(_.sortBy(claims, (claim: IClaim) => claim.date));
-    debugger;
     if (claim) {
       return claim.date;
     }
     return undefined;
   }
 
+  renderProgressBar = (total: number, approved: number, rejected: number) => {
+    const approvedWidth = Math.ceil(approved / total * 100);
+    const rejectedWidth = Math.ceil(rejected / total * 100);
+    return (
+      <View style={[ContainerStyles.flexRow, { justifyContent: 'flex-start' }]}>
+      <LinearGradient start={[0, 1]} colors={['#016480', '#03d0FE']} style={{ height: 3, width: `${approvedWidth}%` }} />
+      <View style={[{ backgroundColor: '#E2223B', height: 3, width: `${rejectedWidth}%` }]} />
+      <View style={[{ backgroundColor: ThemeColors.grey_sync, height: 3, width: `${100 - approvedWidth - rejectedWidth}%`  }]} />
+    </View>
+    );
+  };
+
   renderProject() { // will become a mapping
     return (
       <Consumer>
-        {({ projects, getProjects }: { projects: IProject[], getProjects: any}) => {
+        {({ projects, getProjects }: { projects: IProject[], getProjects: any }) => {
           if (!projects) {
             getProjects();
           }
@@ -75,7 +87,7 @@ export default class Projects extends React.Component<PropTypes> {
                           </View>
                         </View>
                     </View>
-                    <View style={[ContainerStyles.flexRow, { backgroundColor: ThemeColors.grey_sync, height: 3 }]} />
+                    {this.renderProgressBar(project.data.requiredClaims, project.data.claimStats.currentSuccessful, project.data.claimStats.currentRejected)}
                   </TouchableOpacity>
                 );
               })}
