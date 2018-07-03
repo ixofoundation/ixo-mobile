@@ -64,7 +64,7 @@ export default class Projects extends React.Component<PropTypes> {
   renderProject() { // will become a mapping
     return (
       <Consumer>
-        {({ projects, getProjects }: { projects: IProject[], getProjects: any }) => {
+        {({ projects, getProjects }: { projects: IProject[], getProjects: Function }) => {
           if (!projects) {
             getProjects();
           }
@@ -73,13 +73,13 @@ export default class Projects extends React.Component<PropTypes> {
             <React.Fragment>
               {projects.map((project: IProject) => {
                 return (
-                  <TouchableOpacity onPress={() => this.props.navigation.navigate('Claims')} key={project.projectDid} style={ProjectsStyles.projectBox}>
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate('Claims', { projectDid: project.projectDid, title: project.data.title, pdsURL: project.data.serviceEndpoint })} key={project.projectDid} style={ProjectsStyles.projectBox}>
                     <View style={ContainerStyles.flexRow}>
                       <View style={[ProjectsStyles.projectBoxStatusBar, { backgroundColor: ProjectStatus.inProgress }]} />
                         <View style={[ContainerStyles.flexColumn, { padding: 5 }]}>
                           <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
                             <View style={[ContainerStyles.flexColumn, { alignItems: 'flex-start' }]}>
-                              <Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 19, fontWeight: '500'   }}>{project.data.title}</Text>
+                              <Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 19, fontWeight: '500' }}>{project.data.title}</Text>
                               <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 17  }}>{project.data.claimStats.currentSuccessful}<Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 17, fontWeight: '500' }}>/{project.data.requiredClaims}</Text></Text>
                               <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 15  }}>{project.data.impactAction}</Text>
                               <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 10 }}>Your last claim submitted on<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 10 }}> {moment(this.getLatestClaim(project.data.claims)).format('YYYY-MM-DD')}</Text></Text>

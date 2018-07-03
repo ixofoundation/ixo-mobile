@@ -1,8 +1,10 @@
 // TODO styling needs to move to styling file
 import * as React from 'react';
 import { StatusBar, ListView, Alert, TouchableOpacity } from 'react-native';
-import { Container, Header, Item, Icon, Input, Content, Text, List, Button, View } from 'native-base';
+import { Container, Header, Item, Icon, Input, Content, Text, List, Button, View, Spinner } from 'native-base';
 import HeaderSync from '../components/HeaderSync';
+import Consumer from '../components/context/ConfigContext';
+import { IClaim } from '../models/project';
 
 import Containers from '../styles/Containers';
 import ClaimsStyles from '../styles/Claims';
@@ -24,13 +26,14 @@ interface PropTypes {
   navigation: any,
 };
 
-class Claims extends React.Component<{}, PropTypes> {
-  static navigationOptions = () => {
+class Claims extends React.Component<PropTypes, {}> {
+  static navigationOptions = ({ navigation }: { navigation: any }) => {
+    const { state: { params: { title = 'Project Name' } }} = navigation;
     return {
       headerRight: (
         <HeaderSync />
       ),
-      title: 'Project Name',
+      title,
       headerTitleStyle : {
         color: ThemeColors.black,
         textAlign: 'center',
@@ -40,34 +43,52 @@ class Claims extends React.Component<{}, PropTypes> {
     };
   };
 
+  componentDidMount() {
+    // const { state: { params } } = this.props.navigation;
+  }
+
   renderClaims() {
     const ds = new ListView.DataSource({ rowHasChanged: (r1: any, r2: any) => r1 !== r2 });
     return (
-      <List
-        style={{ marginLeft: 6, marginRight: 6 }}
-        rightOpenValue={-75}
-        dataSource={ds.cloneWithRows(dummyData)}
-        renderRightHiddenRow={(data, secId, rowId, rowMap) =>
-          <Button full danger
-            style={ClaimsStyles.DeleteButton}
-            onPress={ _ => {
-            Alert.alert('Delete claim', 'Are you sure you want to delete the claim?',
-            [{ text: 'OK',
-            }, { text: 'Cancel' }]);
-            }}
-          >
-            <Text style={ClaimsStyles.DeleteButtonText}>Delete</Text>
-          </Button>}
-        renderRow={claim =>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('ProjectDetails')} >
-            <View style={[Containers.flexColumn, ClaimsStyles.ClaimBox]}>
-              <Text style={{ color: ThemeColors.grey, fontSize: 15 }}>{claim.address}</Text>
-              <Text style={{ color: ThemeColors.grey, fontSize: 10 }}>{claim.submitDate}</Text>
-            </View>
-          </TouchableOpacity>
-        }
-      >
-      </List>
+      <Consumer>
+        {({ claims, getClaims }: { claims: IClaim, getClaims: Function }) => {
+          if (!claims) {
+            const { state: { params: { projectDid = '', pdsURL = '' } }} = this.props.navigation;
+            getClaims(projectDid, pdsURL);
+          }
+          if (claims) {
+            console.log(claims);
+            return (
+              <List
+                style={{ marginLeft: 6, marginRight: 6 }}
+                rightOpenValue={-75}
+                dataSource={ds.cloneWithRows(dummyData)}
+                renderRightHiddenRow={(data, secId, rowId, rowMap) =>
+                  <Button full danger
+                    style={ClaimsStyles.DeleteButton}
+                    onPress={ _ => {
+                    Alert.alert('Delete claim', 'Are you sure you want to delete the claim?',
+                    [{ text: 'OK',
+                    }, { text: 'Cancel' }]);
+                    }}
+                  >
+                    <Text style={ClaimsStyles.DeleteButtonText}>Delete</Text>
+                  </Button>}
+                renderRow={claim =>
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate('ProjectDetails')} >
+                    <View style={[Containers.flexColumn, ClaimsStyles.ClaimBox]}>
+                      <Text style={{ color: ThemeColors.grey, fontSize: 15 }}>{claim.address}</Text>
+                      <Text style={{ color: ThemeColors.grey, fontSize: 10 }}>{claim.submitDate}</Text>
+                    </View>
+                  </TouchableOpacity>
+                }
+              >
+              </List>
+            );
+          }
+          return <Spinner color={ThemeColors.black} />;
+        }}
+      </Consumer>
     );
   }
 

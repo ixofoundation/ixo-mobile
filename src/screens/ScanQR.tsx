@@ -1,10 +1,10 @@
 import React from "react";
+import { AsyncStorage } from 'react-native';
 import { Camera, Permissions } from "expo";
 import { View, Text, Icon } from "native-base";
 import { SecureStore } from "expo";
 
 import { ThemeColors } from "../styles/Colors";
-import * as Keychain from "react-native-keychain";
 import { ISovrinDid } from "../models/sovrin";
 import { generateSovrinDID } from "../utils/sovrin";
 
@@ -46,27 +46,28 @@ export default class ScanQR extends React.Component<ParentProps, State> {
   }
 
   _handleBarCodeRead = (payload: any) => {
-    console.log(payload.data);
-    console.log(payload.type);
+    // console.log(payload.data);
+    // console.log(payload.type);
     let sovrinDid: ISovrinDid;
     sovrinDid = generateSovrinDID(payload.data);
-    console.log(sovrinDid);
+    // console.log(sovrinDid);
     this.setState({ loading: true });
-    this.storeDidToKeychain(sovrinDid, payload.data);
-    this.props.navigation.navigate("ConnectIXOComplete");
+    this.storeDidToKeychain(sovrinDid, JSON.parse(payload.data));
   };
 
-  storeDidToKeychain(sovrinDid: ISovrinDid, mnemonic: string) {
+  storeDidToKeychain(sovrinDid: ISovrinDid, { mnemonic }: { mnemonic: string }) {
     // Store the credentials
-
     let key = sovrinDid.did,
       value = mnemonic;
 
     SecureStore.setItemAsync(key, value)
       .then(() => {
-        console.log("ALL GOOD");
+        AsyncStorage.setItem('sovrinDid', key).then(() => {
+          this.props.navigation.navigate("ConnectIXOComplete");
+        });
       })
       .catch(e => {
+        this.props.navigation.navigate("ConnectIXOUnsuccessful");
         console.log(
           `Could not save "${key}" with value "${value}" in store (${e})`
         );
