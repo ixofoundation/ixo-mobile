@@ -8,11 +8,11 @@ import {
 import LoadingStyles from '../styles/Loading';
 import ContainerStyles from '../styles/Containers';
 
-import { ThemeColors, ProjectStatus } from '../styles/Colors';
+import { ThemeColors } from '../styles/Colors';
 
 const logo = require('../../assets/logo-white.png');
 
-class LoadingScreen extends Component {
+class LoadingScreen extends React.Component {
   render() {
     return (
       <View style={[ContainerStyles.flexColumn, { backgroundColor: ThemeColors.blue }]}>
