@@ -16,6 +16,7 @@ import Settings from './src/screens/Settings';
 import Notification from './src/screens/Notifications';
 import Privacy from './src/screens/Privacy';
 import Help from './src/screens/Help';
+import Register from './src/screens/Register';
 
 const Stack = createStackNavigator({
   SubmittedClaims: {
@@ -65,6 +66,11 @@ const Stack = createStackNavigator({
   Privacy: { screen: Privacy,
   },
   Help: { screen: Help,
+  },
+  Register: { screen: Register,
+    navigationOptions: {
+      header: null
+    }
   },
 }, {
   initialRouteName: 'OnBoarding',

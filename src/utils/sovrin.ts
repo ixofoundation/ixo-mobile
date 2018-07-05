@@ -4,7 +4,32 @@ import { AsyncStorage } from 'react-native';
 
 const sovrin = require('sovrin-did');
 const bs58 = require('bs58');
-const SHA256 = require('crypto-js/sha256');
+// const AES = require("crypto-js/aes");
+// const SHA256 = require('crypto-js/sha256');
+// const Encrypt = require('crypto/enc');
+
+const signature : { 
+    type: string,
+    created?: Date | undefined,
+    creator: string,
+    publicKey: string,
+    signatureValue: string,
+ } = {
+    type: 'ed25519-sha-256',
+    created: null,
+    creator: '',
+    publicKey: '',
+    signatureValue: '',
+};
+
+// const encryptPassword = (data: object, saltPassword: string) => {
+//     return AES.encrypt(data, saltPassword);
+// };
+
+// const decrypt = (cipherText: string, password: string ) => {
+//     var bytes  = AES.decrypt(cipherText.toString(), password);
+//     //return bytes.toString(Encrypt.Utf8);
+// };
 
 export function generateSovrinDID(mnemonic: string): ISovrinDid {
     const seed = SHA256(mnemonic).toString();
@@ -26,26 +51,19 @@ export function GetSignature(payload: string): Promise<any> {
                 SecureStore.getItemAsync(did).then((mnemonic: any) => {
                     if (mnemonic) {
                         const sovrinDid: ISovrinDid = generateSovrinDID(mnemonic);
-                        const signature = bs58.encode(sovrin.signMessage(payload, sovrinDid.secret.signKey, sovrinDid.verifyKey));
-                        console.log('Signature', signature);
+                        signature.signatureValue = bs58.encode(sovrin.signMessage(payload, sovrinDid.secret.signKey, sovrinDid.verifyKey));
+                        signature.creator = sovrinDid.did;
+                        signature.created = new Date();
+                        signature.publicKey = sovrinDid.encryptionPublicKey
                         return resolve(signature);
                     }
                 });
             }
         });
-        // AsyncStorage.getItem('sovrinDid', (error: any, did: string | undefined) => {
-        //     if (did) {
-        //         SecureStore.getItemAsync(did).then((mnemonic: any) => {
-        //             if (mnemonic) {
-        //                 const sovrinDid: ISovrinDid = generateSovrinDID(mnemonic);
-        //                 const signature = bs58.encode(sovrin.signMessage(payload, sovrinDid.secret.signKey, sovrinDid.verifyKey));
-        //                 console.log('Signature', signature);
-        //                 return resolve(signature);
-        //             }
-        //         });
-        //     }
-        //     return reject(error); 
-        // });
     });
 }
+// export function createNewVaultAndRestore (accountName: string, password: string, mnemonic: string) {
+//     const cipherText = encryptPassword({ accountName, mnemonic }, password);
+//     // TODO continue
+// }
 

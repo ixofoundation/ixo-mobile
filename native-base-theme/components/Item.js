@@ -45,7 +45,7 @@ export default (variables = variable) => {
         top: null,
         left: null,
         right: null,
-        paddingTop: 5,
+        // paddingTop: 5,
         alignSelf: "flex-start",
         fontSize: variables.inputFontSize - 2
       },
@@ -59,7 +59,7 @@ export default (variables = variable) => {
         fontSize: variables.inputFontSize
       },
       flexDirection: null,
-      height: variables.inputHeightBase + 15
+      height: 50
     },
     ".inlineLabel": {
       "NativeBase.Label": {

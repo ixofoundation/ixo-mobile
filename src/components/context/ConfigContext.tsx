@@ -4,7 +4,6 @@ import { IProject, IClaim } from '../../models/project';
 import { Ixo } from 'ixo-module';
 import { GetSignature } from "../../utils/sovrin";
 import _ from 'underscore';
-import { AsyncStorage } from 'react-native';
 
 const { Provider, Consumer } = React.createContext({});
 
@@ -39,9 +38,6 @@ export class ConfigProvider extends React.Component {
         getClaims: (projectDid: string, pdsURL: string) => {
             GetSignature(projectDid).then((signature) => {
                 const ProjectDIDPayload: Object = { projectDid: projectDid };
-                // console.log('project payload', ProjectDIDPayload);
-                // console.log('signature::>>', signature);
-                // console.log('pdsurl:', pdsURL);
                 this.state.ixo.claim.listClaimsForProject(ProjectDIDPayload, signature, pdsURL).then((response: any) => {
                     console.log('RESPONSE', response);
                     if (response.error) {

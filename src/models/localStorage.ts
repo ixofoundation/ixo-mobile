@@ -1,4 +1,5 @@
-export enum LocalStorageKeys  {
-    firstLaunch = 'firstLaunch',
-    sovrinDid = 'sovrinDid'
+export const LocalStorageKeys = {
+    firstLaunch: 'firstLaunch',
+    sovrinDid: 'sovrinDid'
 }
+
