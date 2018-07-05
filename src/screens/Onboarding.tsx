@@ -9,7 +9,7 @@ import Loading from '../screens/Loading';
 import OnBoardingStyles from '../styles/OnBoarding';
 import ContainerStyles from '../styles/Containers';
 import { ThemeColors } from '../styles/Colors';
-import { LocalStorageKeys } from '../models/localStorage';
+import { LocalStorageKeys } from '../models/phoneStorage';
 
 const logo = require('../../assets/logo-white.png');
 
@@ -35,6 +35,14 @@ export default class OnBoarding extends React.Component<PropTypes> {
     AsyncStorage.getItem(LocalStorageKeys.firstLaunch, (error: any, firstLaunch: string | undefined) => {
       if (!firstLaunch || error) {
         this.setState({ showOnboarding: true });
+      } else {
+        const resetAction = StackActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({ routeName: 'Login'}),
+          ]
+        });
+        this.props.navigation.dispatch(resetAction);
       }
     });
   }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, StatusBar, Image } from 'react-native';
-import { StackActions, NavigationActions } from 'react-navigation'
+import { StackActions, NavigationActions } from 'react-navigation';
 import { Text, Button } from 'native-base';
 
 import ConnectIXOStyles from '../styles/ConnectIXO';

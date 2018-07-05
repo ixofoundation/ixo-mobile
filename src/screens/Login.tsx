@@ -110,7 +110,7 @@ export default class Login extends React.Component<PropTypes, StateTypes> {
               <Button onPress={() => this.props.navigation.navigate('Projects')} style={LoginStyles.buttons} bordered dark><Text>Sign in</Text></Button>
             </View>
             <TouchableOpacity onPress={() => Platform.OS === 'android' ? this.showAndroidAlert() : this.scanFingerprint()} >
-              <Icon onPress={() => this.setState({  })} name='finger-print' style={{ fontSize: 60 }} />
+              <Icon onPress={() => this.scanFingerprint()} name='finger-print' style={{ fontSize: 60 }} />
             </TouchableOpacity>
             
             <Text style={{ textAlign: 'left', color: ThemeColors.grey, paddingBottom: 20, paddingTop: 20 }}>Forgot your password?</Text>

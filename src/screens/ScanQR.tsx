@@ -7,7 +7,7 @@ import { SecureStore } from "expo";
 import { ThemeColors } from "../styles/Colors";
 import { ISovrinDid } from "../models/sovrin";
 import { generateSovrinDID } from "../utils/sovrin";
-import { localStorageKeys } from "../models/localStorage";
+import { LocalStorageKeys } from "../models/phoneStorage";
 
 interface ParentProps {
   navigation: any;
@@ -63,7 +63,7 @@ export default class ScanQR extends React.Component<ParentProps, State> {
 
     SecureStore.setItemAsync(key, value)
       .then(() => {
-        AsyncStorage.setItem(localStorageKeys.sovrinDid, key).then(() => {
+        AsyncStorage.setItem(LocalStorageKeys.sovrinDid, key).then(() => {
           this.props.navigation.navigate("ConnectIXOComplete");
         });
       })

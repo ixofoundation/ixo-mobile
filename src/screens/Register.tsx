@@ -1,12 +1,13 @@
 import React from 'react';
-import { StatusBar, Dimensions, TouchableOpacity } from 'react-native';
+import { SecureStore } from 'expo';
+import { StatusBar, TouchableOpacity, AsyncStorage } from 'react-native';
+import { StackActions, NavigationActions } from 'react-navigation';
 import { Container, Icon, View, Item, Label, Input, Button, Text } from 'native-base';
-
+import { CreateNewVaultAndRestore } from '../utils/sovrin'; 
+import { SecureStorageKeys, LocalStorageKeys } from '../models/phoneStorage';
 import { ThemeColors } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
 import RegisterStyles from '../styles/Register';
-
-const deviceHeight = Dimensions.get("window").height;
 
 enum registerSteps {
     captureDetails = 1,
@@ -19,13 +20,14 @@ interface PropTypes {
 };
 
 interface StateTypes {
-    name: string;
+    username: string;
     password: string;
     confirmPassword: string;
     registerState: registerSteps;
     mnemonic: string;
     selectedWords: string[];
     unSelectedWords: string[];
+    errorMismatch: boolean;
 }
 
 interface NavigationTypes {
@@ -35,13 +37,14 @@ interface NavigationTypes {
 class Register extends React.Component<PropTypes, StateTypes> {
 
     state = {
-        name: '',
+        username: '',
         password: '',
         confirmPassword: '',
         registerState: registerSteps.captureDetails,
         mnemonic: '',
         selectedWords: [],
         unSelectedWords: [],
+        errorMismatch: false,
     }
 
     async generateMnemonic() {
@@ -52,7 +55,16 @@ class Register extends React.Component<PropTypes, StateTypes> {
         //     return false
         // }
         const testMonic = 'surprise boat glance fetch cute gossip domain all marble orchard entire rookie';
-        this.setState({ unSelectedWords: testMonic.split(' '), mnemonic: testMonic });
+
+        this.setState({ unSelectedWords: this.shuffleArray(testMonic.split(' ')), mnemonic: testMonic });
+    }
+
+    shuffleArray(array: string[]) { // Durstenfeld shuffle algorithm
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]]; // eslint-disable-line no-param-reassign
+        }
+        return array;
     }
 
     handleUnselectedToSelected(word: string) {
@@ -73,6 +85,33 @@ class Register extends React.Component<PropTypes, StateTypes> {
         });
     }
 
+    handleConfirmMnemonic() {
+        const goToLogin = StackActions.reset({
+            index: 0,
+            actions: [
+              NavigationActions.navigate({ routeName: 'Login'}),
+            ]
+          });
+        if (this.state.selectedWords.join(' ') !== this.state.mnemonic) {
+            this.setState({ errorMismatch: true });
+        } else {
+            CreateNewVaultAndRestore(this.state.username, this.state.password, this.state.mnemonic); // encrypt securely on phone enlave
+            SecureStore.setItemAsync(SecureStorageKeys.password, this.state.password); // save local password
+            AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true'); // stop first time onboarding
+            this.props.navigation.dispatch(goToLogin);
+        }
+    }
+
+    handleCreatePassword() {
+        if (this.state.confirmPassword === '' || this.state.password === '' || this.state.username === '') {
+            return;
+        }
+
+        if (this.state.password === this.state.confirmPassword) {
+            this.setState({ registerState: registerSteps.revealMnemonic });
+        }
+    }
+
     renderStep(index: registerSteps) {
         switch(index) {
             case registerSteps.captureDetails:
@@ -81,18 +120,18 @@ class Register extends React.Component<PropTypes, StateTypes> {
                         <Text style={{ textAlign: 'left', color: ThemeColors.black, paddingBottom: 10 }}>Let's set up your account</Text>
                         <Item floatingLabel>
                             <Label>Your name</Label>
-                            <Input />
+                            <Input value={this.state.username} onChangeText={(text) => this.setState({ username: text })} />
                         </Item>
                         <Item floatingLabel>
                             <Label>New password</Label>
-                            <Input />
+                            <Input value={this.state.password} onChangeText={(text) => this.setState({ password: text })} />
                         </Item>
                         <Item floatingLabel>
                             <Label>Confirm password</Label>
-                            <Input />
+                            <Input value={this.state.confirmPassword} onChangeText={(text) => this.setState({ confirmPassword: text })} />
                         </Item>
                         <View style={[ContainerStyles.flexColumn, { paddingTop: 60 }]}>
-                            <Button onPress={() => this.setState({ registerState: registerSteps.revealMnemonic })} style={{ width: '100%', justifyContent: 'center', marginTop: 20 }} bordered dark><Text>Create</Text></Button>
+                            <Button onPress={() => this.handleCreatePassword()} style={{ width: '100%', justifyContent: 'center', marginTop: 20 }} bordered dark><Text>Create</Text></Button>
                         </View>
                     </View>
                 );
@@ -112,7 +151,7 @@ class Register extends React.Component<PropTypes, StateTypes> {
                                     <Text style={{ textAlign: 'center', color: ThemeColors.black, paddingHorizontal: 10 }}>Click here to reveal secret words</Text>
                                 </View> :
                                 <View>
-                                    <Text style={{ textAlign: 'left', color: ThemeColors.black, paddingHorizontal: 10 }}>{this.state.unSelectedWords.join(' ')}</Text>
+                                    <Text style={{ textAlign: 'left', color: ThemeColors.black, paddingHorizontal: 10 }}>{this.state.mnemonic}</Text>
                                 </View>
                             }
                         </TouchableOpacity>
@@ -129,8 +168,12 @@ class Register extends React.Component<PropTypes, StateTypes> {
                         <Text style={{ textAlign: 'left', color: ThemeColors.black, paddingBottom: 10 }}>Confirm your Secrete Backup Phrase</Text>
                         <Text style={{ textAlign: 'left', color: ThemeColors.black, paddingBottom: 10 }}>Please select each phrase in order to make sure it is correct.</Text>
                         <Text style={{ textAlign: 'left', color: ThemeColors.black, paddingBottom: 10 }}>Please select each phrase in order to make sure it is correct.</Text>
+                        {(this.state.errorMismatch) && <Text style={{ textAlign: 'left', color: 'red', paddingBottom: 7 }}>The order is incorrect</Text>}
                         {this.renderSelected()}
                         {this.renderUnSelected()}
+                        <View style={[ContainerStyles.flexColumn]}>
+                            <Button onPress={() => this.handleConfirmMnemonic()} style={RegisterStyles.button} bordered dark><Text>Confirm</Text></Button>
+                        </View>
                     </View>
                 );
         }
