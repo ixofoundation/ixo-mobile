@@ -43,10 +43,6 @@ class Claims extends React.Component<PropTypes, {}> {
     };
   };
 
-  componentDidMount() {
-    // const { state: { params } } = this.props.navigation;
-  }
-
   renderClaims() {
     const ds = new ListView.DataSource({ rowHasChanged: (r1: any, r2: any) => r1 !== r2 });
     return (
@@ -57,12 +53,12 @@ class Claims extends React.Component<PropTypes, {}> {
             getClaims(projectDid, pdsURL);
           }
           if (claims) {
-            console.log(claims);
+            console.log('Claims', claims);
             return (
               <List
                 style={{ marginLeft: 6, marginRight: 6 }}
                 rightOpenValue={-75}
-                dataSource={ds.cloneWithRows(dummyData)}
+                dataSource={ds.cloneWithRows(claims)}
                 renderRightHiddenRow={(data, secId, rowId, rowMap) =>
                   <Button full danger
                     style={ClaimsStyles.DeleteButton}
@@ -74,11 +70,11 @@ class Claims extends React.Component<PropTypes, {}> {
                   >
                     <Text style={ClaimsStyles.DeleteButtonText}>Delete</Text>
                   </Button>}
-                renderRow={claim =>
+                renderRow={(claim: IClaim) =>
                   <TouchableOpacity onPress={() => this.props.navigation.navigate('ProjectDetails')} >
                     <View style={[Containers.flexColumn, ClaimsStyles.ClaimBox]}>
-                      <Text style={{ color: ThemeColors.grey, fontSize: 15 }}>{claim.address}</Text>
-                      <Text style={{ color: ThemeColors.grey, fontSize: 10 }}>{claim.submitDate}</Text>
+                      <Text style={{ color: ThemeColors.grey, fontSize: 15 }}>{claim.txHash}</Text>
+                      <Text style={{ color: ThemeColors.grey, fontSize: 10 }}>{claim.date}</Text>
                     </View>
                   </TouchableOpacity>
                 }

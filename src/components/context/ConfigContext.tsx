@@ -2,8 +2,10 @@ import React from 'react';
 import { Toast } from 'native-base';
 import { IProject, IClaim } from '../../models/project';
 import { Ixo } from 'ixo-module';
-import { GetSignature } from "../../utils/sovrin";
+import { env } from '../../../config';
+import { GetSignature, verifyDocumentSignature } from "../../utils/sovrin";
 import _ from 'underscore';
+
 
 const { Provider, Consumer } = React.createContext({});
 
@@ -12,7 +14,7 @@ export class ConfigProvider extends React.Component {
     state = {
         projects: null,
         claims: null,
-        ixo: new Ixo(),
+        ixo: new Ixo(env.REACT_APP_BLOCKCHAIN_IP, env.REACT_APP_BLOCK_SYNC_URL),
         getProjects: () => {
             this.state.ixo.project.listProjects()
             .then((response: any) => {
@@ -36,10 +38,9 @@ export class ConfigProvider extends React.Component {
             });
         },
         getClaims: (projectDid: string, pdsURL: string) => {
-            GetSignature(projectDid).then((signature) => {
-                const ProjectDIDPayload: Object = { projectDid: projectDid };
+            const ProjectDIDPayload: Object = { projectDid: projectDid };
+            GetSignature(ProjectDIDPayload).then((signature) => {
                 this.state.ixo.claim.listClaimsForProject(ProjectDIDPayload, signature, pdsURL).then((response: any) => {
-                    console.log('RESPONSE', response);
                     if (response.error) {
                         Toast.show({
                             text: 'Failed to load claims',
@@ -47,9 +48,7 @@ export class ConfigProvider extends React.Component {
                             type: 'danger'
                         });
                     } else {
-                        console.log('6. Final response', response.result);
-                        console.log(response.result);
-                        // this.setState({ claims: response.result });
+                        this.setState({ claims: response.result });
                     }
                 });
             }).catch((error) => {

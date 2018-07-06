@@ -1,12 +1,15 @@
 import React from 'react';
-import { Fingerprint } from 'expo';
+import { Fingerprint, SecureStore } from 'expo';
 import { StackActions, NavigationActions } from 'react-navigation'
-import { View, StatusBar, Image, Alert, TouchableOpacity, Platform, Dimensions } from 'react-native';
-import { Text, Button, Icon, Item, Label, Input } from 'native-base';
+import { View, StatusBar, Image, Alert, TouchableOpacity, Platform, Dimensions, AsyncStorage } from 'react-native';
+import { Text, Button, Icon, Item, Label, Input, Toast, Spinner } from 'native-base';
 
 import LoginStyles from '../styles/Login';
 import ContainerStyles from '../styles/Containers';
-import { ThemeColors, ProjectStatus } from '../styles/Colors';
+import { ThemeColors } from '../styles/Colors';
+import { SecureStorageKeys, LocalStorageKeys } from '../models/phoneStorage';
+import { IMnemonic, ISovrinDid } from '../models/sovrin';
+import { Decrypt, generateSovrinDID } from '../utils/sovrin';
 
 const { width } = Dimensions.get('window');
 const logo = require('../../assets/logo.png');
@@ -28,6 +31,7 @@ interface StateTypes {
   compatible: boolean;
   fingerprints: boolean;
   password: string;
+  loading: boolean;
 };
 
 export default class Login extends React.Component<PropTypes, StateTypes> {
@@ -37,6 +41,7 @@ export default class Login extends React.Component<PropTypes, StateTypes> {
     revealPassword: true,
     compatible: false,
     fingerprints: false,
+    loading: false,
   };
 
   componentDidMount() {
@@ -84,37 +89,95 @@ export default class Login extends React.Component<PropTypes, StateTypes> {
     this.setState({ revealPassword: !this.state.revealPassword })
   }
 
+  signIn() {
+      this.setState({ loading: true });
+      SecureStore.getItemAsync(SecureStorageKeys.password).then((password) => { // get phone password from secure store
+        if (password === this.state.password) {
+          SecureStore.getItemAsync(SecureStorageKeys.mnemonic).then((enryptedMnemonic) => { // get encrypted mnemonic from secure store
+            const mnemonicObject: IMnemonic = Decrypt(enryptedMnemonic, this.state.password);
+            AsyncStorage.setItem(LocalStorageKeys.mnemonic, JSON.stringify(mnemonicObject), (error) => { // save mnemonic local storage
+              if (error) {
+                Toast.show({
+                  text: 'Login Failed',
+                  buttonText: 'OK',
+                  type: 'warning',
+                  position: 'top'
+                });
+              } else {
+                SecureStore.getItemAsync(SecureStorageKeys.sovrinDid).then((encryptedSovrin) => { // get sovrindid from secure store
+                  const sovrinObject: ISovrinDid = JSON.parse(Decrypt(encryptedSovrin, this.state.password));
+                  AsyncStorage.setItem(LocalStorageKeys.sovrinDid, sovrinObject.did, (error) => { // save sovrindid id local storage
+                    if (error) {
+                      Toast.show({
+                        text: 'Login Failed',
+                        buttonText: 'OK',
+                        type: 'warning',
+                        position: 'top'
+                      });
+                    } else {
+                      this.props.navigation.dispatch(StackActions.reset({
+                        index: 0,
+                        actions: [
+                          NavigationActions.navigate({ routeName: 'Projects'}),
+                        ]
+                      }));
+                    }
+                  });
+                });
+              }
+            });
+          });
+        } else {
+          Toast.show({
+            text: 'Password incorrect',
+            buttonText: 'OK',
+            type: 'warning',
+            position: 'top'
+          });
+          this.setState({ loading: false });
+        }
+      }).catch(() => {
+        Toast.show({
+          text: 'Login Failed',
+          buttonText: 'OK',
+          type: 'warning',
+          position: 'top'
+        });
+        this.setState({ loading: false });
+      });
+  }
+
   render() {
     return (
       <View style={LoginStyles.wrapper}>
       <StatusBar barStyle="dark-content" />
-          <View style={[ContainerStyles.flexColumn, ContainerStyles.backgroundColorLight]}>
-            <LogoView />
-            <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
-              <View style={[ContainerStyles.flexColumn, { alignItems: 'center' }]}>
-                <Text style={{ textAlign: 'center', color: ThemeColors.black }}>Welcome back Mike</Text>
-                <Text></Text>
-                <Text style={{ textAlign: 'left', color: ThemeColors.black }}>You have 7 alerts for your attention.</Text>
-              </View>
+        <View style={[ContainerStyles.flexColumn, ContainerStyles.backgroundColorLight]}>
+          <LogoView />
+          <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft, { flex: 0.3 }]}>
+            <View style={[ContainerStyles.flexColumn, { alignItems: 'center' }]}>
+              <Text style={{ textAlign: 'center', color: ThemeColors.black }}>Welcome back Mike</Text>
+              <Text></Text>
+              <Text style={{ textAlign: 'left', color: ThemeColors.black }}>You have 7 alerts for your attention.</Text>
             </View>
-
-            <View style={[ContainerStyles.flexRow, { width: width * 0.8 }]}>
-              <Item style={{ width: width * 0.8 }} stackedLabel={!this.state.revealPassword} floatingLabel={this.state.revealPassword}>
-                  <Label>Password</Label>
-                  <Input value={this.state.password} onChangeText={(password) => this.setState({ password: password })} secureTextEntry={this.state.revealPassword} />
-              </Item>
-              <Icon onPress={() => this.revealPassword()} active name='eye' style={{ color: ThemeColors.black, top: 10 }} />
-            </View>
-            
-            <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
-              <Button onPress={() => this.props.navigation.navigate('Projects')} style={LoginStyles.buttons} bordered dark><Text>Sign in</Text></Button>
-            </View>
-            <TouchableOpacity onPress={() => Platform.OS === 'android' ? this.showAndroidAlert() : this.scanFingerprint()} >
-              <Icon onPress={() => this.scanFingerprint()} name='finger-print' style={{ fontSize: 60 }} />
-            </TouchableOpacity>
-            
-            <Text style={{ textAlign: 'left', color: ThemeColors.grey, paddingBottom: 20, paddingTop: 20 }}>Forgot your password?</Text>
           </View>
+
+          <View style={[ContainerStyles.flexRow, { width: width * 0.8, flex: 0.2 }]}>
+            <Item style={{ width: width * 0.8 }} stackedLabel={!this.state.revealPassword} floatingLabel={this.state.revealPassword}>
+                <Label>Password</Label>
+                <Input value={this.state.password} onChangeText={(password) => this.setState({ password: password })} secureTextEntry={this.state.revealPassword} />
+            </Item>
+            <Icon onPress={() => this.revealPassword()} active name='eye' style={{ color: ThemeColors.black, top: 10 }} />
+          </View>
+          
+          <View style={[ContainerStyles.flexRow, { flex: 0.5, paddingTop: 20, marginHorizontal: 20 }]}>
+            {(this.state.loading) ? <Spinner color={ThemeColors.black} /> : <Button onPress={() => this.signIn()} style={LoginStyles.buttons} bordered dark><Text>Sign in</Text></Button>}
+          </View>
+          <TouchableOpacity onPress={() => Platform.OS === 'android' ? this.showAndroidAlert() : this.scanFingerprint()} >
+            <Icon name='finger-print' style={{ fontSize: 60 }} />
+          </TouchableOpacity>
+          
+          <Text style={{ textAlign: 'left', color: ThemeColors.grey, paddingBottom: 20, paddingTop: 20 }}>Forgot your password?</Text>
+        </View>
       </View>
     );
   }

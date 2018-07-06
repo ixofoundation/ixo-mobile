@@ -32,6 +32,7 @@ export default class OnBoarding extends React.Component<PropTypes> {
   };
 
   componentDidMount() {
+    // AsyncStorage.clear(); // DEV only to test onboarding
     AsyncStorage.getItem(LocalStorageKeys.firstLaunch, (error: any, firstLaunch: string | undefined) => {
       if (!firstLaunch || error) {
         this.setState({ showOnboarding: true });

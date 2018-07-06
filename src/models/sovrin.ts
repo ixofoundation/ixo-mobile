@@ -11,3 +11,7 @@ interface ISecret {
   encryptionPrivateKey: string;
 }
 
+export interface IMnemonic {
+  username: string,
+  mnemonic: string,
+}

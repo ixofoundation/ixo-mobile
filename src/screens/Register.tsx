@@ -2,8 +2,8 @@ import React from 'react';
 import { SecureStore } from 'expo';
 import { StatusBar, TouchableOpacity, AsyncStorage } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
-import { Container, Icon, View, Item, Label, Input, Button, Text } from 'native-base';
-import { CreateNewVaultAndRestore } from '../utils/sovrin'; 
+import { Container, Icon, View, Item, Label, Input, Button, Text, Toast } from 'native-base';
+import { Encrypt, generateSovrinDID } from '../utils/sovrin'; 
 import { SecureStorageKeys, LocalStorageKeys } from '../models/phoneStorage';
 import { ThemeColors } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
@@ -91,11 +91,14 @@ class Register extends React.Component<PropTypes, StateTypes> {
             actions: [
               NavigationActions.navigate({ routeName: 'Login'}),
             ]
-          });
+        });
         if (this.state.selectedWords.join(' ') !== this.state.mnemonic) {
             this.setState({ errorMismatch: true });
         } else {
-            CreateNewVaultAndRestore(this.state.username, this.state.password, this.state.mnemonic); // encrypt securely on phone enlave
+            const cipherTextMnemonic = Encrypt(JSON.stringify({ username: this.state.username, mnemonic: this.state.mnemonic}), this.state.password); // encrypt securely on phone enlave
+            SecureStore.setItemAsync(SecureStorageKeys.mnemonic, cipherTextMnemonic.toString());
+            const cipherTextSovrinDid = Encrypt(JSON.stringify(generateSovrinDID(this.state.mnemonic)), this.state.password); // encrypt securely on phone enlave
+            SecureStore.setItemAsync(SecureStorageKeys.sovrinDid, cipherTextSovrinDid.toString());
             SecureStore.setItemAsync(SecureStorageKeys.password, this.state.password); // save local password
             AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true'); // stop first time onboarding
             this.props.navigation.dispatch(goToLogin);
@@ -104,6 +107,20 @@ class Register extends React.Component<PropTypes, StateTypes> {
 
     handleCreatePassword() {
         if (this.state.confirmPassword === '' || this.state.password === '' || this.state.username === '') {
+            Toast.show({
+                text: 'Missing fields',
+                type: 'warning',
+                position: 'top'
+            });
+            return;
+        }
+
+        if (this.state.password !== this.state.confirmPassword) {
+            Toast.show({
+                text: 'Mismatch on password',
+                type: 'warning',
+                position: 'top'
+            });
             return;
         }
 
@@ -124,11 +141,11 @@ class Register extends React.Component<PropTypes, StateTypes> {
                         </Item>
                         <Item floatingLabel>
                             <Label>New password</Label>
-                            <Input value={this.state.password} onChangeText={(text) => this.setState({ password: text })} />
+                            <Input secureTextEntry value={this.state.password} onChangeText={(text) => this.setState({ password: text })} />
                         </Item>
                         <Item floatingLabel>
                             <Label>Confirm password</Label>
-                            <Input value={this.state.confirmPassword} onChangeText={(text) => this.setState({ confirmPassword: text })} />
+                            <Input secureTextEntry value={this.state.confirmPassword} onChangeText={(text) => this.setState({ confirmPassword: text })} />
                         </Item>
                         <View style={[ContainerStyles.flexColumn, { paddingTop: 60 }]}>
                             <Button onPress={() => this.handleCreatePassword()} style={{ width: '100%', justifyContent: 'center', marginTop: 20 }} bordered dark><Text>Create</Text></Button>

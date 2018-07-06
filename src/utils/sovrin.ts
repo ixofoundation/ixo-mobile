@@ -1,37 +1,11 @@
 import { ISovrinDid } from '../models/sovrin';
 import { SecureStore } from 'expo';
-import { AsyncStorage } from 'react-native';
-import { LocalStorageKeys, SecureStorageKeys } from '../models/phoneStorage';
+import { SecureStorageKeys } from '../models/phoneStorage';
 
 const sovrin = require('sovrin-did');
-const bs58 = require('bs58');
 const AES = require("crypto-js/aes");
 const SHA256 = require('crypto-js/sha256');
 const Encode = require('crypto-js/enc-utf8');
-// const Encrypt = require('crypto/enc');
-
-const signature : { 
-    type: string,
-    created?: Date | undefined,
-    creator: string,
-    publicKey: string,
-    signatureValue: string,
- } = {
-    type: 'ed25519-sha-256',
-    created: null,
-    creator: '',
-    publicKey: '',
-    signatureValue: '',
-};
-
-// const encryptPassword = (data: object, saltPassword: string) => {
-//     return AES.encrypt(data, saltPassword);
-// };
-
-// const decrypt = (cipherText: string, password: string ) => {
-//     var bytes  = AES.decrypt(cipherText.toString(), password);
-//     //return bytes.toString(Encrypt.Utf8);
-// };
 
 export function generateSovrinDID(mnemonic: string): ISovrinDid {
     const seed = SHA256(mnemonic).toString();
@@ -46,17 +20,28 @@ export function generateSovrinDID(mnemonic: string): ISovrinDid {
     return sovrin.fromSeed(didSeed);
 }
 
-export function GetSignature(payload: string): Promise<any> {
+export function verifyDocumentSignature(signature: string, publicKey: string) {
+    return !(sovrin.verifySignedMessage(signature, publicKey) === false)
+  }
+
+export function GetSignature(payload: object): Promise<any> {
     return new Promise((resolve, reject) => {
-        AsyncStorage.getItem(LocalStorageKeys.sovrinDid).then((did: string) => {
-            if (did) {
-                SecureStore.getItemAsync(did).then((mnemonic: any) => {
-                    if (mnemonic) {
-                        const sovrinDid: ISovrinDid = generateSovrinDID(mnemonic);
-                        signature.signatureValue = bs58.encode(sovrin.signMessage(payload, sovrinDid.secret.signKey, sovrinDid.verifyKey));
-                        signature.creator = sovrinDid.did;
+        SecureStore.getItemAsync(SecureStorageKeys.sovrinDid).then((SovrinDid: string | null) => {
+            if (SovrinDid) {
+                SecureStore.getItemAsync(SecureStorageKeys.password).then((password: string | null) => {
+                    if (password) {
+                        const sovrinDid: ISovrinDid = JSON.parse(Decrypt(SovrinDid, password));
+                        const signature = sovrin.signMessage(JSON.stringify(payload), sovrinDid.secret.signKey, sovrinDid.verifyKey);
+                        signature.signatureValue = new Buffer(signature).slice(0, 64).toString('hex').toUpperCase();
+                        
+                        signature.type = 'ed25519-sha-256';
+                        signature.creator = `did:sov:${sovrinDid.did}`;
                         signature.created = new Date();
-                        signature.publicKey = sovrinDid.encryptionPublicKey
+                        signature.publicKey = sovrinDid.encryptionPublicKey;
+
+                        if (!verifyDocumentSignature(signature, sovrinDid.verifyKey)) {
+                            return reject();
+                        }
                         return resolve(signature);
                     }
                 });
@@ -65,9 +50,8 @@ export function GetSignature(payload: string): Promise<any> {
     });
 }
 
-export function CreateNewVaultAndRestore (accountName: string, password: string, mnemonic: string) {
-    const cipherText = AES.encrypt(JSON.stringify({ accountName, mnemonic }), password);
-    SecureStore.setItemAsync(SecureStorageKeys.mnemonic, cipherText);
+export function Encrypt(data: string, password: string) {
+    return AES.encrypt(JSON.stringify(data), password);
 }
 
 export function Decrypt(cipherText: any, password: string) {
