@@ -1,8 +1,8 @@
 {
   "expoServerPort": 19000,
-  "packagerPort": 19002,
-  "packagerPid": 49170,
-  "expoServerNgrokUrl": "https://wr-a7h.mullertrustlab.ixo-world-mobile.exp.direct",
-  "packagerNgrokUrl": "https://packager.wr-a7h.mullertrustlab.ixo-world-mobile.exp.direct",
-  "ngrokPid": 49190
+  "packagerPort": 19001,
+  "packagerPid": 58025,
+  "expoServerNgrokUrl": "https://xg-bc3.mullertrustlab.ixo-world-mobile.exp.direct",
+  "packagerNgrokUrl": "https://packager.xg-bc3.mullertrustlab.ixo-world-mobile.exp.direct",
+  "ngrokPid": 58039
 }

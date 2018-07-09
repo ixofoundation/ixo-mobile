@@ -6,6 +6,7 @@ const sovrin = require('sovrin-did');
 const AES = require("crypto-js/aes");
 const SHA256 = require('crypto-js/sha256');
 const Encode = require('crypto-js/enc-utf8');
+const CryptoJS = require('crypto-js');
 
 export function generateSovrinDID(mnemonic: string): ISovrinDid {
     const seed = SHA256(mnemonic).toString();
@@ -30,7 +31,7 @@ export function GetSignature(payload: object): Promise<any> {
             if (SovrinDid) {
                 SecureStore.getItemAsync(SecureStorageKeys.password).then((password: string | null) => {
                     if (password) {
-                        const sovrinDid: ISovrinDid = JSON.parse(Decrypt(SovrinDid, password));
+                        const sovrinDid: ISovrinDid = Decrypt(SovrinDid, password);
                         const signature = sovrin.signMessage(JSON.stringify(payload), sovrinDid.secret.signKey, sovrinDid.verifyKey);
                         signature.signatureValue = new Buffer(signature).slice(0, 64).toString('hex').toUpperCase();
                         
@@ -51,11 +52,15 @@ export function GetSignature(payload: object): Promise<any> {
 }
 
 export function Encrypt(data: string, password: string) {
-    return AES.encrypt(JSON.stringify(data), password);
+    const payloadString = data;      
+    const payloadHex = new Buffer(payloadString).toString('hex')
+    return AES.encrypt(payloadHex, password);
 }
 
 export function Decrypt(cipherText: any, password: string) {
-    var bytes  = AES.decrypt(cipherText.toString(), password);
-    return JSON.parse(bytes.toString(Encode));
+    let bytes  = AES.decrypt(cipherText, password);
+    let contentsHex = bytes.toString(CryptoJS.enc.Utf8);
+    const payloadJson = Buffer.from(contentsHex, 'hex').toString('utf8');
+    return JSON.parse(payloadJson);
 }
 

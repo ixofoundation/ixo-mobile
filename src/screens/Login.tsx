@@ -92,6 +92,7 @@ export default class Login extends React.Component<PropTypes, StateTypes> {
   signIn() {
       this.setState({ loading: true });
       SecureStore.getItemAsync(SecureStorageKeys.password).then((password) => { // get phone password from secure store
+        debugger;
         if (password === this.state.password) {
           SecureStore.getItemAsync(SecureStorageKeys.mnemonic).then((enryptedMnemonic) => { // get encrypted mnemonic from secure store
             const mnemonicObject: IMnemonic = Decrypt(enryptedMnemonic, this.state.password);
@@ -105,24 +106,29 @@ export default class Login extends React.Component<PropTypes, StateTypes> {
                 });
               } else {
                 SecureStore.getItemAsync(SecureStorageKeys.sovrinDid).then((encryptedSovrin) => { // get sovrindid from secure store
-                  const sovrinObject: ISovrinDid = JSON.parse(Decrypt(encryptedSovrin, this.state.password));
-                  AsyncStorage.setItem(LocalStorageKeys.sovrinDid, sovrinObject.did, (error) => { // save sovrindid id local storage
-                    if (error) {
-                      Toast.show({
-                        text: 'Login Failed',
-                        buttonText: 'OK',
-                        type: 'warning',
-                        position: 'top'
-                      });
-                    } else {
-                      this.props.navigation.dispatch(StackActions.reset({
-                        index: 0,
-                        actions: [
-                          NavigationActions.navigate({ routeName: 'Projects'}),
-                        ]
-                      }));
-                    }
-                  });
+                  try {
+                    const sovrinObject: ISovrinDid = Decrypt(encryptedSovrin, this.state.password);
+                    AsyncStorage.setItem(LocalStorageKeys.sovrinDid, sovrinObject.did, (error) => { // save sovrindid id local storage
+                      if (error) {
+                        Toast.show({
+                          text: 'Login Failed',
+                          buttonText: 'OK',
+                          type: 'warning',
+                          position: 'top'
+                        });
+                      } else {
+                        this.props.navigation.dispatch(StackActions.reset({
+                          index: 0,
+                          actions: [
+                            NavigationActions.navigate({ routeName: 'Projects'}),
+                          ]
+                        }));
+                      }
+                    });
+                  } catch(exception) {
+                    debugger;
+                    console.log(exception);
+                  }
                 });
               }
             });
