@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Dimensions } from 'react-native';
+import { Modal, Dimensions, AsyncStorage } from 'react-native';
 import { Camera, Permissions } from "expo";
 import { View, Text, Icon, Item, Label, Input, Button } from "native-base";
 import { SecureStore } from "expo";
@@ -8,7 +8,7 @@ import { ThemeColors } from "../styles/Colors";
 import ModalStyle from '../styles/Modal';
 import { ISovrinDid, IMnemonic } from "../models/sovrin";
 import { Decrypt, Encrypt, generateSovrinDID } from "../utils/sovrin";
-import { SecureStorageKeys } from '../models/phoneStorage';
+import { SecureStorageKeys, LocalStorageKeys } from '../models/phoneStorage';
 import { StackActions, NavigationActions } from 'react-navigation';
 
 const { height, width } = Dimensions.get("window");
@@ -72,9 +72,10 @@ export default class ScanQR extends React.Component<ParentProps, State> {
         const mnemonicJson: IMnemonic = Decrypt(this.state.payload, this.state.password);
         const cipherTextSovrinDid = Encrypt(JSON.stringify(generateSovrinDID(mnemonicJson.mnemonic)), this.state.password); // encrypt securely on phone enlave
 
-        SecureStore.setItemAsync(SecureStorageKeys.mnemonic, this.state.payload)
-        .then(() => SecureStore.setItemAsync(SecureStorageKeys.sovrinDid, cipherTextSovrinDid)
-        .then(() => SecureStore.setItemAsync(SecureStorageKeys.password, this.state.password)));
+        SecureStore.setItemAsync(SecureStorageKeys.mnemonic, this.state.payload);
+        SecureStore.setItemAsync(SecureStorageKeys.sovrinDid, cipherTextSovrinDid);
+        SecureStore.setItemAsync(SecureStorageKeys.password, this.state.password);
+        AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true');
         
         this.props.navigation.dispatch(StackActions.reset({
           index: 0,

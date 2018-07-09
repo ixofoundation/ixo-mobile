@@ -43,17 +43,16 @@ class Claims extends React.Component<PropTypes, {}> {
     };
   };
 
+  
+
   renderClaims() {
     const ds = new ListView.DataSource({ rowHasChanged: (r1: any, r2: any) => r1 !== r2 });
     return (
       <Consumer>
-        {({ claims, getClaims }: { claims: IClaim, getClaims: Function }) => {
-          if (!claims) {
-            const { state: { params: { projectDid = '', pdsURL = '' } }} = this.props.navigation;
-            getClaims(projectDid, pdsURL);
-          }
+        {({ claims, getClaims }: { claims: IClaim[], getClaims: Function }) => {
+          const { state: { params: { projectDid = '', pdsURL = '' } }} = this.props.navigation;
+          getClaims(projectDid, pdsURL);
           if (claims) {
-            console.log('Claims', claims);
             return (
               <List
                 style={{ marginLeft: 6, marginRight: 6 }}
