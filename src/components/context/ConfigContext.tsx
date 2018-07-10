@@ -12,6 +12,7 @@ const { Provider, Consumer } = React.createContext({});
 export class ConfigProvider extends React.Component {
     
     state = {
+
         projects: null,
         claims: null,
         ixo: new Ixo(env.REACT_APP_BLOCKCHAIN_IP, env.REACT_APP_BLOCK_SYNC_URL),
@@ -42,6 +43,7 @@ export class ConfigProvider extends React.Component {
             GetSignature(ProjectDIDPayload).then((signature) => {
                 this.state.ixo.claim.listClaimsForProject(ProjectDIDPayload, signature, pdsURL).then((response: any) => {
                     if (response.error) {
+                        this.setState({ claims: [] });
                         Toast.show({
                             text: 'Failed to load claims',
                             buttonText: 'OK',
@@ -52,6 +54,7 @@ export class ConfigProvider extends React.Component {
                     }
                 });
             }).catch((error) => {
+                this.setState({ claims: [] });
                 console.log('error catch', error);
                 Toast.show({
                     text: 'Failed to authenticate',
@@ -59,6 +62,17 @@ export class ConfigProvider extends React.Component {
                     type: 'danger'
                 });
             });
+        },
+        getFormFile: (projectDid: string) => {
+            if (this.state.projects) {
+                debugger;
+                let project: IProject = _.find(this.state.projects, (project: IProject) => {
+                    return project.projectDid === projectDid;
+                });
+                this.state.ixo.project.fetchPublic(project.data.templates.claim.form, project.data.serviceEndpoint).then((res: any) => {
+                    return Buffer.from(res.data, 'base64').toString('ascii');
+                });
+            }
         },
     }
 
@@ -69,7 +83,8 @@ export class ConfigProvider extends React.Component {
                     projects: this.state.projects,
                     claims: this.state.claims,
                     getProjects: this.state.getProjects,
-                    getClaims: this.state.getClaims
+                    getClaims: this.state.getClaims,
+                    getFormFile: this.state.getFormFile,
                 }}
             >
                 {this.props.children}

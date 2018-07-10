@@ -92,7 +92,6 @@ export default class Login extends React.Component<PropTypes, StateTypes> {
   signIn() {
       this.setState({ loading: true });
       SecureStore.getItemAsync(SecureStorageKeys.password).then((password) => { // get phone password from secure store
-        debugger;
         if (password === this.state.password) {
           SecureStore.getItemAsync(SecureStorageKeys.mnemonic).then((enryptedMnemonic) => { // get encrypted mnemonic from secure store
             const mnemonicObject: IMnemonic = Decrypt(enryptedMnemonic, this.state.password);

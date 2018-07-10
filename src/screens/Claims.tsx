@@ -70,7 +70,8 @@ class Claims extends React.Component<PropTypes, {}> {
                     <Text style={ClaimsStyles.DeleteButtonText}>Delete</Text>
                   </Button>}
                 renderRow={(claim: IClaim) =>
-                  <TouchableOpacity onPress={() => this.props.navigation.navigate('ProjectDetails')} >
+                  // <TouchableOpacity onPress={() => this.props.navigation.navigate('ProjectDetails')} >
+                  <TouchableOpacity >
                     <View style={[Containers.flexColumn, ClaimsStyles.ClaimBox]}>
                       <Text style={{ color: ThemeColors.grey, fontSize: 15 }}>{claim.txHash}</Text>
                       <Text style={{ color: ThemeColors.grey, fontSize: 10 }}>{claim.date}</Text>
@@ -89,6 +90,7 @@ class Claims extends React.Component<PropTypes, {}> {
 
 
   render() {
+    const { state: { params: { projectDid = '' } }} = this.props.navigation;
     return (
       <Container>
         <StatusBar barStyle="light-content" />
@@ -117,7 +119,7 @@ class Claims extends React.Component<PropTypes, {}> {
         <Content style={{ backgroundColor: ThemeColors.white }}>
           {this.renderClaims()}
         </Content>
-        <TouchableOpacity onPress={() => this.props.navigation.navigate('NewClaim')} style={ClaimsStyles.SubmitButton}>
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('NewClaim', { projectDid })} style={ClaimsStyles.SubmitButton}>
           <View style={Containers.flexColumn}>
             <Text style={{ color: ThemeColors.black, fontSize: 15 }}>Submit Claim</Text>
           </View>

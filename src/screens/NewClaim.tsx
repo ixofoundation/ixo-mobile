@@ -3,18 +3,23 @@ import { StatusBar } from 'react-native';
 import { Container, Icon, Content, View, Text, Button, Item, Input, Label } from 'native-base';
 
 import ContainerStyles from '../styles/Containers';
+import Consumer from '../components/context/ConfigContext';
 import { ThemeColors, ProjectStatus } from '../styles/Colors';
 
 
 interface PropTypes {
-    navigation: any,
+    navigation: any;
 };  
 
 interface NavigationTypes {
-    navigation: any,
+    navigation: any;
 }
 
-class NewClaim extends React.Component<PropTypes> {
+interface StateTypes {
+    formFile: string | null;
+}
+
+class NewClaim extends React.Component<PropTypes, StateTypes> {
     static navigationOptions = (props: NavigationTypes) => {
         return {
             headerLeft: (
@@ -30,13 +35,26 @@ class NewClaim extends React.Component<PropTypes> {
         };
     };
 
+    state = {
+        formFile: null,
+    };
+
     render() {
         return (
-            <Container>
-                <StatusBar barStyle="light-content" />
-                <Content contentContainerStyle={{ backgroundColor: ThemeColors.white, padding: 20, flexDirection: 'column', justifyContent: 'space-between', flex: 1 }}>
-                
-                    <View>
+            <Container style={{ backgroundColor: ThemeColors.white }}>
+                <StatusBar barStyle="dark-content" />
+                <Content contentContainerStyle={{ padding: 20, flexDirection: 'column', justifyContent: 'space-between', flex: 1 }}>
+                    <Consumer>
+                        {({ getFormFile }: { getFormFile: Function }) => {
+                            const { state: { params: { projectDid = '' } }} = this.props.navigation;
+                            this.setState({ formFile: getFormFile(projectDid) });
+
+                            if (this.state.formFile) {
+                                // TODO add dynamic form
+                            }
+                        }}
+                    </Consumer>
+                    {/* <View>
                         <Item floatingLabel>
                             <Label>Name</Label>
                             <Input />
@@ -58,7 +76,7 @@ class NewClaim extends React.Component<PropTypes> {
                     <View style={[ContainerStyles.flexColumn]}>
                         <Button style={{ width: '100%', justifyContent: 'center' }} bordered dark><Text>Save</Text></Button>
                         <Button style={{ width: '100%', justifyContent: 'center', marginTop: 20 }} bordered dark><Text>Submit</Text></Button>
-                    </View>
+                    </View> */}
                     
                 </Content>
             </Container>    
