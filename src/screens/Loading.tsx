@@ -10,7 +10,7 @@ import ContainerStyles from '../styles/Containers';
 
 import { ThemeColors } from '../styles/Colors';
 
-const logo = require('../../assets/logo-white.png');
+const logo = require('../../assets/logo.png');
 
 class LoadingScreen extends React.Component {
   render() {

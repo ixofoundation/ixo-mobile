@@ -10,6 +10,7 @@ import Stack from './Routes';
 import { ConfigProvider } from './src/components/context/ConfigContext';
 
 import Ionicons from './node_modules/@expo/vector-icons/fonts/Ionicons.ttf';
+import { AsyncStorage } from './node_modules/@types/react-native';
 const Roboto_medium = require('./assets/fonts/Roboto/Roboto-Medium.ttf');
 
 interface State {

@@ -1,4 +1,5 @@
 import { StyleSheet, ViewStyle, Dimensions } from 'react-native';
+import { ThemeColors } from './Colors';
 
 const { height, width } = Dimensions.get('window');
 
@@ -7,6 +8,8 @@ interface Style {
   slide: ViewStyle,
   logo: ViewStyle,
   buttons: ViewStyle,
+  infoBlock: ViewStyle,
+  infoBlockImage: ViewStyle,
 }
 
 const styles = StyleSheet.create<Style>({
@@ -23,11 +26,19 @@ const styles = StyleSheet.create<Style>({
     height: height * 0.1,
     backgroundColor: 'transparent'
   },
-  
   buttons: {
     width: '100%',
     justifyContent: 'center'
   },
+  infoBlock: {
+    borderWidth: 1,
+    borderColor: ThemeColors.blue_light,
+    justifyContent: 'center'
+  },
+  infoBlockImage: {
+    width: width * 0.08,
+    height: width * 0.08
+  }
 });
 
 export default styles;

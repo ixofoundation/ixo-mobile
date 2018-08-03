@@ -11,7 +11,7 @@ import ContainerStyles from '../styles/Containers';
 import { ThemeColors } from '../styles/Colors';
 import { LocalStorageKeys } from '../models/phoneStorage';
 
-const logo = require('../../assets/logo-white.png');
+const logo = require('../../assets/logo.png');
 
 const LogoView = () => (
   <View style={ContainerStyles.flexColumn}>

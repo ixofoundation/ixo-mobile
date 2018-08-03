@@ -63,7 +63,7 @@
     "events": "^1.1.1",
     "expo": "^27.0.1",
     "https-browserify": "0.0.1",
-    "ixo-module": "^1.4.55",
+    "ixo-module": "^1.4.60",
     "moment": "^2.22.2",
     "native-base": "^2.5.2",
     "node-libs-react-native": "^1.0.2",

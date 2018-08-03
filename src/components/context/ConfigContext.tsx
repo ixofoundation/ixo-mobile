@@ -19,11 +19,13 @@ export class ConfigProvider extends React.Component {
         getProjects: () => {
             this.state.ixo.project.listProjects()
             .then((response: any) => {
-                const { result = [] } = response;
-                const projects: IProject[] = [];
-                _.each(result, (item: IProject) => {
-                    projects.push(item);
-                });
+                if (!response) {
+                    response = [];
+                }
+                const projects: IProject[] = response;
+                // _.each(result, (item: IProject) => {
+                //     projects.push(item);
+                // });
                 Toast.show({
                     text: 'Synced',
                     buttonText: 'OK',
@@ -42,6 +44,7 @@ export class ConfigProvider extends React.Component {
             const ProjectDIDPayload: Object = { projectDid: projectDid };
             GetSignature(ProjectDIDPayload).then((signature) => {
                 this.state.ixo.claim.listClaimsForProject(ProjectDIDPayload, signature, pdsURL).then((response: any) => {
+                    debugger;
                     if (response.error) {
                         this.setState({ claims: [] });
                         Toast.show({
@@ -65,7 +68,6 @@ export class ConfigProvider extends React.Component {
         },
         getFormFile: (projectDid: string) => {
             if (this.state.projects) {
-                debugger;
                 let project: IProject = _.find(this.state.projects, (project: IProject) => {
                     return project.projectDid === projectDid;
                 });

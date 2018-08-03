@@ -1,13 +1,21 @@
 import * as React from 'react';
-import { View, StatusBar, Image } from 'react-native';
+import { View, StatusBar, Image, ImageBackground, Dimensions, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo';
 import { StackActions, NavigationActions } from 'react-navigation';
 import { Text, Button } from 'native-base';
 
 import ConnectIXOStyles from '../styles/ConnectIXO';
 import ContainerStyles from '../styles/Containers';
 import { ThemeColors } from '../styles/Colors';
+import DarkButton from '../components/DarkButton';
 
 const logo = require('../../assets/logo.png');
+const background = require('../../assets/backgrounds/background_1.jpg');
+const keysafelogo = require('../../assets/keysafe-logo.png');
+const qr = require('../../assets/qr.png');
+
+const { height, width } = Dimensions.get('window');
+const imageSize = width * 0.1;
 
 const LogoView = () => (
   <View style={ContainerStyles.flexColumn}>
@@ -15,6 +23,36 @@ const LogoView = () => (
       <Image resizeMode={'contain'} style={ConnectIXOStyles.logo} source={logo} />
     </View>
   </View>
+);
+
+// const DarkButton = ({ onPress, text }: { onPress: any, text: string }) => (
+//   <TouchableOpacity onPress={onPress} style={{ width: '100%' }}>
+//     <LinearGradient
+//       colors={['#038FB8', '#036C93']}
+//       style={{ paddingHorizontal: 15, paddingVertical: 25, alignItems: 'center', borderRadius: 2, marginBottom: height * 0.1 }}>
+//       <Text
+//         style={{
+//           backgroundColor: 'transparent',
+//           fontSize: 15,
+//           color: '#fff',
+//         }}>
+//         {text}
+//       </Text>
+//     </LinearGradient>
+//   </TouchableOpacity>
+// );
+
+const InfoBlocks = () => (
+    <View style={[ContainerStyles.flexRow, { alignItems: 'flex-end', marginBottom: height * 0.04 }]}>
+      <View style={[ContainerStyles.flexRow, ConnectIXOStyles.infoBlock]}>
+        <Image resizeMode={'contain'} style={ConnectIXOStyles.infoBlockImage} source={keysafelogo}  />
+        <Text style={{ color: ThemeColors.white, fontSize: 14, padding: 10, width: width * 0.35 }}>Open the ixo Key Safe on your desktop</Text>
+      </View>
+      <View style={[ContainerStyles.flexRow, ConnectIXOStyles.infoBlock, { borderLeftWidth: 0 }]}>
+        <Image resizeMode={'contain'} style={ConnectIXOStyles.infoBlockImage} source={qr} />
+        <Text style={{ color: ThemeColors.white, fontSize: 14, padding: 10, width: width * 0.35 }}>Go to your profile and scan the QR code to connect</Text>
+      </View>
+    </View>
 );
 
 interface PropTypes {
@@ -30,24 +68,20 @@ export default class ConnectIXO extends React.Component<PropTypes,{}> {
       ]
     });
     return (
-      <View style={ConnectIXOStyles.wrapper}>
-      <StatusBar barStyle="dark-content" />
-          <View style={[ContainerStyles.flexColumn, ContainerStyles.backgroundColorLight, { justifyContent: 'space-between'}]}>
+        <ImageBackground source={background} style={[ConnectIXOStyles.wrapper, {width: '100%', height: '100%', paddingHorizontal: 10 }]}>
+          <StatusBar barStyle="light-content" />
+          <View style={[ContainerStyles.flexColumn, { justifyContent: 'space-between'}]}>
             <LogoView />
-            <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
-              <View style={[ContainerStyles.flexColumn, { alignItems: 'flex-start' }]}>
-                <Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 13 }}>Connect with ixo</Text>
-                <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 13 }}>1. Open ixo credential manager on your desktop</Text>
-                <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 13 }}>2. Go to account > Show QR code</Text>
-                <Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 13 }}>3. Point your phone to the QR code to capture and connect</Text>
-              </View>
-            </View>
-            <View style={[ContainerStyles.flexColumn, ContainerStyles.textBoxLeft ]}>
-                <Button onPress={() => this.props.navigation.navigate('ScanQR')} style={[ConnectIXOStyles.buttons, { marginBottom: 10 }]} bordered><Text>SCAN YOUR IXO KEY SAFE QR</Text></Button>
-                <Button onPress={() => this.props.navigation.dispatch(registerAction)} style={ConnectIXOStyles.buttons} bordered dark><Text>NOT REGISTERED YET?</Text></Button>
-            </View>
+            <InfoBlocks />
+            <DarkButton
+              text={'SCAN IXO QR CODE'}
+              onPress={() => this.props.navigation.navigate('ScanQR')}
+              propStyles={{ marginBottom: height * 0.1 }}
+            />
+                {/* <Button onPress={() => this.props.navigation.navigate('ScanQR')} style={[ConnectIXOStyles.buttons, { marginBottom: 10 }]} dark><Text>SCAN YOUR QR CODE</Text></Button> */}
+                {/* <Button onPress={() => this.props.navigation.dispatch(registerAction)} style={ConnectIXOStyles.buttons} bordered dark><Text>NOT REGISTERED YET?</Text></Button> */}
           </View>
-      </View>
+        </ImageBackground>
     );
   }
 }

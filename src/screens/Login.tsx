@@ -125,7 +125,6 @@ export default class Login extends React.Component<PropTypes, StateTypes> {
                       }
                     });
                   } catch(exception) {
-                    debugger;
                     console.log(exception);
                   }
                 });
