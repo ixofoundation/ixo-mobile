@@ -32,14 +32,17 @@ interface State {
 export default class ScanQR extends React.Component<ParentProps, State> {
   static navigationOptions = () => {
     return {
-      headerRight: <Icon style={{ paddingRight: 10 }} name="flash" />,
+      headerStyle: {
+        backgroundColor: ThemeColors.blue
+      },
+      headerRight: <Icon style={{ paddingRight: 10, color: ThemeColors.white }} name="flash" />,
       title: "Scan",
       headerTitleStyle: {
-        color: ThemeColors.black,
+        color: ThemeColors.white,
         textAlign: "center",
         alignSelf: "center"
       },
-      headerTintColor: ThemeColors.grey
+      headerTintColor: ThemeColors.white
     };
   };
 

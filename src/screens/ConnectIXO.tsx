@@ -25,32 +25,15 @@ const LogoView = () => (
   </View>
 );
 
-// const DarkButton = ({ onPress, text }: { onPress: any, text: string }) => (
-//   <TouchableOpacity onPress={onPress} style={{ width: '100%' }}>
-//     <LinearGradient
-//       colors={['#038FB8', '#036C93']}
-//       style={{ paddingHorizontal: 15, paddingVertical: 25, alignItems: 'center', borderRadius: 2, marginBottom: height * 0.1 }}>
-//       <Text
-//         style={{
-//           backgroundColor: 'transparent',
-//           fontSize: 15,
-//           color: '#fff',
-//         }}>
-//         {text}
-//       </Text>
-//     </LinearGradient>
-//   </TouchableOpacity>
-// );
-
 const InfoBlocks = () => (
     <View style={[ContainerStyles.flexRow, { alignItems: 'flex-end', marginBottom: height * 0.04 }]}>
       <View style={[ContainerStyles.flexRow, ConnectIXOStyles.infoBlock]}>
         <Image resizeMode={'contain'} style={ConnectIXOStyles.infoBlockImage} source={keysafelogo}  />
-        <Text style={{ color: ThemeColors.white, fontSize: 14, padding: 10, width: width * 0.35 }}>Open the ixo Key Safe on your desktop</Text>
+        <Text style={{ color: ThemeColors.white, fontSize: 12, padding: 10, width: width * 0.35 }}>Open the ixo Key Safe on your desktop</Text>
       </View>
       <View style={[ContainerStyles.flexRow, ConnectIXOStyles.infoBlock, { borderLeftWidth: 0 }]}>
         <Image resizeMode={'contain'} style={ConnectIXOStyles.infoBlockImage} source={qr} />
-        <Text style={{ color: ThemeColors.white, fontSize: 14, padding: 10, width: width * 0.35 }}>Go to your profile and scan the QR code to connect</Text>
+        <Text style={{ color: ThemeColors.white, fontSize: 12, padding: 10, width: width * 0.35 }}>Go to your profile and scan the QR code to connect</Text>
       </View>
     </View>
 );

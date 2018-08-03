@@ -33,7 +33,8 @@ const styles = StyleSheet.create<Style>({
   infoBlock: {
     borderWidth: 1,
     borderColor: ThemeColors.blue_light,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    height: height * 0.1,
   },
   infoBlockImage: {
     width: width * 0.08,
