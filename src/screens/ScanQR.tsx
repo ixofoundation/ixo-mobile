@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Dimensions, AsyncStorage } from 'react-native';
+import { Modal, Dimensions, AsyncStorage, StatusBar, Image } from 'react-native';
 import { Camera, Permissions } from "expo";
 import { View, Text, Icon, Item, Label, Input, Button } from "native-base";
 import { SecureStore } from "expo";
@@ -10,6 +10,10 @@ import { ISovrinDid, IMnemonic } from "../models/sovrin";
 import { Decrypt, Encrypt, generateSovrinDID } from "../utils/sovrin";
 import { SecureStorageKeys, LocalStorageKeys } from '../models/phoneStorage';
 import { StackActions, NavigationActions } from 'react-navigation';
+
+import LightButton from '../components/LightButton';
+import IconEyeOff from '../../assets/svg/IconEyeOff';
+const keysafelogo = require('../../assets/keysafe-logo.png');
 
 const { height, width } = Dimensions.get("window");
 
@@ -33,7 +37,8 @@ export default class ScanQR extends React.Component<ParentProps, State> {
   static navigationOptions = () => {
     return {
       headerStyle: {
-        backgroundColor: ThemeColors.blue
+        backgroundColor: ThemeColors.blue,
+        borderBottomColor: ThemeColors.blue,
       },
       headerRight: <Icon style={{ paddingRight: 10, color: ThemeColors.white }} name="flash" />,
       title: "Scan",
@@ -113,24 +118,28 @@ export default class ScanQR extends React.Component<ParentProps, State> {
         <View style={ModalStyle.modalOuterContainer}>
           <View style={ModalStyle.modalInnerContainer}>
             <View style={ModalStyle.flexRight}>
-              <Icon onPress={() => this.setModalVisible(false)} active name='close' style={{ color: ThemeColors.black, top: 10 }} />
+              <Icon onPress={() => this.setModalVisible(false)} active name='close' style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
             </View>
             <View style={ModalStyle.flexLeft}>
-              <Text style={{ color: ThemeColors.black, fontSize: 28 }}>Scan successful</Text>
+              <Text style={{ color: ThemeColors.blue_lightest, fontSize: 35 }}>Scan successful</Text>
             </View>
+            <View style={ModalStyle.divider} />
             <View style={ModalStyle.flexLeft}>
-              <Text style={{ color: ThemeColors.black, fontSize: 20 }}>Unlock your existing ixo profile with your ixo Key Safe password.</Text>
+              <Text style={{ color: ThemeColors.white, fontSize: 20 }}>Unlock your existing ixo profile with your ixo Key Safe password.</Text>
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-              <Item style={{ width: width * 0.8 }} stackedLabel={!this.state.revealPassword} floatingLabel={this.state.revealPassword}>
-                <Label>Password</Label>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', paddingHorizontal: 20 }}>
+              <Image resizeMode={'contain'} style={{ width: width * 0.06, height: width * 0.06 }} source={keysafelogo}  />
+              <Item style={{ flex: 1 }} stackedLabel={!this.state.revealPassword} floatingLabel={this.state.revealPassword}>
+                <Label style={{ color: ThemeColors.blue_lightest }}>Password</Label>
                 <Input value={this.state.password} onChangeText={(password) => this.setState({ password })} secureTextEntry={this.state.revealPassword} />
               </Item>
-              <Icon onPress={() => this.setState({ revealPassword: !this.state.revealPassword })} active name='eye' style={{ color: ThemeColors.black, top: 10 }} />
+              <IconEyeOff width={width * 0.06} height={width * 0.06} />
+              {/* <Icon onPress={() => this.setState({ revealPassword: !this.state.revealPassword })} active name='eye' style={{ color: ThemeColors.black, top: 10 }} /> */}
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', paddingBottom: 10 }}>
+            <LightButton onPress={() => this.handleUnlock()} text={'UNLOCK'} />
+            {/* <View style={{ flexDirection: 'row', justifyContent: 'center', paddingBottom: 10 }}>
               <Button onPress={() => this.handleUnlock()} bordered dark style={{ width: '100%', justifyContent: 'center' }}><Text>UNLOCK</Text></Button>
-            </View>
+            </View> */}
           </View>
         </View>
       );
@@ -169,6 +178,7 @@ export default class ScanQR extends React.Component<ParentProps, State> {
     } else {
       return (
         <View style={{ flex: 1 }}>
+        <StatusBar barStyle="light-content" />
           <Modal
           animationType="slide"
           transparent={true}

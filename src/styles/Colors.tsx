@@ -1,6 +1,7 @@
 const ThemeColors = {
   blue: '#002C41',
   blue_light: '#025F79',
+  blue_lightest: '#83D9F2',
   white: '#FFF',
   black: '#000',
   grey: '#979797',
