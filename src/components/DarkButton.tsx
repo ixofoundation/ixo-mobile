@@ -29,7 +29,7 @@ interface Style {
 const styles = StyleSheet.create<Style>({
     buttonStyle: {
         paddingHorizontal: 15,
-        paddingVertical: 25,
+        paddingVertical: 17,
         alignItems: 'center',
         borderRadius: 2
     }

@@ -1,7 +1,7 @@
 require("node-libs-react-native/globals");
 import * as React from 'react';
 import { StyleProvider, Root } from 'native-base';
-import { Font } from 'expo';
+import { Font, ScreenOrientation } from 'expo';
 
 import getTheme from './native-base-theme/components';
 import Loading from './src/screens/Loading';
@@ -23,7 +23,8 @@ export default class App extends React.Component<{}, State> {
     isReady: false,
   };
 
-  async componentDidMount() { 
+  async componentDidMount() {
+    ScreenOrientation.allow(ScreenOrientation.Orientation.PORTRAIT);
     await Font.loadAsync({
       Ionicons,
       Roboto_medium

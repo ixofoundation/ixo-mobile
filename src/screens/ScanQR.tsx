@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Dimensions, AsyncStorage, StatusBar, Image } from 'react-native';
+import { Modal, Dimensions, AsyncStorage, StatusBar, Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { Camera, Permissions } from "expo";
 import { View, Text, Icon, Item, Label, Input, Button } from "native-base";
 import { SecureStore } from "expo";
@@ -115,26 +115,30 @@ export default class ScanQR extends React.Component<ParentProps, State> {
     });
     if (!this.state.errors) {
       return ( // successful
+        <KeyboardAvoidingView behavior={'position'}>
         <View style={ModalStyle.modalOuterContainer}>
           <View style={ModalStyle.modalInnerContainer}>
             <View style={ModalStyle.flexRight}>
               <Icon onPress={() => this.setModalVisible(false)} active name='close' style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
             </View>
             <View style={ModalStyle.flexLeft}>
-              <Text style={{ color: ThemeColors.blue_lightest, fontSize: 35 }}>Scan successful</Text>
+              <Text style={{ color: ThemeColors.blue_lightest, fontSize: 29 }}>Scan successful</Text>
             </View>
             <View style={ModalStyle.divider} />
             <View style={ModalStyle.flexLeft}>
-              <Text style={{ color: ThemeColors.white, fontSize: 20 }}>Unlock your existing ixo profile with your ixo Key Safe password.</Text>
+              <Text style={{ color: ThemeColors.white, fontSize: 15 }}>Unlock your existing ixo profile with your ixo Key Safe password.</Text>
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', paddingHorizontal: 20 }}>
-              <Image resizeMode={'contain'} style={{ width: width * 0.06, height: width * 0.06 }} source={keysafelogo}  />
-              <Item style={{ flex: 1 }} stackedLabel={!this.state.revealPassword} floatingLabel={this.state.revealPassword}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20, alignItems: 'center' }}>
+              <Image resizeMode={'contain'} style={{ width: width * 0.06, height: width * 0.06, position: 'absolute', top: width * 0.06 }} source={keysafelogo}  />
+              <Item style={{ flex: 1, borderColor: ThemeColors.blue_lightest }} stackedLabel={!this.state.revealPassword} floatingLabel={this.state.revealPassword}>
                 <Label style={{ color: ThemeColors.blue_lightest }}>Password</Label>
-                <Input value={this.state.password} onChangeText={(password) => this.setState({ password })} secureTextEntry={this.state.revealPassword} />
+                <Input style={{ color: ThemeColors.white }} value={this.state.password} onChangeText={(password) => this.setState({ password })} secureTextEntry={this.state.revealPassword} />
               </Item>
-              <IconEyeOff width={width * 0.06} height={width * 0.06} />
-              {/* <Icon onPress={() => this.setState({ revealPassword: !this.state.revealPassword })} active name='eye' style={{ color: ThemeColors.black, top: 10 }} /> */}
+              <TouchableOpacity onPress={() => this.setState({ revealPassword: !this.state.revealPassword })} >
+                <View style={{ position: 'absolute' }}>
+                  <IconEyeOff  width={width * 0.06} height={width * 0.06} />
+                </View>
+              </TouchableOpacity>
             </View>
             <LightButton onPress={() => this.handleUnlock()} text={'UNLOCK'} />
             {/* <View style={{ flexDirection: 'row', justifyContent: 'center', paddingBottom: 10 }}>
@@ -142,26 +146,29 @@ export default class ScanQR extends React.Component<ParentProps, State> {
             </View> */}
           </View>
         </View>
+        </KeyboardAvoidingView>
       );
     }
     return (
       <View style={ModalStyle.modalOuterContainer}>
         <View style={ModalStyle.modalInnerContainer}>
           <View style={ModalStyle.flexRight}>
-            <Icon onPress={() => this.setModalVisible(false)} active name='close' style={{ color: ThemeColors.black, top: 10 }} />
+            <Icon onPress={() => this.setModalVisible(false)} active name='close' style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
           </View>
           <View style={ModalStyle.flexLeft}>
-            <Text style={{ color: ThemeColors.black, fontSize: 28 }}>Scan unsuccessful</Text>
+            <Text style={{ color: ThemeColors.blue_lightest, fontSize: 29 }}>Scan unsuccessful</Text>
           </View>
+          <View style={ModalStyle.divider} />
           <View style={ModalStyle.flexLeft}>
-            <Text style={{ color: ThemeColors.black, fontSize: 20 }}>There has been an error connecting to the ixo Key Safe</Text>
+            <Text style={{ color: ThemeColors.white, fontSize: 15 }}>There has been an error connecting to the ixo Key Safe</Text>
           </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'center', paddingBottom: 10 }}>
+          <LightButton onPress={() => this.handleResetScan()} text={'TRY AGAIN'} />
+          {/* <View style={{ flexDirection: 'row', justifyContent: 'center', paddingBottom: 10 }}>
             <Button onPress={() => this.handleResetScan()} bordered dark style={{ width: '100%', justifyContent: 'center' }}><Text>TRY AGAIN</Text></Button>
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'center', paddingBottom: 10 }}>
-            <Text onPress={() => this.props.navigation.dispatch(registerAction)}>Are you registered?</Text>
-          </View>
+          </View> */}
+          {/* <View style={{ flexDirection: 'row', justifyContent: 'center', paddingBottom: 10 }}>
+            <Text style={{ color: ThemeColors.blue_lightest }} onPress={() => this.props.navigation.dispatch(registerAction)}>Are you registered?</Text>
+          </View> */}
         </View>
       </View>
     );

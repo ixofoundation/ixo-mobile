@@ -1,7 +1,7 @@
 import React from 'react';
 import { Fingerprint, SecureStore } from 'expo';
 import { StackActions, NavigationActions } from 'react-navigation'
-import { View, StatusBar, Image, Alert, TouchableOpacity, Platform, Dimensions, AsyncStorage } from 'react-native';
+import { KeyboardAvoidingView, View, StatusBar, Image, Alert, TouchableOpacity, Platform, Dimensions, AsyncStorage, ImageBackground } from 'react-native';
 import { Text, Button, Icon, Item, Label, Input, Toast, Spinner } from 'native-base';
 
 import LoginStyles from '../styles/Login';
@@ -10,9 +10,14 @@ import { ThemeColors } from '../styles/Colors';
 import { SecureStorageKeys, LocalStorageKeys } from '../models/phoneStorage';
 import { IMnemonic, ISovrinDid } from '../models/sovrin';
 import { Decrypt, generateSovrinDID } from '../utils/sovrin';
+import DarkButton from '../components/DarkButton';
+import IconEyeOff from '../../assets/svg/IconEyeOff';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const logo = require('../../assets/logo.png');
+const background = require('../../assets/backgrounds/background_1.jpg');
+const IconFingerprint = require('../../assets/iconFingerprint.png');
+
 
 const LogoView = () => (
   <View style={ContainerStyles.flexColumn}>
@@ -153,36 +158,49 @@ export default class Login extends React.Component<PropTypes, StateTypes> {
 
   render() {
     return (
-      <View style={LoginStyles.wrapper}>
-      <StatusBar barStyle="dark-content" />
-        <View style={[ContainerStyles.flexColumn, ContainerStyles.backgroundColorLight]}>
+      <ImageBackground source={background} style={[LoginStyles.wrapper]}>
+      <StatusBar barStyle="light-content" />
+      <View style={[ContainerStyles.flexColumn]}>
+        <KeyboardAvoidingView behavior={'position'}>
           <LogoView />
-          <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft, { flex: 0.3 }]}>
-            <View style={[ContainerStyles.flexColumn, { alignItems: 'center' }]}>
-              <Text style={{ textAlign: 'center', color: ThemeColors.black }}>Welcome back Mike</Text>
-              <Text></Text>
-              <Text style={{ textAlign: 'left', color: ThemeColors.black }}>You have 7 alerts for your attention.</Text>
-            </View>
+          <View style={[LoginStyles.flexLeft]}>
+              <Text style={LoginStyles.header}>Hi Mike</Text>
+          </View>
+          <View style={{ width: '100%' }}>
+            <View style={LoginStyles.divider} />
+          </View>
+          
+          <View style={LoginStyles.flexLeft}>
+            <Text style={LoginStyles.infoBox}>You have alerts for your attention.</Text>
           </View>
 
-          <View style={[ContainerStyles.flexRow, { width: width * 0.8, flex: 0.2 }]}>
-            <Item style={{ width: width * 0.8 }} stackedLabel={!this.state.revealPassword} floatingLabel={this.state.revealPassword}>
-                <Label>Password</Label>
-                <Input value={this.state.password} onChangeText={(password) => this.setState({ password: password })} secureTextEntry={this.state.revealPassword} />
+          <View style={[ContainerStyles.flexRow, { width: width * 0.8, flex: 0.2, paddingBottom: 20 }]}>
+            <Item style={{ flex: 1, borderColor: ThemeColors.blue_lightest }} stackedLabel={!this.state.revealPassword} floatingLabel={this.state.revealPassword}>
+              <Label
+                style={{ color: ThemeColors.blue_lightest }}>Password</Label>
+              <Input
+                style={{ color: ThemeColors.white }}
+                value={this.state.password}
+                onChangeText={(password) => this.setState({ password })}
+                secureTextEntry={this.state.revealPassword}
+              />
             </Item>
-            <Icon onPress={() => this.revealPassword()} active name='eye' style={{ color: ThemeColors.black, top: 10 }} />
+            <TouchableOpacity onPress={() => this.revealPassword()} >
+              <View style={{ position: 'absolute' }}>
+                <IconEyeOff  width={width * 0.06} height={width * 0.06} />
+              </View>
+            </TouchableOpacity>
           </View>
-          
-          <View style={[ContainerStyles.flexRow, { flex: 0.5, paddingTop: 20, marginHorizontal: 20 }]}>
-            {(this.state.loading) ? <Spinner color={ThemeColors.black} /> : <Button onPress={() => this.signIn()} style={LoginStyles.buttons} bordered dark><Text>Sign in</Text></Button>}
+          {(this.state.loading) ? <Spinner color={ThemeColors.blue_medium} /> : <DarkButton text={'SIGN IN'} onPress={() => this.signIn()} />}
+          <View style={[ContainerStyles.flexRow, { flex: 0.2 }]}>
+            <Text style={LoginStyles.forgotPassword}>Forgot your password?</Text>
           </View>
-          <TouchableOpacity onPress={() => Platform.OS === 'android' ? this.showAndroidAlert() : this.scanFingerprint()} >
-            <Icon name='finger-print' style={{ fontSize: 60 }} />
+          <TouchableOpacity style={[ContainerStyles.flexRow, { flex: 0.2, paddingBottom: 20 }]} onPress={() => Platform.OS === 'android' ? this.showAndroidAlert() : this.scanFingerprint()} >
+            <Image resizeMode={'contain'} style={LoginStyles.fingerImage} source={IconFingerprint} />
           </TouchableOpacity>
-          
-          <Text style={{ textAlign: 'left', color: ThemeColors.grey, paddingBottom: 20, paddingTop: 20 }}>Forgot your password?</Text>
+        </KeyboardAvoidingView>
         </View>
-      </View>
+      </ImageBackground>
     );
   }
 }

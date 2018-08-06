@@ -10,6 +10,7 @@
       "transformer": "node_modules/react-native-typescript-transformer/index.js"
     },
     "slug": "ixo",
-    "name": "ixo"
+    "name": "ixo",
+    "orientation": "portrait"
   }
 }
