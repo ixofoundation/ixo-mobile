@@ -4381,9 +4381,9 @@ items@2.x.x:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/items/-/items-2.1.1.tgz#8bd16d9c83b19529de5aea321acaada78364a198"
 
-ixo-module@^1.4.62:
-  version "1.4.62"
-  resolved "https://registry.yarnpkg.com/ixo-module/-/ixo-module-1.4.62.tgz#376243d9bbe00277cce54f37e63cbbb2d1e07e97"
+ixo-module@^1.4.65:
+  version "1.4.65"
+  resolved "https://registry.yarnpkg.com/ixo-module/-/ixo-module-1.4.65.tgz#8f71471d494e71e21ed8af35cd58dfb491faf9d2"
   dependencies:
     "@types/es6-promise" "^3.3.0"
     axios "^0.18.0"

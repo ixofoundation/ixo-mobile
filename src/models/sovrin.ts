@@ -1,5 +1,4 @@
 export interface ISovrinDid {
-	name: string;
 	did: string;
 	verifyKey: string;
 	encryptionPublicKey: string;

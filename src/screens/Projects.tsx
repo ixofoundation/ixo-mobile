@@ -19,7 +19,6 @@ import { PublicSiteStoreState } from '../redux/public_site_reducer';
 interface PropTypes {
 	navigation: any;
 }
-
 export interface DispatchProps {
 	onIxoInit: () => void;
 }
