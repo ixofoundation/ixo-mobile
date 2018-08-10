@@ -32,13 +32,12 @@ export interface State {
 }
 export interface Props extends PropTypes, DispatchProps, StateProps {}
 export class Projects extends React.Component<Props, State> {
-
-  constructor(props: Props){
-    super(props);
-    this.state = {
-      projects: []
-    }
-  }
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			projects: []
+		};
+	}
 
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
 		const { params = {} } = navigation.state;
@@ -169,8 +168,9 @@ export class Projects extends React.Component<Props, State> {
 							<Input placeholder="Search my projects" />
 						</Item>
 					</Header>
-					<Content style={{ backgroundColor: ThemeColors.white }} />
-					{this.state.projects.length > 0 ? this.renderProject() : null}
+					<Content style={{ backgroundColor: ThemeColors.white }}>
+						{this.state.projects.length > 0 ? this.renderProject() : <Spinner color={ThemeColors.black} />}
+					</Content>
 				</Container>
 			</Drawer>
 		);

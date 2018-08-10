@@ -21,7 +21,7 @@ import ContainerStyles from '../styles/Containers';
 import { ThemeColors } from '../styles/Colors';
 import { SecureStorageKeys, LocalStorageKeys } from '../models/phoneStorage';
 import { IMnemonic, ISovrinDid } from '../models/sovrin';
-import { Decrypt, generateSovrinDID } from '../utils/sovrin';
+import { Decrypt } from '../utils/sovrin';
 import DarkButton from '../components/DarkButton';
 import IconEyeOff from '../../assets/svg/IconEyeOff';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
