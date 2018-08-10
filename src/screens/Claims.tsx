@@ -43,8 +43,6 @@ class Claims extends React.Component<PropTypes, {}> {
     };
   };
 
-  
-
   renderClaims() {
     const ds = new ListView.DataSource({ rowHasChanged: (r1: any, r2: any) => r1 !== r2 });
     return (
