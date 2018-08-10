@@ -32,7 +32,7 @@ const styles = StyleSheet.create<Style>({
         paddingVertical: 17,
         alignItems: 'center',
         borderRadius: 2,
-        borderColor: ThemeColors.blue_lightest,
+        borderColor: ThemeColors.blue_medium,
         borderWidth: 1,
     }
 });

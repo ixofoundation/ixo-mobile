@@ -37,7 +37,7 @@ const styles = StyleSheet.create<Style>({
   divider: {
     width: '30%',
     height: 1,
-    backgroundColor: ThemeColors.blue_lightest
+    backgroundColor: ThemeColors.blue_medium,
   }
 });
 
