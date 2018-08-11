@@ -9,7 +9,7 @@ import { ThemeColors } from '../styles/Colors';
 import ModalStyle from '../styles/Modal';
 import { IMnemonic } from '../models/sovrin';
 import { Decrypt, Encrypt, generateSovrinDID } from '../utils/sovrin';
-import { SecureStorageKeys, LocalStorageKeys } from '../models/phoneStorage';
+import { SecureStorageKeys, LocalStorageKeys, UserStorage, UserStorageKeys } from '../models/phoneStorage';
 import { StackActions, NavigationActions } from 'react-navigation';
 
 import LightButton from '../components/LightButton';
@@ -99,9 +99,11 @@ export class ScanQR extends React.Component<Props, State> {
 					name: mnemonicJson.name,
 					verifyKey: generateSovrinDID(mnemonicJson.mnemonic).verifyKey
 				};
+				AsyncStorage.setItem(UserStorageKeys.name, user.name);
+				AsyncStorage.setItem(UserStorageKeys.did, user.did);
+				AsyncStorage.setItem(UserStorageKeys.verifyKey, user.verifyKey);
 
 				this.props.onUserInit(user);
-
 				this.props.navigation.dispatch(
 					StackActions.reset({
 						index: 0,

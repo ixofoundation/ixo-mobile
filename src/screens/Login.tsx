@@ -19,13 +19,14 @@ import { connect } from 'react-redux';
 import LoginStyles from '../styles/Login';
 import ContainerStyles from '../styles/Containers';
 import { ThemeColors } from '../styles/Colors';
-import { SecureStorageKeys, LocalStorageKeys } from '../models/phoneStorage';
+import { SecureStorageKeys, LocalStorageKeys, UserStorageKeys } from '../models/phoneStorage';
 import { IMnemonic, ISovrinDid } from '../models/sovrin';
 import { Decrypt } from '../utils/sovrin';
 import DarkButton from '../components/DarkButton';
 import IconEyeOff from '../../assets/svg/IconEyeOff';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { IUser } from '../models/user';
+import { initUser } from '../redux/user/user_action_creators';
 
 const { width, height } = Dimensions.get('window');
 const logo = require('../../assets/logo.png');
@@ -50,13 +51,17 @@ interface StateTypes {
 	fingerprints: boolean;
 	password: string;
 	loading: boolean;
+	userName: string;
+}
+export interface DispatchProps {
+	onUserInit: (user: IUser) => void;
 }
 
 export interface StateProps {
 	user?: IUser;
 }
 
-export interface Props extends PropTypes, StateProps {}
+export interface Props extends PropTypes, StateProps, DispatchProps {}
 
 export class Login extends React.Component<Props, StateTypes> {
 	state = {
@@ -64,12 +69,38 @@ export class Login extends React.Component<Props, StateTypes> {
 		revealPassword: true,
 		compatible: false,
 		fingerprints: false,
-		loading: false
+		loading: false,
+		userName: ''
 	};
 
 	componentDidMount() {
 		this.checkDeviceForHardware();
 		this.checkForFingerprints();
+		if (this.props.user === null) {
+			this.retrieveUserFromStorage();
+		} else {
+			this.setState({ userName: this.props.user!.name });
+		}
+	}
+
+	async retrieveUserFromStorage() {
+		try {
+			const name = await AsyncStorage.getItem(UserStorageKeys.name);
+			const did = await AsyncStorage.getItem(UserStorageKeys.did);
+			const verifyKey = await AsyncStorage.getItem(UserStorageKeys.verifyKey);
+
+			this.setState({ userName: name });
+
+			if (name && did && verifyKey) {
+				this.props.onUserInit({
+					name: name,
+					did: did,
+					verifyKey: verifyKey
+				});
+			}
+		} catch (error) {
+			console.error(error);
+		}
 	}
 
 	async checkDeviceForHardware() {
@@ -186,7 +217,7 @@ export class Login extends React.Component<Props, StateTypes> {
 					<KeyboardAvoidingView behavior={'position'}>
 						<LogoView />
 						<View style={[LoginStyles.flexLeft]}>
-							<Text style={LoginStyles.header}>Hi {this.props.user ? this.props.user.name : ''}</Text>
+							<Text style={LoginStyles.header}>Hi {this.state.userName}</Text>
 						</View>
 						<View style={{ width: '100%' }}>
 							<View style={LoginStyles.divider} />
@@ -237,10 +268,18 @@ export class Login extends React.Component<Props, StateTypes> {
 	}
 }
 
+function mapDispatchToProps(dispatch: any): DispatchProps {
+	return {
+		onUserInit: (user: IUser) => {
+			dispatch(initUser(user));
+		}
+	};
+}
+
 function mapStateToProps(state: PublicSiteStoreState) {
 	return {
 		user: state.userStore.user
 	};
 }
 
-export default connect(mapStateToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
