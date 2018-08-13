@@ -141,10 +141,16 @@ export class Login extends React.Component<Props, StateTypes> {
 	};
 
 	signIn() {
-		this.setState({ loading: true });
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'Projects' })]
+    });
+    this.props.navigation.dispatch(resetAction);
+
+	/* 	this.setState({ loading: true });
 		SecureStore.getItemAsync(SecureStorageKeys.password)
 			.then(password => {
-				// get phone password from secure store
+        // get phone password from secure store
 				if (password === this.state.password) {
 					SecureStore.getItemAsync(SecureStorageKeys.mnemonic).then(enryptedMnemonic => {
 						// get encrypted mnemonic from secure store
@@ -206,7 +212,7 @@ export class Login extends React.Component<Props, StateTypes> {
 					position: 'top'
 				});
 				this.setState({ loading: false });
-			});
+			}); */
 	}
 
 	render() {

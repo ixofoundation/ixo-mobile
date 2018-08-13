@@ -73,7 +73,7 @@ const Stack = createStackNavigator({
     }
   },
 }, {
-  initialRouteName: 'Login',
+  initialRouteName: 'OnBoarding',
 });
 
 export default Stack;

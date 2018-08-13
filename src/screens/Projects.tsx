@@ -15,6 +15,7 @@ import { ThemeColors, ProjectStatus } from '../styles/Colors';
 import { initIxo } from '../redux/ixo/ixo_action_creators';
 import { env } from '../../config';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
+import { IUser } from '../models/user';
 
 interface PropTypes {
 	navigation: any;
@@ -25,6 +26,7 @@ export interface DispatchProps {
 
 export interface StateProps {
 	ixo?: any;
+	user?: IUser;
 }
 
 export interface State {
@@ -87,9 +89,23 @@ export class Projects extends React.Component<Props, State> {
 	getProjectList() {
 		if (this.props.ixo) {
 			this.props.ixo.project.listProjects().then((projectList: any) => {
-				this.setState({ projects: projectList });
-				console.log(JSON.stringify(projectList));
+        let myProjects = this.getMyProjects(projectList);
+        debugger;
+				this.setState({ projects: myProjects });
 			});
+		}
+	}
+
+	getMyProjects(projectList: any): IProject[] {
+    debugger;
+		if (this.props.user != null) {
+			let did = 'did:sov:' + this.props.user.did;
+			let myProjects = projectList.filter((projectList: any) => {
+				return projectList.data.agents.some((agent: any) => agent.did === did && agent.role === 'SA');
+			});
+			return myProjects;
+		} else {
+			return [];
 		}
 	}
 
@@ -179,7 +195,8 @@ export class Projects extends React.Component<Props, State> {
 
 function mapStateToProps(state: PublicSiteStoreState) {
 	return {
-		ixo: state.ixoStore.ixo
+		ixo: state.ixoStore.ixo,
+		user: state.userStore.user
 	};
 }
 
