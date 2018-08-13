@@ -1,7 +1,7 @@
 import React from 'react';
 import { LinearGradient } from 'expo';
 import { TouchableOpacity, ViewStyle, StyleSheet, Button } from 'react-native';
-import { Text } from 'native-base';
+import { Text } from 'native-base'; 
 
 import { ThemeColors, ButtonDark } from '../styles/Colors';
 

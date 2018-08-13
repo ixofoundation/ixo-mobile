@@ -1,60 +1,60 @@
 import React from 'react';
 import { StatusBar } from 'react-native';
-import { Container, Icon, Content, View, Text, Button, Item, Input, Label } from 'native-base';
+import { Container, Icon, Content } from 'native-base';
 
-import ContainerStyles from '../styles/Containers';
 import Consumer from '../components/context/ConfigContext';
 import { ThemeColors, ProjectStatus } from '../styles/Colors';
 
-
 interface PropTypes {
-    navigation: any;
-};  
+	navigation: any;
+}
 
 interface NavigationTypes {
-    navigation: any;
+	navigation: any;
 }
 
 interface StateTypes {
-    formFile: string | null;
+	formFile: string | null;
 }
 
 class NewClaim extends React.Component<PropTypes, StateTypes> {
-    static navigationOptions = (props: NavigationTypes) => {
-        return {
-            headerLeft: (
-                <Icon name='close' onPress={() => props.navigation.pop()} style={{ paddingLeft: 10 }} />
-            ),
-            title: 'New',
-            headerTitleStyle : {
-            color: ThemeColors.black,
-            textAlign: 'center',
-            alignSelf:'center'
-            },
-            headerTintColor: ThemeColors.black,
-        };
-    };
+	static navigationOptions = (props: NavigationTypes) => {
+		return {
+			headerLeft: <Icon name="close" onPress={() => props.navigation.pop()} style={{ paddingLeft: 10 }} />,
+			title: 'New',
+			headerTitleStyle: {
+				color: ThemeColors.black,
+				textAlign: 'center',
+				alignSelf: 'center'
+			},
+			headerTintColor: ThemeColors.black
+		};
+	};
 
-    state = {
-        formFile: null,
-    };
+	state = {
+		formFile: null
+	};
 
-    render() {
-        return (
-            <Container style={{ backgroundColor: ThemeColors.white }}>
-                <StatusBar barStyle="dark-content" />
-                <Content contentContainerStyle={{ padding: 20, flexDirection: 'column', justifyContent: 'space-between', flex: 1 }}>
-                    <Consumer>
-                        {({ getFormFile }: { getFormFile: Function }) => {
-                            const { state: { params: { projectDid = '' } }} = this.props.navigation;
-                            this.setState({ formFile: getFormFile(projectDid) });
+	render() {
+		return (
+			<Container style={{ backgroundColor: ThemeColors.white }}>
+				<StatusBar barStyle="dark-content" />
+				<Content contentContainerStyle={{ padding: 20, flexDirection: 'column', justifyContent: 'space-between', flex: 1 }}>
+					<Consumer>
+						{({ getFormFile }: { getFormFile: Function }) => {
+							const {
+								state: {
+									params: { projectDid = '' }
+								}
+							} = this.props.navigation;
+							this.setState({ formFile: getFormFile(projectDid) });
 
-                            if (this.state.formFile) {
-                                // TODO add dynamic form
-                            }
-                        }}
-                    </Consumer>
-                    {/* <View>
+							if (this.state.formFile) {
+								// TODO add dynamic form
+							}
+						}}
+					</Consumer>
+					{/* <View>
                         <Item floatingLabel>
                             <Label>Name</Label>
                             <Input />
@@ -77,11 +77,10 @@ class NewClaim extends React.Component<PropTypes, StateTypes> {
                         <Button style={{ width: '100%', justifyContent: 'center' }} bordered dark><Text>Save</Text></Button>
                         <Button style={{ width: '100%', justifyContent: 'center', marginTop: 20 }} bordered dark><Text>Submit</Text></Button>
                     </View> */}
-                    
-                </Content>
-            </Container>    
-        );
-    }
-};
+				</Content>
+			</Container>
+		);
+	}
+}
 
 export default NewClaim;

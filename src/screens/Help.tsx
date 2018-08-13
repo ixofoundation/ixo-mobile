@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusBar, TouchableOpacity, Dimensions } from 'react-native';
+import { StatusBar } from 'react-native';
 import { Container, Icon, Content, Text } from 'native-base';
 
 import { ThemeColors } from '../styles/Colors';

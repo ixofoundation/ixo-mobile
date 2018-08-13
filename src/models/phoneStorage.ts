@@ -9,3 +9,9 @@ export const SecureStorageKeys = {
     sovrinDid: 'sovrinDid',
     password: 'password',
 }
+
+export const UserStorageKeys = {
+    name: 'name',
+    did: 'did',
+	verifyKey: 'verifyKey'
+}

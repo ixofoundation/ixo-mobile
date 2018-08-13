@@ -1,4 +1,5 @@
 const ThemeColors = {
+  blue_dark: '#002233',
   blue: '#002C41',
   blue_medium: '#00D2FF',
   blue_light: '#025F79',
