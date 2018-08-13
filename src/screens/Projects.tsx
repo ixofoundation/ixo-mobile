@@ -89,15 +89,14 @@ export class Projects extends React.Component<Props, State> {
 	getProjectList() {
 		if (this.props.ixo) {
 			this.props.ixo.project.listProjects().then((projectList: any) => {
-        let myProjects = this.getMyProjects(projectList);
-        debugger;
+				let myProjects = this.getMyProjects(projectList);
+				debugger;
 				this.setState({ projects: myProjects });
 			});
 		}
 	}
 
 	getMyProjects(projectList: any): IProject[] {
-    debugger;
 		if (this.props.user != null) {
 			let did = 'did:sov:' + this.props.user.did;
 			let myProjects = projectList.filter((projectList: any) => {
