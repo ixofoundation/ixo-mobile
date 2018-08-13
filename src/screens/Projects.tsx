@@ -59,7 +59,14 @@ export class Projects extends React.Component<Props, State> {
 				alignSelf: 'center'
 			},
 			headerTintColor: ThemeColors.white,
-			headerLeft: <Icon ios="ios-menu" onPress={() => params.drawer._root.open()} android="md-menu" style={{ paddingLeft: 10, color: ThemeColors.white }} />,
+			headerLeft: (
+				<Icon
+					ios="ios-menu"
+					onPress={() => params.drawer._root.open()}
+					android="md-menu"
+					style={{ paddingLeft: 10, color: ThemeColors.white }}
+				/>
+			),
 			headerRight: <HeaderSync />
 		};
 	};
@@ -72,7 +79,6 @@ export class Projects extends React.Component<Props, State> {
 	}
 
 	componentDidUpdate(prevProps: Props) {
-		debugger;
 		if (this.props.ixo !== prevProps.ixo) {
 			this.getProjectList();
 		}
@@ -106,14 +112,15 @@ export class Projects extends React.Component<Props, State> {
 		if (imageLink && imageLink !== '') {
 			return { uri: `${serviceEndpoint}public/${imageLink}` };
 		} else {
-			return {placeholder};
+			return { placeholder };
 		}
-	}
+	};
 
 	getProjectList() {
 		if (this.props.ixo) {
 			this.props.ixo.project.listProjects().then((projectList: any) => {
-			 	let myProjects = this.getMyProjects(projectList);
+				let myProjects = this.getMyProjects(projectList);
+				console.log(myProjects);
 				this.setState({ projects: myProjects });
 			});
 		}
@@ -121,9 +128,10 @@ export class Projects extends React.Component<Props, State> {
 
 	getMyProjects(projectList: any): IProject[] {
 		if (this.props.user != null) {
-			let did = 'did:sov:' + this.props.user.did;
+			console.log('DID: ' + this.props.user.did);
 			let myProjects = projectList.filter((projectList: any) => {
-				return projectList.data.agents.some((agent: any) => agent.did === did && agent.role === 'SA');
+				//return projectList.data.agents.some((agent: any) => agent.did === this.props.user!.did && agent.role === 'SA');
+				return projectList.data.agents;
 			});
 			return myProjects;
 		} else {
@@ -133,7 +141,6 @@ export class Projects extends React.Component<Props, State> {
 
 	renderProject() {
 		// will become a mapping
-		debugger;
 		return (
 			<React.Fragment>
 				{this.state.projects.map((project: IProject) => {
@@ -152,7 +159,19 @@ export class Projects extends React.Component<Props, State> {
 							<View style={ContainerStyles.flexRow}>
 								{/* <View style={[ProjectsStyles.projectBoxStatusBar, { backgroundColor: ProjectStatus.inProgress }]} /> */}
 								<View style={[ContainerStyles.flexColumn]}>
-									<ImageBackground source={this.fetchImage(project.data.serviceEndpoint, project.data.imageLink)} style={[{ flex: 1, width: '100%', height: height * 0.3, justifyContent: 'flex-end', flexDirection: 'row', paddingRight: 13 }]} >
+									<ImageBackground
+										source={this.fetchImage(project.data.serviceEndpoint, project.data.imageLink)}
+										style={[
+											{
+												flex: 1,
+												width: '100%',
+												height: height * 0.3,
+												justifyContent: 'flex-end',
+												flexDirection: 'row',
+												paddingRight: 13
+											}
+										]}
+									>
 										<View style={{ height: 5, width: width * 0.06, backgroundColor: ProjectStatus.inProgress }} />
 									</ImageBackground>
 									<View style={[ContainerStyles.flexRow, ProjectsStyles.textBoxLeft]}>
@@ -202,32 +221,28 @@ export class Projects extends React.Component<Props, State> {
 				content={<SideBar navigation={this.props.navigation} />}
 				onClose={() => this.closeDrawer()}
 			>
-				
-				{(false) ?
-				<Container style={{ backgroundColor: ThemeColors.blue_dark }}>
-				<StatusBar barStyle="light-content" />
-					<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
-						<View style={[ProjectsStyles.flexLeft]}>
-							<Text style={ProjectsStyles.header}>My projects</Text>
-						</View>
-					</Header>
-					<Content>
-						{this.renderProject()}
-					</Content>
-				</Container>
-				:
-				<ImageBackground source={background} style={[{ flex: 1, width: '100%', height: '100%', paddingHorizontal: 10 }]}>
-				<Container>
-					<StatusBar barStyle="light-content" />
-					<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
-						<View style={[ProjectsStyles.flexLeft]}>
-							<Text style={ProjectsStyles.header}>My projects</Text>
-						</View>
-					</Header>
-					
-				</Container>
-				</ImageBackground>
-			}
+				{false ? (
+					<Container style={{ backgroundColor: ThemeColors.blue_dark }}>
+						<StatusBar barStyle="light-content" />
+						<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
+							<View style={[ProjectsStyles.flexLeft]}>
+								<Text style={ProjectsStyles.header}>My projects</Text>
+							</View>
+						</Header>
+						<Content>{this.renderProject()}</Content>
+					</Container>
+				) : (
+					<ImageBackground source={background} style={[{ flex: 1, width: '100%', height: '100%', paddingHorizontal: 10 }]}>
+						<Container>
+							<StatusBar barStyle="light-content" />
+							<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
+								<View style={[ProjectsStyles.flexLeft]}>
+									<Text style={ProjectsStyles.header}>My projects</Text>
+								</View>
+							</Header>
+						</Container>
+					</ImageBackground>
+				)}
 			</Drawer>
 		);
 	}

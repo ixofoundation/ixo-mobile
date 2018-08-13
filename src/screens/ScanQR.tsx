@@ -95,7 +95,7 @@ export class ScanQR extends React.Component<Props, State> {
 				AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true');
 
 				let user: IUser = {
-					did: generateSovrinDID(mnemonicJson.mnemonic).did,
+					did: 'did:sov:' + generateSovrinDID(mnemonicJson.mnemonic).did,
 					name: mnemonicJson.name,
 					verifyKey: generateSovrinDID(mnemonicJson.mnemonic).verifyKey
 				};
