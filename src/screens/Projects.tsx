@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusBar, TouchableOpacity } from 'react-native';
+import { StatusBar, TouchableOpacity, Image } from 'react-native';
 import _ from 'underscore';
 import moment from 'moment';
 import { LinearGradient } from 'expo';
@@ -14,6 +14,8 @@ import ProjectsStyles from '../styles/Projects';
 import { IProject, IClaim } from '../models/project';
 import { ThemeColors, ProjectStatus } from '../styles/Colors';
 
+const placeholder = require('../../assets/ixo-placeholder.jpg');
+
 interface PropTypes {
   navigation: any,
 };
@@ -22,12 +24,17 @@ export default class Projects extends React.Component<PropTypes> {
   static navigationOptions = ({ navigation }: { navigation: any }) => {
     const { params = {} } = navigation.state;
     return {
+      headerStyle: {
+        backgroundColor: ThemeColors.blue,
+        borderBottomColor: ThemeColors.blue,
+      },
       headerLeft: (
-        <Icon ios='ios-menu' onPress={() => params.drawer._root.open()} android="md-menu" style={{ paddingLeft: 10 }} />
+        <Icon ios='ios-menu' onPress={() => params.drawer._root.open()} android="md-menu" style={{ paddingLeft: 10, color: ThemeColors.white }} />
       ),
       headerRight: (
         <HeaderSync />
       ),
+      headerTintColor: ThemeColors.white
     };
   }
 
@@ -49,6 +56,14 @@ export default class Projects extends React.Component<PropTypes> {
     return undefined;
   }
 
+  fetchImage = (ixo: any, imageLink: string, serviceEndpoint: string) => {
+		ixo.project.fetchPublic(imageLink, serviceEndpoint).then((res: any) => {
+			console.log('Fetched: ', res);
+      let imageSrc = 'data:' + res.contentType + ';base64,' + res.data;
+      return imageSrc;
+		});
+	}
+
   renderProgressBar = (total: number, approved: number, rejected: number) => {
     const approvedWidth = Math.ceil(approved / total * 100);
     const rejectedWidth = Math.ceil(rejected / total * 100);
@@ -64,7 +79,7 @@ export default class Projects extends React.Component<PropTypes> {
   renderProject() { // will become a mapping
     return (
       <Consumer>
-        {({ projects, getProjects }: { projects: IProject[], getProjects: Function }) => {
+        {({ projects, getProjects, ixo }: { projects: IProject[], getProjects: Function, ixo: any }) => {
           if (!projects) {
             getProjects();
           }
@@ -75,6 +90,10 @@ export default class Projects extends React.Component<PropTypes> {
                 return (
                   <TouchableOpacity onPress={() => this.props.navigation.navigate('Claims', { projectDid: project.projectDid, title: project.data.title, pdsURL: project.data.serviceEndpoint })} key={project.projectDid} style={ProjectsStyles.projectBox}>
                     <View style={ContainerStyles.flexRow}>
+                      <Image resizeMode={'contain'} style={{ width: 100, height: 100 }} source={{ uri: this.fetchImage(ixo, project.data.imageLink,  project.data.serviceEndpoint)}} />
+                    </View>
+                    <View style={ContainerStyles.flexRow}>
+                      
                       <View style={[ProjectsStyles.projectBoxStatusBar, { backgroundColor: ProjectStatus.inProgress }]} />
                         <View style={[ContainerStyles.flexColumn, { padding: 5 }]}>
                           <View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
@@ -107,7 +126,7 @@ export default class Projects extends React.Component<PropTypes> {
         content={<SideBar navigation={this.props.navigation} />}
         onClose={() => this.closeDrawer()}>
         <Container>
-          <StatusBar barStyle="light-content" />
+          <StatusBar barStyle="dark-content" />
           <Header searchBar rounded style={{ borderBottomWidth: 0 }}>
             <Item>
               <Icon name="ios-search" />

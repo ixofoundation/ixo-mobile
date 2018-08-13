@@ -12,7 +12,6 @@ const { Provider, Consumer } = React.createContext({});
 export class ConfigProvider extends React.Component {
     
     state = {
-
         projects: null,
         claims: null,
         ixo: new Ixo(env.REACT_APP_BLOCKCHAIN_IP, env.REACT_APP_BLOCK_SYNC_URL),
@@ -22,10 +21,9 @@ export class ConfigProvider extends React.Component {
                 if (!response) {
                     response = [];
                 }
+                // debugger;
                 const projects: IProject[] = response;
-                // _.each(result, (item: IProject) => {
-                //     projects.push(item);
-                // });
+
                 Toast.show({
                     text: 'Synced',
                     buttonText: 'OK',
@@ -82,6 +80,7 @@ export class ConfigProvider extends React.Component {
         return (
             <Provider 
                 value={{
+                    ixo: this.state.ixo,
                     projects: this.state.projects,
                     claims: this.state.claims,
                     getProjects: this.state.getProjects,
