@@ -113,23 +113,23 @@ export class Projects extends React.Component<Props, State> {
 	getProjectList() {
 		if (this.props.ixo) {
 			this.props.ixo.project.listProjects().then((projectList: any) => {
-				// let myProjects = this.getMyProjects(projectList);
-				this.setState({ projects: projectList });
+			 	let myProjects = this.getMyProjects(projectList);
+				this.setState({ projects: myProjects });
 			});
 		}
 	}
 
-	// getMyProjects(projectList: any): IProject[] {
-	// 	if (this.props.user != null) {
-	// 		let did = 'did:sov:' + this.props.user.did;
-	// 		let myProjects = projectList.filter((projectList: any) => {
-	// 			return projectList.data.agents.some((agent: any) => agent.did === did && agent.role === 'SA');
-	// 		});
-	// 		return myProjects;
-	// 	} else {
-	// 		return [];
-	// 	}
-	// }
+	getMyProjects(projectList: any): IProject[] {
+		if (this.props.user != null) {
+			let did = 'did:sov:' + this.props.user.did;
+			let myProjects = projectList.filter((projectList: any) => {
+				return projectList.data.agents.some((agent: any) => agent.did === did && agent.role === 'SA');
+			});
+			return myProjects;
+		} else {
+			return [];
+		}
+	}
 
 	renderProject() {
 		// will become a mapping
