@@ -16,11 +16,12 @@ import { initIxo } from '../redux/ixo/ixo_action_creators';
 import { env } from '../../config';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { IUser } from '../models/user';
+import DarkButton from '../components/DarkButton';
 
 const placeholder = require('../../assets/ixo-placeholder.jpg');
 const background = require('../../assets/backgrounds/background_2.png');
 const addProjects = require('../../assets/project-visual.png');
-
+const qr = require('../../assets/qr.png');
 
 const { width, height } = Dimensions.get('window');
 
@@ -116,8 +117,8 @@ export class Projects extends React.Component<Props, State> {
 	getProjectList() {
 		if (this.props.ixo) {
 			this.props.ixo.project.listProjects().then((projectList: any) => {
-			 	// let myProjects = this.getMyProjects(projectList);
-				this.setState({ projects: projectList });
+			 	let myProjects = this.getMyProjects(projectList);
+				this.setState({ projects: myProjects });
 			});
 		}
 	}
@@ -259,6 +260,7 @@ export class Projects extends React.Component<Props, State> {
 					</Container>
 				</ImageBackground>
 			}
+			<DarkButton iconImage={qr} text={'SCAN'} onPress={() => alert('bla')} />
 			</Drawer>
 		);
 	}
