@@ -24,7 +24,7 @@
     "login": {
         "hi": "Hi",
         "password": "password",
-        "signIn": "sign in",
+        "signIn": "SIGN IN",
         "attention": "You have alerts for your attention.",
         "forgotPassword": "Forgot your password?"
     },

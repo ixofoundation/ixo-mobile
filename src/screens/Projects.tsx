@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusBar, TouchableOpacity, Image, ImageBackground, Dimensions } from 'react-native';
+import { StatusBar, TouchableOpacity, Image, ImageBackground, Dimensions, RefreshControl } from 'react-native';
 import _ from 'underscore';
 import { LinearGradient } from 'expo';
 import { Container, Header, Item, Icon, Input, Content, View, Text, Spinner, Drawer } from 'native-base';
@@ -39,13 +39,18 @@ export interface StateProps {
 
 export interface State {
 	projects: IProject[];
+	isRefreshing: boolean;
 }
 export interface Props extends PropTypes, DispatchProps, StateProps {}
 export class Projects extends React.Component<Props, State> {
+
+	headerTitleShown: boolean = false;
+
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			projects: []
+			projects: [],
+			isRefreshing: false,
 		};
 	}
 
@@ -61,6 +66,7 @@ export class Projects extends React.Component<Props, State> {
 				textAlign: 'center',
 				alignSelf: 'center'
 			},
+			title: (params.showTitle) ? 'My Projects' : '',
 			// headerTintColor: ThemeColors.white,
 			headerLeft: (
 				<Icon
@@ -125,7 +131,7 @@ export class Projects extends React.Component<Props, State> {
 		if (this.props.ixo) {
 			this.props.ixo.project.listProjects().then((projectList: any) => {
 				let myProjects = this.getMyProjects(projectList);
-				this.setState({ projects: myProjects });
+				this.setState({ projects: myProjects, isRefreshing: false });
 			});
 		}
 	}
@@ -148,6 +154,11 @@ export class Projects extends React.Component<Props, State> {
 		this.setState({ projects });
 	}
 
+	refreshProjects() {
+		this.setState({ isRefreshing: true, projects: [] });
+		this.getProjectList()
+	}
+
 	renderProject() {
 		// will become a mapping
 		return (
@@ -167,7 +178,6 @@ export class Projects extends React.Component<Props, State> {
 							style={ProjectsStyles.projectBox}
 						>
 							<View style={ContainerStyles.flexRow}>
-								{/* <View style={[ProjectsStyles.projectBoxStatusBar, { backgroundColor: ProjectStatus.inProgress }]} /> */}
 								<View style={[ContainerStyles.flexColumn]}>
 									<ImageBackground
 										onLoad={() => this.updateImageLoadingStatus(project)}
@@ -177,9 +187,9 @@ export class Projects extends React.Component<Props, State> {
 										{'imageLoaded' in project ? (
 											<View style={{ height: 5, width: width * 0.06, backgroundColor: ProjectStatus.inProgress }} />
 										) : (
-											<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
-												<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
-													<Spinner color={ThemeColors.blue_light} />
+											<View style={ProjectsStyles.spinnerCenterRow}>
+												<View style={ProjectsStyles.spinnerCenterColumn}>
+													<Spinner color={ThemeColors.white} />
 												</View>
 											</View>
 										)}
@@ -211,6 +221,22 @@ export class Projects extends React.Component<Props, State> {
 		);
 	}
 
+	_onScroll = (event: any) => {
+		const y = event.nativeEvent.contentOffset.y;
+		if (y > 20 && !this.headerTitleShown) { // headerTitleShown prevents unnecessory rerendering for setParams
+			this.props.navigation.setParams({
+				showTitle: true
+			});
+			this.headerTitleShown = true;
+		}
+		if (y < 5 && this.headerTitleShown) {
+			this.props.navigation.setParams({
+				showTitle: false
+			});
+			this.headerTitleShown = false;
+		}
+	}
+
 	render() {
 		return (
 			<Drawer
@@ -221,7 +247,15 @@ export class Projects extends React.Component<Props, State> {
 				onClose={() => this.closeDrawer()}
 			>
 				{this.state.projects.length > 0 ? (
-					<Container style={{ backgroundColor: ThemeColors.blue_dark }}>
+					<Content
+						style={{ backgroundColor: ThemeColors.blue_dark }}
+						refreshControl={<RefreshControl
+							refreshing={this.state.isRefreshing}
+							onRefresh={() => this.refreshProjects()}
+						/>}
+						// @ts-ignore
+						onScroll={(event) => this._onScroll(event)}
+					>
 						<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
 							<View style={[ProjectsStyles.flexLeft]}>
 								<Text style={ProjectsStyles.header}>{this.props.screenProps.t('projects:myProjects')}</Text>
@@ -229,7 +263,7 @@ export class Projects extends React.Component<Props, State> {
 						</Header>
 						<StatusBar barStyle="light-content" />
 						<Content>{this.renderProject()}</Content>
-					</Container>
+					</Content>
 				) : (
 					<ImageBackground source={background} style={ProjectsStyles.backgroundImage}>
 						<Container>

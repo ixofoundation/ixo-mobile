@@ -44,7 +44,6 @@ export interface Props extends ParentProps, DispatchProps {}
 
 export class ScanQR extends React.Component<Props, State> {
 	static navigationOptions = ({ screenProps }: { screenProps: any }) => {
-		console.log('props!', screenProps);
 		return {
 			headerStyle: {
 				backgroundColor: ThemeColors.blue,
