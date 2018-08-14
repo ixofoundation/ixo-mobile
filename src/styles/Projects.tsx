@@ -18,7 +18,8 @@ interface Style {
   projectRequiredClaimsText: TextStyle;
   projectImpactActionText: TextStyle;
   projectTitle: TextStyle;
-  projectLastClaimText: TextStyle;
+	projectLastClaimText: TextStyle;
+	backgroundImage: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -72,7 +73,11 @@ const styles = StyleSheet.create<Style>({
 		height: height * 0.3,
 		justifyContent: 'flex-end',
 		flexDirection: 'row',
-		paddingRight: 13
+		paddingRight: 13,
+		borderLeftWidth: 1,
+		borderRightWidth: 1,
+		borderTopWidth: 1,
+		borderColor: ThemeColors.blue_light,
   },
   projectTitle: {
     textAlign: 'left', color: ThemeColors.white, fontSize: 21, fontWeight: '500'
@@ -88,7 +93,14 @@ const styles = StyleSheet.create<Style>({
   },
   projectLastClaimText: {
     textAlign: 'left', color: ThemeColors.blue_lightest, fontSize: 14
-  }
+	},
+	backgroundImage: {
+		flex: 1, 
+		width: '100%', 
+		height: '100%', 
+		paddingHorizontal: 10, 
+		backgroundColor: ThemeColors.blue_dark
+	}
 });
 
 export default styles;
