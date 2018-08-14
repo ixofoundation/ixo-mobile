@@ -116,8 +116,8 @@ export class Projects extends React.Component<Props, State> {
 	getProjectList() {
 		if (this.props.ixo) {
 			this.props.ixo.project.listProjects().then((projectList: any) => {
-			 	let myProjects = this.getMyProjects(projectList);
-				this.setState({ projects: myProjects });
+			 	// let myProjects = this.getMyProjects(projectList);
+				this.setState({ projects: projectList });
 			});
 		}
 	}
@@ -133,9 +133,15 @@ export class Projects extends React.Component<Props, State> {
 		}
 	}
 
+	updateImageLoadingStatus(project: IProject) {
+		const projects = this.state.projects;
+		const projectFound = _.find(projects, { projectDid: project.projectDid })
+		Object.assign(projectFound, { imageLoaded: true });
+		this.setState({ projects })
+	}
+
 	renderProject() {
 		// will become a mapping
-		debugger;
 		return (
 			<React.Fragment>
 				{this.state.projects.map((project: IProject) => {
@@ -154,8 +160,16 @@ export class Projects extends React.Component<Props, State> {
 							<View style={ContainerStyles.flexRow}>
 								{/* <View style={[ProjectsStyles.projectBoxStatusBar, { backgroundColor: ProjectStatus.inProgress }]} /> */}
 								<View style={[ContainerStyles.flexColumn]}>
-									<ImageBackground source={this.fetchImage(project.data.serviceEndpoint, project.data.imageLink)} style={ProjectsStyles.projectImage} >
-										<View style={{ height: 5, width: width * 0.06, backgroundColor: ProjectStatus.inProgress }} />
+									<ImageBackground onLoad={() => this.updateImageLoadingStatus(project)} source={this.fetchImage(project.data.serviceEndpoint, project.data.imageLink)} style={ProjectsStyles.projectImage} >
+										{('imageLoaded' in project) ?
+											<View style={{ height: 5, width: width * 0.06, backgroundColor: ProjectStatus.inProgress }} />
+										:
+											<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
+												<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
+													<Spinner color={ThemeColors.blue_light} />
+												</View>
+											</View>
+										}
 									</ImageBackground>
 									<View style={[ContainerStyles.flexRow, ProjectsStyles.textBoxLeft]}>
 										<View style={[ContainerStyles.flexColumn, { alignItems: 'flex-start' }]}>
