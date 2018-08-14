@@ -51,12 +51,11 @@ class Claims extends React.Component<Props, State> {
 		};
 	}
 
-	onComponentDidMount() {
-		this.props.ixo.project.getProjectByProjectDid(this.props.navigation.projectDid).then((project: IProject) => {
-			this.setState({ claimsList: project.data.claims });
-		});
+	componentDidMount() {
+		if (this.props.navigation.state.params.myClaims) {
+			this.setState({ claimsList: this.props.navigation.state.params.myClaims });
+		}
 	}
-
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
 		const {
 			state: {
