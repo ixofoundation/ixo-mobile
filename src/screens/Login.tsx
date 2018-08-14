@@ -141,59 +141,17 @@ export class Login extends React.Component<Props, StateTypes> {
 	};
 
 	signIn() {
-    const resetAction = StackActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'Projects' })]
-    });
-    this.props.navigation.dispatch(resetAction);
-
-	/* 	this.setState({ loading: true });
+		this.setState({ loading: true });
 		SecureStore.getItemAsync(SecureStorageKeys.password)
 			.then(password => {
-        // get phone password from secure store
+				// get phone password from secure store
 				if (password === this.state.password) {
-					SecureStore.getItemAsync(SecureStorageKeys.mnemonic).then(enryptedMnemonic => {
-						// get encrypted mnemonic from secure store
-						const mnemonicObject: IMnemonic = Decrypt(enryptedMnemonic, this.state.password);
-						AsyncStorage.setItem(LocalStorageKeys.mnemonic, JSON.stringify(mnemonicObject), error => {
-							// save mnemonic local storage
-							if (error) {
-								Toast.show({
-									text: 'Login Failed',
-									buttonText: 'OK',
-									type: 'warning',
-									position: 'top'
-								});
-							} else {
-								SecureStore.getItemAsync(SecureStorageKeys.sovrinDid).then(encryptedSovrin => {
-									// get sovrindid from secure store
-									try {
-										const sovrinObject: ISovrinDid = Decrypt(encryptedSovrin, this.state.password);
-										AsyncStorage.setItem(LocalStorageKeys.sovrinDid, sovrinObject.did, error => {
-											// save sovrindid id local storage
-											if (error) {
-												Toast.show({
-													text: 'Login Failed',
-													buttonText: 'OK',
-													type: 'warning',
-													position: 'top'
-												});
-											} else {
-												this.props.navigation.dispatch(
-													StackActions.reset({
-														index: 0,
-														actions: [NavigationActions.navigate({ routeName: 'Projects' })]
-													})
-												);
-											}
-										});
-									} catch (exception) {
-										console.log(exception);
-									}
-								});
-							}
-						});
-					});
+					this.props.navigation.dispatch(
+						StackActions.reset({
+							index: 0,
+							actions: [NavigationActions.navigate({ routeName: 'Projects' })]
+						})
+					);
 				} else {
 					Toast.show({
 						text: 'Password incorrect',
@@ -212,7 +170,7 @@ export class Login extends React.Component<Props, StateTypes> {
 					position: 'top'
 				});
 				this.setState({ loading: false });
-			}); */
+			});
 	}
 
 	render() {
@@ -288,4 +246,7 @@ function mapStateToProps(state: PublicSiteStoreState) {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Login);
