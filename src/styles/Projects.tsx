@@ -88,7 +88,14 @@ const styles = StyleSheet.create<Style>({
   },
   projectLastClaimText: {
     textAlign: 'left', color: ThemeColors.blue_lightest, fontSize: 14
-  }
+	},
+	backgroundImage: {
+		flex: 1, 
+		width: '100%', 
+		height: '100%', 
+		paddingHorizontal: 10, 
+		backgroundColor: ThemeColors.blue_dark
+	}
 });
 
 export default styles;

@@ -18,7 +18,9 @@ import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { IUser } from '../models/user';
 
 const placeholder = require('../../assets/ixo-placeholder.jpg');
-const background = require('../../assets/backgrounds/background_1.jpg');
+const background = require('../../assets/backgrounds/background_2.png');
+const addProjects = require('../../assets/project-visual.png');
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -50,8 +52,8 @@ export class Projects extends React.Component<Props, State> {
 		const { params = {} } = navigation.state;
 		return {
 			headerStyle: {
-				backgroundColor: '#01273A',
-				borderBottomColor: '#01273A'
+				backgroundColor: ThemeColors.blue_dark,
+				borderBottomColor: ThemeColors.blue_dark
 			},
 			headerTitleStyle: {
 				color: ThemeColors.white,
@@ -203,39 +205,45 @@ export class Projects extends React.Component<Props, State> {
 				content={<SideBar navigation={this.props.navigation} />}
 				onClose={() => this.closeDrawer()}
 			>
-				
+			
 				{(this.state.projects.length > 0) ?
 				<Container style={{ backgroundColor: ThemeColors.blue_dark }}>
-				<StatusBar barStyle="light-content" />
 					<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
 						<View style={[ProjectsStyles.flexLeft]}>
 							<Text style={ProjectsStyles.header}>My projects</Text>
 						</View>
 					</Header>
+					<StatusBar barStyle="light-content" />
 					<Content>
 						{this.renderProject()}
 					</Content>
 				</Container>
 				:
-				<ImageBackground source={background} style={[{ flex: 1, width: '100%', height: '100%', paddingHorizontal: 10 }]}>
-				<Container>
-					<StatusBar barStyle="light-content" />
-					<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
-						<View style={[ProjectsStyles.flexLeft]}>
-							<Text style={ProjectsStyles.header}>My projects</Text>
+				<ImageBackground source={background} style={ProjectsStyles.backgroundImage}>
+					<Container>
+						<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
+							<View style={[ProjectsStyles.flexLeft]}>
+								<Text style={ProjectsStyles.header}>My projects</Text>
+							</View>
+						</Header>
+						<StatusBar barStyle="light-content" />
+						<View style={{ height: height * 0.4, flexDirection: 'row', justifyContent: 'center' }}>
+							<View style={{ flexDirection: 'column', justifyContent: 'center' }}>
+								<Image resizeMode={'center'} source={addProjects}  />
+							</View>
 						</View>
-					</Header>
-					<View style={[ProjectsStyles.flexLeft]}>
+						<View>
+							<View style={[ProjectsStyles.flexLeft]}>
 							<Text style={[ProjectsStyles.header, { color: ThemeColors.blue_lightest}]}>Add your first project</Text>
+							</View>
+							<View style={{ width: '100%' }}>
+								<View style={ProjectsStyles.divider} />
+							</View>
+							<View style={ProjectsStyles.flexLeft}>
+								<Text style={ProjectsStyles.infoBox}>Visit ixo.world and sign up for your first project </Text>
+							</View>
 						</View>
-						<View style={{ width: '100%' }}>
-							<View style={ProjectsStyles.divider} />
-						</View>
-
-						<View style={ProjectsStyles.flexLeft}>
-							<Text style={ProjectsStyles.infoBox}>Visit ixo.world and sign up for your first project </Text>
-						</View>
-				</Container>
+					</Container>
 				</ImageBackground>
 			}
 			</Drawer>
