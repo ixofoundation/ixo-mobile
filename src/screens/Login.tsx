@@ -94,7 +94,7 @@ export class Login extends React.Component<Props, StateTypes> {
 			if (name && did && verifyKey) {
 				this.props.onUserInit({
 					name: name,
-					did: 'did:sov:' + did,
+					did: did,
 					verifyKey: verifyKey
 				});
 			}
