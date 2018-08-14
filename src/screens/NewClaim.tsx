@@ -2,8 +2,7 @@ import React from 'react';
 import { StatusBar } from 'react-native';
 import { Container, Icon, Content } from 'native-base';
 
-import Consumer from '../components/context/ConfigContext';
-import { ThemeColors, ProjectStatus } from '../styles/Colors';
+import { ThemeColors } from '../styles/Colors';
 
 interface PropTypes {
 	navigation: any;
@@ -40,20 +39,6 @@ class NewClaim extends React.Component<PropTypes, StateTypes> {
 			<Container style={{ backgroundColor: ThemeColors.white }}>
 				<StatusBar barStyle="dark-content" />
 				<Content contentContainerStyle={{ padding: 20, flexDirection: 'column', justifyContent: 'space-between', flex: 1 }}>
-					<Consumer>
-						{({ getFormFile }: { getFormFile: Function }) => {
-							const {
-								state: {
-									params: { projectDid = '' }
-								}
-							} = this.props.navigation;
-							this.setState({ formFile: getFormFile(projectDid) });
-
-							if (this.state.formFile) {
-								// TODO add dynamic form
-							}
-						}}
-					</Consumer>
 					{/* <View>
                         <Item floatingLabel>
                             <Label>Name</Label>

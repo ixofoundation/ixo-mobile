@@ -5,7 +5,6 @@ import { LinearGradient } from 'expo';
 import { Container, Header, Item, Icon, Input, Content, View, Text, Spinner, Drawer } from 'native-base';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import HeaderSync from '../components/HeaderSync';
 import SideBar from '../components/SideBar';
 import ProjectsStyles from '../styles/Projects';
 
@@ -83,7 +82,6 @@ export class Projects extends React.Component<Props, State> {
 	}
 
 	componentDidUpdate(prevProps: Props) {
-		debugger;
 		if (this.props.ixo !== prevProps.ixo) {
 			this.getProjectList();
 		}
@@ -159,6 +157,7 @@ export class Projects extends React.Component<Props, State> {
 						<TouchableOpacity
 							onPress={() =>
 								this.props.navigation.navigate('Claims', {
+									myClaims: project.data.claims.filter(claim => claim.saDid === this.props.user!.did),
 									projectDid: project.projectDid,
 									title: project.data.title,
 									pdsURL: project.data.serviceEndpoint
