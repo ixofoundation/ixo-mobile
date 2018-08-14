@@ -20,6 +20,7 @@ const LogoView = () => (
 
 interface PropTypes {
 	navigation: any;
+	screenProps: any;
 }
 
 interface StateTypes {
@@ -50,10 +51,10 @@ class ConnectIXOComplete extends React.Component<PropTypes, StateTypes, {}> {
 		return (
 			<View style={[ContainerStyles.flexColumn, ContainerStyles.backgroundColorLight]}>
 				<View style={[ContainerStyles.flexColumn, { alignItems: 'flex-start', justifyContent: 'flex-end', paddingHorizontal: 30, width }]}>
-					<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 15 }}>Scan successful!</Text>
-					<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 15 }}>Your privacy is of utmost importance.</Text>
+					<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 15 }}>{this.props.screenProps.t('connectIXOComplete:scanSuccessful')}</Text>
+					<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 15 }}>{this.props.screenProps.t('connectIXOComplete:privacyImportance')}</Text>
 					<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 15 }}>
-						Please unlock your ixo information with your ixo Key Safe password.
+						{this.props.screenProps.t('connectIXOComplete:unlockInformation')}
 					</Text>
 				</View>
 
@@ -72,7 +73,7 @@ class ConnectIXOComplete extends React.Component<PropTypes, StateTypes, {}> {
 				<View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
 					<View style={[ContainerStyles.flexColumn]}>
 						<Button onPress={() => this.verifySafeKey()} style={ConnectIXOStyles.buttons} bordered dark>
-							<Text>Unlock</Text>
+							<Text>{this.props.screenProps.t('connectIXOComplete:unlock')}</Text>
 						</Button>
 					</View>
 				</View>

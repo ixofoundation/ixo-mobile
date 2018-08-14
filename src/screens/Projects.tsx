@@ -27,6 +27,7 @@ const { width, height } = Dimensions.get('window');
 
 interface PropTypes {
 	navigation: any;
+	screenProps: any;
 }
 export interface DispatchProps {
 	onIxoInit: () => void;
@@ -64,9 +65,8 @@ export class Projects extends React.Component<Props, State> {
 			// headerTintColor: ThemeColors.white,
 			headerLeft: (
 				<Icon
-					ios="ios-menu"
+					name="menu"
 					onPress={() => params.drawer._root.open()}
-					android="md-menu"
 					style={{ paddingLeft: 10, color: ThemeColors.white }}
 				/>
 			),
@@ -225,7 +225,7 @@ export class Projects extends React.Component<Props, State> {
 					<Container style={{ backgroundColor: ThemeColors.blue_dark }}>
 						<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
 							<View style={[ProjectsStyles.flexLeft]}>
-								<Text style={ProjectsStyles.header}>My projects</Text>
+								<Text style={ProjectsStyles.header}>{this.props.screenProps.t('projects:myProjects')}</Text>
 							</View>
 						</Header>
 						<StatusBar barStyle="light-content" />
@@ -236,7 +236,7 @@ export class Projects extends React.Component<Props, State> {
 						<Container>
 							<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
 								<View style={[ProjectsStyles.flexLeft]}>
-									<Text style={ProjectsStyles.header}>My projects</Text>
+									<Text style={ProjectsStyles.header}>{this.props.screenProps.t('projects:myProjects')}</Text>
 								</View>
 							</Header>
 							<StatusBar barStyle="light-content" />
@@ -247,19 +247,19 @@ export class Projects extends React.Component<Props, State> {
 							</View>
 							<View>
 								<View style={[ProjectsStyles.flexLeft]}>
-									<Text style={[ProjectsStyles.header, { color: ThemeColors.blue_lightest }]}>Add your first project</Text>
+									<Text style={[ProjectsStyles.header, { color: ThemeColors.blue_lightest }]}>{this.props.screenProps.t('projects:addFirstProject')}</Text>
 								</View>
 								<View style={{ width: '100%' }}>
 									<View style={ProjectsStyles.divider} />
 								</View>
 								<View style={ProjectsStyles.flexLeft}>
-									<Text style={ProjectsStyles.infoBox}>Visit ixo.world and sign up for your first project </Text>
+									<Text style={ProjectsStyles.infoBox}>{this.props.screenProps.t('projects:visitIXO')}</Text>
 								</View>
 							</View>
 						</Container>
 					</ImageBackground>
 				)}
-				<DarkButton iconImage={qr} text={'SCAN'} onPress={() => alert('bla')} />
+				<DarkButton iconImage={qr} text={this.props.screenProps.t('projects:scan')} onPress={() => alert('bla')} />
 			</Drawer>
 		);
 	}

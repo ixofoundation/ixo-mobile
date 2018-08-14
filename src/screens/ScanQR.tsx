@@ -43,14 +43,15 @@ interface State {
 export interface Props extends ParentProps, DispatchProps {}
 
 export class ScanQR extends React.Component<Props, State> {
-	static navigationOptions = () => {
+	static navigationOptions = ({ screenProps }: { screenProps: any }) => {
+		console.log('props!', screenProps);
 		return {
 			headerStyle: {
 				backgroundColor: ThemeColors.blue,
 				borderBottomColor: ThemeColors.blue
 			},
 			headerRight: <Icon style={{ paddingRight: 10, color: ThemeColors.white }} name="flash" />,
-			title: 'Scan',
+			title: screenProps.t('scanQR:scan'),
 			headerTitleStyle: {
 				color: ThemeColors.white,
 				textAlign: 'center',
