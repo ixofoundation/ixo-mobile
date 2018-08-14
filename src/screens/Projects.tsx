@@ -5,7 +5,6 @@ import { LinearGradient } from 'expo';
 import { Container, Header, Item, Icon, Input, Content, View, Text, Spinner, Drawer } from 'native-base';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import HeaderSync from '../components/HeaderSync';
 import SideBar from '../components/SideBar';
 import ProjectsStyles from '../styles/Projects';
 
@@ -83,7 +82,6 @@ export class Projects extends React.Component<Props, State> {
 	}
 
 	componentDidUpdate(prevProps: Props) {
-		debugger;
 		if (this.props.ixo !== prevProps.ixo) {
 			this.getProjectList();
 		}
