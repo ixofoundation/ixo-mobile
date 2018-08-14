@@ -16,10 +16,12 @@ import { initIxo } from '../redux/ixo/ixo_action_creators';
 import { env } from '../../config';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { IUser } from '../models/user';
+import DarkButton from '../components/DarkButton';
 
 const placeholder = require('../../assets/ixo-placeholder.jpg');
 const background = require('../../assets/backgrounds/background_2.png');
 const addProjects = require('../../assets/project-visual.png');
+const qr = require('../../assets/qr.png');
 
 const { width, height } = Dimensions.get('window');
 
@@ -81,6 +83,7 @@ export class Projects extends React.Component<Props, State> {
 	}
 
 	componentDidUpdate(prevProps: Props) {
+		debugger;
 		if (this.props.ixo !== prevProps.ixo) {
 			this.getProjectList();
 		}
@@ -96,7 +99,7 @@ export class Projects extends React.Component<Props, State> {
 		if (claim) {
 			return 'Your last claim submitted on ' + moment(claim.date).format('YYYY-MM-DD');
 		} else {
-			return 'You have no claims on this project';
+			return 'You have no submitted claims on this project';
 		}
 	}
 
@@ -123,8 +126,8 @@ export class Projects extends React.Component<Props, State> {
 	getProjectList() {
 		if (this.props.ixo) {
 			this.props.ixo.project.listProjects().then((projectList: any) => {
-				// let myProjects = this.getMyProjects(projectList);
-				this.setState({ projects: projectList });
+				let myProjects = this.getMyProjects(projectList);
+				this.setState({ projects: myProjects });
 			});
 		}
 	}
@@ -256,6 +259,7 @@ export class Projects extends React.Component<Props, State> {
 						</Container>
 					</ImageBackground>
 				)}
+				<DarkButton iconImage={qr} text={'SCAN'} onPress={() => alert('bla')} />
 			</Drawer>
 		);
 	}
