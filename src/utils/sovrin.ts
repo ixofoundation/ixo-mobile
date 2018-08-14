@@ -64,6 +64,5 @@ export function Decrypt(cipherText: any, password: string) {
 	let bytes = AES.decrypt(cipherText, password);
 	let contentsHex = bytes.toString(CryptoJS.enc.Utf8);
 	const payloadJson = Buffer.from(contentsHex, 'hex').toString('utf8');
-	debugger;
 	return JSON.parse(payloadJson);
 }
