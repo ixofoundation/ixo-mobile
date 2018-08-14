@@ -1,7 +1,7 @@
 {
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 82164,
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
   "expoServerNgrokUrl": "https://2y-c6i.nicolaas0411.ixo-world-mobile.exp.direct",
   "packagerNgrokUrl": "https://packager.2y-c6i.nicolaas0411.ixo-world-mobile.exp.direct",
   "ngrokPid": 87031

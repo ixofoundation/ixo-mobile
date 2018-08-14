@@ -9,7 +9,7 @@ import { ThemeColors } from '../styles/Colors';
 import ModalStyle from '../styles/Modal';
 import { IMnemonic } from '../models/sovrin';
 import { Decrypt, Encrypt, generateSovrinDID } from '../utils/sovrin';
-import { SecureStorageKeys, LocalStorageKeys, UserStorage, UserStorageKeys } from '../models/phoneStorage';
+import { SecureStorageKeys, LocalStorageKeys, UserStorageKeys } from '../models/phoneStorage';
 import { StackActions, NavigationActions } from 'react-navigation';
 
 import LightButton from '../components/LightButton';
@@ -89,7 +89,7 @@ export class ScanQR extends React.Component<Props, State> {
 				const mnemonicJson: IMnemonic = Decrypt(this.state.payload, this.state.password);
 				const cipherTextSovrinDid = Encrypt(JSON.stringify(generateSovrinDID(mnemonicJson.mnemonic)), this.state.password); // encrypt securely on phone enlave
 
-				SecureStore.setItemAsync(SecureStorageKeys.mnemonic, mnemonicJson.mnemonic);
+				SecureStore.setItemAsync(SecureStorageKeys.encryptedMnemonic, this.state.payload!);
 				SecureStore.setItemAsync(SecureStorageKeys.sovrinDid, cipherTextSovrinDid);
 				SecureStore.setItemAsync(SecureStorageKeys.password, this.state.password);
 				AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true');
