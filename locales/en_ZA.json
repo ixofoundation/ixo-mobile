@@ -26,12 +26,23 @@
         "password": "password",
         "signIn": "SIGN IN",
         "attention": "You have alerts for your attention.",
-        "forgotPassword": "Forgot your password?"
+        "forgotPassword": "Forgot your password?",
+        "wrongPassword": "Password incorrect",
+        "loginFailed": "Login Failed"
     },
     "projects": {
         "myProjects": "My projects",
         "addFirstProject": "Add your first project",
         "visitIXO": "Visit ixo.world and sign up for your first project",
         "scan": "SCAN"
+    },
+    "claims": {
+        "saved": "SAVED",
+        "submitted": "SUBMITTED",
+        "noClaims": "You have no saved claims",
+        "saveClaimsOffline": "Save and edit your claims offline. Submit when it is convenient for you.",
+        "submitButton": "SUBMIT NEW CLAIM",
+        "noSubmissions": "You have no submitted claims",
+        "savedSubmissionsInfo": "View your pending, approved and rejected claims here."
     }
 }

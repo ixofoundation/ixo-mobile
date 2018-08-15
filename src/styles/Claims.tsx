@@ -1,16 +1,21 @@
-import { StyleSheet, ViewStyle, Dimensions, Platform } from 'react-native';
+import { StyleSheet, ViewStyle, TextStyle, Dimensions, Platform } from 'react-native';
 
 import { ThemeColors } from '../styles/Colors';
-const { height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 interface Style {
   ClaimBox: ViewStyle,
   DeleteButton: ViewStyle,
-  DeleteButtonText: ViewStyle,
+  DeleteButtonText: TextStyle,
   SubmitButton: ViewStyle,
   BadgeBoxContainer: ViewStyle,
   BoxContainer: ViewStyle,
   Badge: ViewStyle,
+  backgroundImage: ViewStyle,
+  flexLeft: ViewStyle,
+  divider: ViewStyle,
+  infoBox: TextStyle,
+  header: TextStyle,
 }
 
 const styles = StyleSheet.create<Style>({
@@ -31,7 +36,7 @@ const styles = StyleSheet.create<Style>({
     paddingBottom: 15,
     paddingTop: 15,
     borderWidth: 1,
-    borderColor: ThemeColors.grey,
+    borderColor: ThemeColors.blue_border,
     marginTop: 10,
   },
   SubmitButton: {
@@ -60,7 +65,35 @@ const styles = StyleSheet.create<Style>({
     borderRadius: 20,
     marginLeft: 10,
     marginRight: 10
-  }
+  },
+  backgroundImage: {
+		flex: 1,
+		width: '100%',
+		height: '100%',
+		paddingHorizontal: 10,
+		backgroundColor: ThemeColors.blue_dark
+  },
+  flexLeft: {
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
+		width: '100%'
+  },
+  divider: {
+		width: '30%',
+		height: 1,
+		backgroundColor: ThemeColors.blue_medium
+	},
+	infoBox: {
+		color: ThemeColors.white,
+		fontSize: 18,
+		width: width * 0.6,
+		paddingVertical: 20
+	},
+  header: {
+		color: ThemeColors.white,
+		fontSize: 29,
+    paddingBottom: 20
+	},
 });
 
 export default styles;

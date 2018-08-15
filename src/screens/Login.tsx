@@ -155,7 +155,7 @@ export class Login extends React.Component<Props, StateTypes> {
 					);
 				} else {
 					Toast.show({
-						text: 'Password incorrect',
+						text: this.props.screenProps.t('login:wrongPassword'),
 						buttonText: 'OK',
 						type: 'warning',
 						position: 'top'
@@ -165,7 +165,7 @@ export class Login extends React.Component<Props, StateTypes> {
 			})
 			.catch(() => {
 				Toast.show({
-					text: 'Login Failed',
+					text: this.props.screenProps.t('login:loginFailed'),
 					buttonText: 'OK',
 					type: 'warning',
 					position: 'top'
