@@ -107,18 +107,6 @@ export class Projects extends React.Component<Props, State> {
 		}
 	}
 
-	renderProgressBar = (total: number, approved: number, rejected: number) => {
-		const approvedWidth = Math.ceil((approved / total) * 100);
-		const rejectedWidth = Math.ceil((rejected / total) * 100);
-		return (
-			<View style={[ContainerStyles.flexRow, { justifyContent: 'flex-start', backgroundColor: 'transparent', paddingVertical: 10 }]}>
-				<LinearGradient start={[0, 1]} colors={['#016480', '#03d0FE']} style={{ height: 5, width: `${approvedWidth}%`, borderRadius: 2 }} />
-				<View style={[{ backgroundColor: '#E2223B', height: 5, width: `${rejectedWidth}%`, borderRadius: 2 }]} />
-				<View style={[{ backgroundColor: '#033C50', height: 5, width: `${100 - approvedWidth - rejectedWidth}%`, borderRadius: 2 }]} />
-			</View>
-		);
-	};
-
 	fetchImage = (serviceEndpoint: string, imageLink: string) => {
 		if (imageLink && imageLink !== '') {
 			return { uri: `${serviceEndpoint}public/${imageLink}` };
@@ -130,8 +118,8 @@ export class Projects extends React.Component<Props, State> {
 	getProjectList() {
 		if (this.props.ixo) {
 			this.props.ixo.project.listProjects().then((projectList: any) => {
-				let myProjects = this.getMyProjects(projectList);
-				this.setState({ projects: myProjects, isRefreshing: false });
+				// let myProjects = this.getMyProjects(projectList);
+				this.setState({ projects: projectList, isRefreshing: false });
 			});
 		}
 	}
@@ -153,6 +141,18 @@ export class Projects extends React.Component<Props, State> {
 		Object.assign(projectFound, { imageLoaded: true });
 		this.setState({ projects });
 	}
+
+	renderProgressBar = (total: number, approved: number, rejected: number) => {
+		const approvedWidth = Math.ceil((approved / total) * 100);
+		const rejectedWidth = Math.ceil((rejected / total) * 100);
+		return (
+			<View style={[ContainerStyles.flexRow, { justifyContent: 'flex-start', backgroundColor: 'transparent', paddingVertical: 10 }]}>
+				<LinearGradient start={[0, 1]} colors={['#016480', '#03d0FE']} style={{ height: 5, width: `${approvedWidth}%`, borderRadius: 2 }} />
+				<View style={[{ backgroundColor: '#E2223B', height: 5, width: `${rejectedWidth}%`, borderRadius: 2 }]} />
+				<View style={[{ backgroundColor: '#033C50', height: 5, width: `${100 - approvedWidth - rejectedWidth}%`, borderRadius: 2 }]} />
+			</View>
+		);
+	};
 
 	refreshProjects() {
 		this.setState({ isRefreshing: true, projects: [] });
@@ -237,42 +237,43 @@ export class Projects extends React.Component<Props, State> {
 		}
 	}
 
-	render() {
+	renderNoProjectsView() {
 		return (
-			<Drawer
-				ref={ref => {
-					this.drawer = ref;
-				}}
-				content={<SideBar navigation={this.props.navigation} />}
-				onClose={() => this.closeDrawer()}
+			<Content
+				style={{ backgroundColor: ThemeColors.blue_dark }}
+				refreshControl={<RefreshControl
+					refreshing={this.state.isRefreshing}
+					onRefresh={() => this.refreshProjects()}
+				/>}
+				// @ts-ignore
+				onScroll={(event) => this._onScroll(event)}
 			>
-				{this.state.projects.length > 0 ? (
-					<Content
-						style={{ backgroundColor: ThemeColors.blue_dark }}
-						refreshControl={<RefreshControl
-							refreshing={this.state.isRefreshing}
-							onRefresh={() => this.refreshProjects()}
-						/>}
-						// @ts-ignore
-						onScroll={(event) => this._onScroll(event)}
-					>
-						<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
-							<View style={[ProjectsStyles.flexLeft]}>
-								<Text style={ProjectsStyles.header}>{this.props.screenProps.t('projects:myProjects')}</Text>
-							</View>
-						</Header>
-						<StatusBar barStyle="light-content" />
-						<Content>{this.renderProject()}</Content>
-					</Content>
-				) : (
-					<ImageBackground source={background} style={ProjectsStyles.backgroundImage}>
-						<Container>
-							<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
-								<View style={[ProjectsStyles.flexLeft]}>
-									<Text style={ProjectsStyles.header}>{this.props.screenProps.t('projects:myProjects')}</Text>
-								</View>
-							</Header>
-							<StatusBar barStyle="light-content" />
+				<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
+					<View style={[ProjectsStyles.flexLeft]}>
+						<Text style={ProjectsStyles.header}>{this.props.screenProps.t('projects:myProjects')}</Text>
+					</View>
+				</Header>
+				<StatusBar barStyle="light-content" />
+				<Content>{this.renderProject()}</Content>
+			</Content>
+		);
+	}
+
+	renderProjectsView() {
+		return (
+			<ImageBackground source={background} style={ProjectsStyles.backgroundImage}>
+				<Container>
+					<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
+						<View style={[ProjectsStyles.flexLeft]}>
+							<Text style={ProjectsStyles.header}>{this.props.screenProps.t('projects:myProjects')}</Text>
+						</View>
+					</Header>
+					<StatusBar barStyle="light-content" />
+					{
+						(this.state.isRefreshing) ?
+						<Spinner color={ThemeColors.white} />
+						:
+						<View>
 							<View style={{ height: height * 0.4, flexDirection: 'row', justifyContent: 'center' }}>
 								<View style={{ flexDirection: 'column', justifyContent: 'center' }}>
 									<Image resizeMode={'center'} source={addProjects} />
@@ -289,8 +290,26 @@ export class Projects extends React.Component<Props, State> {
 									<Text style={ProjectsStyles.infoBox}>{this.props.screenProps.t('projects:visitIXO')}</Text>
 								</View>
 							</View>
-						</Container>
-					</ImageBackground>
+						</View>
+					}
+				</Container>
+			</ImageBackground>
+		);
+	}
+
+	render() {
+		return (
+			<Drawer
+				ref={ref => {
+					this.drawer = ref;
+				}}
+				content={<SideBar navigation={this.props.navigation} />}
+				onClose={() => this.closeDrawer()}
+			>
+				{this.state.projects.length > 0 ? (
+					this.renderNoProjectsView()
+				) : (
+					this.renderProjectsView()
 				)}
 				<DarkButton iconImage={qr} text={this.props.screenProps.t('projects:scan')} onPress={() => alert('bla')} />
 			</Drawer>
