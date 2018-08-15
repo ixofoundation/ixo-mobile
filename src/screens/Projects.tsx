@@ -118,8 +118,8 @@ export class Projects extends React.Component<Props, State> {
 	getProjectList() {
 		if (this.props.ixo) {
 			this.props.ixo.project.listProjects().then((projectList: any) => {
-				// let myProjects = this.getMyProjects(projectList);
-				this.setState({ projects: projectList, isRefreshing: false });
+				let myProjects = this.getMyProjects(projectList);
+				this.setState({ projects: myProjects, isRefreshing: false });
 			});
 		}
 	}
