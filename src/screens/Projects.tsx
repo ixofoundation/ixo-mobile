@@ -157,6 +157,7 @@ export class Projects extends React.Component<Props, State> {
 						<TouchableOpacity
 							onPress={() =>
 								this.props.navigation.navigate('Claims', {
+									claimForm: project.data.templates.claim.form,
 									myClaims: project.data.claims.filter(claim => claim.saDid === this.props.user!.did),
 									projectDid: project.projectDid,
 									title: project.data.title,

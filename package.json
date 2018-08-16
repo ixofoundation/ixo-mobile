@@ -50,11 +50,13 @@
   },
   "dependencies": {
     "@tradle/react-native-http": "^2.0.1",
+    "@types/base-64": "^0.1.2",
     "@types/react-redux": "^6.0.6",
     "@types/react-router-dom": "^4.3.0",
     "@types/redux-logger": "^3.0.6",
     "@types/underscore": "^1.8.8",
     "assert": "^1.4.1",
+    "base-64": "^0.1.0",
     "bip39": "^2.5.0",
     "browserify-zlib": "^0.1.4",
     "bs58": "^4.0.1",

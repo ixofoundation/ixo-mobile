@@ -580,6 +580,10 @@
     Base64 "~0.2.0"
     inherits "~2.0.1"
 
+"@types/base-64@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@types/base-64/-/base-64-0.1.2.tgz#63ac318302cdabb5f04e8ae2a56e54d4832107e2"
+
 "@types/es6-promise@^3.3.0":
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/@types/es6-promise/-/es6-promise-3.3.0.tgz#61b55e554fd807b563f158a7986ee53d3a5a5a9d"
@@ -1783,6 +1787,10 @@ babylon@^7.0.0-beta:
 balanced-match@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
+
+base-64@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
 
 base-x@^3.0.2:
   version "3.0.4"

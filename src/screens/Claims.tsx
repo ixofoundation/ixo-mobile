@@ -35,6 +35,8 @@ interface PropTypes {
 }
 interface State {
 	claimsList: IClaim[];
+	claimForm: any;
+	pdsURL: any;
 }
 export interface StateProps {
 	ixo?: any;
@@ -47,15 +49,19 @@ class Claims extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			claimsList: []
+			claimsList: [],
+			claimForm: null,
+			pdsURL: null
 		};
 	}
 
 	componentDidMount() {
-		if (this.props.navigation.state.params.myClaims) {
-			this.setState({ claimsList: this.props.navigation.state.params.myClaims });
+		let componentProps: any = this.props.navigation.state.params;
+		if (componentProps) {
+			this.setState({ claimsList: componentProps.myClaims, claimForm: componentProps.claimForm, pdsURL: componentProps.pdsURL });
 		}
 	}
+
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
 		const {
 			state: {
@@ -147,7 +153,15 @@ class Claims extends React.Component<Props, State> {
 					</Item>
 				</Header>
 				<Content style={{ backgroundColor: ThemeColors.white }}>{this.renderClaims()}</Content>
-				<TouchableOpacity onPress={() => this.props.navigation.navigate('NewClaim', { projectDid })} style={ClaimsStyles.SubmitButton}>
+				<TouchableOpacity
+					onPress={() =>
+						this.props.navigation.navigate('NewClaim', {
+							claimForm: this.state.claimForm,
+							pdsURL: this.state.pdsURL
+						})
+					}
+					style={ClaimsStyles.SubmitButton}
+				>
 					<View style={Containers.flexColumn}>
 						<Text style={{ color: ThemeColors.black, fontSize: 15 }}>Submit Claim</Text>
 					</View>
