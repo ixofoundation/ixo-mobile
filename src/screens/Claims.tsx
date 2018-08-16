@@ -1,15 +1,22 @@
 // TODO styling needs to move to styling file
 import * as React from 'react';
-import { StatusBar, ListView, Alert, TouchableOpacity } from 'react-native';
-import { Container, Header, Item, Icon, Input, Content, Text, List, Button, View, Spinner } from 'native-base';
+import { LinearGradient } from 'expo';
+import { StatusBar, ListView, Alert, TouchableOpacity, ImageBackground, Image, Dimensions } from 'react-native';
+import { Container, Header, Item, Icon, Input, Content, Text, List, Button, View, Spinner, Tab, Tabs } from 'native-base';
 import HeaderSync from '../components/HeaderSync';
 import { IClaim, IProject } from '../models/project';
 import { connect } from 'react-redux';
 import Containers from '../styles/Containers';
 import ClaimsStyles from '../styles/Claims';
-import { ThemeColors } from '../styles/Colors';
+import { ThemeColors, ClaimsButton } from '../styles/Colors';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { IUser } from '../models/user';
+import LightButton from '../components/LightButton';
+
+const background = require('../../assets/backgrounds/background_2.png');
+const addClaims = require('../../assets/savedclaims-visual.png');
+const submittedClaims = require('../../assets/submittedclaims-visual.png');
+const { height } = Dimensions.get('window');
 
 const dummyData = [
 	// TODO get correct data structure
@@ -27,16 +34,22 @@ const dummyData = [
 		id: '3',
 		address: 'fddkce2322kjsdl1dws30092',
 		submitDate: '04-09-18'
+	},
+	{
+		id: '4',
+		address: 'fasdfasddkce2322kjsdl1dws30092',
+		submitDate: '04-05-18'
 	}
 ];
 
 interface PropTypes {
 	navigation: any;
+	screenProps: any;
 }
 interface State {
 	claimsList: IClaim[];
 	claimForm: any;
-	pdsURL: any;
+	pdsURL: string;
 }
 export interface StateProps {
 	ixo?: any;
@@ -46,12 +59,35 @@ export interface StateProps {
 export interface Props extends PropTypes, StateProps {}
 
 class Claims extends React.Component<Props, State> {
+	static navigationOptions = ({ navigation }: { navigation: any }) => {
+		const {
+			state: {
+				params: { title = 'Project Name' }
+			}
+		} = navigation;
+		return {
+			headerStyle: {
+				backgroundColor: ThemeColors.blue_dark,
+				borderBottomColor: ThemeColors.blue_dark
+			},
+			// headerRight: <HeaderSync />,
+			headerRight: <Icon name="search" onPress={() => alert('todo')} style={{ paddingRight: 10, color: ThemeColors.white }} />,
+			title,
+			headerTitleStyle: {
+				color: ThemeColors.white,
+				textAlign: 'center',
+				alignSelf: 'center'
+			},
+			headerTintColor: ThemeColors.white
+		};
+	};
+
 	constructor(props: Props) {
 		super(props);
 		this.state = {
 			claimsList: [],
 			claimForm: null,
-			pdsURL: null
+			pdsURL: ''
 		};
 	}
 
@@ -62,110 +98,113 @@ class Claims extends React.Component<Props, State> {
 		}
 	}
 
-	static navigationOptions = ({ navigation }: { navigation: any }) => {
-		const {
-			state: {
-				params: { title = 'Project Name' }
-			}
-		} = navigation;
-		return {
-			headerRight: <HeaderSync />,
-			title,
-			headerTitleStyle: {
-				color: ThemeColors.black,
-				textAlign: 'center',
-				alignSelf: 'center'
-			},
-			headerTintColor: ThemeColors.black
-		};
-	};
-
 	renderClaims() {
-		const ds = new ListView.DataSource({ rowHasChanged: (r1: any, r2: any) => r1 !== r2 });
 		if (this.state.claimsList) {
 			return (
-				<List
-					style={{ marginLeft: 6, marginRight: 6 }}
-					rightOpenValue={-75}
-					dataSource={ds.cloneWithRows(this.state.claimsList)}
-					renderRightHiddenRow={(data, secId, rowId, rowMap) => (
-						<Button
-							full
-							danger
-							style={ClaimsStyles.DeleteButton}
-							onPress={_ => {
-								Alert.alert('Delete claim', 'Are you sure you want to delete the claim?', [
-									{
-										text: 'OK'
-									},
-									{ text: 'Cancel' }
-								]);
-							}}
-						>
-							<Text style={ClaimsStyles.DeleteButtonText}>Delete</Text>
-						</Button>
-					)}
-					renderRow={(claim: IClaim) => (
-						// <TouchableOpacity onPress={() => this.props.navigation.navigate('ProjectDetails')} >
-						<TouchableOpacity>
-							<View style={[Containers.flexColumn, ClaimsStyles.ClaimBox]}>
-								<Text style={{ color: ThemeColors.grey, fontSize: 15 }}>{claim.txHash}</Text>
-								<Text style={{ color: ThemeColors.grey, fontSize: 10 }}>{claim.date}</Text>
-							</View>
-						</TouchableOpacity>
-					)}
-				/>
+				<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
+					{this.state.claimsList.map((claim: IClaim) => {
+						return (
+							<TouchableOpacity key={claim.txHash}>
+								<LinearGradient
+									start={[0, 1]}
+									colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]}
+									style={[ClaimsStyles.ClaimBox]}
+								>
+									<Text style={{ color: ThemeColors.white, fontSize: 20 }}>{claim.txHash}</Text>
+									<Text style={{ color: ThemeColors.blue_lightest, fontSize: 15, paddingTop: 5 }}>Claim created {claim.date}</Text>
+								</LinearGradient>
+							</TouchableOpacity>
+						);
+					})}
+				</Container>
 			);
 		}
 		return <Spinner color={ThemeColors.black} />;
 	}
 
+	renderNoSubmittedClaims() {
+		return (
+			<ImageBackground source={background} style={ClaimsStyles.backgroundImage}>
+				<Container>
+					<View>
+						<View style={{ height: height * 0.4, flexDirection: 'row', justifyContent: 'center' }}>
+							<View style={{ flexDirection: 'column', justifyContent: 'center' }}>
+								<Image resizeMode={'center'} source={submittedClaims} />
+							</View>
+						</View>
+						<View>
+							<View style={[ClaimsStyles.flexLeft]}>
+								<Text style={[ClaimsStyles.header, { color: ThemeColors.blue_lightest }]}>
+									{this.props.screenProps.t('claims:noSubmissions')}
+								</Text>
+							</View>
+							<View style={{ width: '100%' }}>
+								<View style={ClaimsStyles.divider} />
+							</View>
+							<View style={ClaimsStyles.flexLeft}>
+								<Text style={ClaimsStyles.infoBox}>{this.props.screenProps.t('claims:savedSubmissionsInfo')}</Text>
+							</View>
+						</View>
+					</View>
+				</Container>
+			</ImageBackground>
+		);
+	}
+
+	renderNoSavedClaims() {
+		return (
+			<ImageBackground source={background} style={ClaimsStyles.backgroundImage}>
+				<Container>
+					<View>
+						<View style={{ height: height * 0.4, flexDirection: 'row', justifyContent: 'center' }}>
+							<View style={{ flexDirection: 'column', justifyContent: 'center' }}>
+								<Image resizeMode={'center'} source={addClaims} />
+							</View>
+						</View>
+						<View>
+							<View style={[ClaimsStyles.flexLeft]}>
+								<Text style={[ClaimsStyles.header, { color: ThemeColors.blue_lightest }]}>
+									{this.props.screenProps.t('claims:noClaims')}
+								</Text>
+							</View>
+							<View style={{ width: '100%' }}>
+								<View style={ClaimsStyles.divider} />
+							</View>
+							<View style={ClaimsStyles.flexLeft}>
+								<Text style={ClaimsStyles.infoBox}>{this.props.screenProps.t('claims:saveClaimsOffline')}</Text>
+							</View>
+						</View>
+					</View>
+				</Container>
+			</ImageBackground>
+		);
+	}
+
 	render() {
 		const {
 			state: {
-				params: { projectDid = '' }
+				params: { projectDid = '', title }
 			}
 		} = this.props.navigation;
 		return (
-			<Container>
+			<Container style={{ backgroundColor: ThemeColors.blue_dark }}>
 				<StatusBar barStyle="light-content" />
-				<Header style={{ borderBottomWidth: 0 }}>
-					<View style={[Containers.flexRow, { justifyContent: 'space-between' }]}>
-						<TouchableOpacity style={[Containers.flexRow, ClaimsStyles.BadgeBoxContainer]}>
-							<View style={[Containers.flexRow, ClaimsStyles.Badge]}>
-								<Text style={{ color: ThemeColors.black, textAlign: 'left', padding: 5, fontSize: 13 }}>67</Text>
-							</View>
-							<Text style={{ color: ThemeColors.black, paddingTop: 5, paddingBottom: 5 }}> Saved</Text>
-						</TouchableOpacity>
-
-						<TouchableOpacity
-							onPress={() => this.props.navigation.navigate('SubmittedClaims')}
-							style={[Containers.flexRow, ClaimsStyles.BoxContainer]}
-						>
-							<Text style={{ color: ThemeColors.black, paddingTop: 5, paddingBottom: 5 }}>Submitted</Text>
-						</TouchableOpacity>
-					</View>
-				</Header>
-				<Header searchBar rounded style={{ borderBottomWidth: 0 }}>
-					<Item>
-						<Icon name="ios-search" />
-						<Input placeholder="Search my claims" />
-					</Item>
-				</Header>
-				<Content style={{ backgroundColor: ThemeColors.white }}>{this.renderClaims()}</Content>
-				<TouchableOpacity
+				<Tabs tabBarUnderlineStyle={{ borderWidth: 1 }} tabContainerStyle={{ borderBottomColor: ThemeColors.blue_dark }}>
+					<Tab heading={this.props.screenProps.t('claims:saved')}>
+						{this.state.claimsList.length > 0 ? this.renderClaims() : this.renderNoSavedClaims()}
+					</Tab>
+					<Tab heading={this.props.screenProps.t('claims:submitted')}>{this.renderNoSubmittedClaims()}</Tab>
+				</Tabs>
+				<LightButton
+					propStyles={{ backgroundColor: ThemeColors.red, borderColor: ThemeColors.red, borderRadius: 0 }}
 					onPress={() =>
 						this.props.navigation.navigate('NewClaim', {
 							claimForm: this.state.claimForm,
 							pdsURL: this.state.pdsURL
 						})
 					}
-					style={ClaimsStyles.SubmitButton}
-				>
-					<View style={Containers.flexColumn}>
-						<Text style={{ color: ThemeColors.black, fontSize: 15 }}>Submit Claim</Text>
-					</View>
-				</TouchableOpacity>
+					text={this.props.screenProps.t('claims:submitButton')}
+				/>
 			</Container>
 		);
 	}

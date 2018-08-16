@@ -2,21 +2,35 @@ require('node-libs-react-native/globals');
 import * as React from 'react';
 import { StyleProvider, Root } from 'native-base';
 import { Provider } from 'react-redux';
-import { Font, ScreenOrientation } from 'expo';
-
+import { I18nextProvider, translate } from 'react-i18next';
+import { Font, ScreenOrientation, Util } from 'expo';
+// @ts-ignore
 import getTheme from './native-base-theme/components';
 import Loading from './src/screens/Loading';
 import Stack from './Routes';
-
+import i18n from './i18n';
+// @ts-ignore
 import Ionicons from './node_modules/@expo/vector-icons/fonts/Ionicons.ttf';
 import { AsyncStorage } from './node_modules/@types/react-native';
 import { createPublicSiteStore } from './src/redux/store';
 const Roboto_medium = require('./assets/fonts/Roboto/Roboto-Medium.ttf');
+
 interface State {
 	isReady: boolean;
 }
 
 const store = createPublicSiteStore();
+
+const TranslateStack = () => {
+	return <Stack screenProps={{ t: i18n.getFixedT('') }} />;
+};
+
+const ReloadAppOnLanguageChange = translate('translation', {
+	bindI18n: 'languageChanged',
+	bindStore: 'false'
+})(TranslateStack);
+
+
 export default class App extends React.Component<{}, State> {
 	state = {
 		isReady: false
@@ -37,7 +51,9 @@ export default class App extends React.Component<{}, State> {
 				<Root>
 					<StyleProvider style={getTheme()}>
 						<Provider store={store}>
-							<Stack />
+							<I18nextProvider i18n={ i18n }>
+								<ReloadAppOnLanguageChange />
+							</I18nextProvider>
 						</Provider>
 					</StyleProvider>
 				</Root>

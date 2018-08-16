@@ -1,0 +1,48 @@
+{
+    "onboarding": {
+        "appOnboarding": "App onboarding screens",
+        "begin": "Begin",
+        "pushNotification": "Allow push notifications for important updates",
+        "pushNotificationButton": "Allow notifications",
+        "locationLogging": "Allow Location for location logging",
+        "locationLoggingButton": "Allow location"
+    },
+    "connectIXO": {
+        "keySafeInfo": "Open the ixo Key Safe on your desktop",
+        "qrCodeInfo": "Go to your profile and scan the QR code to connect",
+        "scanButton": "SCAN IXO QR CODE"
+    },
+    "connectIXOComplete": {
+        "unlock": "UNLOCK",
+        "scanSuccessful": "Scan successful!",
+        "privacyImportance": "Your privacy is of utmost importance.",
+        "unlockInformation": "Please unlock your ixo information with your ixo Key Safe password."
+    },
+    "scanQR": {
+        "scan": "Scan"
+    },
+    "login": {
+        "hi": "Hi",
+        "password": "password",
+        "signIn": "SIGN IN",
+        "attention": "You have alerts for your attention.",
+        "forgotPassword": "Forgot your password?",
+        "wrongPassword": "Password incorrect",
+        "loginFailed": "Login Failed"
+    },
+    "projects": {
+        "myProjects": "My projects",
+        "addFirstProject": "Add your first project",
+        "visitIXO": "Visit ixo.world and sign up for your first project",
+        "scan": "SCAN"
+    },
+    "claims": {
+        "saved": "SAVED",
+        "submitted": "SUBMITTED",
+        "noClaims": "You have no saved claims",
+        "saveClaimsOffline": "Save and edit your claims offline. Submit when it is convenient for you.",
+        "submitButton": "SUBMIT NEW CLAIM",
+        "noSubmissions": "You have no submitted claims",
+        "savedSubmissionsInfo": "View your pending, approved and rejected claims here."
+    }
+}

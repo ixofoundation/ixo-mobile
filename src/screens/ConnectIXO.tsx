@@ -23,16 +23,16 @@ const LogoView = () => (
 	</View>
 );
 
-const InfoBlocks = () => (
+const InfoBlocks = ({ keySafeText, qrCodeText }: { keySafeText: string, qrCodeText: string }) => (
 	<View style={[ContainerStyles.flexRow, { alignItems: 'flex-end', marginBottom: height * 0.04 }]}>
 		<View style={[ContainerStyles.flexRow, ConnectIXOStyles.infoBlock]}>
 			<Image resizeMode={'contain'} style={ConnectIXOStyles.infoBlockImage} source={keysafelogo} />
-			<Text style={{ color: ThemeColors.white, fontSize: 12, padding: 10, width: width * 0.35 }}>Open the ixo Key Safe on your desktop</Text>
+			<Text style={{ color: ThemeColors.white, fontSize: 12, padding: 10, width: width * 0.35 }}>{keySafeText}</Text>
 		</View>
 		<View style={[ContainerStyles.flexRow, ConnectIXOStyles.infoBlock, { borderLeftWidth: 0 }]}>
 			<Image resizeMode={'contain'} style={ConnectIXOStyles.infoBlockImage} source={qr} />
 			<Text style={{ color: ThemeColors.white, fontSize: 12, padding: 10, width: width * 0.35 }}>
-				Go to your profile and scan the QR code to connect
+				{qrCodeText}
 			</Text>
 		</View>
 	</View>
@@ -40,6 +40,7 @@ const InfoBlocks = () => (
 
 interface PropTypes {
 	navigation: any;
+	screenProps: any;
 }
 
 export default class ConnectIXO extends React.Component<PropTypes, {}> {
@@ -53,9 +54,9 @@ export default class ConnectIXO extends React.Component<PropTypes, {}> {
 				<StatusBar barStyle="light-content" />
 				<View style={[ContainerStyles.flexColumn, { justifyContent: 'space-between' }]}>
 					<LogoView />
-					<InfoBlocks />
+					<InfoBlocks qrCodeText={this.props.screenProps.t('connectIXO:qrCodeInfo')} keySafeText={this.props.screenProps.t('connectIXO:keySafeInfo')} />
 					<DarkButton
-						text={'SCAN IXO QR CODE'}
+						text={this.props.screenProps.t('connectIXO:scanButton')}
 						onPress={() => this.props.navigation.navigate('ScanQR')}
 						propStyles={{ marginBottom: height * 0.1 }}
 					/>

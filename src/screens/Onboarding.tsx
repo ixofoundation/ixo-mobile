@@ -23,6 +23,7 @@ const LogoView = () => (
 
 interface PropTypes {
   navigation: any,
+  screenProps: any,
 };
 
 export default class OnBoarding extends React.Component<PropTypes> {
@@ -77,22 +78,21 @@ export default class OnBoarding extends React.Component<PropTypes> {
           <Swiper ref={swiper => this.swiper = swiper}  scrollEnabled={false} activeDotColor={ThemeColors.white} dotColor={ThemeColors.blue_light} showsButtons={false}>
             <View style={[ContainerStyles.flexColumn, ContainerStyles.backgroundColorDark]}>
               <LogoView />
-              {/* <View style={{ flex: 1.5 }}> */}
               <View>
-                <Text style={{ textAlign: 'center', color: ThemeColors.white, paddingBottom: 10 }}>App onboarding screens</Text>
+                <Text style={{ textAlign: 'center', color: ThemeColors.white, paddingBottom: 10 }}>{this.props.screenProps.t('onboarding:appOnboarding')}</Text>
               </View>
               <View style={[ContainerStyles.flexRow]}>
-                <Button style={OnBoardingStyles.buttons} onPress={() => this.swiper.scrollBy(1)} bordered light><Text>Begin</Text></Button>
+                <Button style={OnBoardingStyles.buttons} onPress={() => this.swiper.scrollBy(1)} bordered light><Text>{this.props.screenProps.t('onboarding:begin')}</Text></Button>
               </View>
             </View>
             <View style={[OnBoardingStyles.slide, ContainerStyles.backgroundColorDark]}>
               <LogoView />
               <View style={OnBoardingStyles.textBoxButtonContainer}>
                 <View style={OnBoardingStyles.textBox}>
-                  <Text style={{ textAlign: 'center', color: ThemeColors.white }}>Allow push notifications for important updates</Text>
+                  <Text style={{ textAlign: 'center', color: ThemeColors.white }}>{this.props.screenProps.t('onboarding:pushNotification')}</Text>
                 </View>
                 <View style={[ContainerStyles.flexRow]}>
-                  <Button style={OnBoardingStyles.buttons} onPress={() => this.getNotifications()} bordered light><Text>Allow notifications</Text></Button>
+                  <Button style={OnBoardingStyles.buttons} onPress={() => this.getNotifications()} bordered light><Text>{this.props.screenProps.t('onboarding:pushNotificationButton')}</Text></Button>
                 </View>
               </View>
             </View>
@@ -100,10 +100,10 @@ export default class OnBoarding extends React.Component<PropTypes> {
               <LogoView />
               <View style={OnBoardingStyles.textBoxButtonContainer}>
                 <View style={OnBoardingStyles.textBox}>
-                  <Text style={{ textAlign: 'center', color: ThemeColors.white }}>Allow Location for location logging</Text>
+                  <Text style={{ textAlign: 'center', color: ThemeColors.white }}>{this.props.screenProps.t('onboarding:locationLogging')}</Text>
                 </View>
                 <View style={[ContainerStyles.flexRow]}>
-                  <Button style={OnBoardingStyles.buttons} onPress={() => this.getLocation()} bordered light><Text>Allow location</Text></Button>
+                  <Button style={OnBoardingStyles.buttons} onPress={() => this.getLocation()} bordered light><Text>{this.props.screenProps.t('onboarding:locationLoggingButton')}</Text></Button>
                 </View>
               </View>
             </View>

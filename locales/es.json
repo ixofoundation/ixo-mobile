@@ -1,0 +1,12 @@
+{
+    "onboarding": {
+        "appOnboarding": "Pantallas de incorporación de aplicaciones",       
+    },
+    "login": {
+        "hi": "hola",
+        "password": "contraseña",
+        "signIn": "registrarse",
+        "attention": "Tienes alertas para tu atención.",
+        "forgotPassword": "Olvidaste tu contraseña?"
+    }
+}

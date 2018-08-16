@@ -1,6 +1,7 @@
 import React from 'react';
 import { Fingerprint, SecureStore } from 'expo';
 import { StackActions, NavigationActions } from 'react-navigation';
+import _ from 'underscore';
 import {
 	KeyboardAvoidingView,
 	View,
@@ -13,22 +14,21 @@ import {
 	AsyncStorage,
 	ImageBackground
 } from 'react-native';
-import { Text, Button, Icon, Item, Label, Input, Toast, Spinner } from 'native-base';
+import { Text, Item, Label, Input, Toast, Spinner } from 'native-base';
 import { connect } from 'react-redux';
+import { translate } from 'react-i18next';
 
 import LoginStyles from '../styles/Login';
 import ContainerStyles from '../styles/Containers';
 import { ThemeColors } from '../styles/Colors';
-import { SecureStorageKeys, LocalStorageKeys, UserStorageKeys } from '../models/phoneStorage';
-import { IMnemonic, ISovrinDid } from '../models/sovrin';
-import { Decrypt } from '../utils/sovrin';
+import { SecureStorageKeys, UserStorageKeys } from '../models/phoneStorage';
 import DarkButton from '../components/DarkButton';
 import IconEyeOff from '../../assets/svg/IconEyeOff';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { IUser } from '../models/user';
 import { initUser } from '../redux/user/user_action_creators';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const logo = require('../../assets/logo.png');
 const background = require('../../assets/backgrounds/background_1.jpg');
 const IconFingerprint = require('../../assets/iconFingerprint.png');
@@ -43,6 +43,7 @@ const LogoView = () => (
 
 interface PropTypes {
 	navigation: any;
+	screenProps: any;
 }
 
 interface StateTypes {
@@ -154,7 +155,7 @@ export class Login extends React.Component<Props, StateTypes> {
 					);
 				} else {
 					Toast.show({
-						text: 'Password incorrect',
+						text: this.props.screenProps.t('login:wrongPassword'),
 						buttonText: 'OK',
 						type: 'warning',
 						position: 'top'
@@ -164,7 +165,7 @@ export class Login extends React.Component<Props, StateTypes> {
 			})
 			.catch(() => {
 				Toast.show({
-					text: 'Login Failed',
+					text: this.props.screenProps.t('login:loginFailed'),
 					buttonText: 'OK',
 					type: 'warning',
 					position: 'top'
@@ -176,19 +177,19 @@ export class Login extends React.Component<Props, StateTypes> {
 	render() {
 		return (
 			<ImageBackground source={background} style={[LoginStyles.wrapper]}>
-				<StatusBar barStyle="light-content" />
 				<View style={[ContainerStyles.flexColumn]}>
+				<StatusBar barStyle="light-content" />
 					<KeyboardAvoidingView behavior={'position'}>
 						<LogoView />
 						<View style={[LoginStyles.flexLeft]}>
-							<Text style={LoginStyles.header}>Hi {this.state.userName}</Text>
+							<Text style={LoginStyles.header}>{this.props.screenProps.t('login:hi')} {this.state.userName}</Text>
 						</View>
 						<View style={{ width: '100%' }}>
 							<View style={LoginStyles.divider} />
 						</View>
 
 						<View style={LoginStyles.flexLeft}>
-							<Text style={LoginStyles.infoBox}>You have alerts for your attention.</Text>
+							<Text style={LoginStyles.infoBox}>{this.props.screenProps.t('login:attention')} </Text>
 						</View>
 
 						<View style={[ContainerStyles.flexRow, { width: width * 0.8, flex: 0.2, paddingBottom: 20 }]}>
@@ -197,7 +198,7 @@ export class Login extends React.Component<Props, StateTypes> {
 								stackedLabel={!this.state.revealPassword}
 								floatingLabel={this.state.revealPassword}
 							>
-								<Label style={{ color: ThemeColors.blue_lightest }}>Password</Label>
+								<Label style={{ color: ThemeColors.blue_lightest }}>{this.props.screenProps.t('login:password')}</Label>
 								<Input
 									style={{ color: ThemeColors.white }}
 									value={this.state.password}
@@ -214,10 +215,10 @@ export class Login extends React.Component<Props, StateTypes> {
 						{this.state.loading ? (
 							<Spinner color={ThemeColors.blue_medium} />
 						) : (
-							<DarkButton text={'SIGN IN'} onPress={() => this.signIn()} />
+							<DarkButton text={this.props.screenProps.t('login:signIn')} onPress={() => this.signIn()} />
 						)}
 						<View style={[ContainerStyles.flexRow, { flex: 0.2 }]}>
-							<Text style={LoginStyles.forgotPassword}>Forgot your password?</Text>
+							<Text style={LoginStyles.forgotPassword}>{this.props.screenProps.t('login:forgotPassword')}</Text>
 						</View>
 						<TouchableOpacity
 							style={[ContainerStyles.flexRow, { flex: 0.2, paddingBottom: 20 }]}
