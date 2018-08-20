@@ -1,6 +1,7 @@
 import { Platform } from "react-native";
 
 import variable from "./../variables/platform";
+import { ThemeColors } from '../../src/styles/Colors';
 
 export default (variables = variable) => {
   const itemTheme = {
@@ -211,7 +212,7 @@ export default (variables = variable) => {
     borderTopWidth: 0,
     borderRightWidth: 0,
     borderLeftWidth: 0,
-    borderColor: variables.inputBorderColor,
+    borderColor: ThemeColors.orange,
     backgroundColor: "transparent",
     flexDirection: "row",
     alignItems: "center",

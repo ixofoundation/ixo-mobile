@@ -22,22 +22,22 @@ const dummyData = [
 	// TODO get correct data structure
 	{
 		id: '1',
-		address: 'sldkce2322kjsdlckd230092',
+		txHash: 'PROJECT NAME #1',
 		submitDate: '04-09-18'
 	},
 	{
 		id: '2',
-		address: 'cd32de2322kjsdlckd24f292',
+		txHash: 'PROJECT NAME #2',
 		submitDate: '04-09-18'
 	},
 	{
 		id: '3',
-		address: 'fddkce2322kjsdl1dws30092',
+		txHash: 'PROJECT NAME #3',
 		submitDate: '04-09-18'
 	},
 	{
 		id: '4',
-		address: 'fasdfasddkce2322kjsdl1dws30092',
+		txHash: 'PROJECT NAME #4',
 		submitDate: '04-05-18'
 	}
 ];
@@ -94,15 +94,16 @@ class Claims extends React.Component<Props, State> {
 	componentDidMount() {
 		let componentProps: any = this.props.navigation.state.params;
 		if (componentProps) {
+			console.log('CLAIMS', componentProps.myClaims);
 			this.setState({ claimsList: componentProps.myClaims, claimForm: componentProps.claimForm, pdsURL: componentProps.pdsURL });
 		}
 	}
 
 	renderClaims() {
-		if (this.state.claimsList) {
+		// if (this.state.claimsList) {
 			return (
 				<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
-					{this.state.claimsList.map((claim: IClaim) => {
+					{dummyData.map((claim: any) => {
 						return (
 							<TouchableOpacity key={claim.txHash}>
 								<LinearGradient
@@ -111,14 +112,14 @@ class Claims extends React.Component<Props, State> {
 									style={[ClaimsStyles.ClaimBox]}
 								>
 									<Text style={{ color: ThemeColors.white, fontSize: 20 }}>{claim.txHash}</Text>
-									<Text style={{ color: ThemeColors.blue_lightest, fontSize: 15, paddingTop: 5 }}>Claim created {claim.date}</Text>
+									<Text style={{ color: ThemeColors.blue_lightest, fontSize: 15, paddingTop: 5 }}>Claim created {claim.submitDate}</Text>
 								</LinearGradient>
 							</TouchableOpacity>
 						);
 					})}
 				</Container>
 			);
-		}
+		// }
 		return <Spinner color={ThemeColors.black} />;
 	}
 
@@ -191,7 +192,8 @@ class Claims extends React.Component<Props, State> {
 				<StatusBar barStyle="light-content" />
 				<Tabs tabBarUnderlineStyle={{ borderWidth: 1 }} tabContainerStyle={{ borderBottomColor: ThemeColors.blue_dark }}>
 					<Tab heading={this.props.screenProps.t('claims:saved')}>
-						{this.state.claimsList.length > 0 ? this.renderClaims() : this.renderNoSavedClaims()}
+						{/* {this.state.claimsList.length > 0 ? this.renderClaims() : this.renderNoSavedClaims()} */}
+						{this.renderClaims()}
 					</Tab>
 					<Tab heading={this.props.screenProps.t('claims:submitted')}>{this.renderNoSubmittedClaims()}</Tab>
 				</Tabs>

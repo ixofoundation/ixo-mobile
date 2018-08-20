@@ -1,4 +1,4 @@
-import { StyleSheet, ViewStyle, Dimensions } from 'react-native';
+import { StyleSheet, ViewStyle, TextStyle, Dimensions } from 'react-native';
 
 import { ThemeColors } from '../styles/Colors';
 
@@ -7,8 +7,8 @@ const { width } = Dimensions.get('window');
 interface Style {
   wrapper: ViewStyle,
   photoBoxContainer: ViewStyle,
-  photoBoxCloseIcon: ViewStyle,
-  photoBoxCameraIcon: ViewStyle,
+  photoBoxCloseIcon: TextStyle,
+  photoBoxCameraIcon: TextStyle,
 }
 
 const styles = StyleSheet.create<Style>({

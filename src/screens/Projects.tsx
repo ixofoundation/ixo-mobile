@@ -54,7 +54,7 @@ export class Projects extends React.Component<Props, State> {
 		};
 	}
 
-	static navigationOptions = ({ navigation }: { navigation: any }) => {
+	static navigationOptions = ({ navigation, screenProps }: { navigation: any, screenProps: any }) => {
 		const { params = {} } = navigation.state;
 		return {
 			headerStyle: {
@@ -66,7 +66,7 @@ export class Projects extends React.Component<Props, State> {
 				textAlign: 'center',
 				alignSelf: 'center'
 			},
-			title: (params.showTitle) ? 'My Projects' : '',
+			title: (params.showTitle) ? screenProps.t('projects:myProjects') : '',
 			// headerTintColor: ThemeColors.white,
 			headerLeft: (
 				<Icon
@@ -82,6 +82,7 @@ export class Projects extends React.Component<Props, State> {
 
 	componentDidMount() {
 		this.props.navigation.setParams({
+			// @ts-ignore
 			drawer: this.drawer
 		});
 		this.props.onIxoInit();
@@ -94,6 +95,7 @@ export class Projects extends React.Component<Props, State> {
 	}
 
 	closeDrawer() {
+		// @ts-ignore
 		this.drawer._root.close();
 	}
 
@@ -302,6 +304,7 @@ export class Projects extends React.Component<Props, State> {
 		return (
 			<Drawer
 				ref={ref => {
+					// @ts-ignore
 					this.drawer = ref;
 				}}
 				content={<SideBar navigation={this.props.navigation} />}

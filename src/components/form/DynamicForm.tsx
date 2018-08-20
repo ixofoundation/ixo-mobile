@@ -1,13 +1,37 @@
 import React from 'react';
+import { TouchableOpacity } from 'react-native';
 import { FormStyles } from '../../models/form';
-import { View, Container, Content, Label } from 'native-base';
+import { Textarea, Item, Form, Input, View, Label, Icon, Text } from 'native-base';
+import changeCase from 'change-case';
+
+import DynamicFormStyles from '../../styles/componentStyles/DynamicForm';
+import ContainerStyles from '../../styles/Containers';
+import { ThemeColors } from '../../styles/Colors';
+
+const PhotoBox = () => (
+	<TouchableOpacity style={DynamicFormStyles.photoBoxContainer}>
+		<View style={[ContainerStyles.flexRow]}>
+			<View style={[ContainerStyles.flexColumn]}>
+				<Icon style={DynamicFormStyles.photoBoxCameraIcon} name="camera" />
+			</View>
+		</View>
+	</TouchableOpacity>
+);
+
+const AddMoreBox = () => (
+	<TouchableOpacity style={DynamicFormStyles.photoBoxContainer}>
+		<View style={{ flex: 0.1 }} />
+		<View style={[ContainerStyles.flexRow, { flex: 0.8 }]}>
+			<Icon style={DynamicFormStyles.photoBoxCameraIcon} name="add" />
+		</View>
+		<View style={{ flex: 0.1 }} />
+	</TouchableOpacity>
+);
 
 export interface ParentProps {
 	formStyle: FormStyles;
 	formSchema: any;
 	presetValues?: any[];
-	//submitText?: string;
-	//projectDID?: string;
 }
 
 export interface State {
@@ -67,32 +91,43 @@ export default class DynamicForm extends React.Component<Props, State> {
 		};
 	};
 
-	/* handleRenderButtons = () => {
-
-        return (
-            <ButtonContainer>
-                <div className="row">
-                    <div className="col-md-6">
-                        <ReturnButton onClick={() => history.back(-1)}>Back</ReturnButton>
-                    </div>
-                    <div className="col-md-6">
-                        <SubmitButton onClick={this.handleSubmit}>
-                            {this.props.submitText ? this.props.submitText : 'Submit Form'}
-                            <i className="icon-approvetick" />
-                        </SubmitButton>
-                    </div>
-                </div>
-            </ButtonContainer>
-        );
-    }; */
-
 	render() {
 		return (
-			<View>
+			<Form>
 				{this.props.formSchema.map((field: any, i: any) => {
-					return <Label>{field.label}</Label>;
+					switch (field.type) {
+						case 'number':
+						case 'text':
+						case 'email':
+							return (
+								<Item key={i} floatingLabel >
+									<Label>{changeCase.sentenceCase(field.name)}</Label>
+									<Input />
+								</Item>
+							);
+						case 'textarea' :
+							return (
+								<View style={{ marginTop: 20, paddingVertical: 10, borderTopColor: ThemeColors.grey, borderTopWidth: 1 }} key={i}>
+									<Text>{changeCase.sentenceCase(field.name)}</Text>
+									<Textarea key={i} rowSpan={5} bordered />
+								</View>
+							);
+						case 'image' :
+							return (
+								<View style={{ marginTop: 20, paddingVertical: 10, borderTopColor: ThemeColors.grey, borderTopWidth: 1 }} key={i}>
+									<Text>{changeCase.sentenceCase(field.name)}</Text>
+									<PhotoBox />
+								</View>
+							)
+						case 'select':
+						case 'country':
+						case 'template':
+						case 'radio':
+						default:
+							return <Label key={i}>{field.label}</Label>;
+					}
 				})}
-			</View>
+          </Form>
 		);
 	}
 }

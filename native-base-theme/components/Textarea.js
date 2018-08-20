@@ -1,4 +1,5 @@
 import variable from "./../variables/platform";
+import { ThemeColors } from '../../src/styles/Colors';
 
 export default (variables = variable) => {
   const textAreaTheme = {
@@ -10,7 +11,7 @@ export default (variables = variable) => {
     ".bordered": {
       borderWidth: 1,
       marginTop: 5,
-      borderColor: variables.inputBorderColor
+      borderColor: ThemeColors.orange
     },
     color: variables.textColor,
     paddingLeft: 10,

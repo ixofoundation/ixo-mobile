@@ -9,7 +9,8 @@ const ThemeColors = {
   black: '#000',
   grey: '#979797',
   grey_sync: '#e0e0e0',
-  red: '#A11C43'
+  red: '#A11C43',
+  orange: '#F89D28',
 };
 
 const ButtonDark = {

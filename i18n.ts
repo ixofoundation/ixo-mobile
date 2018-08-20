@@ -4,7 +4,7 @@ import _ from 'underscore';
 import { DangerZone } from 'expo';
 const { Localization } = DangerZone;
 
-const en = require('./locales/en_ZA.json');
+const en_ZA = require('./locales/en_ZA.json');
 const es = require('./locales/es.json');
 
 const languageDetector = {
@@ -22,9 +22,9 @@ const languageDetector = {
 
 i18n.use(languageDetector).init({
     // @ts-ignore
-    fallbackLng: 'en',   
+    fallbackLng: 'en_ZA',   
     resources: {
-      en_ZA: en,
+      en_ZA,
       es: es,
       ns: ['translation'],
       defaultNS: 'translation',

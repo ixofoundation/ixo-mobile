@@ -1,19 +1,35 @@
 import React from 'react';
 import { StatusBar, Dimensions } from 'react-native';
-import { Container, Icon, Content, View, Text, Spinner } from 'native-base';
+import { Container, Content, View, Text, Spinner } from 'native-base';
 
 import { ThemeColors } from '../styles/Colors';
 import NewClaimStyles from '../styles/NewClaim';
+import ContainerStyles from '../styles/Containers';
 import LightButton from '../components/LightButton';
 import DynamicForm from '../components/form/DynamicForm';
 import { FormStyles } from '../models/form';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 import { connect } from 'react-redux';
 import { decode as base64Decode } from 'base-64';
 
+const placeholder = require('../../assets/ixo-placeholder.jpg');
+
+// const PhotoBox = () => (
+// 	<TouchableOpacity style={NewClaimStyles.photoBoxContainer}>
+// 		<View style={[ContainerStyles.flexRow, { justifyContent: 'flex-end', flex: 0.1 }]}>
+// 			<Icon style={NewClaimStyles.photoBoxCloseIcon} name="close" />
+// 		</View>
+// 		<View style={[ContainerStyles.flexRow, { flex: 0.8 }]}>
+// 			<Icon style={NewClaimStyles.photoBoxCameraIcon} name="camera" />
+// 		</View>
+// 		<View style={{ flex: 0.1 }} />
+// 	</TouchableOpacity>
+// );
+
 interface PropTypes {
 	navigation: any;
+	screenProps: any;
 }
 
 interface NavigationTypes {
@@ -49,7 +65,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
 		const {
 			state: {
-				params: { title = 'Project Name' }
+				params: { title = 'New Claim' }
 			}
 		} = navigation;
 		return {
@@ -93,12 +109,14 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			<Container style={{ backgroundColor: ThemeColors.grey_sync, flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
 				<StatusBar barStyle="light-content" />
 				<View style={{ height: height * 0.18, backgroundColor: ThemeColors.blue_dark, paddingHorizontal: '3%', paddingTop: '2%' }}>
-					<Text style={{ color: ThemeColors.blue_lightest, fontSize: 12 }}>Claim created 05-05-1991</Text>
+					{/* <Text style={{ color: ThemeColors.blue_lightest, fontSize: 12 }}>Claim created 05-05-1991</Text> */}
 				</View>
 				<View
-					style={[NewClaimStyles.formContainer, { position: 'absolute', height: height - 250, top: 30, alignSelf: 'center', width: '95%' }]}
+					style={[NewClaimStyles.formContainer, { position: 'absolute', height: height - 160, top: 30, alignSelf: 'center', width: '95%' }]}
 				>
-					{this.renderForm()}
+					<Content style={{ paddingHorizontal: 10 }}>
+						{this.renderForm()}
+					</Content>
 				</View>
 
 				{/* <View>
