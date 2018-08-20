@@ -1,4 +1,5 @@
 import React from 'react';
+import { ImagePicker, Camera } from 'expo';
 import { TouchableOpacity } from 'react-native';
 import { FormStyles } from '../../models/form';
 import { Textarea, Item, Form, Input, View, Label, Icon, Text } from 'native-base';
@@ -9,7 +10,7 @@ import ContainerStyles from '../../styles/Containers';
 import { ThemeColors } from '../../styles/Colors';
 
 const PhotoBox = () => (
-	<TouchableOpacity style={DynamicFormStyles.photoBoxContainer}>
+	<TouchableOpacity onPress={() =>} style={DynamicFormStyles.photoBoxContainer}>
 		<View style={[ContainerStyles.flexRow]}>
 			<View style={[ContainerStyles.flexColumn]}>
 				<Icon style={DynamicFormStyles.photoBoxCameraIcon} name="camera" />

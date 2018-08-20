@@ -49,6 +49,7 @@
     }
   },
   "dependencies": {
+    "@expo/react-native-action-sheet": "^1.0.2",
     "@tradle/react-native-http": "^2.0.1",
     "@types/base-64": "^0.1.2",
     "@types/i18next": "^8.4.4",
