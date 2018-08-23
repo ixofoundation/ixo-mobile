@@ -1,5 +1,6 @@
 // TODO styling needs to move to styling file
 import * as React from 'react';
+import moment from 'moment';
 import { LinearGradient } from 'expo';
 import { StatusBar, ListView, Alert, TouchableOpacity, ImageBackground, Image, Dimensions } from 'react-native';
 import { Container, Header, Item, Icon, Input, Content, Text, List, Button, View, Spinner, Tab, Tabs } from 'native-base';
@@ -59,6 +60,7 @@ export interface StateProps {
 export interface Props extends PropTypes, StateProps {}
 
 class Claims extends React.Component<Props, State> {
+	projectName: string = '';
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
 		const {
 			state: {
@@ -87,39 +89,40 @@ class Claims extends React.Component<Props, State> {
 		this.state = {
 			claimsList: [],
 			claimForm: null,
-			pdsURL: ''
+			pdsURL: '',
 		};
 	}
 
 	componentDidMount() {
 		let componentProps: any = this.props.navigation.state.params;
+		this.projectName = this.props.navigation.state.params.title;
 		if (componentProps) {
-			console.log('CLAIMS', componentProps.myClaims);
 			this.setState({ claimsList: componentProps.myClaims, claimForm: componentProps.claimForm, pdsURL: componentProps.pdsURL });
 		}
 	}
 
 	renderClaims() {
-		// if (this.state.claimsList) {
+		if (this.state.claimsList) {
 			return (
 				<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
-					{dummyData.map((claim: any) => {
+					{this.state.claimsList.map((claim: IClaim) => {
+						// console.log('claims', claim);
 						return (
-							<TouchableOpacity key={claim.txHash}>
+							<TouchableOpacity key={claim.claimId}>
 								<LinearGradient
 									start={[0, 1]}
 									colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]}
 									style={[ClaimsStyles.ClaimBox]}
 								>
-									<Text style={{ color: ThemeColors.white, fontSize: 20 }}>{claim.txHash}</Text>
-									<Text style={{ color: ThemeColors.blue_lightest, fontSize: 15, paddingTop: 5 }}>Claim created {claim.submitDate}</Text>
+									<Text style={{ color: ThemeColors.white, fontSize: 20 }}>{`${this.projectName} ${claim.claimId.slice(claim.claimId.length-12, claim.claimId.length)}`}</Text>
+									<Text style={{ color: ThemeColors.blue_lightest, fontSize: 11, paddingTop: 5 }}>Claim created {moment(claim.date).format('YYYY-MM-DD')}</Text>
 								</LinearGradient>
 							</TouchableOpacity>
 						);
 					})}
 				</Container>
 			);
-		// }
+		}
 		return <Spinner color={ThemeColors.black} />;
 	}
 
@@ -202,7 +205,8 @@ class Claims extends React.Component<Props, State> {
 					onPress={() =>
 						this.props.navigation.navigate('NewClaim', {
 							claimForm: this.state.claimForm,
-							pdsURL: this.state.pdsURL
+							pdsURL: this.state.pdsURL,
+							projectDid
 						})
 					}
 					text={this.props.screenProps.t('claims:submitButton')}

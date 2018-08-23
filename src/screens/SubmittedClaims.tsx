@@ -1,132 +1,113 @@
 // TODO styling needs to move to styling file
 
 import React from 'react';
-import { StatusBar, TouchableOpacity } from 'react-native';
-import { Container, Header, Item, Icon, Input, Content, Text, View } from 'native-base';
-import HeaderSync from '../components/HeaderSync';
-
-import Containers from '../styles/Containers';
+import { StatusBar, ImageBackground } from 'react-native';
+import { Container, Icon, Text, View } from 'native-base';
+import IconSuccess from '../../assets/svg/IconSuccess';
+import IconReject from '../../assets/svg/IconReject';
 import SubmittedClaimsStyles from '../styles/SubmittedClaims';
-import ContainerStyles from '../styles/Containers';
 import { ThemeColors } from '../styles/Colors';
 
-const dummyData = [
-	// TODO get correct data structure
-	{
-		id: '1',
-		projectName: '1 solar panel installed',
-		percentage: '2/1298',
-		description: '250W Solar Panel',
-		lastClaimDate: '05-05-18',
-		status: '#FF495F'
-	},
-	{
-		id: '2',
-		projectName: '1 solar panel installed',
-		percentage: '10/1298',
-		description: '250W Solar Panel',
-		lastClaimDate: '28-02-18',
-		status: '#FFB03D'
-	},
-	{
-		id: '3',
-		projectName: '1 solar panel installed',
-		percentage: '50/85',
-		description: '250W Solar Panel',
-		lastClaimDate: '23-01-18',
-		status: '#7CBBFF'
-	}
-];
+const background = require('../../assets/backgrounds/background_2.png');
 
 interface PropTypes {
 	navigation: any;
-}
-
-interface NavigationTypes {
-	navigation: any;
+	screenProps: any;
 }
 
 export default class SubmittedClaims extends React.Component<PropTypes> {
-	static navigationOptions = (props: NavigationTypes) => {
+	static navigationOptions = ({ navigation }:{ navigation: any }) => {
 		return {
-			headerRight: <HeaderSync />,
-			headerLeft: <Icon name="arrow-back" onPress={() => props.navigation.pop()} style={{ paddingLeft: 10 }} />,
-			title: 'Project Name',
+			headerStyle: {
+				backgroundColor: ThemeColors.blue_dark,
+				borderBottomColor: ThemeColors.blue_dark
+			},
 			headerTitleStyle: {
-				color: ThemeColors.black,
+				color: ThemeColors.white,
 				textAlign: 'center',
 				alignSelf: 'center'
 			},
-			headerTintColor: ThemeColors.black
+			headerLeft: (
+				<Icon
+					name="arrow-back"
+					onPress={() => navigation.pop()}
+					style={{ paddingLeft: 10, color: ThemeColors.white }}
+				/>
+			),
 		};
+	}
+
+	state = {
+		claimSubmitted: true
 	};
 
-	renderClaims() {
+	componentDidMount() {
+		const { params: { claimSubmitted } } = this.props.navigation.state;
+		this.setState({ claimSubmitted });
+	}
+
+	renderSuccess() {
 		return (
-			<View>
-				{dummyData.map(project => {
-					return (
-						<TouchableOpacity key={project.id} style={SubmittedClaimsStyles.ProjectBox}>
-							<View style={ContainerStyles.flexRow}>
-								<View style={[ContainerStyles.flexColumn, { padding: 5 }]}>
-									<View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
-										<View style={[ContainerStyles.flexColumn, { alignItems: 'flex-start' }]}>
-											<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 19, fontWeight: '400' }}>
-												{project.projectName}
-											</Text>
-											<Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 15 }}>{project.description}</Text>
-											<View style={{ height: 20 }} />
-											<Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 10 }}>
-												Your last claim submitted on<Text
-													style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 10 }}
-												>
-													{' '}
-													{project.lastClaimDate}
-												</Text>
-											</Text>
-										</View>
-									</View>
-								</View>
-								<View style={[SubmittedClaimsStyles.ProjectBoxStatusBar, { backgroundColor: project.status }]} />
+			<View style={{ flexDirection: 'column', justifyContent: 'center', flex: 1 }}>
+				<View style={{ flexDirection: 'row' }}>
+					<View style={{ flex: 0.2 }}>
+						<View style={{ justifyContent: 'center', flex: 0.2, backgroundColor: '#3F7E44', paddingVertical: 15, paddingRight:5, borderTopRightRadius: 3, borderBottomRightRadius: 3  }}>
+							<View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
+								<IconSuccess width={50} height={50}  />
 							</View>
-						</TouchableOpacity>
-					);
-				})}
+						</View>
+					</View>
+					<View style={{ flex: 0.8, paddingLeft: 10 }}>
+						<View style={[SubmittedClaimsStyles.flexLeft]}>
+							<Text style={[SubmittedClaimsStyles.header, { color: ThemeColors.white }]}>{this.props.screenProps.t('submittedClaims:successMessage')}</Text>
+						</View>
+						<View style={{ width: '100%' }}>
+							<View style={SubmittedClaimsStyles.divider} />
+						</View>
+						<View style={SubmittedClaimsStyles.flexLeft}>
+							<Text style={SubmittedClaimsStyles.infoBox}>{this.props.screenProps.t('submittedClaims:successDetailedMessage')}</Text>
+						</View>
+					</View>
+				</View>
+			</View>
+		);
+	}
+
+	renderReject() {
+		return (
+			<View style={{ flexDirection: 'column', justifyContent: 'center', flex: 1 }}>
+				<View style={{ flexDirection: 'row' }}>
+					<View style={{ flex: 0.2 }}>
+						<View style={{ justifyContent: 'center', flex: 0.2, backgroundColor: '#A11C43', paddingVertical: 15, paddingRight:5, borderTopRightRadius: 3, borderBottomRightRadius: 3  }}>
+							<View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
+								<IconReject width={50} height={50}  />
+							</View>
+						</View>
+					</View>
+					<View style={{ flex: 0.8, paddingLeft: 10 }}>
+						<View style={[SubmittedClaimsStyles.flexLeft]}>
+							<Text style={[SubmittedClaimsStyles.header, { color: ThemeColors.white }]}>{this.props.screenProps.t('submittedClaims:rejectMessage')}</Text>
+						</View>
+						<View style={{ width: '100%' }}>
+							<View style={SubmittedClaimsStyles.divider} />
+						</View>
+						<View style={SubmittedClaimsStyles.flexLeft}>
+							<Text style={SubmittedClaimsStyles.infoBox}>{this.props.screenProps.t('submittedClaims:rejectDetailedMessage')}</Text>
+						</View>
+					</View>
+				</View>
 			</View>
 		);
 	}
 
 	render() {
 		return (
-			<Container>
-				<StatusBar barStyle="light-content" />
-				<Header style={{ borderBottomWidth: 0 }}>
-					<View style={[Containers.flexRow, { justifyContent: 'space-between' }]}>
-						<TouchableOpacity style={[Containers.flexRow, SubmittedClaimsStyles.BadgeBoxContainer]}>
-							<View style={[Containers.flexRow, SubmittedClaimsStyles.Badge]}>
-								<Text style={{ color: ThemeColors.black, textAlign: 'left', padding: 5, fontSize: 13 }}>67</Text>
-							</View>
-							<Text style={{ color: ThemeColors.black, paddingTop: 5, paddingBottom: 5 }}> Saved</Text>
-						</TouchableOpacity>
-
-						<TouchableOpacity style={[Containers.flexRow, SubmittedClaimsStyles.BoxContainer]}>
-							<Text style={{ color: ThemeColors.black, paddingTop: 5, paddingBottom: 5 }}>Submitted</Text>
-						</TouchableOpacity>
-					</View>
-				</Header>
-				<Header searchBar rounded style={{ borderBottomWidth: 0 }}>
-					<Item>
-						<Icon name="ios-search" />
-						<Input placeholder="Search my claims" />
-					</Item>
-				</Header>
-				<Content style={{ backgroundColor: ThemeColors.white }}>{this.renderClaims()}</Content>
-				<TouchableOpacity onPress={() => this.props.navigation.navigate('NewClaim')} style={SubmittedClaimsStyles.SubmitButton}>
-					<View style={Containers.flexColumn}>
-						<Text style={{ color: ThemeColors.black, fontSize: 15 }}>Submit Claim</Text>
-					</View>
-				</TouchableOpacity>
-			</Container>
+			<ImageBackground source={background} style={SubmittedClaimsStyles.backgroundImage}>
+				<Container>
+					<StatusBar barStyle="light-content" />
+					{(this.state.claimSubmitted) ? this.renderSuccess() : this.renderReject() }
+				</Container>
+			</ImageBackground>
 		);
 	}
 }
