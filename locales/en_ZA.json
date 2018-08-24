@@ -43,6 +43,14 @@
         "saveClaimsOffline": "Save and edit your claims offline. Submit when it is convenient for you.",
         "submitButton": "SUBMIT NEW CLAIM",
         "noSubmissions": "You have no submitted claims",
-        "savedSubmissionsInfo": "View your pending, approved and rejected claims here."
+        "savedSubmissionsInfo": "View your pending, approved and rejected claims here.",
+        "imageUploaded": "Image uploaded",
+        "signingFailed": "Unable to sign"
+    },
+    "submittedClaims": {
+        "successMessage": "Your claim has been successfully submitted",
+        "successDetailedMessage": "Your claim has been successfully submitted and is awaiting evaluation. Please check back soon.",
+        "rejectMessage": "There has been an error submitting your claim",
+        "rejectDetailedMessage": "Your claim has been saved. Please try again later."
     }
 }

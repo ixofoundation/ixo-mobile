@@ -1,4 +1,4 @@
-import { ISovrinDid } from '../models/sovrin';
+import { ISovrinDid, IMnemonic } from '../models/sovrin';
 import { SecureStore } from 'expo';
 import { SecureStorageKeys } from '../models/phoneStorage';
 
@@ -27,11 +27,12 @@ export function verifyDocumentSignature(signature: string, publicKey: string) {
 
 export function GetSignature(payload: object): Promise<any> {
 	return new Promise((resolve, reject) => {
-		SecureStore.getItemAsync(SecureStorageKeys.sovrinDid).then((SovrinDid: string | null) => {
-			if (SovrinDid) {
+		SecureStore.getItemAsync(SecureStorageKeys.encryptedMnemonic).then((encryptedMnemonic: string | null) => {
+			if (encryptedMnemonic) {
 				SecureStore.getItemAsync(SecureStorageKeys.password).then((password: string | null) => {
 					if (password) {
-						const sovrinDid: ISovrinDid = Decrypt(SovrinDid, password);
+						const mnemonicJson: IMnemonic = Decrypt(encryptedMnemonic, password);
+						const sovrinDid: ISovrinDid = generateSovrinDID(mnemonicJson.mnemonic);
 						const signature = sovrin.signMessage(JSON.stringify(payload), sovrinDid.secret.signKey, sovrinDid.verifyKey);
 						signature.signatureValue = new Buffer(signature)
 							.slice(0, 64)

@@ -8,6 +8,9 @@ interface Style {
 	photoBoxContainer: ViewStyle;
 	photoBoxCloseIcon: TextStyle;
 	photoBoxCameraIcon: TextStyle;
+	imageContainer: ViewStyle;
+	textArea: ViewStyle;
+	imageType: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -15,7 +18,7 @@ const styles = StyleSheet.create<Style>({
 		flex: 1,
 		borderRadius: 1,
 		backgroundColor: ThemeColors.white,
-		marginBottom: '3%',
+		marginBottom: '3%'
 	},
 	photoBoxContainer: {
 		height: width / 4,
@@ -32,7 +35,26 @@ const styles = StyleSheet.create<Style>({
 	photoBoxCameraIcon: {
 		color: '#00D2FF',
 		fontSize: 50
-    },
+	},
+	imageContainer: {
+		width: width * 0.6,
+		height: width * 0.6,
+		borderColor: ThemeColors.orange,
+		borderWidth: 1,
+		margin: 3
+	},
+	imageType: {
+		marginTop: 20,
+		paddingVertical: 10,
+		borderTopColor: ThemeColors.grey,
+		borderTopWidth: 1,
+	},
+	textArea: {
+		marginTop: 20,
+		paddingVertical: 10,
+		borderTopColor: ThemeColors.grey,
+		borderTopWidth: 1
+	}
 });
 
 export default styles;
