@@ -112,7 +112,7 @@ class Claims extends React.Component<Props, State> {
 
 	onViewClaim(claimId: string) {
 		this.props.navigation.navigate('ViewClaim', {
-			claimForm: this.state.claimForm,
+			claimFormKey: this.state.claimForm,
 			pdsURL: this.state.pdsURL,
 			projectDid: this.projectDid,
 			claimId: claimId
