@@ -37,7 +37,7 @@ export interface State {
 }
 
 export interface Callbacks {
-	handleSubmit: (formData: any) => void;
+	handleSubmit?: (formData: any) => void;
 }
 
 export interface Props extends ParentProps, Callbacks {}
@@ -176,6 +176,7 @@ export default class DynamicForm extends React.Component<Props, State> {
 		return (
 				<Form>
 					{this.props.formSchema.map((field: any, i: any) => {
+						debugger;
 						switch (field.type) {
 							case 'number':
 							case 'text':

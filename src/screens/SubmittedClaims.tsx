@@ -51,7 +51,7 @@ export default class SubmittedClaims extends React.Component<PropTypes> {
 			<View style={{ flexDirection: 'column', justifyContent: 'center', flex: 1 }}>
 				<View style={{ flexDirection: 'row' }}>
 					<View style={{ flex: 0.2 }}>
-						<View style={{ justifyContent: 'center', flex: 0.2, backgroundColor: '#3F7E44', paddingVertical: 15, paddingRight:5, borderTopRightRadius: 3, borderBottomRightRadius: 3  }}>
+						<View style={[SubmittedClaimsStyles.colorBox, { backgroundColor: '#3F7E44' }]}>
 							<View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
 								<IconSuccess width={50} height={50}  />
 							</View>
@@ -78,7 +78,7 @@ export default class SubmittedClaims extends React.Component<PropTypes> {
 			<View style={{ flexDirection: 'column', justifyContent: 'center', flex: 1 }}>
 				<View style={{ flexDirection: 'row' }}>
 					<View style={{ flex: 0.2 }}>
-						<View style={{ justifyContent: 'center', flex: 0.2, backgroundColor: '#A11C43', paddingVertical: 15, paddingRight:5, borderTopRightRadius: 3, borderBottomRightRadius: 3  }}>
+						<View  style={[SubmittedClaimsStyles.colorBox, { backgroundColor: '#A11C43' }]}>
 							<View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
 								<IconReject width={50} height={50}  />
 							</View>

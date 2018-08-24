@@ -61,6 +61,8 @@ export interface Props extends PropTypes, StateProps {}
 
 class Claims extends React.Component<Props, State> {
 	projectName: string = '';
+	projectDid: string | undefined;
+
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
 		const {
 			state: {
@@ -91,6 +93,13 @@ class Claims extends React.Component<Props, State> {
 			claimForm: null,
 			pdsURL: '',
 		};
+
+		const {
+			state: {
+				params: { projectDid = '', title }
+			}
+		} = this.props.navigation;
+		this.projectDid = projectDid;
 	}
 
 	componentDidMount() {
@@ -101,6 +110,15 @@ class Claims extends React.Component<Props, State> {
 		}
 	}
 
+	onViewClaim(claimId: string) {
+		this.props.navigation.navigate('ViewClaim', {
+			claimForm: this.state.claimForm,
+			pdsURL: this.state.pdsURL,
+			projectDid: this.projectDid,
+			claimId: claimId
+		})
+	}
+
 	renderClaims() {
 		if (this.state.claimsList) {
 			return (
@@ -108,7 +126,7 @@ class Claims extends React.Component<Props, State> {
 					{this.state.claimsList.map((claim: IClaim) => {
 						// console.log('claims', claim);
 						return (
-							<TouchableOpacity key={claim.claimId}>
+							<TouchableOpacity onPress={() => this.onViewClaim(claim.claimId)} key={claim.claimId}>
 								<LinearGradient
 									start={[0, 1]}
 									colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]}
@@ -185,11 +203,6 @@ class Claims extends React.Component<Props, State> {
 	}
 
 	render() {
-		const {
-			state: {
-				params: { projectDid = '', title }
-			}
-		} = this.props.navigation;
 		return (
 			<Container style={{ backgroundColor: ThemeColors.blue_dark }}>
 				<StatusBar barStyle="light-content" />
@@ -206,7 +219,7 @@ class Claims extends React.Component<Props, State> {
 						this.props.navigation.navigate('NewClaim', {
 							claimForm: this.state.claimForm,
 							pdsURL: this.state.pdsURL,
-							projectDid
+							projectDid: this.projectDid
 						})
 					}
 					text={this.props.screenProps.t('claims:submitButton')}
