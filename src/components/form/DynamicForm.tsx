@@ -10,6 +10,8 @@ import _ from 'underscore';
 
 const { width } = Dimensions.get('window');
 
+const placeholder = require('../../../assets/ixo-placeholder.jpg');
+
 import DynamicFormStyles from '../../styles/componentStyles/DynamicForm';
 import ContainerStyles from '../../styles/Containers';
 import { ThemeColors } from '../../styles/Colors';
@@ -27,6 +29,7 @@ export interface ParentProps {
 	presetValues?: any[];
 	showActionSheetWithOptions?: any;
 	screenProps: any;
+	editable: boolean;
 }
 
 export interface State {
@@ -36,7 +39,7 @@ export interface State {
 }
 
 export interface Callbacks {
-	handleSubmit: (formData: any) => void;
+	handleSubmit?: (formData: any) => void;
 }
 
 export interface Props extends ParentProps, Callbacks {}
@@ -63,7 +66,9 @@ export default class DynamicForm extends React.Component<Props, State> {
 	}
 
 	handleSubmit = () => {
-		this.props.handleSubmit(this.formData);
+		if (this.props.handleSubmit) {
+			this.props.handleSubmit(this.formData);
+		}
 	};
 
 	setFormState = (name: String, value: any) => {
@@ -94,6 +99,12 @@ export default class DynamicForm extends React.Component<Props, State> {
 		this.setState({ imageList: imageListArray });
 	};
 
+	async compressImage(uri: string) {
+		const compressedImage = await ImageManipulator.manipulate(uri, {}, { compress: 0.9, format: 'jpeg', base64: true })
+		const base64 = `data:image/jpeg;base64,${compressedImage.base64}`;
+		return base64;
+	}
+
 	async pickImage(fieldName: string) {
 		try {
 			const { status: camera_roll } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -104,8 +115,7 @@ export default class DynamicForm extends React.Component<Props, State> {
 				});
 				if (!result.cancelled) {
 					this.updateImageList(fieldName, result.uri);
-					const compressedImage = await ImageManipulator.manipulate(result.uri, {}, { compress: 0.9, format: 'jpeg', base64: true })
-					const base64 = `data:image/jpeg;base64,${compressedImage.base64}`;
+					const base64 = await this.compressImage(result.uri);
 					this.setFormState(fieldName, base64);
 				}
 			}
@@ -124,6 +134,8 @@ export default class DynamicForm extends React.Component<Props, State> {
 				});
 				if (!result.cancelled) {
 					this.updateImageList(fieldName, result.uri);
+					const base64 = await this.compressImage(result.uri);
+					this.setFormState(fieldName, base64);
 				}
 			}
 		} catch(error) {
@@ -157,7 +169,7 @@ export default class DynamicForm extends React.Component<Props, State> {
 		this.setFormState(name, text);
 	};
 
-	renderImage(fieldName: string) {
+	renderPreview(fieldName: string) {
 		const imageObj: IImage | undefined = _.find(this.state.imageList, (imageList: IImage) => imageList.fieldName === fieldName);
 		if (imageObj) {
 			return (
@@ -167,6 +179,45 @@ export default class DynamicForm extends React.Component<Props, State> {
 			);
 		}
 		return null;
+	}
+
+	renderImage(uri: string, index: number) {
+		return (
+			<View key={index}>
+				<Image resizeMode={'contain'} style={DynamicFormStyles.imageContainer} source={(uri === "") ? placeholder : { uri } } />
+			</View>
+		);
+	}
+
+	renderEditImageField(field: any, index: number) {
+		if (_.isEmpty(this.state.imageList)) {
+			return (
+				<View style={DynamicFormStyles.imageType} key={index}>
+					<Text>{changeCase.sentenceCase(field.name)}</Text>
+					<TouchableOpacity onPress={() => this.onOpenActionSheet(field.name)} style={DynamicFormStyles.photoBoxContainer}>
+						<View style={[ContainerStyles.flexRow]}>
+							<View style={[ContainerStyles.flexColumn]}>
+								<Icon style={DynamicFormStyles.photoBoxCameraIcon} name="camera" />
+							</View>
+						</View>
+					</TouchableOpacity>
+				</View>
+			)
+		} else {
+			return (
+				<View style={DynamicFormStyles.imageType} key={index}>
+					<Text>{changeCase.sentenceCase(field.name)}</Text>
+					{this.renderPreview(field.name)}
+					<TouchableOpacity onPress={() => this.onOpenActionSheet(field.name)} style={{ width: width * 0.2, height: width * 0.2 }}>
+						<View style={{ flex: 0.1 }} />
+						<View style={[ContainerStyles.flexRow, { flex: 0.8 }]}>
+							<Icon style={DynamicFormStyles.photoBoxCameraIcon} name="add" />
+						</View>
+						<View style={{ flex: 0.1 }} />
+					</TouchableOpacity>
+				</View>
+			)
+		}
 	}
 
 	render() {
@@ -180,44 +231,21 @@ export default class DynamicForm extends React.Component<Props, State> {
 								return (
 									<Item key={i} floatingLabel >
 										<Label>{changeCase.sentenceCase(field.name)}</Label>
-										<Input onChangeText={(text) => this.onFormValueChanged(field.name, text)} />
+										<Input value={field.value} onChangeText={(text) => this.onFormValueChanged(field.name, text)} />
 									</Item>
 								);
 							case 'textarea' :
 								return (
 									<View style={DynamicFormStyles.textArea} key={i}>
 										<Text>{changeCase.sentenceCase(field.name)}</Text>
-										<Textarea onChangeText={(text) => this.onFormValueChanged(field.name, text)} key={i} rowSpan={5} bordered />
+										<Textarea value={field.value} onChangeText={(text) => this.onFormValueChanged(field.name, text)} key={i} rowSpan={5} bordered />
 									</View>
 								);
 							case 'image' :
-								if (_.isEmpty(this.state.imageList)) {
-									return (
-										<View style={DynamicFormStyles.imageType} key={i}>
-											<Text>{changeCase.sentenceCase(field.name)}</Text>
-											<TouchableOpacity onPress={() => this.onOpenActionSheet(field.name)} style={DynamicFormStyles.photoBoxContainer}>
-												<View style={[ContainerStyles.flexRow]}>
-													<View style={[ContainerStyles.flexColumn]}>
-														<Icon style={DynamicFormStyles.photoBoxCameraIcon} name="camera" />
-													</View>
-												</View>
-											</TouchableOpacity>
-										</View>
-									)
+								if (this.props.editable) {
+									return (this.renderEditImageField(field, i));
 								} else {
-									return (
-										<View style={DynamicFormStyles.imageType} key={i}>
-											<Text>{changeCase.sentenceCase(field.name)}</Text>
-											{this.renderImage(field.name)}
-											<TouchableOpacity onPress={() => this.onOpenActionSheet(field.name)} style={{ width: width * 0.2, height: width * 0.2 }}>
-												<View style={{ flex: 0.1 }} />
-												<View style={[ContainerStyles.flexRow, { flex: 0.8 }]}>
-													<Icon style={DynamicFormStyles.photoBoxCameraIcon} name="add" />
-												</View>
-												<View style={{ flex: 0.1 }} />
-											</TouchableOpacity>
-										</View>
-									)
+									return (this.renderImage(field.value, i));
 								}
 							case 'select':
 							case 'country':
@@ -227,10 +255,12 @@ export default class DynamicForm extends React.Component<Props, State> {
 								return <Label key={i}>{field.label}</Label>;
 						}
 					})}
-					<DarkButton
-						onPress={() => this.handleSubmit()}
-						text={this.props.screenProps.t('claims:submitButton')}
-					/>
+					{(this.props.editable) && 
+						<DarkButton
+							onPress={() => this.handleSubmit()}
+							text={this.props.screenProps.t('claims:submitButton')}
+						/>
+					}
 			</Form>
 		);
 	}

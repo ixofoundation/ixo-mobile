@@ -138,7 +138,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 	renderForm() {
 		const claimParsed = JSON.parse(this.state.fetchedFile!);
 		if (this.state.fetchedFile) {
-			return <DynamicForm screenProps={this.props.screenProps} formSchema={claimParsed.fields} formStyle={FormStyles.standard} handleSubmit={this.onFormSubmit} />;
+			return <DynamicForm editable={true} screenProps={this.props.screenProps} formSchema={claimParsed.fields} formStyle={FormStyles.standard} handleSubmit={this.onFormSubmit} />;
 		} else {
 			return <Spinner color={ThemeColors.blue_light} />;
 		}
@@ -149,7 +149,6 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			<Container style={{ backgroundColor: ThemeColors.grey_sync, flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
 				<StatusBar barStyle="light-content" />
 				<View style={{ height: height * 0.18, backgroundColor: ThemeColors.blue_dark, paddingHorizontal: '3%', paddingTop: '2%' }}>
-					{/* <Text style={{ color: ThemeColors.blue_lightest, fontSize: 12 }}>Claim created 05-05-1991</Text> */}
 				</View>
 				<View
 					style={[NewClaimStyles.formContainer, { position: 'absolute', height: height - 160, top: 30, alignSelf: 'center', width: '95%' }]}
@@ -158,34 +157,6 @@ class NewClaim extends React.Component<Props, StateTypes> {
 						{this.renderForm()}
 					</Content>
 				</View>
-
-				{/* <View>
-                        <Item floatingLabel>
-                            <Label>Name</Label>
-                            <Input />
-                        </Item>
-                        <Item style={{ marginTop: 20 }}>
-                            <Input placeholder='Type of panel installed'/>
-                            <Icon active name='arrow-down' style={{ color: ThemeColors.grey }} />
-                        </Item>
-                        <Item style={{ marginTop: 20 }}>
-                            <Input placeholder='Comments'/>
-                        </Item>
-                    </View>
-
-                    <View style={[ContainerStyles.flexColumn]}>
-                        <Button style={{ width: '100%', justifyContent: 'center' }} iconLeft bordered dark><Icon name='camera' style={{ color: ThemeColors.grey }} /><Text>Attach image</Text></Button>
-                        <Button style={{ width: '100%', justifyContent: 'center', marginTop: 20 }} bordered dark><Text>Scan QR code</Text></Button>
-                    </View>
-                        
-                    <View style={[ContainerStyles.flexColumn]}>
-                        <Button style={{ width: '100%', justifyContent: 'center' }} bordered dark><Text>Save</Text></Button>
-                        <Button style={{ width: '100%', justifyContent: 'center', marginTop: 20 }} bordered dark><Text>Submit</Text></Button>
-					</View> */}
-				{/* <DarkButton
-					onPress={() => this.props.navigation.navigate('NewClaim', {})}
-					text={this.props.screenProps.t('claims:submitButton')}
-				/> */}
 			</Container>
 		);
 	}
