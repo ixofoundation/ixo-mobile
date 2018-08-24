@@ -99,6 +99,12 @@ export default class DynamicForm extends React.Component<Props, State> {
 		this.setState({ imageList: imageListArray });
 	};
 
+	async compressImage(uri: string) {
+		const compressedImage = await ImageManipulator.manipulate(uri, {}, { compress: 0.9, format: 'jpeg', base64: true })
+		const base64 = `data:image/jpeg;base64,${compressedImage.base64}`;
+		return base64;
+	}
+
 	async pickImage(fieldName: string) {
 		try {
 			const { status: camera_roll } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -109,8 +115,7 @@ export default class DynamicForm extends React.Component<Props, State> {
 				});
 				if (!result.cancelled) {
 					this.updateImageList(fieldName, result.uri);
-					const compressedImage = await ImageManipulator.manipulate(result.uri, {}, { compress: 0.9, format: 'jpeg', base64: true })
-					const base64 = `data:image/jpeg;base64,${compressedImage.base64}`;
+					const base64 = await this.compressImage(result.uri);
 					this.setFormState(fieldName, base64);
 				}
 			}
@@ -129,6 +134,8 @@ export default class DynamicForm extends React.Component<Props, State> {
 				});
 				if (!result.cancelled) {
 					this.updateImageList(fieldName, result.uri);
+					const base64 = await this.compressImage(result.uri);
+					this.setFormState(fieldName, base64);
 				}
 			}
 		} catch(error) {
@@ -174,10 +181,10 @@ export default class DynamicForm extends React.Component<Props, State> {
 		return null;
 	}
 
-	renderImage(uri: string, index: number) {	
+	renderImage(uri: string, index: number) {
 		return (
 			<View key={index}>
-				<Image resizeMode={'contain'} style={DynamicFormStyles.imageContainer} source={{ uri }} />
+				<Image resizeMode={'contain'} style={DynamicFormStyles.imageContainer} source={(uri === "") ? placeholder : { uri } } />
 			</View>
 		);
 	}

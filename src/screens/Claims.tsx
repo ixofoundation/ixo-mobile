@@ -123,21 +123,23 @@ class Claims extends React.Component<Props, State> {
 		if (this.state.claimsList) {
 			return (
 				<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
-					{this.state.claimsList.map((claim: IClaim) => {
-						// console.log('claims', claim);
-						return (
-							<TouchableOpacity onPress={() => this.onViewClaim(claim.claimId)} key={claim.claimId}>
-								<LinearGradient
-									start={[0, 1]}
-									colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]}
-									style={[ClaimsStyles.ClaimBox]}
-								>
-									<Text style={{ color: ThemeColors.white, fontSize: 20 }}>{`${this.projectName} ${claim.claimId.slice(claim.claimId.length-12, claim.claimId.length)}`}</Text>
-									<Text style={{ color: ThemeColors.blue_lightest, fontSize: 11, paddingTop: 5 }}>Claim created {moment(claim.date).format('YYYY-MM-DD')}</Text>
-								</LinearGradient>
-							</TouchableOpacity>
-						);
-					})}
+					<Content>
+						{this.state.claimsList.map((claim: IClaim) => {
+							// console.log('claims', claim);
+							return (
+								<TouchableOpacity onPress={() => this.onViewClaim(claim.claimId)} key={claim.claimId}>
+									<LinearGradient
+										start={[0, 1]}
+										colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]}
+										style={[ClaimsStyles.ClaimBox]}
+									>
+										<Text style={{ color: ThemeColors.white, fontSize: 20 }}>{`${this.projectName} ${claim.claimId.slice(claim.claimId.length-12, claim.claimId.length)}`}</Text>
+										<Text style={{ color: ThemeColors.blue_lightest, fontSize: 11, paddingTop: 5 }}>Claim created {moment(claim.date).format('YYYY-MM-DD')}</Text>
+									</LinearGradient>
+								</TouchableOpacity>
+							);
+						})}
+					</Content>
 				</Container>
 			);
 		}
