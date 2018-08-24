@@ -37,8 +37,8 @@ const styles = StyleSheet.create<Style>({
 		fontSize: 50
 	},
 	imageContainer: {
-		width: width * 0.2,
-		height: width * 0.2,
+		width: width * 0.6,
+		height: width * 0.6,
 		borderColor: ThemeColors.orange,
 		borderWidth: 1,
 		margin: 3
@@ -47,7 +47,7 @@ const styles = StyleSheet.create<Style>({
 		marginTop: 20,
 		paddingVertical: 10,
 		borderTopColor: ThemeColors.grey,
-		borderTopWidth: 1
+		borderTopWidth: 1,
 	},
 	textArea: {
 		marginTop: 20,
