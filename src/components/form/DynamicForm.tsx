@@ -30,7 +30,6 @@ export interface ParentProps {
 }
 
 export interface State {
-	// formData: any;
 	submitStatus: string;
 	hasCameraPermission: boolean;
 	imageList: IImage[];
@@ -53,9 +52,7 @@ export default class DynamicForm extends React.Component<Props, State> {
 
 	async componentWillMount() {
 		let hiddenCount = 0;
-		// console.log('Dynamic From: ' + this.props.formSchema);
 		this.props.formSchema.map((field: any) => {
-			// console.log('Field: ' + field.label);
 			if (field.hidden) {
 				this.setFormState(field.name, this.props.presetValues![hiddenCount]);
 				hiddenCount++;
