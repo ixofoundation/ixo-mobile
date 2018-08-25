@@ -4,6 +4,8 @@ import { StyleProvider, Root } from 'native-base';
 import { Provider } from 'react-redux';
 import { I18nextProvider, translate } from 'react-i18next';
 import { Font, ScreenOrientation, Util } from 'expo';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
+
 // @ts-ignore
 import getTheme from './native-base-theme/components';
 import Loading from './src/screens/Loading';
@@ -50,11 +52,13 @@ export default class App extends React.Component<{}, State> {
 			return (
 				<Root>
 					<StyleProvider style={getTheme()}>
-						<Provider store={store}>
-							<I18nextProvider i18n={ i18n }>
-								<ReloadAppOnLanguageChange />
-							</I18nextProvider>
-						</Provider>
+						<ActionSheetProvider>
+							<Provider store={store}>
+								<I18nextProvider i18n={ i18n }>
+									<ReloadAppOnLanguageChange />
+								</I18nextProvider>
+							</Provider>
+						</ActionSheetProvider>
 					</StyleProvider>
 				</Root>
 			);
