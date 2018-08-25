@@ -10,7 +10,7 @@ import ContainerStyles from '../../styles/Containers';
 import { ThemeColors } from '../../styles/Colors';
 
 const PhotoBox = () => (
-	<TouchableOpacity onPress={() =>} style={DynamicFormStyles.photoBoxContainer}>
+	<TouchableOpacity style={DynamicFormStyles.photoBoxContainer}>
 		<View style={[ContainerStyles.flexRow]}>
 			<View style={[ContainerStyles.flexColumn]}>
 				<Icon style={DynamicFormStyles.photoBoxCameraIcon} name="camera" />

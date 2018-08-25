@@ -1,13 +1,19 @@
 import React from 'react';
 import { SecureStore } from 'expo';
-import { StatusBar, TouchableOpacity, AsyncStorage } from 'react-native';
+import { TouchableOpacity, AsyncStorage, ImageBackground } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
-import { Container, Icon, View, Item, Label, Input, Button, Text, Toast } from 'native-base';
+import { Icon, View, Item, Label, Input, Button, Text, Toast } from 'native-base';
 import { Encrypt, generateSovrinDID } from '../utils/sovrin';
-import { SecureStorageKeys, LocalStorageKeys } from '../models/phoneStorage';
+import { SecureStorageKeys, LocalStorageKeys, UserStorageKeys } from '../models/phoneStorage';
 import { ThemeColors } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
 import RegisterStyles from '../styles/Register';
+import { IUser } from '../models/user';
+import { initUser } from '../redux/user/user_action_creators';
+import { connect } from 'react-redux';
+
+var randomWords = require('random-words');
+const background = require('../../assets/backgrounds/background_1.jpg');
 
 enum registerSteps {
 	captureDetails = 1,
@@ -15,8 +21,12 @@ enum registerSteps {
 	reenterMnemonic
 }
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
+}
+
+export interface DispatchProps {
+	onUserInit: (user: IUser) => void;
 }
 
 interface StateTypes {
@@ -30,7 +40,9 @@ interface StateTypes {
 	errorMismatch: boolean;
 }
 
-class Register extends React.Component<PropTypes, StateTypes> {
+export interface Props extends ParentProps, DispatchProps {}
+
+class Register extends React.Component<Props, StateTypes> {
 	state = {
 		username: '',
 		password: '',
@@ -42,16 +54,13 @@ class Register extends React.Component<PropTypes, StateTypes> {
 		errorMismatch: false
 	};
 
-	async generateMnemonic() {
-		// try {
-		//     const mnemonic = await bip39.generateMnemonic();
-		//     this.setState({ mnemonic });
-		// } catch(e) {
-		//     return false
-		// }
-		const testMonic = 'surprise boat glance fetch cute gossip domain all marble orchard entire rookie';
-
-		this.setState({ unSelectedWords: this.shuffleArray(testMonic.split(' ')), mnemonic: testMonic });
+	generateMnemonic() {
+		const genMnemonic = randomWords(12)
+			.toString()
+			.split(',')
+			.join(' ');
+		console.log('Mnemonic: ' + genMnemonic);
+		this.setState({ unSelectedWords: this.shuffleArray(genMnemonic.split(' ')), mnemonic: genMnemonic });
 	}
 
 	shuffleArray(array: string[]) {
@@ -90,11 +99,25 @@ class Register extends React.Component<PropTypes, StateTypes> {
 			this.setState({ errorMismatch: true });
 		} else {
 			const cipherTextMnemonic = Encrypt(JSON.stringify({ username: this.state.username, mnemonic: this.state.mnemonic }), this.state.password); // encrypt securely on phone enlave
-			SecureStore.setItemAsync(SecureStorageKeys.mnemonic, cipherTextMnemonic.toString());
+
+			SecureStore.setItemAsync(SecureStorageKeys.encryptedMnemonic, cipherTextMnemonic);
 			const cipherTextSovrinDid = Encrypt(JSON.stringify(generateSovrinDID(this.state.mnemonic)), this.state.password); // encrypt securely on phone enlave
-			SecureStore.setItemAsync(SecureStorageKeys.sovrinDid, cipherTextSovrinDid.toString());
+
+			SecureStore.setItemAsync(SecureStorageKeys.sovrinDid, cipherTextSovrinDid);
 			SecureStore.setItemAsync(SecureStorageKeys.password, this.state.password); // save local password
 			AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true'); // stop first time onboarding
+
+			let user: IUser = {
+				did: 'did:sov:' + generateSovrinDID(this.state.mnemonic).did,
+				name: this.state.username,
+				verifyKey: generateSovrinDID(this.state.mnemonic).verifyKey
+			};
+
+			AsyncStorage.setItem(UserStorageKeys.name, user.name);
+			AsyncStorage.setItem(UserStorageKeys.did, user.did);
+			AsyncStorage.setItem(UserStorageKeys.verifyKey, user.verifyKey);
+
+			this.props.onUserInit(user);
 			this.props.navigation.dispatch(goToLogin);
 		}
 	}
@@ -253,12 +276,22 @@ class Register extends React.Component<PropTypes, StateTypes> {
 
 	render() {
 		return (
-			<Container>
-				<StatusBar barStyle="dark-content" />
+			<ImageBackground source={background} style={[RegisterStyles.wrapper, { width: '100%', height: '100%', paddingHorizontal: 10 }]}>
 				<View style={RegisterStyles.wrapper}>{this.renderStep(this.state.registerState)}</View>
-			</Container>
+			</ImageBackground>
 		);
 	}
 }
 
-export default Register;
+function mapDispatchToProps(dispatch: any): DispatchProps {
+	return {
+		onUserInit: (user: IUser) => {
+			dispatch(initUser(user));
+		}
+	};
+}
+
+export default connect(
+	null,
+	mapDispatchToProps
+)(Register);
