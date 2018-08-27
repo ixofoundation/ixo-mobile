@@ -91,7 +91,7 @@ class Claims extends React.Component<Props, State> {
 		this.state = {
 			claimsList: [],
 			claimForm: null,
-			pdsURL: '',
+			pdsURL: ''
 		};
 
 		const {
@@ -116,7 +116,7 @@ class Claims extends React.Component<Props, State> {
 			pdsURL: this.state.pdsURL,
 			projectDid: this.projectDid,
 			claimId: claimId
-		})
+		});
 	}
 
 	renderClaims() {
@@ -128,13 +128,14 @@ class Claims extends React.Component<Props, State> {
 							// console.log('claims', claim);
 							return (
 								<TouchableOpacity onPress={() => this.onViewClaim(claim.claimId)} key={claim.claimId}>
-									<LinearGradient
-										start={[0, 1]}
-										colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]}
-										style={[ClaimsStyles.ClaimBox]}
-									>
-										<Text style={{ color: ThemeColors.white, fontSize: 20 }}>{`${this.projectName} ${claim.claimId.slice(claim.claimId.length-12, claim.claimId.length)}`}</Text>
-										<Text style={{ color: ThemeColors.blue_lightest, fontSize: 11, paddingTop: 5 }}>Claim created {moment(claim.date).format('YYYY-MM-DD')}</Text>
+									<LinearGradient start={[0, 1]} colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]} style={[ClaimsStyles.ClaimBox]}>
+										<Text style={{ color: ThemeColors.white, fontSize: 20 }}>{`${this.projectName} ${claim.claimId.slice(
+											claim.claimId.length - 12,
+											claim.claimId.length
+										)}`}</Text>
+										<Text style={{ color: ThemeColors.blue_lightest, fontSize: 11, paddingTop: 5 }}>
+											Claim created {moment(claim.date).format('YYYY-MM-DD')}
+										</Text>
 									</LinearGradient>
 								</TouchableOpacity>
 							);
@@ -158,9 +159,7 @@ class Claims extends React.Component<Props, State> {
 						</View>
 						<View>
 							<View style={[ClaimsStyles.flexLeft]}>
-								<Text style={[ClaimsStyles.header, { color: ThemeColors.blue_lightest }]}>
-									{this.props.screenProps.t('claims:noSubmissions')}
-								</Text>
+								<Text style={[ClaimsStyles.header, { color: ThemeColors.blue_lightest }]}>{this.props.screenProps.t('claims:noSubmissions')}</Text>
 							</View>
 							<View style={{ width: '100%' }}>
 								<View style={ClaimsStyles.divider} />
@@ -187,9 +186,7 @@ class Claims extends React.Component<Props, State> {
 						</View>
 						<View>
 							<View style={[ClaimsStyles.flexLeft]}>
-								<Text style={[ClaimsStyles.header, { color: ThemeColors.blue_lightest }]}>
-									{this.props.screenProps.t('claims:noClaims')}
-								</Text>
+								<Text style={[ClaimsStyles.header, { color: ThemeColors.blue_lightest }]}>{this.props.screenProps.t('claims:noClaims')}</Text>
 							</View>
 							<View style={{ width: '100%' }}>
 								<View style={ClaimsStyles.divider} />

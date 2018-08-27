@@ -23,7 +23,7 @@ const LogoView = () => (
 	</View>
 );
 
-const InfoBlocks = ({ keySafeText, qrCodeText }: { keySafeText: string, qrCodeText: string }) => (
+const InfoBlocks = ({ keySafeText, qrCodeText }: { keySafeText: string; qrCodeText: string }) => (
 	<View style={[ContainerStyles.flexRow, { alignItems: 'flex-end', marginBottom: height * 0.04 }]}>
 		<View style={[ContainerStyles.flexRow, ConnectIXOStyles.infoBlock]}>
 			<Image resizeMode={'contain'} style={ConnectIXOStyles.infoBlockImage} source={keysafelogo} />
@@ -31,9 +31,7 @@ const InfoBlocks = ({ keySafeText, qrCodeText }: { keySafeText: string, qrCodeTe
 		</View>
 		<View style={[ContainerStyles.flexRow, ConnectIXOStyles.infoBlock, { borderLeftWidth: 0 }]}>
 			<Image resizeMode={'contain'} style={ConnectIXOStyles.infoBlockImage} source={qr} />
-			<Text style={{ color: ThemeColors.white, fontSize: 12, padding: 10, width: width * 0.35 }}>
-				{qrCodeText}
-			</Text>
+			<Text style={{ color: ThemeColors.white, fontSize: 12, padding: 10, width: width * 0.35 }}>{qrCodeText}</Text>
 		</View>
 	</View>
 );
@@ -58,7 +56,7 @@ export default class ConnectIXO extends React.Component<ParentProps, {}> {
 					<DarkButton
 						text={this.props.screenProps.t('connectIXO:scanButton')}
 						onPress={() => this.props.navigation.navigate('ScanQR')}
-						propStyles={{ marginBottom: 8 }}
+						propStyles={{ marginBottom: 10 }}
 					/>
 					<DarkButton
 						text={this.props.screenProps.t('connectIXO:registerButton')}

@@ -43,18 +43,17 @@ export interface State {
 }
 export interface Props extends ParentProps, DispatchProps, StateProps {}
 export class Projects extends React.Component<Props, State> {
-
 	headerTitleShown: boolean = false;
 
 	constructor(props: Props) {
 		super(props);
 		this.state = {
 			projects: [],
-			isRefreshing: false,
+			isRefreshing: false
 		};
 	}
 
-	static navigationOptions = ({ navigation, screenProps }: { navigation: any, screenProps: any }) => {
+	static navigationOptions = ({ navigation, screenProps }: { navigation: any; screenProps: any }) => {
 		const { params = {} } = navigation.state;
 		return {
 			headerStyle: {
@@ -66,16 +65,8 @@ export class Projects extends React.Component<Props, State> {
 				textAlign: 'center',
 				alignSelf: 'center'
 			},
-			title: (params.showTitle) ? screenProps.t('projects:myProjects') : '',
-			// headerTintColor: ThemeColors.white,
-			headerLeft: (
-				<Icon
-					name="menu"
-					onPress={() => params.drawer._root.open()}
-					style={{ paddingLeft: 10, color: ThemeColors.white }}
-				/>
-			),
-			// headerRight: <HeaderSync />
+			title: params.showTitle ? screenProps.t('projects:myProjects') : '',
+			headerLeft: <Icon name="menu" onPress={() => params.drawer._root.open()} style={{ paddingLeft: 10, color: ThemeColors.white }} />,
 			headerRight: <Icon name="search" onPress={() => params.drawer._root.open()} style={{ paddingRight: 10, color: ThemeColors.white }} />
 		};
 	};
@@ -158,7 +149,7 @@ export class Projects extends React.Component<Props, State> {
 
 	refreshProjects() {
 		this.setState({ isRefreshing: true, projects: [] });
-		this.getProjectList()
+		this.getProjectList();
 	}
 
 	renderProject() {
@@ -226,7 +217,8 @@ export class Projects extends React.Component<Props, State> {
 
 	_onScroll = (event: any) => {
 		const y = event.nativeEvent.contentOffset.y;
-		if (y > 20 && !this.headerTitleShown) { // headerTitleShown prevents unnecessory rerendering for setParams
+		if (y > 20 && !this.headerTitleShown) {
+			// headerTitleShown prevents unnecessory rerendering for setParams
 			this.props.navigation.setParams({
 				showTitle: true
 			});
@@ -238,18 +230,15 @@ export class Projects extends React.Component<Props, State> {
 			});
 			this.headerTitleShown = false;
 		}
-	}
+	};
 
 	renderNoProjectsView() {
 		return (
 			<Content
 				style={{ backgroundColor: ThemeColors.blue_dark }}
-				refreshControl={<RefreshControl
-					refreshing={this.state.isRefreshing}
-					onRefresh={() => this.refreshProjects()}
-				/>}
+				refreshControl={<RefreshControl refreshing={this.state.isRefreshing} onRefresh={() => this.refreshProjects()} />}
 				// @ts-ignore
-				onScroll={(event) => this._onScroll(event)}
+				onScroll={event => this._onScroll(event)}
 			>
 				<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
 					<View style={[ProjectsStyles.flexLeft]}>
@@ -272,10 +261,9 @@ export class Projects extends React.Component<Props, State> {
 						</View>
 					</Header>
 					<StatusBar barStyle="light-content" />
-					{
-						(this.state.isRefreshing) ?
+					{this.state.isRefreshing ? (
 						<Spinner color={ThemeColors.white} />
-						:
+					) : (
 						<View>
 							<View style={{ height: height * 0.4, flexDirection: 'row', justifyContent: 'center' }}>
 								<View style={{ flexDirection: 'column', justifyContent: 'center' }}>
@@ -284,7 +272,9 @@ export class Projects extends React.Component<Props, State> {
 							</View>
 							<View>
 								<View style={[ProjectsStyles.flexLeft]}>
-									<Text style={[ProjectsStyles.header, { color: ThemeColors.blue_lightest }]}>{this.props.screenProps.t('projects:addFirstProject')}</Text>
+									<Text style={[ProjectsStyles.header, { color: ThemeColors.blue_lightest }]}>
+										{this.props.screenProps.t('projects:addFirstProject')}
+									</Text>
 								</View>
 								<View style={{ width: '100%' }}>
 									<View style={ProjectsStyles.divider} />
@@ -294,7 +284,7 @@ export class Projects extends React.Component<Props, State> {
 								</View>
 							</View>
 						</View>
-					}
+					)}
 				</Container>
 			</ImageBackground>
 		);
@@ -310,11 +300,7 @@ export class Projects extends React.Component<Props, State> {
 				content={<SideBar navigation={this.props.navigation} />}
 				onClose={() => this.closeDrawer()}
 			>
-				{this.state.projects.length > 0 ? (
-					this.renderNoProjectsView()
-				) : (
-					this.renderProjectsView()
-				)}
+				{this.state.projects.length > 0 ? this.renderNoProjectsView() : this.renderProjectsView()}
 				<DarkButton iconImage={qr} text={this.props.screenProps.t('projects:scan')} onPress={() => alert('bla')} />
 			</Drawer>
 		);
