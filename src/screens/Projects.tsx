@@ -24,7 +24,7 @@ const qr = require('../../assets/qr.png');
 
 const { width, height } = Dimensions.get('window');
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
@@ -41,7 +41,7 @@ export interface State {
 	projects: IProject[];
 	isRefreshing: boolean;
 }
-export interface Props extends PropTypes, DispatchProps, StateProps {}
+export interface Props extends ParentProps, DispatchProps, StateProps {}
 export class Projects extends React.Component<Props, State> {
 
 	headerTitleShown: boolean = false;

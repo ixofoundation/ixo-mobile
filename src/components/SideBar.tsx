@@ -6,11 +6,11 @@ import { ThemeColors } from '../styles/Colors';
 
 const deviceHeight = Dimensions.get('window').height;
 
-interface PropTypes {
+interface ParentProps {
   navigation: any,
 }
 
-class SideBar extends React.Component<PropTypes> {
+class SideBar extends React.Component<ParentProps> {
   render() {
     return (
       <View style={{ backgroundColor: ThemeColors.white, height: deviceHeight, paddingTop: 40, paddingLeft: 20 }}>

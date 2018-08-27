@@ -22,12 +22,12 @@ const LogoView = () => (
   </View>
 );
 
-interface PropTypes {
+interface ParentProps {
   navigation: any,
   screenProps: any,
 };
 
-export default class OnBoarding extends React.Component<PropTypes> {
+export default class OnBoarding extends React.Component<ParentProps> {
 
   state = {
     showOnboarding: false,

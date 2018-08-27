@@ -15,7 +15,7 @@ import { GetSignature } from '../utils/sovrin';
 
 const placeholder = require('../../assets/ixo-placeholder.jpg');
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
@@ -32,7 +32,7 @@ export interface StateProps {
 	ixo?: any;
 }
 
-export interface Props extends PropTypes, StateProps {}
+export interface Props extends ParentProps, StateProps {}
 
 class NewClaim extends React.Component<Props, StateTypes> {
 	private pdsURL: string = '';

@@ -24,7 +24,7 @@ const LogoutLink = () => (
 	</TouchableOpacity>
 );
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 }
 
@@ -32,7 +32,7 @@ interface NavigationTypes {
 	navigation: any;
 }
 
-class Settings extends React.Component<PropTypes> {
+class Settings extends React.Component<ParentProps> {
 	static navigationOptions = (props: NavigationTypes) => {
 		return {
 			headerLeft: <Icon name="close" onPress={() => props.navigation.pop()} style={{ paddingLeft: 10 }} />,

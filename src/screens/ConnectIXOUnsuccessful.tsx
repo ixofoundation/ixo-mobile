@@ -34,11 +34,11 @@ const UnSuccessfulView = (navigation: any) => (
 	</View>
 );
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 }
 
-class ConnectIXOUnsuccessful extends React.Component<PropTypes, {}, {}> {
+class ConnectIXOUnsuccessful extends React.Component<ParentProps, {}, {}> {
 	render() {
 		return (
 			<View style={ConnectIXOStyles.wrapper}>

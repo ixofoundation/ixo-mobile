@@ -43,7 +43,7 @@ const dummyData = [
 	}
 ];
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
@@ -57,7 +57,7 @@ export interface StateProps {
 	user?: IUser;
 }
 
-export interface Props extends PropTypes, StateProps {}
+export interface Props extends ParentProps, StateProps {}
 
 class Claims extends React.Component<Props, State> {
 	projectName: string = '';

@@ -87,9 +87,7 @@ export class ScanQR extends React.Component<Props, State> {
 		if (this.state.payload && this.state.password) {
 			try {
 				const mnemonicJson: IMnemonic = Decrypt(this.state.payload, this.state.password);
-				// const cipherTextSovrinDid = Encrypt(JSON.stringify(generateSovrinDID(mnemonicJson.mnemonic)), this.state.password); // encrypt securely on phone enlave
 				SecureStore.setItemAsync(SecureStorageKeys.encryptedMnemonic, this.state.payload!);
-				// SecureStore.setItemAsync(SecureStorageKeys.sovrinDid, {aslk: "asldk", asdl: "asldkj"});
 				SecureStore.setItemAsync(SecureStorageKeys.password, this.state.password);
 				AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true');
 
