@@ -58,10 +58,13 @@ export default class ConnectIXO extends React.Component<PropTypes, {}> {
 					<DarkButton
 						text={this.props.screenProps.t('connectIXO:scanButton')}
 						onPress={() => this.props.navigation.navigate('ScanQR')}
+						propStyles={{ marginBottom: 8 }}
+					/>
+					<DarkButton
+						text={this.props.screenProps.t('connectIXO:registerButton')}
+						onPress={() => this.props.navigation.navigate('Register')}
 						propStyles={{ marginBottom: height * 0.1 }}
 					/>
-					{/* <Button onPress={() => this.props.navigation.navigate('ScanQR')} style={[ConnectIXOStyles.buttons, { marginBottom: 10 }]} dark><Text>SCAN YOUR QR CODE</Text></Button> */}
-					{/* <Button onPress={() => this.props.navigation.dispatch(registerAction)} style={ConnectIXOStyles.buttons} bordered dark><Text>NOT REGISTERED YET?</Text></Button> */}
 				</View>
 			</ImageBackground>
 		);

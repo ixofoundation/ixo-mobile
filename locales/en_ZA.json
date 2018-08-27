@@ -10,7 +10,8 @@
     "connectIXO": {
         "keySafeInfo": "Open the ixo Key Safe on your desktop",
         "qrCodeInfo": "Go to your profile and scan the QR code to connect",
-        "scanButton": "SCAN IXO QR CODE"
+        "scanButton": "SCAN IXO QR CODE",
+        "registerButton": "REGISTER"
     },
     "connectIXOComplete": {
         "unlock": "UNLOCK",

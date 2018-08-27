@@ -1,8 +1,8 @@
 {
-  "expoServerPort": 19000,
-  "packagerPort": 19002,
-  "packagerPid": 43302,
-  "expoServerNgrokUrl": "https://84-rbe.mullertrustlab.ixo-world-mobile.exp.direct",
-  "packagerNgrokUrl": "https://packager.84-rbe.mullertrustlab.ixo-world-mobile.exp.direct",
-  "ngrokPid": 43325
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null
 }
