@@ -4,6 +4,7 @@ import { View, StatusBar, Image, AsyncStorage } from 'react-native';
 import { Permissions } from 'expo';
 import { Text, Button } from 'native-base';
 import Swiper from 'react-native-swiper';
+import bip39 from 'react-native-bip39';
 import Loading from '../screens/Loading';
 
 import OnBoardingStyles from '../styles/OnBoarding';
@@ -32,6 +33,14 @@ export default class OnBoarding extends React.Component<PropTypes> {
     showOnboarding: false,
   };
 
+  async generateMnemonic() {
+    try {
+      return await bip39.generateMnemonic(256) // default to 128
+    } catch(e) {
+      return false
+    }
+  }
+
   componentDidMount() {
     // AsyncStorage.clear(); // DEV only to test onboarding
     AsyncStorage.getItem(LocalStorageKeys.firstLaunch, (error: any, firstLaunch: string | undefined) => {
@@ -47,6 +56,11 @@ export default class OnBoarding extends React.Component<PropTypes> {
         this.props.navigation.dispatch(resetAction);
       }
     });
+
+    this.generateMnemonic().then((mnemonic) => {
+      console.log('GENERATED MNEMONIC', mnemonic);
+    });
+    
   }
 
   async getNotifications() {
