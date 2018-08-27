@@ -2,6 +2,7 @@
   "expo": {
     "sdkVersion": "28.0.0",
     "icon": "./assets/logo_icon.png",
+    "version": "1.0.0",
     "packagerOpts": {
       "sourceExts": [
         "ts",
@@ -11,6 +12,22 @@
     },
     "slug": "ixo",
     "name": "ixo",
-    "orientation": "portrait"
+    "orientation": "portrait",
+    "ios": {
+      "bundleIdentifier": "com.ixo.world.mobile",
+      "publishBundlePath": "ios/ixo/Supporting/shell-app.bundle",
+      "publishManifestPath": "ios/ixo/Supporting/shell-app-manifest.json"
+    },
+    "android": {
+      "package": "com.ixo.world.mobile",
+      "publishBundlePath": "android/app/src/main/assets/shell-app.bundle",
+      "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json"
+    },
+    "isDetached": true,
+    "detach": {
+      "iosExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/ios-v2.6.8-sdk28.0.0-d3178d29-6e12-458b-bfeb-8b7538943b48.tar.gz",
+      "androidExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/android-v2.6.4-sdk28.0.0-9ba3198a-7d95-4769-9e16-178a37a70cae.tar.gz"
+    },
+    "scheme": "exp89814a59582b4753b444c5ef0168e839"
   }
 }
