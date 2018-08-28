@@ -11,4 +11,7 @@ config.tsx
 /android/app/app.iml
 /android/app/build
 /ios/Podfile.lock
+shim.js
 ios/ixo.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+.expo/packager-info.json
+ios/ixo/Supporting/EXBuildConstants.plist.bak
