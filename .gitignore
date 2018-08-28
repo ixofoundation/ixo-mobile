@@ -12,4 +12,5 @@ config.tsx
 /android/app/build
 /ios/Podfile.lock
 shim.js
+/.expo
 ios/ixo.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
