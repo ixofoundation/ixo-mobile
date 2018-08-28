@@ -30,7 +30,7 @@ import { initUser } from '../redux/user/user_action_creators';
 
 const { width } = Dimensions.get('window');
 const logo = require('../../assets/logo.png');
-const background = require('../../assets/backgrounds/background_1.jpg');
+const background = require('../../assets/backgrounds/background_1.png');
 const IconFingerprint = require('../../assets/iconFingerprint.png');
 
 const LogoView = () => (

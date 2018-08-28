@@ -1,7 +1,6 @@
 import React from 'react';
-import { Image, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo';
-import { TouchableOpacity, ViewStyle, StyleSheet, Button } from 'react-native';
+import { TouchableOpacity, ViewStyle, StyleSheet, Image, Dimensions } from 'react-native';
 import { Text } from 'native-base'; 
 
 const { width, height } = Dimensions.get('window');

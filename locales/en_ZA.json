@@ -53,5 +53,22 @@
 		"successDetailedMessage": "Your claim has been successfully submitted and is awaiting evaluation. Please check back soon.",
 		"rejectMessage": "There has been an error submitting your claim",
 		"rejectDetailedMessage": "Your claim has been saved. Please try again later."
+	},
+	"register": {
+		"register": "Register",
+		"create": "Create",
+		"letsSetup": "Let's set up your account",
+		"yourName": "Your name",
+		"newPassword": "New Password",
+		"confirmPassword": "Confirm Password",
+		"secretPhrase": "Secret backup phrase",
+		"secretParagraph_1": "Your secret backup phrase makes it easy to back up and restore your account.",
+		"secretParagraph_2": " Never disclose your backup phrase and store it somewhere secure.",
+		"warning": "WARNING",
+		"tapReveal": "Tap here to reveal secret words",
+		"confirmSecret": "Confirm your Secret Backup Phrase",
+		"confirmSecretParagraph": "Please select each phrase in order to make sure it is correct.",
+		"confirm": "CONFIRM",
+		"orderIncorrect": "Order is incorrect"
 	}
 }

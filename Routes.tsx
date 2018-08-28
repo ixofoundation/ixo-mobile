@@ -68,10 +68,7 @@ const Stack = createStackNavigator({
   },
   Help: { screen: Help,
   },
-  Register: { screen: Register,
-    navigationOptions: {
-      header: null
-    }
+  Register: { screen: Register
   },
   ViewClaim: {
     screen: ViewClaim,

@@ -14,7 +14,8 @@ interface Style {
 
 const styles = StyleSheet.create<Style>({
   wrapper: {
-    flex: 1
+    flex: 1,
+    backgroundColor: ThemeColors.blue_dark
   },
   slide: {
     flex: 1,

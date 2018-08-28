@@ -7,9 +7,10 @@ import ConnectIXOStyles from '../styles/ConnectIXO';
 import ContainerStyles from '../styles/Containers';
 import { ThemeColors } from '../styles/Colors';
 import DarkButton from '../components/DarkButton';
+import LightButton from '../components/LightButton';
 
 const logo = require('../../assets/logo.png');
-const background = require('../../assets/backgrounds/background_1.jpg');
+const background = require('../../assets/backgrounds/background_1.png');
 const keysafelogo = require('../../assets/keysafe-logo.png');
 const qr = require('../../assets/qr.png');
 
@@ -59,7 +60,7 @@ export default class ConnectIXO extends React.Component<PropTypes, {}> {
 						propStyles={{ marginBottom: 10 }}
 					/>
 
-					<DarkButton
+					<LightButton
 						text={this.props.screenProps.t('connectIXO:registerButton')}
 						onPress={() => this.props.navigation.navigate('Register')}
 						propStyles={{ marginBottom: height * 0.1 }}
