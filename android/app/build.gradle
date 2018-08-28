@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
-apply plugin: 'com.neenbedankt.android-apt'
+//apply plugin: 'com.neenbedankt.android-apt'
 
 repositories {
   maven { url 'https://maven.fabric.io/public' }
@@ -18,6 +18,7 @@ repositories {
 android {
   compileSdkVersion 27
   buildToolsVersion '27.0.3'
+  flavorDimensions 'default'
 
   defaultConfig {
     applicationId 'com.ixo.world.mobile'
@@ -120,7 +121,7 @@ dependencies {
   compile 'com.google.android.gms:play-services-auth:12.0.1'
   compile 'com.google.android.gms:play-services-location:12.0.1'
   compile 'com.google.android.gms:play-services-ads:12.0.1'
-  apt 'com.raizlabs.android:DBFlow-Compiler:2.2.1'
+  annotationProcessor 'com.raizlabs.android:DBFlow-Compiler:2.2.1'
   compile "com.raizlabs.android:DBFlow-Core:2.2.1"
   compile "com.raizlabs.android:DBFlow:2.2.1"
   compile "com.madgag.spongycastle:core:1.53.0.0"
@@ -168,8 +169,8 @@ dependencies {
   compile('host.exp.exponent:expoview:28.0.0@aar') {
     transitive = true
   }
-  
-  compile project(path: ':expoview')
+
+  //compile project(path: ':expoview')
 }
 
 // This has to be down here for some reason

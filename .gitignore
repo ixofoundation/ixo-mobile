@@ -2,3 +2,11 @@
 /build
 .vscode/
 config.tsx
+/ios/Pods
+/android/.idea
+/android/build/
+/android/.gradle
+/android/local.properties
+/android/app/app.iml
+/ios/Podfile.lock
+ios/ixo.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
