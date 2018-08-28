@@ -13,6 +13,7 @@
     "react-native-scripts-ts": "^1.15.0",
     "react-native-typescript-transformer": "^1.2.10",
     "react-test-renderer": "16.3.1",
+    "rn-nodeify": "tradle/rn-nodeify",
     "ts-jest": "^22.4.6",
     "tslib": "^1.9.2",
     "typescript": "^2.9.2"
@@ -20,6 +21,7 @@
   "main": "./node_modules/react-native-scripts-ts/build/bin/crna-entry.js",
   "scripts": {
     "start": "react-native-scripts-ts start",
+    "postinstall": "./node_modules/.bin/rn-nodeify --hack --install",
     "eject": "react-native-scripts-ts eject",
     "android": "react-native-scripts-ts android",
     "ios": "react-native-scripts-ts ios",
@@ -120,7 +122,7 @@
     "dns": "dns.js",
     "net": "react-native-tcp",
     "domain": "domain-browser",
-    "http": "react-native-http",
+    "http": "@tradle/react-native-http",
     "https": "https-browserify",
     "os": "react-native-os",
     "path": "path-browserify",
@@ -146,7 +148,7 @@
     "dns": "dns.js",
     "net": "react-native-tcp",
     "domain": "domain-browser",
-    "http": "react-native-http",
+    "http": "@tradle/react-native-http",
     "https": "https-browserify",
     "os": "react-native-os",
     "path": "path-browserify",

@@ -4,10 +4,14 @@ import { StatusBar, TouchableOpacity, AsyncStorage } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
 import { Container, Icon, View, Item, Label, Input, Button, Text, Toast } from 'native-base';
 import { Encrypt, generateSovrinDID } from '../utils/sovrin';
-import { SecureStorageKeys, LocalStorageKeys } from '../models/phoneStorage';
+import { SecureStorageKeys, LocalStorageKeys, UserStorageKeys } from '../models/phoneStorage';
 import { ThemeColors } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
 import RegisterStyles from '../styles/Register';
+import { IUser } from '../models/user';
+import { initUser } from '../redux/user/user_action_creators';
+import { connect } from 'react-redux';
+var bip39 = require('react-native-bip39');
 
 enum registerSteps {
 	captureDetails = 1,
@@ -15,8 +19,12 @@ enum registerSteps {
 	reenterMnemonic
 }
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
+}
+
+export interface DispatchProps {
+	onUserInit: (user: IUser) => void;
 }
 
 interface StateTypes {
@@ -30,7 +38,9 @@ interface StateTypes {
 	errorMismatch: boolean;
 }
 
-class Register extends React.Component<PropTypes, StateTypes> {
+export interface Props extends ParentProps, DispatchProps {}
+
+class Register extends React.Component<Props, StateTypes> {
 	state = {
 		username: '',
 		password: '',
@@ -43,15 +53,8 @@ class Register extends React.Component<PropTypes, StateTypes> {
 	};
 
 	async generateMnemonic() {
-		// try {
-		//     const mnemonic = await bip39.generateMnemonic();
-		//     this.setState({ mnemonic });
-		// } catch(e) {
-		//     return false
-		// }
-		const testMonic = 'surprise boat glance fetch cute gossip domain all marble orchard entire rookie';
-
-		this.setState({ unSelectedWords: this.shuffleArray(testMonic.split(' ')), mnemonic: testMonic });
+		const mnemonic = await bip39.generateMnemonic();
+		this.setState({ unSelectedWords: this.shuffleArray(mnemonic.split(' ')), mnemonic: mnemonic });
 	}
 
 	shuffleArray(array: string[]) {
@@ -90,11 +93,22 @@ class Register extends React.Component<PropTypes, StateTypes> {
 			this.setState({ errorMismatch: true });
 		} else {
 			const cipherTextMnemonic = Encrypt(JSON.stringify({ username: this.state.username, mnemonic: this.state.mnemonic }), this.state.password); // encrypt securely on phone enlave
-			SecureStore.setItemAsync(SecureStorageKeys.mnemonic, cipherTextMnemonic.toString());
+			SecureStore.setItemAsync(SecureStorageKeys.encryptedMnemonic, cipherTextMnemonic);
 			const cipherTextSovrinDid = Encrypt(JSON.stringify(generateSovrinDID(this.state.mnemonic)), this.state.password); // encrypt securely on phone enlave
-			SecureStore.setItemAsync(SecureStorageKeys.sovrinDid, cipherTextSovrinDid.toString());
+			SecureStore.setItemAsync(SecureStorageKeys.sovrinDid, cipherTextSovrinDid);
 			SecureStore.setItemAsync(SecureStorageKeys.password, this.state.password); // save local password
 			AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true'); // stop first time onboarding
+			let user: IUser = {
+				did: 'did:sov:' + generateSovrinDID(this.state.mnemonic).did,
+				name: this.state.username,
+				verifyKey: generateSovrinDID(this.state.mnemonic).verifyKey
+			};
+
+			AsyncStorage.setItem(UserStorageKeys.name, user.name);
+			AsyncStorage.setItem(UserStorageKeys.did, user.did);
+			AsyncStorage.setItem(UserStorageKeys.verifyKey, user.verifyKey);
+
+			this.props.onUserInit(user);
 			this.props.navigation.dispatch(goToLogin);
 		}
 	}
@@ -139,19 +153,10 @@ class Register extends React.Component<PropTypes, StateTypes> {
 						</Item>
 						<Item floatingLabel>
 							<Label>Confirm password</Label>
-							<Input
-								secureTextEntry
-								value={this.state.confirmPassword}
-								onChangeText={text => this.setState({ confirmPassword: text })}
-							/>
+							<Input secureTextEntry value={this.state.confirmPassword} onChangeText={text => this.setState({ confirmPassword: text })} />
 						</Item>
 						<View style={[ContainerStyles.flexColumn, { paddingTop: 60 }]}>
-							<Button
-								onPress={() => this.handleCreatePassword()}
-								style={{ width: '100%', justifyContent: 'center', marginTop: 20 }}
-								bordered
-								dark
-							>
+							<Button onPress={() => this.handleCreatePassword()} style={{ width: '100%', justifyContent: 'center', marginTop: 20 }} bordered dark>
 								<Text>Create</Text>
 							</Button>
 						</View>
@@ -174,9 +179,7 @@ class Register extends React.Component<PropTypes, StateTypes> {
 							{this.state.mnemonic.length <= 0 ? (
 								<View>
 									<Icon name="lock" color={ThemeColors.black} style={{ fontSize: 60, textAlign: 'center' }} />
-									<Text style={{ textAlign: 'center', color: ThemeColors.black, paddingHorizontal: 10 }}>
-										Click here to reveal secret words
-									</Text>
+									<Text style={{ textAlign: 'center', color: ThemeColors.black, paddingHorizontal: 10 }}>Click here to reveal secret words</Text>
 								</View>
 							) : (
 								<View>
@@ -186,12 +189,7 @@ class Register extends React.Component<PropTypes, StateTypes> {
 						</TouchableOpacity>
 						{this.state.mnemonic.length > 0 && (
 							<View style={[ContainerStyles.flexColumn, { paddingTop: 60 }]}>
-								<Button
-									onPress={() => this.setState({ registerState: registerSteps.reenterMnemonic })}
-									style={RegisterStyles.button}
-									bordered
-									dark
-								>
+								<Button onPress={() => this.setState({ registerState: registerSteps.reenterMnemonic })} style={RegisterStyles.button} bordered dark>
 									<Text>Next</Text>
 								</Button>
 							</View>
@@ -208,9 +206,7 @@ class Register extends React.Component<PropTypes, StateTypes> {
 						<Text style={{ textAlign: 'left', color: ThemeColors.black, paddingBottom: 10 }}>
 							Please select each phrase in order to make sure it is correct.
 						</Text>
-						{this.state.errorMismatch && (
-							<Text style={{ textAlign: 'left', color: 'red', paddingBottom: 7 }}>The order is incorrect</Text>
-						)}
+						{this.state.errorMismatch && <Text style={{ textAlign: 'left', color: 'red', paddingBottom: 7 }}>The order is incorrect</Text>}
 						{this.renderSelected()}
 						{this.renderUnSelected()}
 						<View style={[ContainerStyles.flexColumn]}>
@@ -261,4 +257,15 @@ class Register extends React.Component<PropTypes, StateTypes> {
 	}
 }
 
-export default Register;
+function mapDispatchToProps(dispatch: any): DispatchProps {
+	return {
+		onUserInit: (user: IUser) => {
+			dispatch(initUser(user));
+		}
+	};
+}
+
+export default connect(
+	null,
+	mapDispatchToProps
+)(Register);
