@@ -213,6 +213,7 @@ If this causes problems for you, you may want to try changing your terminal's co
 1. clone repo: `git clone https://github.com/ixofoundation/ixo-world-mobile.git`
 2. `cd ixo-world-mobile`
 3. `yarn install`
+4. `exp start`
 
 #### Android 
 1. Open Android Studio.
