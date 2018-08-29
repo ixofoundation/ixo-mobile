@@ -1,4 +1,4 @@
-import { ISovrinDid, IMnemonic } from '../models/sovrin';
+import { ISovrinDid, IMnemonic, ISignature } from '../models/sovrin';
 import { SecureStore } from 'expo';
 import { SecureStorageKeys } from '../models/phoneStorage';
 
@@ -10,13 +10,11 @@ const CryptoJS = require('crypto-js');
 
 export function generateSovrinDID(mnemonic: string): ISovrinDid {
 	const seed = SHA256(mnemonic).toString();
-
 	// Convert SHA256 hash to Uint8Array
 	var didSeed = new Uint8Array(32);
 	for (var i = 0; i < 32; ++i) {
 		didSeed[i] = parseInt(seed.substring(i * 2, i * 2 + 2), 16);
 	}
-
 	// Create the Sovrin DID
 	return sovrin.fromSeed(didSeed);
 }
@@ -25,7 +23,7 @@ export function verifyDocumentSignature(signature: string, publicKey: string) {
 	return !(sovrin.verifySignedMessage(signature, publicKey) === false);
 }
 
-export function GetSignature(payload: object): Promise<any> {
+export function getSignature(payload: object): Promise<any> {
 	return new Promise((resolve, reject) => {
 		SecureStore.getItemAsync(SecureStorageKeys.encryptedMnemonic).then((encryptedMnemonic: string | null) => {
 			if (encryptedMnemonic) {
@@ -33,18 +31,19 @@ export function GetSignature(payload: object): Promise<any> {
 					if (password) {
 						const mnemonicJson: IMnemonic = Decrypt(encryptedMnemonic, password);
 						const sovrinDid: ISovrinDid = generateSovrinDID(mnemonicJson.mnemonic);
-						const signature = sovrin.signMessage(JSON.stringify(payload), sovrinDid.secret.signKey, sovrinDid.verifyKey);
-						signature.signatureValue = new Buffer(signature)
-							.slice(0, 64)
-							.toString('hex')
-							.toUpperCase();
+						const payloadSig = sovrin.signMessage(JSON.stringify(payload), sovrinDid.secret.signKey, sovrinDid.verifyKey);
+						let signature: ISignature = {
+							type: 'ed25519-sha-256',
+							created: new Date(),
+							creator: `did:sov:${sovrinDid.did}`,
+							publicKey: sovrinDid.encryptionPublicKey,
+							signatureValue: new Buffer(payloadSig)
+								.slice(0, 64)
+								.toString('hex')
+								.toUpperCase()
+						};
 
-						signature.type = 'ed25519-sha-256';
-						signature.creator = `did:sov:${sovrinDid.did}`;
-						signature.created = new Date();
-						signature.publicKey = sovrinDid.encryptionPublicKey;
-
-						if (!verifyDocumentSignature(signature, sovrinDid.verifyKey)) {
+						if (!verifyDocumentSignature(payloadSig, sovrinDid.verifyKey)) {
 							return reject();
 						}
 						return resolve(signature);

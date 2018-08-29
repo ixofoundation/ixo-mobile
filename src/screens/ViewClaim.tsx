@@ -11,7 +11,7 @@ import { PublicSiteStoreState } from '../redux/public_site_reducer';
 const { height } = Dimensions.get('window');
 import { connect } from 'react-redux';
 import { decode as base64Decode } from 'base-64';
-import { GetSignature } from '../utils/sovrin';
+import { getSignature } from '../utils/sovrin';
 import { IClaim } from '../models/project';
 
 const placeholder = require('../../assets/ixo-placeholder.jpg');
@@ -81,7 +81,7 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 
 	loadData() {
 		const ProjectDIDPayload: Object = { projectDid: this.projectDid };
-		GetSignature(ProjectDIDPayload).then((signature: any) => {
+		getSignature(ProjectDIDPayload).then((signature: any) => {
 			const claimPromise: Promise<any> = this.handleGetClaim(ProjectDIDPayload, signature);
 			const formFilePromise: Promise<any> = this.handleFetchFile(this.claimFormKey, this.pdsURL);
 
