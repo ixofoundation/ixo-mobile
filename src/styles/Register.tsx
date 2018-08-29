@@ -23,7 +23,7 @@ const styles = StyleSheet.create<Style>({
         width: '100%',
         height: '100%',
         paddingHorizontal: 10,
-        backgroundColor: ThemeColors.blue_dark
+        backgroundColor: ThemeColors.blue_dark,
       },
     button: {
         width: '100%',
@@ -33,7 +33,9 @@ const styles = StyleSheet.create<Style>({
     selected: {
         borderColor: ThemeColors.blue_lightest,
         borderWidth: 1,
-        height: deviceHeight * 0.3,
+        // minHeight: deviceHeight * 0.2,
+        // maxHeight: deviceHeight * 0.2,
+        height: deviceHeight * 0.2,
         flexDirection: 'row',
         flexWrap: 'wrap',
         padding: 10

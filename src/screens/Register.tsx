@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'underscore';
 import { SecureStore, LinearGradient } from 'expo';
 import { Dimensions, StatusBar, TouchableOpacity, AsyncStorage, ImageBackground, KeyboardAvoidingView } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
@@ -29,6 +30,11 @@ interface ParentProps {
 	screenProps: any;
 }
 
+interface IMnemonic {
+	key: number,
+	word: string,
+}
+
 export interface DispatchProps {
 	onUserInit: (user: IUser) => void;
 }
@@ -39,8 +45,10 @@ interface StateTypes {
 	confirmPassword: string;
 	registerState: registerSteps;
 	mnemonic: string;
-	selectedWords: string[];
-	unSelectedWords: string[];
+	selectedWords: IMnemonic[];
+	unSelectedWords: IMnemonic[];
+	// selectedWords: string[];
+	// unSelectedWords: string[];
 	errorMismatch: boolean;
 }
 
@@ -77,7 +85,11 @@ class Register extends React.Component<Props, StateTypes> {
 
 	async generateMnemonic() {
 		const mnemonic = await bip39.generateMnemonic();
-		this.setState({ unSelectedWords: this.shuffleArray(mnemonic.split(' ')), mnemonic: mnemonic });
+		let mnemonicArray: IMnemonic[] = [];
+		_.each(this.shuffleArray(mnemonic.split(' ')), (word, index) => {
+			mnemonicArray.push({ key: index, word });
+		});
+		this.setState({ unSelectedWords: mnemonicArray, mnemonic: mnemonic });
 	}
 
 	shuffleArray(array: string[]) {
@@ -89,20 +101,20 @@ class Register extends React.Component<Props, StateTypes> {
 		return array;
 	}
 
-	handleUnselectedToSelected(word: string) {
-		const selectedWords: string[] = this.state.selectedWords;
-		selectedWords.push(word);
+	handleUnselectedToSelected(mnemonic: IMnemonic) {
+		const selectedWords: IMnemonic[] = this.state.selectedWords;
+		selectedWords.push(mnemonic);
 		this.setState({
-			unSelectedWords: this.state.unSelectedWords.filter(e => e !== word),
+			unSelectedWords: this.state.unSelectedWords.filter((e: IMnemonic) => e.key !== mnemonic.key),
 			selectedWords: selectedWords
 		});
 	}
 
-	handleSelectedToUnselected(word: string) {
-		const unSelectedWords: string[] = this.state.unSelectedWords;
-		unSelectedWords.push(word);
+	handleSelectedToUnselected(mnemonic: IMnemonic) {
+		const unSelectedWords: IMnemonic[] = this.state.unSelectedWords;
+		unSelectedWords.push(mnemonic);
 		this.setState({
-			selectedWords: this.state.selectedWords.filter(e => e !== word),
+			selectedWords: this.state.selectedWords.filter((e: IMnemonic) => e.key !== mnemonic.key),
 			unSelectedWords: unSelectedWords
 		});
 	}
@@ -228,7 +240,7 @@ class Register extends React.Component<Props, StateTypes> {
 						<Text style={{ textAlign: 'left', color: ThemeColors.white, paddingBottom: 10 }}>
 							{this.props.screenProps.t('register:confirmSecretParagraph')}
 						</Text>
-						{this.state.errorMismatch && <Text style={{ textAlign: 'left', color: ThemeColors.orange, paddingBottom: 7, fontSize: 10 }}>{this.props.screenProps.t('register:orderIncorrect')}</Text>}
+						{this.state.errorMismatch && <Text style={{ textAlign: 'left', color: ThemeColors.orange, paddingBottom: 7, fontSize: 14 }}>{this.props.screenProps.t('register:orderIncorrect')}</Text>}
 						{this.renderSelected()}
 						{this.renderUnSelected()}
 						{(this.state.selectedWords.length > 0) ? 
@@ -245,10 +257,10 @@ class Register extends React.Component<Props, StateTypes> {
 	renderSelected() {
 		return (
 			<View style={[RegisterStyles.selected]}>
-				{this.state.selectedWords.map(word => {
+				{this.state.selectedWords.map((mnemonic: IMnemonic) => {
 					return (
-						<TouchableOpacity onPress={() => this.handleSelectedToUnselected(word)} key={word}>
-							<Text style={(this.state.errorMismatch) ? [RegisterStyles.wordBox, { borderColor: ThemeColors.orange }] : RegisterStyles.wordBox}>{word}</Text>
+						<TouchableOpacity onPress={() => this.handleSelectedToUnselected(mnemonic)} key={mnemonic.word}>
+							<Text style={(this.state.errorMismatch) ? [RegisterStyles.wordBox, { borderColor: ThemeColors.orange }] : RegisterStyles.wordBox}>{mnemonic.word}</Text>
 						</TouchableOpacity>
 					);
 				})}
@@ -259,18 +271,18 @@ class Register extends React.Component<Props, StateTypes> {
 	renderUnSelected() {
 		return (
 			<View style={(this.state.selectedWords.length > 0) ? [RegisterStyles.unSelect] : [RegisterStyles.unSelect]}>
-				{this.state.unSelectedWords.map(word => {
+				{this.state.unSelectedWords.map((mnemonic: IMnemonic) => {
 					return (
-						<TouchableOpacity onPress={() => this.handleUnselectedToSelected(word)} key={word}>
+						<TouchableOpacity onPress={() => this.handleUnselectedToSelected(mnemonic)} key={mnemonic.key}>
 						{((this.state.selectedWords.length > 0)) ? 
 							<LinearGradient
 								style={RegisterStyles.wordBoxGradient}
 								colors={[ButtonDark.colorPrimary, ButtonDark.colorSecondary]}
 							>
-								<Text style={{ color: ThemeColors.white }}>{word}</Text>
+								<Text style={{ color: ThemeColors.white }}>{mnemonic.word}</Text>
 							</LinearGradient>
 						:
-							<Text style={RegisterStyles.wordBox}>{word}</Text>
+							<Text style={RegisterStyles.wordBox}>{mnemonic.word}</Text>
 						}
 						</TouchableOpacity>
 					);
