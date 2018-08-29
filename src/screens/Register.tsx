@@ -119,12 +119,20 @@ class Register extends React.Component<Props, StateTypes> {
 		});
 	}
 
+	getMnemonicString(mnemonicArray: IMnemonic[]) {
+		let mnemonicString: string[] = [];
+		_.each(mnemonicArray, (mnemonic: IMnemonic) => {
+			mnemonicString.push(mnemonic.word);
+		});
+		return mnemonicString.join(' ');
+	}
+
 	handleConfirmMnemonic() {
 		const goToLogin = StackActions.reset({
 			index: 0,
 			actions: [NavigationActions.navigate({ routeName: 'Login' })]
 		});
-		if (this.state.selectedWords.join(' ') !== this.state.mnemonic) {
+		if (this.getMnemonicString(this.state.selectedWords) !== this.state.mnemonic) {
 			this.setState({ errorMismatch: true });
 		} else {
 			const cipherTextMnemonic = Encrypt(JSON.stringify({ username: this.state.username, mnemonic: this.state.mnemonic }), this.state.password); // encrypt securely on phone enlave
