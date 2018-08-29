@@ -1,28 +1,26 @@
-import React from 'react';
-import { StatusBar, TouchableOpacity, Image, ImageBackground, Dimensions, RefreshControl } from 'react-native';
-import _ from 'underscore';
 import { LinearGradient, SecureStore } from 'expo';
-import { Container, Header, Item, Icon, Input, Content, View, Text, Spinner, Drawer } from 'native-base';
-import { connect } from 'react-redux';
 import moment from 'moment';
-import SideBar from '../components/SideBar';
-import ProjectsStyles from '../styles/Projects';
-
-import ContainerStyles from '../styles/Containers';
-import { IClaim, IProject } from '../models/project';
-import { ThemeColors, ProjectStatus } from '../styles/Colors';
-import { initIxo } from '../redux/ixo/ixo_action_creators';
+import { Container, Content, Drawer, Header, Icon, Spinner, Text, View } from 'native-base';
+import React from 'react';
+import { Dimensions, Image, ImageBackground, RefreshControl, StatusBar, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
+import _ from 'underscore';
 import { env } from '../../config';
-import { PublicSiteStoreState } from '../redux/public_site_reducer';
-import { IUser } from '../models/user';
 import DarkButton from '../components/DarkButton';
+import SideBar from '../components/SideBar';
 import { SecureStorageKeys } from '../models/phoneStorage';
+import { IClaim, IProject } from '../models/project';
+import { IUser } from '../models/user';
+import { initIxo } from '../redux/ixo/ixo_action_creators';
+import { PublicSiteStoreState } from '../redux/public_site_reducer';
+import { ProjectStatus, ThemeColors } from '../styles/Colors';
+import ContainerStyles from '../styles/Containers';
+import ProjectsStyles from '../styles/Projects';
 
 const placeholder = require('../../assets/ixo-placeholder.jpg');
 const background = require('../../assets/backgrounds/background_2.png');
 const addProjects = require('../../assets/project-visual.png');
 const qr = require('../../assets/qr.png');
-
 const { width, height } = Dimensions.get('window');
 
 interface ParentProps {

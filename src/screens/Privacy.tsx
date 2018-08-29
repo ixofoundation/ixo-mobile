@@ -1,7 +1,6 @@
+import { Container, Content, Icon, Text } from 'native-base';
 import React from 'react';
-import { StatusBar, TouchableOpacity, Dimensions } from 'react-native';
-import { Container, Icon, Content, Text } from 'native-base';
-
+import { StatusBar } from 'react-native';
 import { ThemeColors } from '../styles/Colors';
 
 interface ParentProps {

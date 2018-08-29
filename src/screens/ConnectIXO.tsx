@@ -1,13 +1,12 @@
-import * as React from 'react';
-import { View, StatusBar, Image, ImageBackground, Dimensions, TouchableOpacity } from 'react-native';
-import { StackActions, NavigationActions } from 'react-navigation';
 import { Text } from 'native-base';
-
-import ConnectIXOStyles from '../styles/ConnectIXO';
-import ContainerStyles from '../styles/Containers';
-import { ThemeColors } from '../styles/Colors';
+import * as React from 'react';
+import { Dimensions, Image, ImageBackground, StatusBar, View } from 'react-native';
+import { NavigationActions, StackActions } from 'react-navigation';
 import DarkButton from '../components/DarkButton';
 import LightButton from '../components/LightButton';
+import { ThemeColors } from '../styles/Colors';
+import ConnectIXOStyles from '../styles/ConnectIXO';
+import ContainerStyles from '../styles/Containers';
 
 const logo = require('../../assets/logo.png');
 const background = require('../../assets/backgrounds/background_1.png');

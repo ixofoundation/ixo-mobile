@@ -1,32 +1,18 @@
-import React from 'react';
 import { Fingerprint, SecureStore } from 'expo';
-import { StackActions, NavigationActions } from 'react-navigation';
-import _ from 'underscore';
-import {
-	KeyboardAvoidingView,
-	View,
-	StatusBar,
-	Image,
-	Alert,
-	TouchableOpacity,
-	Platform,
-	Dimensions,
-	AsyncStorage,
-	ImageBackground
-} from 'react-native';
-import { Text, Item, Label, Input, Toast, Spinner } from 'native-base';
+import { Input, Item, Label, Spinner, Text, Toast } from 'native-base';
+import React from 'react';
+import { Alert, AsyncStorage, Dimensions, Image, ImageBackground, KeyboardAvoidingView, Platform, StatusBar, TouchableOpacity, View } from 'react-native';
+import { NavigationActions, StackActions } from 'react-navigation';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
-
-import LoginStyles from '../styles/Login';
-import ContainerStyles from '../styles/Containers';
-import { ThemeColors } from '../styles/Colors';
-import { SecureStorageKeys, UserStorageKeys } from '../models/phoneStorage';
-import DarkButton from '../components/DarkButton';
 import IconEyeOff from '../../assets/svg/IconEyeOff';
-import { PublicSiteStoreState } from '../redux/public_site_reducer';
+import DarkButton from '../components/DarkButton';
+import { SecureStorageKeys, UserStorageKeys } from '../models/phoneStorage';
 import { IUser } from '../models/user';
+import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { initUser } from '../redux/user/user_action_creators';
+import { ThemeColors } from '../styles/Colors';
+import ContainerStyles from '../styles/Containers';
+import LoginStyles from '../styles/Login';
 
 const { width } = Dimensions.get('window');
 const logo = require('../../assets/logo.png');

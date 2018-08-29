@@ -1,6 +1,6 @@
-import { ISovrinDid, IMnemonic, ISignature } from '../models/sovrin';
 import { SecureStore } from 'expo';
 import { SecureStorageKeys } from '../models/phoneStorage';
+import { IMnemonic, ISignature, ISovrinDid } from '../models/sovrin';
 
 const sovrin = require('sovrin-did');
 const AES = require('crypto-js/aes');

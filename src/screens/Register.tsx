@@ -1,25 +1,24 @@
+import { LinearGradient, SecureStore } from 'expo';
+import { Container, Icon, Text, Toast, View } from 'native-base';
 import React from 'react';
-import _ from 'underscore';
-import { SecureStore, LinearGradient } from 'expo';
-import { Dimensions, StatusBar, TouchableOpacity, AsyncStorage, ImageBackground, KeyboardAvoidingView } from 'react-native';
-import { StackActions, NavigationActions } from 'react-navigation';
-import { Container, Icon, View, Item, Label, Input, Button, Text, Toast } from 'native-base';
-import { Encrypt, generateSovrinDID, getSignature } from '../utils/sovrin';
-import { SecureStorageKeys, LocalStorageKeys, UserStorageKeys } from '../models/phoneStorage';
-import { ThemeColors, ButtonDark } from '../styles/Colors';
-import ContainerStyles from '../styles/Containers';
-import RegisterStyles from '../styles/Register';
-import { IUser } from '../models/user';
-import { initUser } from '../redux/user/user_action_creators';
+import { AsyncStorage, Dimensions, ImageBackground, KeyboardAvoidingView, StatusBar, TouchableOpacity } from 'react-native';
+import { NavigationActions, StackActions } from 'react-navigation';
 import { connect } from 'react-redux';
+import _ from 'underscore';
+import { env } from '../../config';
 import DarkButton from '../components/DarkButton';
 import InputField from '../components/InputField';
 import LightButton from '../components/LightButton';
-import { PublicSiteStoreState } from '../redux/public_site_reducer';
+import { LocalStorageKeys, SecureStorageKeys, UserStorageKeys } from '../models/phoneStorage';
+import { IUser } from '../models/user';
 import { initIxo } from '../redux/ixo/ixo_action_creators';
-import { env } from '../../config';
-var bip39 = require('react-native-bip39');
+import { PublicSiteStoreState } from '../redux/public_site_reducer';
+import { initUser } from '../redux/user/user_action_creators';
+import { ButtonDark, ThemeColors } from '../styles/Colors';
+import RegisterStyles from '../styles/Register';
+import { Encrypt, generateSovrinDID, getSignature } from '../utils/sovrin';
 
+const bip39 = require('react-native-bip39');
 const background = require('../../assets/backgrounds/background_1.png');
 
 enum registerSteps {

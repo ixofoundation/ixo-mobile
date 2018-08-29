@@ -1,10 +1,9 @@
+import { Button, Container, Content, Icon, Input, Item, Text, View } from 'native-base';
 import React from 'react';
 import { StatusBar, TouchableOpacity } from 'react-native';
-import { Container, Icon, Content, View, Text, Button, Item, Input } from 'native-base';
-
-import ProjectDetailStyles from '../styles/ProjectDetails';
-import ContainerStyles from '../styles/Containers';
 import { ThemeColors } from '../styles/Colors';
+import ContainerStyles from '../styles/Containers';
+import ProjectDetailStyles from '../styles/ProjectDetails';
 
 const PhotoBox = () => (
 	<TouchableOpacity style={ProjectDetailStyles.photoBoxContainer}>

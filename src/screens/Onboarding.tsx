@@ -5,7 +5,6 @@ import { Permissions, SecureStore } from 'expo';
 import { Text, Button } from 'native-base';
 import Swiper from 'react-native-swiper';
 import Loading from '../screens/Loading';
-
 import OnBoardingStyles from '../styles/OnBoarding';
 import ContainerStyles from '../styles/Containers';
 import { ThemeColors } from '../styles/Colors';

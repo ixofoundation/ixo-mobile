@@ -1,8 +1,7 @@
 import React from 'react';
 import { env } from '../../config';
 import { StatusBar, Dimensions } from 'react-native';
-import { Container, Content, View, Text, Spinner, Toast } from 'native-base';
-
+import { Container, Content, View, Spinner, Toast } from 'native-base';
 import { ThemeColors } from '../styles/Colors';
 import NewClaimStyles from '../styles/NewClaim';
 import DynamicForm from '../components/form/DynamicForm';
@@ -31,7 +30,6 @@ interface StateTypes {
 export interface StateProps {
 	ixo?: any;
 }
-
 export interface Props extends ParentProps, StateProps {}
 
 class NewClaim extends React.Component<Props, StateTypes> {
@@ -51,7 +49,6 @@ class NewClaim extends React.Component<Props, StateTypes> {
 
 		if (componentProps) {
 			this.pdsURL = componentProps.pdsURL;
-			this.pdsURL = __DEV__ ? componentProps.pdsURL.replace(/localhost/g, env.REACT_IXO_LOCAL_ENV_IP) : componentProps.pdsURL;
 			this.fetchFormFile(componentProps.claimForm, this.pdsURL);
 			this.projectDid = componentProps.projectDid;
 		}
