@@ -22,9 +22,14 @@ interface Style {
 	backgroundImage: ViewStyle;
 	spinnerCenterRow: ViewStyle;
 	spinnerCenterColumn: ViewStyle;
+	drawerOpen: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
+	drawerOpen: {
+		opacity: 0.4,
+		backgroundColor: ThemeColors.black 
+	},
 	headerSync: {
 		paddingLeft: 10,
 		backgroundColor: ThemeColors.grey_sync,
