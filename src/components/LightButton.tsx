@@ -1,9 +1,8 @@
 import React from 'react';
-import { LinearGradient } from 'expo';
-import { TouchableOpacity, ViewStyle, StyleSheet, Button } from 'react-native';
+import { TouchableOpacity, ViewStyle, StyleSheet } from 'react-native';
 import { Text, View } from 'native-base';
 
-import { ThemeColors, ButtonDark } from '../styles/Colors';
+import { ThemeColors } from '../styles/Colors';
 
 const LightButton = ({ onPress, text = '?', propStyles = {} }: { onPress: any, text: string, propStyles?: any }) => (
     <TouchableOpacity onPress={onPress} style={{ width: '100%' }}>

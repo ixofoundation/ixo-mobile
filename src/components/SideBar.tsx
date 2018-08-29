@@ -54,9 +54,11 @@ class SideBar extends Component<PropTypes> {
           </TouchableOpacity>
         </View>
         <LinearGradient colors={[SignOutBox.colorSecondary, SignOutBox.colorPrimary]} style={[ContainerStyles.flexColumn, SideBarStyles.signOutBox]}>
-          <Text style={SideBarStyles.signOut}>
-              SIGN OUT
-          </Text>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('OnBoarding')}>
+            <Text style={SideBarStyles.signOut}>
+                SIGN OUT
+            </Text>
+          </TouchableOpacity>
         </LinearGradient>
       </Container>
     );
