@@ -1,13 +1,23 @@
 import React from 'react';
-import { SecureStore } from 'expo';
-import { StatusBar, TouchableOpacity, AsyncStorage } from 'react-native';
+import _ from 'underscore';
+import { SecureStore, LinearGradient } from 'expo';
+import { Dimensions, StatusBar, TouchableOpacity, AsyncStorage, ImageBackground, KeyboardAvoidingView } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
 import { Container, Icon, View, Item, Label, Input, Button, Text, Toast } from 'native-base';
 import { Encrypt, generateSovrinDID } from '../utils/sovrin';
-import { SecureStorageKeys, LocalStorageKeys } from '../models/phoneStorage';
-import { ThemeColors } from '../styles/Colors';
+import { SecureStorageKeys, LocalStorageKeys, UserStorageKeys } from '../models/phoneStorage';
+import { ThemeColors, ButtonDark } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
 import RegisterStyles from '../styles/Register';
+import { IUser } from '../models/user';
+import { initUser } from '../redux/user/user_action_creators';
+import { connect } from 'react-redux';
+import DarkButton from '../components/DarkButton';
+import InputField from '../components/InputField';
+import LightButton from '../components/LightButton';
+var bip39 = require('react-native-bip39');
+
+const background = require('../../assets/backgrounds/background_1.png');
 
 enum registerSteps {
 	captureDetails = 1,
@@ -15,8 +25,18 @@ enum registerSteps {
 	reenterMnemonic
 }
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
+	screenProps: any;
+}
+
+interface IMnemonic {
+	key: number,
+	word: string,
+}
+
+export interface DispatchProps {
+	onUserInit: (user: IUser) => void;
 }
 
 interface StateTypes {
@@ -25,12 +45,33 @@ interface StateTypes {
 	confirmPassword: string;
 	registerState: registerSteps;
 	mnemonic: string;
-	selectedWords: string[];
-	unSelectedWords: string[];
+	selectedWords: IMnemonic[];
+	unSelectedWords: IMnemonic[];
+	// selectedWords: string[];
+	// unSelectedWords: string[];
 	errorMismatch: boolean;
 }
 
-class Register extends React.Component<PropTypes, StateTypes> {
+export interface Props extends ParentProps, DispatchProps {}
+
+class Register extends React.Component<Props, StateTypes> {
+	static navigationOptions = ({ navigation }: { navigation: any }) => {
+		return {
+			headerStyle: {
+				backgroundColor: ThemeColors.blue_dark,
+				borderBottomColor: ThemeColors.blue_dark
+			},
+			// headerRight: <HeaderSync />,
+			headerLeft: <Icon name="arrow-back" onPress={() => navigation.pop()} style={{ paddingLeft: 10, color: ThemeColors.white }} />,
+			headerTitleStyle: {
+				color: ThemeColors.white,
+				textAlign: 'center',
+				alignSelf: 'center'
+			},
+			headerTintColor: ThemeColors.white
+		};
+	};
+
 	state = {
 		username: '',
 		password: '',
@@ -43,15 +84,12 @@ class Register extends React.Component<PropTypes, StateTypes> {
 	};
 
 	async generateMnemonic() {
-		// try {
-		//     const mnemonic = await bip39.generateMnemonic();
-		//     this.setState({ mnemonic });
-		// } catch(e) {
-		//     return false
-		// }
-		const testMonic = 'surprise boat glance fetch cute gossip domain all marble orchard entire rookie';
-
-		this.setState({ unSelectedWords: this.shuffleArray(testMonic.split(' ')), mnemonic: testMonic });
+		const mnemonic = await bip39.generateMnemonic();
+		let mnemonicArray: IMnemonic[] = [];
+		_.each(this.shuffleArray(mnemonic.split(' ')), (word, index) => {
+			mnemonicArray.push({ key: index, word });
+		});
+		this.setState({ unSelectedWords: mnemonicArray, mnemonic: mnemonic });
 	}
 
 	shuffleArray(array: string[]) {
@@ -63,20 +101,20 @@ class Register extends React.Component<PropTypes, StateTypes> {
 		return array;
 	}
 
-	handleUnselectedToSelected(word: string) {
-		const selectedWords: string[] = this.state.selectedWords;
-		selectedWords.push(word);
+	handleUnselectedToSelected(mnemonic: IMnemonic) {
+		const selectedWords: IMnemonic[] = this.state.selectedWords;
+		selectedWords.push(mnemonic);
 		this.setState({
-			unSelectedWords: this.state.unSelectedWords.filter(e => e !== word),
+			unSelectedWords: this.state.unSelectedWords.filter((e: IMnemonic) => e.key !== mnemonic.key),
 			selectedWords: selectedWords
 		});
 	}
 
-	handleSelectedToUnselected(word: string) {
-		const unSelectedWords: string[] = this.state.unSelectedWords;
-		unSelectedWords.push(word);
+	handleSelectedToUnselected(mnemonic: IMnemonic) {
+		const unSelectedWords: IMnemonic[] = this.state.unSelectedWords;
+		unSelectedWords.push(mnemonic);
 		this.setState({
-			selectedWords: this.state.selectedWords.filter(e => e !== word),
+			selectedWords: this.state.selectedWords.filter((e: IMnemonic) => e.key !== mnemonic.key),
 			unSelectedWords: unSelectedWords
 		});
 	}
@@ -90,11 +128,22 @@ class Register extends React.Component<PropTypes, StateTypes> {
 			this.setState({ errorMismatch: true });
 		} else {
 			const cipherTextMnemonic = Encrypt(JSON.stringify({ username: this.state.username, mnemonic: this.state.mnemonic }), this.state.password); // encrypt securely on phone enlave
-			SecureStore.setItemAsync(SecureStorageKeys.mnemonic, cipherTextMnemonic.toString());
+			SecureStore.setItemAsync(SecureStorageKeys.encryptedMnemonic, cipherTextMnemonic);
 			const cipherTextSovrinDid = Encrypt(JSON.stringify(generateSovrinDID(this.state.mnemonic)), this.state.password); // encrypt securely on phone enlave
-			SecureStore.setItemAsync(SecureStorageKeys.sovrinDid, cipherTextSovrinDid.toString());
+			SecureStore.setItemAsync(SecureStorageKeys.sovrinDid, cipherTextSovrinDid);
 			SecureStore.setItemAsync(SecureStorageKeys.password, this.state.password); // save local password
 			AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true'); // stop first time onboarding
+			let user: IUser = {
+				did: 'did:sov:' + generateSovrinDID(this.state.mnemonic).did,
+				name: this.state.username,
+				verifyKey: generateSovrinDID(this.state.mnemonic).verifyKey
+			};
+
+			AsyncStorage.setItem(UserStorageKeys.name, user.name);
+			AsyncStorage.setItem(UserStorageKeys.did, user.did);
+			AsyncStorage.setItem(UserStorageKeys.verifyKey, user.verifyKey);
+
+			this.props.onUserInit(user);
 			this.props.navigation.dispatch(goToLogin);
 		}
 	}
@@ -127,97 +176,79 @@ class Register extends React.Component<PropTypes, StateTypes> {
 		switch (index) {
 			case registerSteps.captureDetails:
 				return (
-					<View>
-						<Text style={{ textAlign: 'left', color: ThemeColors.black, paddingBottom: 10 }}>Let's set up your account</Text>
-						<Item floatingLabel>
-							<Label>Your name</Label>
-							<Input value={this.state.username} onChangeText={text => this.setState({ username: text })} />
-						</Item>
-						<Item floatingLabel>
-							<Label>New password</Label>
-							<Input secureTextEntry value={this.state.password} onChangeText={text => this.setState({ password: text })} />
-						</Item>
-						<Item floatingLabel>
-							<Label>Confirm password</Label>
-							<Input
-								secureTextEntry
-								value={this.state.confirmPassword}
-								onChangeText={text => this.setState({ confirmPassword: text })}
-							/>
-						</Item>
-						<View style={[ContainerStyles.flexColumn, { paddingTop: 60 }]}>
-							<Button
-								onPress={() => this.handleCreatePassword()}
-								style={{ width: '100%', justifyContent: 'center', marginTop: 20 }}
-								bordered
-								dark
-							>
-								<Text>Create</Text>
-							</Button>
+					<KeyboardAvoidingView behavior={'position'}>
+						<View style={[RegisterStyles.flexLeft]}>
+							<Text style={[RegisterStyles.header]}>{this.props.screenProps.t('register:register')}</Text>
 						</View>
-					</View>
+						<View style={{ width: '100%' }}>
+							<View style={RegisterStyles.divider} />
+						</View>
+						<Text style={{ textAlign: 'left', color: ThemeColors.white, paddingBottom: 10 }}>{this.props.screenProps.t('register:letsSetup')}</Text>
+						<InputField value={this.state.username} labelName={this.props.screenProps.t('register:yourName')} onChangeText={(text: string) => this.setState({ username: text })} />
+						<InputField password={true} value={this.state.password} labelName={this.props.screenProps.t('register:newPassword')} onChangeText={(text: string) => this.setState({ password: text })} />
+						<InputField password={true} value={this.state.confirmPassword} labelName={this.props.screenProps.t('register:confirmPassword')} onChangeText={(text: string) => this.setState({ confirmPassword: text })} />
+						<DarkButton propStyles={{ marginTop: 20 }} onPress={() => this.handleCreatePassword()} text={this.props.screenProps.t('register:create')} />
+					</KeyboardAvoidingView>
 				);
 			case registerSteps.revealMnemonic:
 				return (
 					<View>
-						<Text style={{ textAlign: 'left', color: ThemeColors.black, paddingBottom: 10 }}>Secret Backup Phrase</Text>
+						<View style={[RegisterStyles.flexLeft]}>
+							<Text style={[RegisterStyles.header]}>{this.props.screenProps.t('register:secretPhrase')}</Text>
+						</View>
+						<View style={{ width: '100%' }}>
+							<View style={RegisterStyles.divider} />
+						</View>
 
-						<Text style={{ textAlign: 'left', color: ThemeColors.black, paddingBottom: 10 }}>
-							Your secret backup phrase makes it easy to back up and restore your account
+						<Text style={{ textAlign: 'left', color: ThemeColors.white, paddingBottom: 10 }}>
+							{this.props.screenProps.t('register:secretParagraph_1')}
 						</Text>
 
-						<Text style={{ textAlign: 'left', color: ThemeColors.black, paddingBottom: 10 }}>
-							WARNING: Never disclose your backup phrase and store it somewhere secure
+						<Text style={{ textAlign: 'left', color: ThemeColors.white, paddingBottom: 10 }}>
+							<Text style={{ textAlign: 'left', color: ThemeColors.orange, paddingBottom: 10 }}>
+								{this.props.screenProps.t('register:warning')}: 
+							</Text>
+							 {this.props.screenProps.t('register:secretParagraph_2')}
 						</Text>
 
 						<TouchableOpacity onPress={() => this.generateMnemonic()} style={[RegisterStyles.selectedBox]}>
 							{this.state.mnemonic.length <= 0 ? (
 								<View>
-									<Icon name="lock" color={ThemeColors.black} style={{ fontSize: 60, textAlign: 'center' }} />
-									<Text style={{ textAlign: 'center', color: ThemeColors.black, paddingHorizontal: 10 }}>
-										Click here to reveal secret words
-									</Text>
+									<Icon name="lock" color={ThemeColors.black} style={{ fontSize: 60, textAlign: 'center', color: ThemeColors.white }} />
+									<Text style={{ textAlign: 'center', color: ThemeColors.white, paddingHorizontal: 10 }}>{this.props.screenProps.t('register:tapReveal')}</Text>
 								</View>
 							) : (
 								<View>
-									<Text style={{ textAlign: 'left', color: ThemeColors.black, paddingHorizontal: 10 }}>{this.state.mnemonic}</Text>
+									<Text style={{ textAlign: 'left', color: ThemeColors.white, paddingHorizontal: 10 }}>{this.state.mnemonic}</Text>
 								</View>
 							)}
 						</TouchableOpacity>
 						{this.state.mnemonic.length > 0 && (
-							<View style={[ContainerStyles.flexColumn, { paddingTop: 60 }]}>
-								<Button
-									onPress={() => this.setState({ registerState: registerSteps.reenterMnemonic })}
-									style={RegisterStyles.button}
-									bordered
-									dark
-								>
-									<Text>Next</Text>
-								</Button>
-							</View>
+							<DarkButton propStyles={{ marginTop: 15 }} text={'Next'} onPress={() => this.setState({ registerState: registerSteps.reenterMnemonic })} />
 						)}
 					</View>
 				);
 			case registerSteps.reenterMnemonic:
 				return (
 					<View>
-						<Text style={{ textAlign: 'left', color: ThemeColors.black, paddingBottom: 10 }}>Confirm your Secrete Backup Phrase</Text>
-						<Text style={{ textAlign: 'left', color: ThemeColors.black, paddingBottom: 10 }}>
-							Please select each phrase in order to make sure it is correct.
+						<View style={[RegisterStyles.flexLeft]}>
+							<Text style={[RegisterStyles.header]}>{this.props.screenProps.t('register:confirmSecret')}</Text>
+						</View>
+						<View style={{ width: '100%' }}>
+							<View style={RegisterStyles.divider} />
+						</View>
+						<Text style={{ textAlign: 'left', color: ThemeColors.white, paddingBottom: 10 }}>
+							{this.props.screenProps.t('register:confirmSecretParagraph')}
 						</Text>
-						<Text style={{ textAlign: 'left', color: ThemeColors.black, paddingBottom: 10 }}>
-							Please select each phrase in order to make sure it is correct.
-						</Text>
-						{this.state.errorMismatch && (
-							<Text style={{ textAlign: 'left', color: 'red', paddingBottom: 7 }}>The order is incorrect</Text>
-						)}
+						{this.state.errorMismatch && <Text style={{ textAlign: 'left', color: ThemeColors.orange, paddingBottom: 7, fontSize: 14 }}>{this.props.screenProps.t('register:orderIncorrect')}</Text>}
 						{this.renderSelected()}
 						{this.renderUnSelected()}
-						<View style={[ContainerStyles.flexColumn]}>
-							<Button onPress={() => this.handleConfirmMnemonic()} style={RegisterStyles.button} bordered dark>
-								<Text>Confirm</Text>
-							</Button>
-						</View>
+						{(this.state.selectedWords.length > 0) ? 
+						<DarkButton text={this.props.screenProps.t('register:confirm')} onPress={() => this.handleConfirmMnemonic()} />
+						:
+						<LightButton text={this.props.screenProps.t('register:confirm')} onPress={() => this.handleConfirmMnemonic()} />
+						}
+						
 					</View>
 				);
 		}
@@ -226,10 +257,10 @@ class Register extends React.Component<PropTypes, StateTypes> {
 	renderSelected() {
 		return (
 			<View style={[RegisterStyles.selected]}>
-				{this.state.selectedWords.map(word => {
+				{this.state.selectedWords.map((mnemonic: IMnemonic) => {
 					return (
-						<TouchableOpacity onPress={() => this.handleSelectedToUnselected(word)} key={word}>
-							<Text style={RegisterStyles.wordBox}>{word}</Text>
+						<TouchableOpacity onPress={() => this.handleSelectedToUnselected(mnemonic)} key={mnemonic.word}>
+							<Text style={(this.state.errorMismatch) ? [RegisterStyles.wordBox, { borderColor: ThemeColors.orange }] : RegisterStyles.wordBox}>{mnemonic.word}</Text>
 						</TouchableOpacity>
 					);
 				})}
@@ -239,11 +270,20 @@ class Register extends React.Component<PropTypes, StateTypes> {
 
 	renderUnSelected() {
 		return (
-			<View style={[RegisterStyles.unSelect]}>
-				{this.state.unSelectedWords.map(word => {
+			<View style={(this.state.selectedWords.length > 0) ? [RegisterStyles.unSelect] : [RegisterStyles.unSelect]}>
+				{this.state.unSelectedWords.map((mnemonic: IMnemonic) => {
 					return (
-						<TouchableOpacity onPress={() => this.handleUnselectedToSelected(word)} key={word}>
-							<Text style={RegisterStyles.wordBox}>{word}</Text>
+						<TouchableOpacity onPress={() => this.handleUnselectedToSelected(mnemonic)} key={mnemonic.key}>
+						{((this.state.selectedWords.length > 0)) ? 
+							<LinearGradient
+								style={RegisterStyles.wordBoxGradient}
+								colors={[ButtonDark.colorPrimary, ButtonDark.colorSecondary]}
+							>
+								<Text style={{ color: ThemeColors.white }}>{mnemonic.word}</Text>
+							</LinearGradient>
+						:
+							<Text style={RegisterStyles.wordBox}>{mnemonic.word}</Text>
+						}
 						</TouchableOpacity>
 					);
 				})}
@@ -254,11 +294,25 @@ class Register extends React.Component<PropTypes, StateTypes> {
 	render() {
 		return (
 			<Container>
-				<StatusBar barStyle="dark-content" />
-				<View style={RegisterStyles.wrapper}>{this.renderStep(this.state.registerState)}</View>
+				<StatusBar barStyle="light-content" />
+				<ImageBackground source={background} style={[RegisterStyles.wrapper]}>
+					<View style={{ height: Dimensions.get('window').height * 0.1 }} />
+					{this.renderStep(this.state.registerState)}
+				</ImageBackground>
 			</Container>
 		);
 	}
 }
 
-export default Register;
+function mapDispatchToProps(dispatch: any): DispatchProps {
+	return {
+		onUserInit: (user: IUser) => {
+			dispatch(initUser(user));
+		}
+	};
+}
+
+export default connect(
+	null,
+	mapDispatchToProps
+)(Register);

@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { I18nextProvider, translate } from 'react-i18next';
 import { Font, ScreenOrientation, Util } from 'expo';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
+import './shim.js';
 
 // @ts-ignore
 import getTheme from './native-base-theme/components';
