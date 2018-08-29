@@ -12,8 +12,6 @@ import ProjectDetails from './src/screens/ProjectDetails';
 import NewClaim from './src/screens/NewClaim';
 import SubmittedClaims from './src/screens/SubmittedClaims';
 import Settings from './src/screens/Settings';
-import Notification from './src/screens/Notifications';
-import Privacy from './src/screens/Privacy';
 import Help from './src/screens/Help';
 import Register from './src/screens/Register';
 import ViewClaim from './src/screens/ViewClaim';
@@ -45,19 +43,26 @@ const AppNavigator = createStackNavigator(
 	}
 );
 
+const SettingsNavigator = createStackNavigator({
+	Settings: { screen: Settings },
+}, {
+	initialRouteName: 'Settings'
+})
+
+const HelpNavigator = createStackNavigator({
+	Help: { screen: Help },
+}, {
+	initialRouteName: 'Help'
+})
+
 const DrawerNavigator = createDrawerNavigator(
 	{
 		Drawer: { screen: AppNavigator },
-		Settings: { screen: Settings },
-		// Notifications: { screen: Notification },
-		Privacy: { screen: Privacy },
-		Help: { screen: Help }
+		Settings: { screen: SettingsNavigator },
+		Help: { screen: HelpNavigator }
 	},
 	{
 		initialRouteName: 'Drawer',
-		// contentOptions: {
-		//   activeTintColor: "#e91e63"
-		// },
 		contentComponent: SideBar
 	}
 );
