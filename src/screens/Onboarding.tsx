@@ -12,6 +12,7 @@ import { ThemeColors } from '../styles/Colors';
 import { LocalStorageKeys, SecureStorageKeys } from '../models/phoneStorage';
 
 const logo = require('../../assets/logo.png');
+declare var swiperRef: any;
 
 const LogoView = () => (
 	<View style={ContainerStyles.flexColumn}>
@@ -21,12 +22,12 @@ const LogoView = () => (
 	</View>
 );
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
 
-export default class OnBoarding extends React.Component<PropTypes> {
+export default class OnBoarding extends React.Component<ParentProps> {
 	state = {
 		showOnboarding: false
 	};
@@ -49,8 +50,7 @@ export default class OnBoarding extends React.Component<PropTypes> {
 		const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
 		if (status !== 'granted') {
 		}
-		// @ts-ignore
-		this.swiper.scrollBy(1);
+		swiperRef.scrollBy(1);
 	}
 
 	async getLocation() {
@@ -71,7 +71,7 @@ export default class OnBoarding extends React.Component<PropTypes> {
 				<View style={OnBoardingStyles.wrapper}>
 					<StatusBar barStyle="light-content" />
 					<Swiper
-						ref={swiper => (this.swiper = swiper)}
+						ref={swiper => (swiperRef = swiper)}
 						scrollEnabled={false}
 						activeDotColor={ThemeColors.white}
 						dotColor={ThemeColors.blue_light}
@@ -85,7 +85,7 @@ export default class OnBoarding extends React.Component<PropTypes> {
 								</Text>
 							</View>
 							<View style={[ContainerStyles.flexRow]}>
-								<Button style={OnBoardingStyles.buttons} onPress={() => this.swiper.scrollBy(1)} bordered light>
+								<Button style={OnBoardingStyles.buttons} onPress={() => swiperRef.scrollBy(1)} bordered light>
 									<Text>{this.props.screenProps.t('onboarding:begin')}</Text>
 								</Button>
 							</View>

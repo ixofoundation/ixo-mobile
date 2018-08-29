@@ -4,7 +4,7 @@ import { Container, Icon, Content, Text } from 'native-base';
 
 import { ThemeColors } from '../styles/Colors';
 
-interface PropTypes {
+interface ParentProps {
     navigation: any,
 };
 
@@ -12,7 +12,7 @@ interface NavigationTypes {
     navigation: any,
 }
 
-class Help extends React.Component<PropTypes> {
+class Help extends React.Component<ParentProps> {
     static navigationOptions = (props: NavigationTypes) => {
         return {
             headerLeft: (

@@ -4,7 +4,7 @@ import { Container, Icon, Content, Text } from 'native-base';
 
 import { ThemeColors } from '../styles/Colors';
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 }
 
@@ -12,7 +12,7 @@ interface NavigationTypes {
 	navigation: any;
 }
 
-class Privacy extends React.Component<PropTypes> {
+class Privacy extends React.Component<ParentProps> {
 	static navigationOptions = (props: NavigationTypes) => {
 		return {
 			headerLeft: <Icon name="close" onPress={() => props.navigation.pop()} style={{ paddingLeft: 10 }} />,

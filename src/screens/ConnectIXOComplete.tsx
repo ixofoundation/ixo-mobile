@@ -18,7 +18,7 @@ const LogoView = () => (
 	</View>
 );
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
@@ -29,7 +29,7 @@ interface StateTypes {
 	keysafePasswordCorrect: boolean;
 }
 
-class ConnectIXOComplete extends React.Component<PropTypes, StateTypes, {}> {
+class ConnectIXOComplete extends React.Component<ParentProps, StateTypes, {}> {
 	state = {
 		password: '',
 		revealPassword: true,

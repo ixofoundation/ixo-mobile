@@ -10,12 +10,12 @@ import { ThemeColors } from '../styles/Colors';
 
 const background = require('../../assets/backgrounds/background_2.png');
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
 
-export default class SubmittedClaims extends React.Component<PropTypes> {
+export default class SubmittedClaims extends React.Component<ParentProps> {
 	static navigationOptions = ({ navigation }:{ navigation: any }) => {
 		return {
 			headerStyle: {

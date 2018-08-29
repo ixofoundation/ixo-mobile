@@ -37,12 +37,12 @@ const InfoBlocks = ({ keySafeText, qrCodeText }: { keySafeText: string; qrCodeTe
 	</View>
 );
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
 
-export default class ConnectIXO extends React.Component<PropTypes, {}> {
+export default class ConnectIXO extends React.Component<ParentProps, {}> {
 	render() {
 		const registerAction = StackActions.reset({
 			index: 0,

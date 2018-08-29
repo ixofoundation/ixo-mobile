@@ -16,7 +16,7 @@ import { IClaim } from '../models/project';
 
 const placeholder = require('../../assets/ixo-placeholder.jpg');
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
@@ -37,7 +37,7 @@ interface StateProps {
 	ixo?: any;
 }
 
-interface Props extends PropTypes, StateProps {}
+interface Props extends ParentProps, StateProps {}
 
 class ViewClaim extends React.Component<Props, StateTypes> {
 	private pdsURL: string = '';

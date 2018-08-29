@@ -35,7 +35,7 @@ const PickerLink = () => (
 	</View>
 );
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 }
 
@@ -43,7 +43,7 @@ interface NavigationTypes {
 	navigation: any;
 }
 
-class Notifications extends React.Component<PropTypes> {
+class Notifications extends React.Component<ParentProps> {
 	static navigationOptions = (props: NavigationTypes) => {
 		return {
 			headerLeft: <Icon name="arrow-back" onPress={() => props.navigation.pop()} style={{ paddingLeft: 10, color: ThemeColors.grey }} />,

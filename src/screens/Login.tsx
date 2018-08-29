@@ -41,7 +41,7 @@ const LogoView = () => (
 	</View>
 );
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
@@ -62,7 +62,7 @@ export interface StateProps {
 	user?: IUser;
 }
 
-export interface Props extends PropTypes, StateProps, DispatchProps {}
+export interface Props extends ParentProps, StateProps, DispatchProps {}
 
 export class Login extends React.Component<Props, StateTypes> {
 	state = {
