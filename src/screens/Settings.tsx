@@ -31,7 +31,7 @@ class Settings extends React.Component<PropTypes> {
 		return (
 			<Container style={{ backgroundColor: ThemeColors.white }}>
                 <StatusBar barStyle="dark-content" />
-                <Content contentContainerStyle={{ backgroundColor: ThemeColors.white, padding: 20,  }}>
+                <Content contentContainerStyle={{ backgroundColor: ThemeColors.white, padding: 20 }}>
                     <Text>Content to be confirmed</Text>
                 </Content>
             </Container>   

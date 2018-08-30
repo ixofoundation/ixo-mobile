@@ -1,13 +1,13 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
+import { LinearGradient } from 'expo';
 import { View, Icon, Text, Container } from 'native-base';
-import { Dimensions, Image, TouchableOpacity } from 'react-native';
+import { Dimensions, Image, TouchableOpacity, AsyncStorage } from 'react-native';
+
 
 import ContainerStyles from '../styles/Containers';
 import SideBarStyles from '../styles/componentStyles/Sidebar';
 import { ThemeColors, ClaimsButton, SignOutBox } from '../styles/Colors';
-import { LinearGradient } from 'expo';
-
-const deviceHeight = Dimensions.get('window').height;
+import { UserStorageKeys } from '../models/phoneStorage';
 const ixoLogo = require('../../assets/logo.png');
 const helpIcon = require('../../assets/help.png');
 const settingIcon = require('../../assets/settings.png');
@@ -16,7 +16,32 @@ interface PropTypes {
   navigation: any,
 }
 
-class SideBar extends Component<PropTypes> {
+interface StateTypes {
+  name: string;
+  did: string;
+}
+
+class SideBar extends Component<PropTypes, StateTypes> {
+
+  state = {
+    name: '',
+    did: '',
+  }
+
+  async retrieveUserFromStorage() {
+		try {
+			const name = await AsyncStorage.getItem(UserStorageKeys.name);
+      const did = await AsyncStorage.getItem(UserStorageKeys.did);
+      this.setState({ name, did })
+		} catch (error) {
+			console.error(error);
+		}
+  }
+  
+  componentDidMount() {
+    this.retrieveUserFromStorage();
+  }
+
   render() {
     return (
       <Container style={[ContainerStyles.flexColumn, { backgroundColor: ThemeColors.blue }]}>
@@ -31,10 +56,10 @@ class SideBar extends Component<PropTypes> {
           <View style={[ContainerStyles.flexRow, { justifyContent: 'flex-start', width: '100%', paddingTop: 10 }]}>
             <View style={[ContainerStyles.flexColumn, { alignItems: 'flex-start' }]}>
               <Text style={SideBarStyles.userName}>
-                Joyce
+                {this.state.name}
               </Text>
               <Text style={SideBarStyles.userDid}>
-              0x38950a4bawouyo84uotf… 
+                {this.state.did} 
               </Text>
             </View>
           </View>

@@ -15,7 +15,6 @@ import { initIxo } from '../redux/ixo/ixo_action_creators';
 import { env } from '../../config';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { IUser } from '../models/user';
-import DarkButton from '../components/DarkButton';
 
 const placeholder = require('../../assets/ixo-placeholder.jpg');
 const background = require('../../assets/backgrounds/background_2.png');
