@@ -14,7 +14,7 @@ interface NavigationTypes {
 class Help extends React.Component<ParentProps> {
 	static navigationOptions = (props: NavigationTypes) => {
 		return {
-			headerLeft: <Icon name="arrow-back" onPress={() => props.navigation.pop()} style={{ paddingLeft: 10 }} />,
+			headerLeft: <Icon name="close" onPress={() => props.navigation.navigate('Drawer')} style={{ paddingLeft: 10 }} />,
 			title: 'Help',
 			headerTitleStyle: {
 				color: ThemeColors.black,

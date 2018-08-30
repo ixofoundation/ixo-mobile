@@ -28,7 +28,7 @@ interface NavigationTypes {
 class Settings extends React.Component<ParentProps> {
 	static navigationOptions = (props: NavigationTypes) => {
 		return {
-			headerLeft: <Icon name="close" onPress={() => props.navigation.pop()} style={{ paddingLeft: 10 }} />,
+			headerLeft: <Icon name="close" onPress={() => props.navigation.navigate('Drawer')} style={{ paddingLeft: 10 }} />,
 			title: 'Settings',
 			headerTitleStyle: {
 				color: ThemeColors.black,
@@ -42,13 +42,11 @@ class Settings extends React.Component<ParentProps> {
 	render() {
 		return (
 			<Container style={{ backgroundColor: ThemeColors.white }}>
-				<StatusBar barStyle="dark-content" />
-				<Content contentContainerStyle={{ backgroundColor: ThemeColors.white, padding: 20 }}>
-					<SettingsLink route={'Notifications'} name={'Notifications'} navigation={this.props.navigation} />
-					<SettingsLink route={'Privacy'} name={'Privacy'} navigation={this.props.navigation} />
-					<LogoutLink />
-				</Content>
-			</Container>
+                <StatusBar barStyle="dark-content" />
+                <Content contentContainerStyle={{ backgroundColor: ThemeColors.white, padding: 20 }}>
+                    <Text>Content to be confirmed</Text>
+                </Content>
+            </Container>   
 		);
 	}
 }
