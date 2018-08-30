@@ -10,7 +10,7 @@ import './shim.js';
 // @ts-ignore
 import getTheme from './native-base-theme/components';
 import Loading from './src/screens/Loading';
-import Stack from './Routes';
+import OnBoardingNavigator from './Routes';
 import i18n from './i18n';
 // @ts-ignore
 import Ionicons from './node_modules/@expo/vector-icons/fonts/Ionicons.ttf';
@@ -25,7 +25,7 @@ interface State {
 const store = createPublicSiteStore();
 
 const TranslateStack = () => {
-	return <Stack screenProps={{ t: i18n.getFixedT('') }} />;
+	return <OnBoardingNavigator screenProps={{ t: i18n.getFixedT('') }} />;
 };
 
 const ReloadAppOnLanguageChange = translate('translation', {

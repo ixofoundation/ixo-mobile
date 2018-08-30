@@ -1,5 +1,4 @@
-
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator, createDrawerNavigator } from 'react-navigation';
 
 import OnBoarding from './src/screens/Onboarding';
 import Login from './src/screens/Login';
@@ -13,68 +12,109 @@ import ProjectDetails from './src/screens/ProjectDetails';
 import NewClaim from './src/screens/NewClaim';
 import SubmittedClaims from './src/screens/SubmittedClaims';
 import Settings from './src/screens/Settings';
-import Notification from './src/screens/Notifications';
-import Privacy from './src/screens/Privacy';
 import Help from './src/screens/Help';
 import Register from './src/screens/Register';
 import ViewClaim from './src/screens/ViewClaim';
+import SideBar from './src/components/SideBar';
 
-const Stack = createStackNavigator({
-  SubmittedClaims: {
-    screen: SubmittedClaims,
-  },
-  NewClaim: {
-    screen: NewClaim
-  },
-  ProjectDetails: {
-    screen: ProjectDetails,
-  },
-  ConnectIXO: { screen: ConnectIXO,
-    navigationOptions: {
-      header: null,
-    }
-  },
-  OnBoarding: { screen: OnBoarding,
-    navigationOptions: {
-      header: null,
-    }
-  },
-  Login: { screen: Login,
-    navigationOptions: {
-      header: null,
-    }
-  },
-  Projects: { screen: Projects,
-  },
-  Claims: { screen: Claims,
-  },
-  Loading: { screen: Loading,
-    navigationOptions: {
-      header: null,
-    }
-  },
-  ScanQR: { screen: ScanQR
-  },
-  ConnectIXOComplete: { screen: ConnectIXOComplete,
-    navigationOptions: {
-      header: null,
-    }
-  },
-  Settings: { screen: Settings,
-  },
-  Notifications: { screen: Notification,
-  },
-  Privacy: { screen: Privacy,
-  },
-  Help: { screen: Help,
-  },
-  Register: { screen: Register
-  },
-  ViewClaim: {
-    screen: ViewClaim,
-  },
+const AppNavigator = createStackNavigator(
+	{
+		Projects: {
+			screen: Projects
+		},
+		SubmittedClaims: {
+			screen: SubmittedClaims
+		},
+		NewClaim: {
+			screen: NewClaim
+		},
+		ProjectDetails: {
+			screen: ProjectDetails
+		},
+		Claims: {
+			screen: Claims
+		},
+		ViewClaim: {
+			screen: ViewClaim
+		}
+	},
+	{
+		initialRouteName: 'Projects'
+	}
+);
+
+const SettingsNavigator = createStackNavigator({
+	Settings: { screen: Settings },
 }, {
-  initialRouteName: 'OnBoarding',
-});
+	initialRouteName: 'Settings'
+})
 
-export default Stack;
+const HelpNavigator = createStackNavigator({
+	Help: { screen: Help },
+}, {
+	initialRouteName: 'Help'
+})
+
+const DrawerNavigator = createDrawerNavigator(
+	{
+		Drawer: { screen: AppNavigator },
+		Settings: { screen: SettingsNavigator },
+		Help: { screen: HelpNavigator }
+	},
+	{
+		initialRouteName: 'Drawer',
+		contentComponent: SideBar
+	}
+);
+
+const OnBoardingNavigator = createStackNavigator(
+	{
+		ConnectIXO: {
+			screen: ConnectIXO,
+			navigationOptions: {
+				header: null
+			}
+		},
+		OnBoarding: {
+			screen: OnBoarding,
+			navigationOptions: {
+				header: null
+			}
+		},
+		Login: {
+			screen: Login,
+			navigationOptions: {
+				header: null
+			}
+		},
+		Projects: {
+			screen: DrawerNavigator,
+			navigationOptions: {
+				header: null
+			}
+		},
+		Loading: {
+			screen: Loading,
+			navigationOptions: {
+				header: null
+			}
+		},
+		ScanQR: {
+			screen: ScanQR
+		},
+		ConnectIXOComplete: {
+			screen: ConnectIXOComplete,
+			navigationOptions: {
+				header: null
+			}
+		},
+		Register: {
+			screen: Register
+		}
+	},
+	{
+		initialRouteName: 'OnBoarding'
+	}
+);
+
+export default OnBoardingNavigator;

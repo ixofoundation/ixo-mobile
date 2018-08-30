@@ -40,26 +40,26 @@ export interface StateProps {
 export interface State {
 	projects: IProject[];
 	isRefreshing: boolean;
+	isDrawerOpen: boolean;
 }
 export interface Props extends PropTypes, DispatchProps, StateProps {}
 export class Projects extends React.Component<Props, State> {
 
 	headerTitleShown: boolean = false;
 
-	constructor(props: Props) {
-		super(props);
-		this.state = {
-			projects: [],
-			isRefreshing: false,
-		};
-	}
+	state = {
+		projects: [],
+		isRefreshing: false,
+		isDrawerOpen: false,
+	};
 
 	static navigationOptions = ({ navigation, screenProps }: { navigation: any, screenProps: any }) => {
 		const { params = {} } = navigation.state;
 		return {
 			headerStyle: {
 				backgroundColor: ThemeColors.blue_dark,
-				borderBottomColor: ThemeColors.blue_dark
+				borderBottomColor: ThemeColors.blue_dark,
+				elevation: 0
 			},
 			headerTitleStyle: {
 				color: ThemeColors.white,
@@ -71,19 +71,19 @@ export class Projects extends React.Component<Props, State> {
 			headerLeft: (
 				<Icon
 					name="menu"
-					onPress={() => params.drawer._root.open()}
+					onPress={() => params.openDrawer()}
 					style={{ paddingLeft: 10, color: ThemeColors.white }}
 				/>
 			),
 			// headerRight: <HeaderSync />
-			headerRight: <Icon name="search" onPress={() => params.drawer._root.open()} style={{ paddingRight: 10, color: ThemeColors.white }} />
+			headerRight: <Icon name="search" onPress={() => params.openDrawer()} style={{ paddingRight: 10, color: ThemeColors.white }} />
 		};
 	};
 
 	componentDidMount() {
 		this.props.navigation.setParams({
 			// @ts-ignore
-			drawer: this.drawer
+			openDrawer: this.openDrawer
 		});
 		this.props.onIxoInit();
 	}
@@ -94,9 +94,16 @@ export class Projects extends React.Component<Props, State> {
 		}
 	}
 
-	closeDrawer() {
+	openDrawer = () => {
 		// @ts-ignore
-		this.drawer._root.close();
+		this.props.navigation.openDrawer();
+		this.setState({ isDrawerOpen: true });
+	}
+
+	closeDrawer = () => {
+		// @ts-ignore
+		this.props.navigation.closeDrawer();
+		this.setState({ isDrawerOpen: false });
 	}
 
 	getLatestClaim(claims: IClaim[]): string {
@@ -266,7 +273,7 @@ export class Projects extends React.Component<Props, State> {
 		return (
 			<ImageBackground source={background} style={ProjectsStyles.backgroundImage}>
 				<Container>
-					<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
+					<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent', elevation: 0 }}>
 						<View style={[ProjectsStyles.flexLeft]}>
 							<Text style={ProjectsStyles.header}>{this.props.screenProps.t('projects:myProjects')}</Text>
 						</View>
@@ -301,23 +308,11 @@ export class Projects extends React.Component<Props, State> {
 	}
 
 	render() {
-		return (
-			<Drawer
-				ref={ref => {
-					// @ts-ignore
-					this.drawer = ref;
-				}}
-				content={<SideBar navigation={this.props.navigation} />}
-				onClose={() => this.closeDrawer()}
-			>
-				{this.state.projects.length > 0 ? (
-					this.renderNoProjectsView()
-				) : (
-					this.renderProjectsView()
-				)}
-				<DarkButton iconImage={qr} text={this.props.screenProps.t('projects:scan')} onPress={() => alert('bla')} />
-			</Drawer>
-		);
+		if (this.state.projects.length > 0) {
+			return ( this.renderNoProjectsView() );
+		} else {
+			return ( this.renderProjectsView() );
+		}
 	}
 }
 

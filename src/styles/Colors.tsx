@@ -23,10 +23,15 @@ const ClaimsButton = {
   colorSecondary: "#002D42"
 }
 
+const SignOutBox = {
+  colorPrimary: "#002D42",
+  colorSecondary: "#001E2D"
+}
+
 const ProjectStatus = {
   notStarted: '#ff4b4b',
   inProgress: '#FFA81E',
   complete: '#008000'
 }
 
-export { ThemeColors, ProjectStatus, ButtonDark, ClaimsButton };
+export { ThemeColors, ProjectStatus, ButtonDark, ClaimsButton, SignOutBox };

@@ -1,22 +1,66 @@
-import React from 'react';
-import { View, Text } from 'native-base';
-import { Dimensions, TouchableOpacity } from 'react-native';
+import React, { Component } from "react";
+import { View, Icon, Text, Container } from 'native-base';
+import { Dimensions, Image, TouchableOpacity } from 'react-native';
 
-import { ThemeColors } from '../styles/Colors';
+import ContainerStyles from '../styles/Containers';
+import SideBarStyles from '../styles/componentStyles/Sidebar';
+import { ThemeColors, ClaimsButton, SignOutBox } from '../styles/Colors';
+import { LinearGradient } from 'expo';
 
 const deviceHeight = Dimensions.get('window').height;
+const ixoLogo = require('../../assets/logo.png');
+const helpIcon = require('../../assets/help.png');
+const settingIcon = require('../../assets/settings.png');
 
 interface PropTypes {
   navigation: any,
 }
 
-class SideBar extends React.Component<PropTypes> {
+class SideBar extends Component<PropTypes> {
   render() {
     return (
-      <View style={{ backgroundColor: ThemeColors.white, height: deviceHeight, paddingTop: 40, paddingLeft: 20 }}>
-        <TouchableOpacity onPress={() => this.props.navigation.navigate('Settings')}><Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 19, fontWeight: '500', padding: 5 }}>Settings</Text></TouchableOpacity>
-        <TouchableOpacity onPress={() => this.props.navigation.navigate('Help')}><Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 19, fontWeight: '500', padding: 5 }}>Help</Text></TouchableOpacity>
-      </View>
+      <Container style={[ContainerStyles.flexColumn, { backgroundColor: ThemeColors.blue }]}>
+        <LinearGradient
+          style={SideBarStyles.userInfoBox}
+          colors={[ClaimsButton.colorSecondary, ClaimsButton.colorPrimary]}
+        >
+          <View style={[ContainerStyles.flexRow, { justifyContent: 'space-between', alignItems: 'center' }]}>
+            <Icon onPress={() => this.props.navigation.closeDrawer()} style={SideBarStyles.closeDrawer} name="close" />
+            <Image source={ixoLogo} style={SideBarStyles.ixoLogo} />
+          </View>
+          <View style={[ContainerStyles.flexRow, { justifyContent: 'flex-start', width: '100%', paddingTop: 10 }]}>
+            <View style={[ContainerStyles.flexColumn, { alignItems: 'flex-start' }]}>
+              <Text style={SideBarStyles.userName}>
+                Joyce
+              </Text>
+              <Text style={SideBarStyles.userDid}>
+              0x38950a4bawouyo84uotf… 
+              </Text>
+            </View>
+          </View>
+        </LinearGradient>
+        <View style={[ContainerStyles.flexColumn, SideBarStyles.linksBox]}>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('Settings')} style={[ContainerStyles.flexRow, SideBarStyles.linkBox]}>
+            <Image source={settingIcon} style={SideBarStyles.iconLinks} />
+            <Text style={SideBarStyles.textLinks}>
+              Settings
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('Help')} style={[ContainerStyles.flexRow, SideBarStyles.linkBox]}>
+          <Image source={helpIcon} style={SideBarStyles.iconLinks} />
+            <Text style={SideBarStyles.textLinks}>
+              Help
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <LinearGradient colors={[SignOutBox.colorSecondary, SignOutBox.colorPrimary]} style={[ContainerStyles.flexColumn, SideBarStyles.signOutBox]}>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('OnBoarding')}>
+            <Text style={SideBarStyles.signOut}>
+                SIGN OUT
+            </Text>
+          </TouchableOpacity>
+        </LinearGradient>
+      </Container>
     );
   }
 }

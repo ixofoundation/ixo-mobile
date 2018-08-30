@@ -16,7 +16,7 @@ class Help extends React.Component<PropTypes> {
     static navigationOptions = (props: NavigationTypes) => {
         return {
             headerLeft: (
-                <Icon name='arrow-back' onPress={() => props.navigation.pop()} style={{ paddingLeft: 10 }} />
+                <Icon name='close' onPress={() => props.navigation.navigate('Drawer')} style={{ paddingLeft: 10 }} />
             ),
             title: 'Help',
             headerTitleStyle : {
