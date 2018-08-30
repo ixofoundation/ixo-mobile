@@ -1,30 +1,29 @@
-import React from 'react';
-import { StatusBar, TouchableOpacity, Image, ImageBackground, Dimensions, RefreshControl } from 'react-native';
-import _ from 'underscore';
-import { LinearGradient } from 'expo';
-import { Container, Header, Item, Icon, Input, Content, View, Text, Spinner, Drawer } from 'native-base';
-import { connect } from 'react-redux';
+import { LinearGradient, SecureStore } from 'expo';
 import moment from 'moment';
-import SideBar from '../components/SideBar';
-import ProjectsStyles from '../styles/Projects';
-
-import ContainerStyles from '../styles/Containers';
-import { IClaim, IProject } from '../models/project';
-import { ThemeColors, ProjectStatus } from '../styles/Colors';
-import { initIxo } from '../redux/ixo/ixo_action_creators';
+import { Container, Content, Drawer, Header, Icon, Spinner, Text, View } from 'native-base';
+import React from 'react';
+import { Dimensions, Image, ImageBackground, RefreshControl, StatusBar, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
+import _ from 'underscore';
 import { env } from '../../config';
-import { PublicSiteStoreState } from '../redux/public_site_reducer';
-import { IUser } from '../models/user';
 import DarkButton from '../components/DarkButton';
+import SideBar from '../components/SideBar';
+import { SecureStorageKeys } from '../models/phoneStorage';
+import { IClaim, IProject } from '../models/project';
+import { IUser } from '../models/user';
+import { initIxo } from '../redux/ixo/ixo_action_creators';
+import { PublicSiteStoreState } from '../redux/public_site_reducer';
+import { ProjectStatus, ThemeColors } from '../styles/Colors';
+import ContainerStyles from '../styles/Containers';
+import ProjectsStyles from '../styles/Projects';
 
 const placeholder = require('../../assets/ixo-placeholder.jpg');
 const background = require('../../assets/backgrounds/background_2.png');
 const addProjects = require('../../assets/project-visual.png');
 const qr = require('../../assets/qr.png');
-
 const { width, height } = Dimensions.get('window');
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
@@ -40,52 +39,48 @@ export interface StateProps {
 export interface State {
 	projects: IProject[];
 	isRefreshing: boolean;
-	isDrawerOpen: boolean;
 }
-export interface Props extends PropTypes, DispatchProps, StateProps {}
+export interface Props extends ParentProps, DispatchProps, StateProps {}
 export class Projects extends React.Component<Props, State> {
-
 	headerTitleShown: boolean = false;
 
-	state = {
-		projects: [],
-		isRefreshing: false,
-		isDrawerOpen: false,
-	};
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			projects: [],
+			isRefreshing: false
+		};
+	}
 
-	static navigationOptions = ({ navigation, screenProps }: { navigation: any, screenProps: any }) => {
+	static navigationOptions = ({ navigation, screenProps }: { navigation: any; screenProps: any }) => {
 		const { params = {} } = navigation.state;
 		return {
 			headerStyle: {
 				backgroundColor: ThemeColors.blue_dark,
-				borderBottomColor: ThemeColors.blue_dark,
-				elevation: 0
+				borderBottomColor: ThemeColors.blue_dark
 			},
 			headerTitleStyle: {
 				color: ThemeColors.white,
 				textAlign: 'center',
 				alignSelf: 'center'
 			},
-			title: (params.showTitle) ? screenProps.t('projects:myProjects') : '',
+			title: params.showTitle ? screenProps.t('projects:myProjects') : '',
 			// headerTintColor: ThemeColors.white,
-			headerLeft: (
-				<Icon
-					name="menu"
-					onPress={() => params.openDrawer()}
-					style={{ paddingLeft: 10, color: ThemeColors.white }}
-				/>
-			),
+			headerLeft: <Icon name="menu" onPress={() => params.drawer._root.open()} style={{ paddingLeft: 10, color: ThemeColors.white }} />,
 			// headerRight: <HeaderSync />
-			headerRight: <Icon name="search" onPress={() => params.openDrawer()} style={{ paddingRight: 10, color: ThemeColors.white }} />
+			headerRight: <Icon name="search" onPress={() => params.drawer._root.open()} style={{ paddingRight: 10, color: ThemeColors.white }} />
 		};
 	};
 
 	componentDidMount() {
 		this.props.navigation.setParams({
 			// @ts-ignore
-			openDrawer: this.openDrawer
+			drawer: this.drawer
 		});
 		this.props.onIxoInit();
+		SecureStore.getItemAsync(SecureStorageKeys.encryptedMnemonic).then((encryptedMnemonic: string | null) => {
+			console.log(encryptedMnemonic);
+		});
 	}
 
 	componentDidUpdate(prevProps: Props) {
@@ -94,16 +89,9 @@ export class Projects extends React.Component<Props, State> {
 		}
 	}
 
-	openDrawer = () => {
+	closeDrawer() {
 		// @ts-ignore
-		this.props.navigation.openDrawer();
-		this.setState({ isDrawerOpen: true });
-	}
-
-	closeDrawer = () => {
-		// @ts-ignore
-		this.props.navigation.closeDrawer();
-		this.setState({ isDrawerOpen: false });
+		this.drawer._root.close();
 	}
 
 	getLatestClaim(claims: IClaim[]): string {
@@ -165,7 +153,7 @@ export class Projects extends React.Component<Props, State> {
 
 	refreshProjects() {
 		this.setState({ isRefreshing: true, projects: [] });
-		this.getProjectList()
+		this.getProjectList();
 	}
 
 	renderProject() {
@@ -233,7 +221,8 @@ export class Projects extends React.Component<Props, State> {
 
 	_onScroll = (event: any) => {
 		const y = event.nativeEvent.contentOffset.y;
-		if (y > 20 && !this.headerTitleShown) { // headerTitleShown prevents unnecessory rerendering for setParams
+		if (y > 20 && !this.headerTitleShown) {
+			// headerTitleShown prevents unnecessory rerendering for setParams
 			this.props.navigation.setParams({
 				showTitle: true
 			});
@@ -245,18 +234,15 @@ export class Projects extends React.Component<Props, State> {
 			});
 			this.headerTitleShown = false;
 		}
-	}
+	};
 
 	renderNoProjectsView() {
 		return (
 			<Content
 				style={{ backgroundColor: ThemeColors.blue_dark }}
-				refreshControl={<RefreshControl
-					refreshing={this.state.isRefreshing}
-					onRefresh={() => this.refreshProjects()}
-				/>}
+				refreshControl={<RefreshControl refreshing={this.state.isRefreshing} onRefresh={() => this.refreshProjects()} />}
 				// @ts-ignore
-				onScroll={(event) => this._onScroll(event)}
+				onScroll={event => this._onScroll(event)}
 			>
 				<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
 					<View style={[ProjectsStyles.flexLeft]}>
@@ -273,16 +259,15 @@ export class Projects extends React.Component<Props, State> {
 		return (
 			<ImageBackground source={background} style={ProjectsStyles.backgroundImage}>
 				<Container>
-					<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent', elevation: 0 }}>
+					<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
 						<View style={[ProjectsStyles.flexLeft]}>
 							<Text style={ProjectsStyles.header}>{this.props.screenProps.t('projects:myProjects')}</Text>
 						</View>
 					</Header>
 					<StatusBar barStyle="light-content" />
-					{
-						(this.state.isRefreshing) ?
+					{this.state.isRefreshing ? (
 						<Spinner color={ThemeColors.white} />
-						:
+					) : (
 						<View>
 							<View style={{ height: height * 0.4, flexDirection: 'row', justifyContent: 'center' }}>
 								<View style={{ flexDirection: 'column', justifyContent: 'center' }}>
@@ -291,7 +276,9 @@ export class Projects extends React.Component<Props, State> {
 							</View>
 							<View>
 								<View style={[ProjectsStyles.flexLeft]}>
-									<Text style={[ProjectsStyles.header, { color: ThemeColors.blue_lightest }]}>{this.props.screenProps.t('projects:addFirstProject')}</Text>
+									<Text style={[ProjectsStyles.header, { color: ThemeColors.blue_lightest }]}>
+										{this.props.screenProps.t('projects:addFirstProject')}
+									</Text>
 								</View>
 								<View style={{ width: '100%' }}>
 									<View style={ProjectsStyles.divider} />
@@ -301,18 +288,26 @@ export class Projects extends React.Component<Props, State> {
 								</View>
 							</View>
 						</View>
-					}
+					)}
 				</Container>
 			</ImageBackground>
 		);
 	}
 
 	render() {
-		if (this.state.projects.length > 0) {
-			return ( this.renderNoProjectsView() );
-		} else {
-			return ( this.renderProjectsView() );
-		}
+		return (
+			<Drawer
+				ref={ref => {
+					// @ts-ignore
+					this.drawer = ref;
+				}}
+				content={<SideBar navigation={this.props.navigation} />}
+				onClose={() => this.closeDrawer()}
+			>
+				{this.state.projects.length > 0 ? this.renderNoProjectsView() : this.renderProjectsView()}
+				<DarkButton iconImage={qr} text={this.props.screenProps.t('projects:scan')} onPress={() => alert('bla')} />
+			</Drawer>
+		);
 	}
 }
 

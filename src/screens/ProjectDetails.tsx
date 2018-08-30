@@ -1,10 +1,9 @@
+import { Button, Container, Content, Icon, Input, Item, Text, View } from 'native-base';
 import React from 'react';
 import { StatusBar, TouchableOpacity } from 'react-native';
-import { Container, Icon, Content, View, Text, Button, Item, Input } from 'native-base';
-
-import ProjectDetailStyles from '../styles/ProjectDetails';
-import ContainerStyles from '../styles/Containers';
 import { ThemeColors } from '../styles/Colors';
+import ContainerStyles from '../styles/Containers';
+import ProjectDetailStyles from '../styles/ProjectDetails';
 
 const PhotoBox = () => (
 	<TouchableOpacity style={ProjectDetailStyles.photoBoxContainer}>
@@ -28,7 +27,7 @@ const AddMoreBox = () => (
 	</TouchableOpacity>
 );
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 }
 
@@ -36,7 +35,7 @@ interface NavigationTypes {
 	navigation: any;
 }
 
-class ProjectDetails extends React.Component<PropTypes> {
+class ProjectDetails extends React.Component<ParentProps> {
 	static navigationOptions = (props: NavigationTypes) => {
 		return {
 			headerLeft: <Icon name="close" onPress={() => props.navigation.pop()} style={{ paddingLeft: 10 }} />,

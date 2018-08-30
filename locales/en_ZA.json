@@ -69,6 +69,11 @@
 		"confirmSecret": "Confirm your Secret Backup Phrase",
 		"confirmSecretParagraph": "Please select each phrase in order to make sure it is correct.",
 		"confirm": "CONFIRM",
-		"orderIncorrect": "Order is incorrect"
+		"orderIncorrect": "Order is incorrect.",
+		"didLedgeredSuccess": "Did document was ledgered successfully.",
+		"didLedgeredError": "Unable to ledger did at this time.",
+		"missingFields": "Missing fields.",
+		"missmatchPassword": "Mismatch on password.",
+		"ledgerDid" : "Please wait while your did is being ledgered."
 	}
 }

@@ -1,22 +1,19 @@
+import { decode as base64Decode } from 'base-64';
+import { Container, Content, Spinner, View } from 'native-base';
 import React from 'react';
-import { env } from '../../config';
-import { StatusBar, Dimensions } from 'react-native';
-import { Container, Content, View, Text, Spinner, Toast } from 'native-base';
-
-import { ThemeColors } from '../styles/Colors';
-import NewClaimStyles from '../styles/NewClaim';
+import { Dimensions, StatusBar } from 'react-native';
+import { connect } from 'react-redux';
 import DynamicForm from '../components/form/DynamicForm';
 import { FormStyles } from '../models/form';
-import { PublicSiteStoreState } from '../redux/public_site_reducer';
-const { height } = Dimensions.get('window');
-import { connect } from 'react-redux';
-import { decode as base64Decode } from 'base-64';
-import { GetSignature } from '../utils/sovrin';
 import { IClaim } from '../models/project';
+import { PublicSiteStoreState } from '../redux/public_site_reducer';
+import { ThemeColors } from '../styles/Colors';
+import NewClaimStyles from '../styles/NewClaim';
+import { getSignature } from '../utils/sovrin';
 
-const placeholder = require('../../assets/ixo-placeholder.jpg');
+const { height } = Dimensions.get('window');
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
@@ -37,7 +34,7 @@ interface StateProps {
 	ixo?: any;
 }
 
-interface Props extends PropTypes, StateProps {}
+interface Props extends ParentProps, StateProps {}
 
 class ViewClaim extends React.Component<Props, StateTypes> {
 	private pdsURL: string = '';
@@ -70,7 +67,6 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 		let componentProps: NavigationTypes = this.props.navigation.state.params;
 		this.pdsURL = componentProps.pdsURL;
 		this.claimId = componentProps.claimId;
-		this.pdsURL = __DEV__ ? componentProps.pdsURL.replace(/localhost/g, env.REACT_IXO_LOCAL_ENV_IP) : componentProps.pdsURL;
 		this.projectDid = componentProps.projectDid;
 		this.claimFormKey = componentProps.claimFormKey;
 	}
@@ -81,21 +77,21 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 
 	loadData() {
 		const ProjectDIDPayload: Object = { projectDid: this.projectDid };
-		GetSignature(ProjectDIDPayload).then((signature: any) => {
+		getSignature(ProjectDIDPayload).then((signature: any) => {
 			const claimPromise: Promise<any> = this.handleGetClaim(ProjectDIDPayload, signature);
 			const formFilePromise: Promise<any> = this.handleFetchFile(this.claimFormKey, this.pdsURL);
 
 			Promise.all([claimPromise, formFilePromise]).then(([claim, formFile]) => {
 				const mergedFormFile = this.mergeClaimToForm(formFile, claim);
 				this.handleFetchClaimImages(mergedFormFile, claim);
-			})
+			});
 		});
 	}
 
 	mergeClaimToForm(formFile: any, claim: any): string {
 		const { fields = [] } = JSON.parse(formFile);
 		fields.forEach((field: any) => {
-			Object.assign(field, { "value": claim[field.name] });
+			Object.assign(field, { value: claim[field.name] });
 		});
 		const mergedFormFile = JSON.stringify({ fields });
 		this.setState({ fetchedFile: mergedFormFile });
@@ -103,7 +99,7 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 	}
 
 	handleGetClaim = (ProjectDIDPayload: object, signature: string) => {
-		return new Promise((resolve) => {
+		return new Promise(resolve => {
 			this.props.ixo.claim.listClaimsForProject(ProjectDIDPayload, signature, this.pdsURL).then((response: any) => {
 				if (response.error) {
 					// Toast.errorToast(response.error.message, ErrorTypes.goBack);
@@ -113,16 +109,19 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 				}
 			});
 		});
-	}
+	};
 
 	handleFetchFile = (claimFormKey: string, pdsURL: string) => {
-		return new Promise((resolve) => {
-			this.props.ixo.project.fetchPublic(claimFormKey, pdsURL).then((res: any) => {
-				let fileContents = base64Decode(res.data);
-				return resolve(fileContents);
-			}).catch((error: Error) => {
-				console.log(error);
-			});
+		return new Promise(resolve => {
+			this.props.ixo.project
+				.fetchPublic(claimFormKey, pdsURL)
+				.then((res: any) => {
+					let fileContents = base64Decode(res.data);
+					return resolve(fileContents);
+				})
+				.catch((error: Error) => {
+					console.log(error);
+				});
 		});
 	};
 
@@ -141,7 +140,7 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 			}
 		});
 		Promise.all(promises);
-	}
+	};
 
 	renderForm() {
 		const claimParsed = JSON.parse(this.state.fetchedFile!);
@@ -158,9 +157,7 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 				<StatusBar barStyle="light-content" />
 				<View style={{ height: height * 0.18, backgroundColor: ThemeColors.blue_dark, paddingHorizontal: '3%', paddingTop: '2%' }} />
 				<View style={[NewClaimStyles.formContainer, { position: 'absolute', height: height - 160, top: 30, alignSelf: 'center', width: '95%' }]}>
-					<Content style={{ paddingHorizontal: 10 }}>
-						{this.renderForm()}
-					</Content>
+					<Content style={{ paddingHorizontal: 10 }}>{this.renderForm()}</Content>
 				</View>
 			</Container>
 		);

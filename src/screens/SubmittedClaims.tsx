@@ -1,22 +1,22 @@
 // TODO styling needs to move to styling file
 
-import React from 'react';
-import { StatusBar, ImageBackground } from 'react-native';
 import { Container, Icon, Text, View } from 'native-base';
-import IconSuccess from '../../assets/svg/IconSuccess';
+import React from 'react';
+import { ImageBackground, StatusBar } from 'react-native';
 import IconReject from '../../assets/svg/IconReject';
-import SubmittedClaimsStyles from '../styles/SubmittedClaims';
+import IconSuccess from '../../assets/svg/IconSuccess';
 import { ThemeColors } from '../styles/Colors';
+import SubmittedClaimsStyles from '../styles/SubmittedClaims';
 
 const background = require('../../assets/backgrounds/background_2.png');
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
 
-export default class SubmittedClaims extends React.Component<PropTypes> {
-	static navigationOptions = ({ navigation }:{ navigation: any }) => {
+export default class SubmittedClaims extends React.Component<ParentProps> {
+	static navigationOptions = ({ navigation }: { navigation: any }) => {
 		return {
 			headerStyle: {
 				backgroundColor: ThemeColors.blue_dark,
@@ -27,22 +27,18 @@ export default class SubmittedClaims extends React.Component<PropTypes> {
 				textAlign: 'center',
 				alignSelf: 'center'
 			},
-			headerLeft: (
-				<Icon
-					name="arrow-back"
-					onPress={() => navigation.pop()}
-					style={{ paddingLeft: 10, color: ThemeColors.white }}
-				/>
-			),
+			headerLeft: <Icon name="arrow-back" onPress={() => navigation.pop()} style={{ paddingLeft: 10, color: ThemeColors.white }} />
 		};
-	}
+	};
 
 	state = {
 		claimSubmitted: true
 	};
 
 	componentDidMount() {
-		const { params: { claimSubmitted } } = this.props.navigation.state;
+		const {
+			params: { claimSubmitted }
+		} = this.props.navigation.state;
 		this.setState({ claimSubmitted });
 	}
 
@@ -53,7 +49,7 @@ export default class SubmittedClaims extends React.Component<PropTypes> {
 					<View style={{ flex: 0.2 }}>
 						<View style={[SubmittedClaimsStyles.colorBox, { backgroundColor: '#3F7E44' }]}>
 							<View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
-								<IconSuccess width={50} height={50}  />
+								<IconSuccess width={50} height={50} />
 							</View>
 						</View>
 					</View>
@@ -78,9 +74,9 @@ export default class SubmittedClaims extends React.Component<PropTypes> {
 			<View style={{ flexDirection: 'column', justifyContent: 'center', flex: 1 }}>
 				<View style={{ flexDirection: 'row' }}>
 					<View style={{ flex: 0.2 }}>
-						<View  style={[SubmittedClaimsStyles.colorBox, { backgroundColor: '#A11C43' }]}>
+						<View style={[SubmittedClaimsStyles.colorBox, { backgroundColor: '#A11C43' }]}>
 							<View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
-								<IconReject width={50} height={50}  />
+								<IconReject width={50} height={50} />
 							</View>
 						</View>
 					</View>
@@ -105,7 +101,7 @@ export default class SubmittedClaims extends React.Component<PropTypes> {
 			<ImageBackground source={background} style={SubmittedClaimsStyles.backgroundImage}>
 				<Container>
 					<StatusBar barStyle="light-content" />
-					{(this.state.claimSubmitted) ? this.renderSuccess() : this.renderReject() }
+					{this.state.claimSubmitted ? this.renderSuccess() : this.renderReject()}
 				</Container>
 			</ImageBackground>
 		);

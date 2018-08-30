@@ -1,10 +1,9 @@
+import { Button, Text } from 'native-base';
 import * as React from 'react';
-import { View, StatusBar, Image } from 'react-native';
-import { Text, Button } from 'native-base';
-
+import { Image, StatusBar, View } from 'react-native';
+import { ThemeColors } from '../styles/Colors';
 import ConnectIXOStyles from '../styles/ConnectIXO';
 import ContainerStyles from '../styles/Containers';
-import { ThemeColors } from '../styles/Colors';
 
 const logo = require('../../assets/logo.png');
 
@@ -34,11 +33,11 @@ const UnSuccessfulView = (navigation: any) => (
 	</View>
 );
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 }
 
-class ConnectIXOUnsuccessful extends React.Component<PropTypes, {}, {}> {
+class ConnectIXOUnsuccessful extends React.Component<ParentProps, {}, {}> {
 	render() {
 		return (
 			<View style={ConnectIXOStyles.wrapper}>
