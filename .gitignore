@@ -1,3 +1,17 @@
+
 /node_modules
 /build
 .vscode/
+config.tsx
+/ios/Pods
+/android/.idea
+/android/build/
+/android/.gradle
+/android/local.properties
+/android/app/app.iml
+/android/app/build
+/ios/Podfile.lock
+shim.js
+ios/ixo.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+.expo/packager-info.json
+ios/ixo/Supporting/EXBuildConstants.plist.bak

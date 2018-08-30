@@ -1,8 +1,7 @@
-import { StyleSheet, ViewStyle, TextStyle, Dimensions } from 'react-native';
-
+import { Dimensions, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { ThemeColors } from '../../styles/Colors';
-const { width } = Dimensions.get('window');
 
+const { width } = Dimensions.get('window');
 interface Style {
 	formContainer: ViewStyle;
 	photoBoxContainer: ViewStyle;
@@ -37,8 +36,8 @@ const styles = StyleSheet.create<Style>({
 		fontSize: 50
 	},
 	imageContainer: {
-		width: width * 0.2,
-		height: width * 0.2,
+		width: width * 0.6,
+		height: width * 0.6,
 		borderColor: ThemeColors.orange,
 		borderWidth: 1,
 		margin: 3

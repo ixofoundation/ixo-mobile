@@ -1,30 +1,26 @@
 import React from 'react';
-import { ImagePicker, Permissions } from 'expo';
+import { ImagePicker, Permissions, ImageManipulator } from 'expo';
 import { TouchableOpacity, Image, Dimensions, TouchableOpacityBase } from 'react-native';
 import { FormStyles } from '../../models/form';
 import { Textarea, Item, Form, Input, View, Label, Icon, Text } from 'native-base';
+// @ts-ignore
 import { connectActionSheet } from '@expo/react-native-action-sheet';
 import changeCase from 'change-case';
 import _ from 'underscore';
 
 const { width } = Dimensions.get('window');
 
+const placeholder = require('../../../assets/ixo-placeholder.jpg');
+
 import DynamicFormStyles from '../../styles/componentStyles/DynamicForm';
 import ContainerStyles from '../../styles/Containers';
 import { ThemeColors } from '../../styles/Colors';
+import DarkButton from '../DarkButton';
 
-// const AddMoreBox = () => (
-// 	<TouchableOpacity style={DynamicFormStyles.photoBoxContainer}>
-// 		<View style={{ flex: 0.1 }} />
-// 		<View style={[ContainerStyles.flexRow, { flex: 0.8 }]}>
-// 			<Icon style={DynamicFormStyles.photoBoxCameraIcon} name="add" />
-// 		</View>
-// 		<View style={{ flex: 0.1 }} />
-// 	</TouchableOpacity>
-// );
-export interface IImageList {
-	index: number; // used to keep track of which image list in schema e.g. (before or after images)
-	ImageElements: JSX.Element[];
+
+export interface IImage {
+	fieldName: string; // used to keep track of which image list in schema e.g. (before or after images)
+	imageElement: JSX.Element;
 }
 
 export interface ParentProps {
@@ -32,34 +28,34 @@ export interface ParentProps {
 	formSchema: any;
 	presetValues?: any[];
 	showActionSheetWithOptions?: any;
+	screenProps: any;
+	editable: boolean;
 }
 
 export interface State {
-	formData: any;
 	submitStatus: string;
 	hasCameraPermission: boolean;
-	imageLists: IImageList[];
+	imageList: IImage[];
 }
 
 export interface Callbacks {
-	handleSubmit: (formData: any) => void;
+	handleSubmit?: (formData: any) => void;
 }
 
 export interface Props extends ParentProps, Callbacks {}
 @connectActionSheet
 export default class DynamicForm extends React.Component<Props, State> {
+	private formData: any = {};
+
 	state = {
-		formData: {},
 		submitStatus: '',
 		hasCameraPermission: false,
-		imageLists: [],
+		imageList: [],
 	};
 
 	async componentWillMount() {
 		let hiddenCount = 0;
-		console.log('Dynamic From: ' + this.props.formSchema);
 		this.props.formSchema.map((field: any) => {
-			console.log('Field: ' + field.label);
 			if (field.hidden) {
 				this.setFormState(field.name, this.props.presetValues![hiddenCount]);
 				hiddenCount++;
@@ -70,12 +66,14 @@ export default class DynamicForm extends React.Component<Props, State> {
 	}
 
 	handleSubmit = () => {
-		this.props.handleSubmit(this.state.formData);
+		if (this.props.handleSubmit) {
+			this.props.handleSubmit(this.formData);
+		}
 	};
 
 	setFormState = (name: String, value: any) => {
 		const fields = name.split('.');
-		let formData: any = this.state.formData;
+		let formData: any = this.formData;
 		fields.forEach((field, index) => {
 			if (index === fields.length - 1) {
 				formData[field] = value;
@@ -86,22 +84,28 @@ export default class DynamicForm extends React.Component<Props, State> {
 				formData = formData[field];
 			}
 		});
-		this.setState({ formData: formData });
+		this.formData = formData;
 	};
 
-	updateImageLists = (imageListIndex: number, uri: string) => {
+	updateImageList = (fieldName: string, uri: string) => {
 		const imageComponent = <Image resizeMode={'contain'} style={DynamicFormStyles.imageContainer} source={{ uri }} />
-		const imageListArray: IImageList[] = this.state.imageLists;
-		const imageListFoundItem: IImageList | undefined = _.find(imageListArray, (imageList) => imageList.index === imageListIndex);
+		const imageListArray: IImage[] = this.state.imageList;
+		const imageListFoundItem: IImage | undefined = _.find(imageListArray, (imageList) => imageList.fieldName === fieldName);
 		if (imageListFoundItem) { // update existing image element list
-			imageListFoundItem.ImageElements.push(imageComponent);
+			imageListFoundItem.imageElement = imageComponent;
 		} else { // create a new entry
-			imageListArray.push({ index: imageListIndex, ImageElements: [imageComponent]})
+			imageListArray.push({ fieldName, imageElement: imageComponent });
 		}
-		this.setState({ imageLists: imageListArray });
+		this.setState({ imageList: imageListArray });
 	};
 
-	async pickImage(imageListIndex: number) {
+	async compressImage(uri: string) {
+		const compressedImage = await ImageManipulator.manipulate(uri, {}, { compress: 0.9, format: 'jpeg', base64: true })
+		const base64 = `data:image/jpeg;base64,${compressedImage.base64}`;
+		return base64;
+	}
+
+	async pickImage(fieldName: string) {
 		try {
 			const { status: camera_roll } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
 			if (camera_roll === 'granted') {
@@ -110,7 +114,9 @@ export default class DynamicForm extends React.Component<Props, State> {
 					aspect: [4, 3],
 				});
 				if (!result.cancelled) {
-					this.updateImageLists(imageListIndex, result.uri);
+					this.updateImageList(fieldName, result.uri);
+					const base64 = await this.compressImage(result.uri);
+					this.setFormState(fieldName, base64);
 				}
 			}
 		} catch(error) {
@@ -118,7 +124,7 @@ export default class DynamicForm extends React.Component<Props, State> {
 		}
 	};
 
-	async takePhoto(imageListIndex: number) {
+	async takePhoto(fieldName: string) {
 		try {
 			const { status: camera } = await Permissions.askAsync(Permissions.CAMERA);
 			if (camera === 'granted') {
@@ -127,7 +133,9 @@ export default class DynamicForm extends React.Component<Props, State> {
 					aspect: [4, 3],
 				});
 				if (!result.cancelled) {
-					this.updateImageLists(imageListIndex, result.uri);
+					this.updateImageList(fieldName, result.uri);
+					const base64 = await this.compressImage(result.uri);
+					this.setFormState(fieldName, base64);
 				}
 			}
 		} catch(error) {
@@ -135,7 +143,7 @@ export default class DynamicForm extends React.Component<Props, State> {
 		}
 	}
 
-	onOpenActionSheet = (imageListIndex: number) => {
+	onOpenActionSheet = (fieldName: string) => {
 		// Same interface as https://facebook.github.io/react-native/docs/actionsheetios.html
 		let options = ['Select from Camera Roll', 'Take photo', 'Cancel'];
 		let destructiveButtonIndex = 2;
@@ -148,37 +156,68 @@ export default class DynamicForm extends React.Component<Props, State> {
 		},
 		(buttonIndex: number) => {
 			if (buttonIndex === 0) { // camera roll
-				this.pickImage(imageListIndex);
+				this.pickImage(fieldName);
 			}
 			else if (buttonIndex === 1) {
-				this.takePhoto(imageListIndex);
+				this.takePhoto(fieldName);
 			}
 		  // Do something here depending on the button index selected
 		});
 	  }
 
-	onFormValueChanged = (name: String) => {
-		return (event: any) => {
-			this.setFormState(name, event.target.value);
-		};
+	onFormValueChanged = (name: String, text: string) => {
+		this.setFormState(name, text);
 	};
 
-	renderImageArray(imageListIndex: number) {
-		const imageObj: IImageList | undefined = _.find(this.state.imageLists, (imageList: IImageList) => imageList.index === imageListIndex);
+	renderPreview(fieldName: string) {
+		const imageObj: IImage | undefined = _.find(this.state.imageList, (imageList: IImage) => imageList.fieldName === fieldName);
+		if (imageObj) {
+			return (
+				<View key={imageObj.fieldName}>
+					{imageObj.imageElement}
+				</View>
+			);
+		}
+		return null;
+	}
+
+	renderImage(uri: string, index: number) {
 		return (
-			<View style={{ flexWrap: 'wrap', flexDirection: 'row' }}>
-				{
-					(imageObj) &&
-						_.each(imageObj.ImageElements, (element: JSX.Element, index: number) => {
-							return (
-								<View key={index}>
-									{element}
-								</View>
-							);
-						})
-				}
+			<View key={index}>
+				<Image resizeMode={'contain'} style={DynamicFormStyles.imageContainer} source={(uri === "") ? placeholder : { uri } } />
 			</View>
 		);
+	}
+
+	renderEditImageField(field: any, index: number) {
+		if (_.isEmpty(this.state.imageList)) {
+			return (
+				<View style={DynamicFormStyles.imageType} key={index}>
+					<Text>{changeCase.sentenceCase(field.name)}</Text>
+					<TouchableOpacity onPress={() => this.onOpenActionSheet(field.name)} style={DynamicFormStyles.photoBoxContainer}>
+						<View style={[ContainerStyles.flexRow]}>
+							<View style={[ContainerStyles.flexColumn]}>
+								<Icon style={DynamicFormStyles.photoBoxCameraIcon} name="camera" />
+							</View>
+						</View>
+					</TouchableOpacity>
+				</View>
+			)
+		} else {
+			return (
+				<View style={DynamicFormStyles.imageType} key={index}>
+					<Text>{changeCase.sentenceCase(field.name)}</Text>
+					{this.renderPreview(field.name)}
+					<TouchableOpacity onPress={() => this.onOpenActionSheet(field.name)} style={{ width: width * 0.2, height: width * 0.2 }}>
+						<View style={{ flex: 0.1 }} />
+						<View style={[ContainerStyles.flexRow, { flex: 0.8 }]}>
+							<Icon style={DynamicFormStyles.photoBoxCameraIcon} name="add" />
+						</View>
+						<View style={{ flex: 0.1 }} />
+					</TouchableOpacity>
+				</View>
+			)
+		}
 	}
 
 	render() {
@@ -192,44 +231,21 @@ export default class DynamicForm extends React.Component<Props, State> {
 								return (
 									<Item key={i} floatingLabel >
 										<Label>{changeCase.sentenceCase(field.name)}</Label>
-										<Input />
+										<Input value={field.value} onChangeText={(text) => this.onFormValueChanged(field.name, text)} />
 									</Item>
 								);
 							case 'textarea' :
 								return (
 									<View style={DynamicFormStyles.textArea} key={i}>
 										<Text>{changeCase.sentenceCase(field.name)}</Text>
-										<Textarea key={i} rowSpan={5} bordered />
+										<Textarea value={field.value} onChangeText={(text) => this.onFormValueChanged(field.name, text)} key={i} rowSpan={5} bordered />
 									</View>
 								);
 							case 'image' :
-								if (_.isEmpty(this.state.imageLists)) {
-									return (
-										<View style={DynamicFormStyles.imageType} key={i}>
-											<Text>{changeCase.sentenceCase(field.name)}</Text>
-											<TouchableOpacity onPress={() => this.onOpenActionSheet(i)} style={DynamicFormStyles.photoBoxContainer}>
-												<View style={[ContainerStyles.flexRow]}>
-													<View style={[ContainerStyles.flexColumn]}>
-														<Icon style={DynamicFormStyles.photoBoxCameraIcon} name="camera" />
-													</View>
-												</View>
-											</TouchableOpacity>
-										</View>
-									)
+								if (this.props.editable) {
+									return (this.renderEditImageField(field, i));
 								} else {
-									return (
-										<View style={DynamicFormStyles.imageType} key={i}>
-											<Text>{changeCase.sentenceCase(field.name)}</Text>
-											{this.renderImageArray(i)}
-											<TouchableOpacity onPress={() => this.onOpenActionSheet(i)} style={{ width: width * 0.2, height: width * 0.2 }}>
-												<View style={{ flex: 0.1 }} />
-												<View style={[ContainerStyles.flexRow, { flex: 0.8 }]}>
-													<Icon style={DynamicFormStyles.photoBoxCameraIcon} name="add" />
-												</View>
-												<View style={{ flex: 0.1 }} />
-											</TouchableOpacity>
-										</View>
-									)
+									return (this.renderImage(field.value, i));
 								}
 							case 'select':
 							case 'country':
@@ -239,6 +255,12 @@ export default class DynamicForm extends React.Component<Props, State> {
 								return <Label key={i}>{field.label}</Label>;
 						}
 					})}
+					{(this.props.editable) && 
+						<DarkButton
+							onPress={() => this.handleSubmit()}
+							text={this.props.screenProps.t('claims:submitButton')}
+						/>
+					}
 			</Form>
 		);
 	}

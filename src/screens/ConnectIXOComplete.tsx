@@ -1,24 +1,14 @@
 import * as React from 'react';
 import { View, StatusBar, Image, Dimensions } from 'react-native';
 import { Text, Button, Item, Label, Input, Icon } from 'native-base';
-
 import ConnectIXOStyles from '../styles/ConnectIXO';
 import ContainerStyles from '../styles/Containers';
 import { ThemeColors } from '../styles/Colors';
 
 const { width } = Dimensions.get('window');
-
 const logo = require('../../assets/logo.png');
 
-const LogoView = () => (
-	<View style={ContainerStyles.flexColumn}>
-		<View style={ContainerStyles.flexRow}>
-			<Image resizeMode={'contain'} style={ConnectIXOStyles.logo} source={logo} />
-		</View>
-	</View>
-);
-
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
@@ -29,7 +19,7 @@ interface StateTypes {
 	keysafePasswordCorrect: boolean;
 }
 
-class ConnectIXOComplete extends React.Component<PropTypes, StateTypes, {}> {
+class ConnectIXOComplete extends React.Component<ParentProps, StateTypes, {}> {
 	state = {
 		password: '',
 		revealPassword: true,
@@ -39,8 +29,6 @@ class ConnectIXOComplete extends React.Component<PropTypes, StateTypes, {}> {
 	revealPassword = () => {
 		this.setState({ revealPassword: !this.state.revealPassword });
 	};
-
-	createPassword() {}
 
 	verifySafeKey() {
 		// add decryption here
@@ -53,19 +41,13 @@ class ConnectIXOComplete extends React.Component<PropTypes, StateTypes, {}> {
 				<View style={[ContainerStyles.flexColumn, { alignItems: 'flex-start', justifyContent: 'flex-end', paddingHorizontal: 30, width }]}>
 					<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 15 }}>{this.props.screenProps.t('connectIXOComplete:scanSuccessful')}</Text>
 					<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 15 }}>{this.props.screenProps.t('connectIXOComplete:privacyImportance')}</Text>
-					<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 15 }}>
-						{this.props.screenProps.t('connectIXOComplete:unlockInformation')}
-					</Text>
+					<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 15 }}>{this.props.screenProps.t('connectIXOComplete:unlockInformation')}</Text>
 				</View>
 
 				<View style={[ContainerStyles.flexRow, { width: width * 0.8, flex: 0.2, paddingBottom: 20 }]}>
 					<Item style={{ width: width * 0.8 }} stackedLabel={!this.state.revealPassword} floatingLabel={this.state.revealPassword}>
 						<Label>YOUR IXO KEY SAFE PASSWORD</Label>
-						<Input
-							value={this.state.password}
-							onChangeText={password => this.setState({ password: password })}
-							secureTextEntry={this.state.revealPassword}
-						/>
+						<Input value={this.state.password} onChangeText={password => this.setState({ password: password })} secureTextEntry={this.state.revealPassword} />
 					</Item>
 					<Icon onPress={() => this.revealPassword()} active name="eye" style={{ color: ThemeColors.black, top: 10 }} />
 				</View>
@@ -92,11 +74,7 @@ class ConnectIXOComplete extends React.Component<PropTypes, StateTypes, {}> {
 				<View style={[ContainerStyles.flexRow, { width: width * 0.8, flex: 0.2, paddingBottom: 20 }]}>
 					<Item style={{ width: width * 0.8 }} stackedLabel={!this.state.revealPassword} floatingLabel={this.state.revealPassword}>
 						<Label>CREATE PASSWORD</Label>
-						<Input
-							value={this.state.password}
-							onChangeText={password => this.setState({ password: password })}
-							secureTextEntry={this.state.revealPassword}
-						/>
+						<Input value={this.state.password} onChangeText={password => this.setState({ password: password })} secureTextEntry={this.state.revealPassword} />
 					</Item>
 					<Icon onPress={() => this.revealPassword()} active name="eye" style={{ color: ThemeColors.black, top: 10 }} />
 				</View>

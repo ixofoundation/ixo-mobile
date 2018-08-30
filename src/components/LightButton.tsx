@@ -13,7 +13,7 @@ const LightButton = ({ onPress, text = '?', propStyles = {} }: { onPress: any, t
           style={{
             backgroundColor: 'transparent',
             fontSize: 15,
-            color: '#fff',
+            color: ThemeColors.white,
             fontWeight: '400',
           }}>
           {text}

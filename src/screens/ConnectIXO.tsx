@@ -1,15 +1,15 @@
-import * as React from 'react';
-import { View, StatusBar, Image, ImageBackground, Dimensions, TouchableOpacity } from 'react-native';
-import { StackActions, NavigationActions } from 'react-navigation';
 import { Text } from 'native-base';
-
+import * as React from 'react';
+import { Dimensions, Image, ImageBackground, StatusBar, View } from 'react-native';
+import { NavigationActions, StackActions } from 'react-navigation';
+import DarkButton from '../components/DarkButton';
+import LightButton from '../components/LightButton';
+import { ThemeColors } from '../styles/Colors';
 import ConnectIXOStyles from '../styles/ConnectIXO';
 import ContainerStyles from '../styles/Containers';
-import { ThemeColors } from '../styles/Colors';
-import DarkButton from '../components/DarkButton';
 
 const logo = require('../../assets/logo.png');
-const background = require('../../assets/backgrounds/background_1.jpg');
+const background = require('../../assets/backgrounds/background_1.png');
 const keysafelogo = require('../../assets/keysafe-logo.png');
 const qr = require('../../assets/qr.png');
 
@@ -23,7 +23,7 @@ const LogoView = () => (
 	</View>
 );
 
-const InfoBlocks = ({ keySafeText, qrCodeText }: { keySafeText: string, qrCodeText: string }) => (
+const InfoBlocks = ({ keySafeText, qrCodeText }: { keySafeText: string; qrCodeText: string }) => (
 	<View style={[ContainerStyles.flexRow, { alignItems: 'flex-end', marginBottom: height * 0.04 }]}>
 		<View style={[ContainerStyles.flexRow, ConnectIXOStyles.infoBlock]}>
 			<Image resizeMode={'contain'} style={ConnectIXOStyles.infoBlockImage} source={keysafelogo} />
@@ -31,19 +31,17 @@ const InfoBlocks = ({ keySafeText, qrCodeText }: { keySafeText: string, qrCodeTe
 		</View>
 		<View style={[ContainerStyles.flexRow, ConnectIXOStyles.infoBlock, { borderLeftWidth: 0 }]}>
 			<Image resizeMode={'contain'} style={ConnectIXOStyles.infoBlockImage} source={qr} />
-			<Text style={{ color: ThemeColors.white, fontSize: 12, padding: 10, width: width * 0.35 }}>
-				{qrCodeText}
-			</Text>
+			<Text style={{ color: ThemeColors.white, fontSize: 12, padding: 10, width: width * 0.35 }}>{qrCodeText}</Text>
 		</View>
 	</View>
 );
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
 
-export default class ConnectIXO extends React.Component<PropTypes, {}> {
+export default class ConnectIXO extends React.Component<ParentProps, {}> {
 	render() {
 		const registerAction = StackActions.reset({
 			index: 0,
@@ -58,10 +56,14 @@ export default class ConnectIXO extends React.Component<PropTypes, {}> {
 					<DarkButton
 						text={this.props.screenProps.t('connectIXO:scanButton')}
 						onPress={() => this.props.navigation.navigate('ScanQR')}
+						propStyles={{ marginBottom: 10 }}
+					/>
+
+					<LightButton
+						text={this.props.screenProps.t('connectIXO:registerButton')}
+						onPress={() => this.props.navigation.navigate('Register')}
 						propStyles={{ marginBottom: height * 0.1 }}
 					/>
-					{/* <Button onPress={() => this.props.navigation.navigate('ScanQR')} style={[ConnectIXOStyles.buttons, { marginBottom: 10 }]} dark><Text>SCAN YOUR QR CODE</Text></Button> */}
-					{/* <Button onPress={() => this.props.navigation.dispatch(registerAction)} style={ConnectIXOStyles.buttons} bordered dark><Text>NOT REGISTERED YET?</Text></Button> */}
 				</View>
 			</ImageBackground>
 		);

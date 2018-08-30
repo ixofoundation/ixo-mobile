@@ -1,55 +1,52 @@
-import { StyleSheet, ViewStyle, Dimensions, Platform } from 'react-native';
-
+import { Dimensions, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { ThemeColors } from '../styles/Colors';
-const { height } = Dimensions.get('window');
 
+const { width, height } = Dimensions.get('window');
 interface Style {
-  SubmitButton: ViewStyle,
-  BadgeBoxContainer: ViewStyle,
-  BoxContainer: ViewStyle,
-  Badge: ViewStyle,
-  ProjectBox: ViewStyle,
-  ProjectBoxStatusBar: ViewStyle,
+	backgroundImage: ViewStyle;
+	header: TextStyle;
+	flexLeft: ViewStyle;
+	divider: ViewStyle;
+	infoBox: TextStyle;
+	colorBox: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
-  SubmitButton: {
-    borderTopWidth: 1,
-    borderColor: ThemeColors.grey,
-    height: height * 0.1,
-    backgroundColor: ThemeColors.white
-  },
-  BadgeBoxContainer: { 
-    borderWidth: 1,
-    borderColor: ThemeColors.grey_sync,
-    borderRadius: 20,
-    justifyContent: 'flex-start',
-    backgroundColor: ThemeColors.white,
-    marginLeft: 10,
-    marginRight: 10
-  },
-  Badge: {
-    backgroundColor: ThemeColors.grey_sync,
-    borderRadius: 30,
-    flex: 0.32
-  },
-  BoxContainer: {
-    borderWidth: 1,
-    backgroundColor: ThemeColors.grey_sync,
-    borderColor: ThemeColors.grey_sync,
-    borderRadius: 20,
-    marginLeft: 10,
-    marginRight: 10
-  },
-  ProjectBox: {
-    margin: 5,
-    borderColor: ThemeColors.grey,
-    borderWidth: 1,
-  },
-  ProjectBoxStatusBar: {
-    height: '100%',
-    width: 7,
-  },
+	backgroundImage: {
+		flex: 1,
+		width: '100%',
+		height: '100%',
+		backgroundColor: ThemeColors.blue_dark
+	},
+	header: {
+		color: ThemeColors.white,
+		fontSize: 29,
+		paddingBottom: 20
+	},
+	flexLeft: {
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
+		width: '100%'
+	},
+	divider: {
+		width: '30%',
+		height: 1,
+		backgroundColor: ThemeColors.blue_medium
+	},
+	infoBox: {
+		color: ThemeColors.white,
+		fontSize: 18,
+		width: width * 0.6,
+		paddingVertical: 20
+	},
+	colorBox: {
+		justifyContent: 'center',
+		flex: 0.2,
+		paddingVertical: 15,
+		paddingRight: 5,
+		borderTopRightRadius: 3,
+		borderBottomRightRadius: 3
+	}
 });
 
 export default styles;

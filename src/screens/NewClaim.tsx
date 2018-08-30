@@ -1,33 +1,20 @@
 import React from 'react';
+import { env } from '../../config';
 import { StatusBar, Dimensions } from 'react-native';
-import { Container, Content, View, Text, Spinner } from 'native-base';
-
+import { Container, Content, View, Spinner, Toast } from 'native-base';
 import { ThemeColors } from '../styles/Colors';
 import NewClaimStyles from '../styles/NewClaim';
-import ContainerStyles from '../styles/Containers';
-import LightButton from '../components/LightButton';
 import DynamicForm from '../components/form/DynamicForm';
 import { FormStyles } from '../models/form';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 const { height } = Dimensions.get('window');
 import { connect } from 'react-redux';
 import { decode as base64Decode } from 'base-64';
+import { getSignature } from '../utils/sovrin';
 
 const placeholder = require('../../assets/ixo-placeholder.jpg');
 
-// const PhotoBox = () => (
-// 	<TouchableOpacity style={NewClaimStyles.photoBoxContainer}>
-// 		<View style={[ContainerStyles.flexRow, { justifyContent: 'flex-end', flex: 0.1 }]}>
-// 			<Icon style={NewClaimStyles.photoBoxCloseIcon} name="close" />
-// 		</View>
-// 		<View style={[ContainerStyles.flexRow, { flex: 0.8 }]}>
-// 			<Icon style={NewClaimStyles.photoBoxCameraIcon} name="camera" />
-// 		</View>
-// 		<View style={{ flex: 0.1 }} />
-// 	</TouchableOpacity>
-// );
-
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
@@ -43,10 +30,12 @@ interface StateTypes {
 export interface StateProps {
 	ixo?: any;
 }
-
-export interface Props extends PropTypes, StateProps {}
+export interface Props extends ParentProps, StateProps {}
 
 class NewClaim extends React.Component<Props, StateTypes> {
+	private pdsURL: string = '';
+	private projectDid: string | undefined;
+
 	constructor(props: Props) {
 		super(props);
 		this.state = {
@@ -57,8 +46,11 @@ class NewClaim extends React.Component<Props, StateTypes> {
 
 	componentDidMount() {
 		let componentProps: any = this.props.navigation.state.params;
+
 		if (componentProps) {
-			this.fetchFormFile(componentProps.claimForm, componentProps.pdsURL);
+			this.pdsURL = componentProps.pdsURL;
+			this.fetchFormFile(componentProps.claimForm, this.pdsURL);
+			this.projectDid = componentProps.projectDid;
 		}
 	}
 
@@ -73,7 +65,6 @@ class NewClaim extends React.Component<Props, StateTypes> {
 				backgroundColor: ThemeColors.blue_dark,
 				borderBottomColor: ThemeColors.blue_dark
 			},
-			// headerLeft: <Icon name="close" onPress={() => props.navigation.pop()} style={{ paddingLeft: 10 }} />,
 			title,
 			headerTitleStyle: {
 				color: ThemeColors.white,
@@ -85,20 +76,82 @@ class NewClaim extends React.Component<Props, StateTypes> {
 	};
 
 	fetchFormFile = (claimFormKey: string, pdsURL: string) => {
-		this.props.ixo.project.fetchPublic(claimFormKey, pdsURL).then((res: any) => {
-			console.log('Fetched: ', res);
-			let fileContents = base64Decode(res.data);
-			console.log('fileContents: ', fileContents);
-			this.setState({ fetchedFile: fileContents });
-		});
+		this.props.ixo.project
+			.fetchPublic(claimFormKey, pdsURL)
+			.then((res: any) => {
+				let fileContents = base64Decode(res.data);
+				this.setState({ fetchedFile: fileContents });
+			})
+			.catch((error: Error) => {
+				console.log(error);
+			});
 	};
 
-	onFormSubmit(formData: any) {}
+	handleSubmitClaim = (claimData: any) => {
+		let claimPayload = Object.assign(claimData);
+		claimPayload['projectDid'] = this.projectDid;
+
+		getSignature(claimPayload)
+			.then((signature: any) => {
+				this.props.ixo.claim
+					.createClaim(claimPayload, signature, this.pdsURL)
+					.then((response: any) => {
+						this.props.navigation.navigate('SubmittedClaims', { claimSubmitted: true });
+					})
+					.catch((claimError: Error) => {
+						this.props.navigation.navigate('SubmittedClaims', { claimSubmitted: false });
+					});
+			})
+			.catch((error: Error) => {
+				console.log(error);
+				Toast.show({
+					text: this.props.screenProps.t('claims:signingFailed'),
+					buttonText: 'OK',
+					type: 'danger',
+					position: 'top'
+				});
+			});
+	};
+
+	onFormSubmit = (formData: any) => {
+		// upload all the images and change the value to the returned hash of the image
+		let formDef = JSON.parse(this.state.fetchedFile);
+		let promises: Promise<any>[] = [];
+		formDef.fields.forEach((field: any) => {
+			if (field.type === 'image') {
+				if (formData[field.name] && formData[field.name].length > 0) {
+					promises.push(
+						this.props.ixo.project.createPublic(formData[field.name], this.pdsURL).then((res: any) => {
+							formData[field.name] = res.result;
+							Toast.show({
+								text: this.props.screenProps.t('claims:imageUploaded'),
+								buttonText: 'OK',
+								type: 'success',
+								position: 'top'
+							});
+							return res.result;
+						})
+					);
+				}
+			}
+		});
+		Promise.all(promises).then(results => {
+			this.handleSubmitClaim(formData);
+		});
+	};
 
 	renderForm() {
 		const claimParsed = JSON.parse(this.state.fetchedFile!);
 		if (this.state.fetchedFile) {
-			return <DynamicForm formSchema={claimParsed.fields} formStyle={FormStyles.standard} handleSubmit={this.onFormSubmit} />;
+			return (
+				<DynamicForm
+					editable={true}
+					screenProps={this.props.screenProps}
+					formSchema={claimParsed.fields}
+					formStyle={FormStyles.standard}
+					handleSubmit={this.onFormSubmit}
+				/>
+			);
 		} else {
 			return <Spinner color={ThemeColors.blue_light} />;
 		}
@@ -108,45 +161,10 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		return (
 			<Container style={{ backgroundColor: ThemeColors.grey_sync, flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
 				<StatusBar barStyle="light-content" />
-				<View style={{ height: height * 0.18, backgroundColor: ThemeColors.blue_dark, paddingHorizontal: '3%', paddingTop: '2%' }}>
-					{/* <Text style={{ color: ThemeColors.blue_lightest, fontSize: 12 }}>Claim created 05-05-1991</Text> */}
+				<View style={{ height: height * 0.18, backgroundColor: ThemeColors.blue_dark, paddingHorizontal: '3%', paddingTop: '2%' }} />
+				<View style={[NewClaimStyles.formContainer, { position: 'absolute', height: height - 160, top: 30, alignSelf: 'center', width: '95%' }]}>
+					<Content style={{ paddingHorizontal: 10 }}>{this.renderForm()}</Content>
 				</View>
-				<View
-					style={[NewClaimStyles.formContainer, { position: 'absolute', height: height - 160, top: 30, alignSelf: 'center', width: '95%' }]}
-				>
-					<Content style={{ paddingHorizontal: 10 }}>
-						{this.renderForm()}
-					</Content>
-				</View>
-
-				{/* <View>
-                        <Item floatingLabel>
-                            <Label>Name</Label>
-                            <Input />
-                        </Item>
-                        <Item style={{ marginTop: 20 }}>
-                            <Input placeholder='Type of panel installed'/>
-                            <Icon active name='arrow-down' style={{ color: ThemeColors.grey }} />
-                        </Item>
-                        <Item style={{ marginTop: 20 }}>
-                            <Input placeholder='Comments'/>
-                        </Item>
-                    </View>
-
-                    <View style={[ContainerStyles.flexColumn]}>
-                        <Button style={{ width: '100%', justifyContent: 'center' }} iconLeft bordered dark><Icon name='camera' style={{ color: ThemeColors.grey }} /><Text>Attach image</Text></Button>
-                        <Button style={{ width: '100%', justifyContent: 'center', marginTop: 20 }} bordered dark><Text>Scan QR code</Text></Button>
-                    </View>
-                        
-                    <View style={[ContainerStyles.flexColumn]}>
-                        <Button style={{ width: '100%', justifyContent: 'center' }} bordered dark><Text>Save</Text></Button>
-                        <Button style={{ width: '100%', justifyContent: 'center', marginTop: 20 }} bordered dark><Text>Submit</Text></Button>
-					</View> */}
-				<LightButton
-					propStyles={{ backgroundColor: ThemeColors.red, borderColor: ThemeColors.red, borderRadius: 0 }}
-					onPress={() => this.props.navigation.navigate('NewClaim', {})}
-					text={this.props.screenProps.t('claims:submitButton')}
-				/>
 			</Container>
 		);
 	}

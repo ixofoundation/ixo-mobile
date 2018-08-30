@@ -1,48 +1,23 @@
 // TODO styling needs to move to styling file
-import * as React from 'react';
 import { LinearGradient } from 'expo';
-import { StatusBar, ListView, Alert, TouchableOpacity, ImageBackground, Image, Dimensions } from 'react-native';
-import { Container, Header, Item, Icon, Input, Content, Text, List, Button, View, Spinner, Tab, Tabs } from 'native-base';
-import HeaderSync from '../components/HeaderSync';
-import { IClaim, IProject } from '../models/project';
+import moment from 'moment';
+import { Container, Content, Icon, Spinner, Tab, Tabs, Text, View } from 'native-base';
+import * as React from 'react';
+import { Dimensions, Image, ImageBackground, StatusBar, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import Containers from '../styles/Containers';
-import ClaimsStyles from '../styles/Claims';
-import { ThemeColors, ClaimsButton } from '../styles/Colors';
-import { PublicSiteStoreState } from '../redux/public_site_reducer';
-import { IUser } from '../models/user';
 import LightButton from '../components/LightButton';
+import { IClaim } from '../models/project';
+import { IUser } from '../models/user';
+import { PublicSiteStoreState } from '../redux/public_site_reducer';
+import ClaimsStyles from '../styles/Claims';
+import { ClaimsButton, ThemeColors } from '../styles/Colors';
 
 const background = require('../../assets/backgrounds/background_2.png');
 const addClaims = require('../../assets/savedclaims-visual.png');
 const submittedClaims = require('../../assets/submittedclaims-visual.png');
 const { height } = Dimensions.get('window');
 
-const dummyData = [
-	// TODO get correct data structure
-	{
-		id: '1',
-		txHash: 'PROJECT NAME #1',
-		submitDate: '04-09-18'
-	},
-	{
-		id: '2',
-		txHash: 'PROJECT NAME #2',
-		submitDate: '04-09-18'
-	},
-	{
-		id: '3',
-		txHash: 'PROJECT NAME #3',
-		submitDate: '04-09-18'
-	},
-	{
-		id: '4',
-		txHash: 'PROJECT NAME #4',
-		submitDate: '04-05-18'
-	}
-];
-
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
@@ -56,9 +31,12 @@ export interface StateProps {
 	user?: IUser;
 }
 
-export interface Props extends PropTypes, StateProps {}
+export interface Props extends ParentProps, StateProps {}
 
 class Claims extends React.Component<Props, State> {
+	projectName: string = '';
+	projectDid: string | undefined;
+
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
 		const {
 			state: {
@@ -70,7 +48,6 @@ class Claims extends React.Component<Props, State> {
 				backgroundColor: ThemeColors.blue_dark,
 				borderBottomColor: ThemeColors.blue_dark
 			},
-			// headerRight: <HeaderSync />,
 			headerRight: <Icon name="search" onPress={() => alert('todo')} style={{ paddingRight: 10, color: ThemeColors.white }} />,
 			title,
 			headerTitleStyle: {
@@ -89,37 +66,56 @@ class Claims extends React.Component<Props, State> {
 			claimForm: null,
 			pdsURL: ''
 		};
+
+		const {
+			state: {
+				params: { projectDid = '', title }
+			}
+		} = this.props.navigation;
+		this.projectDid = projectDid;
 	}
 
 	componentDidMount() {
 		let componentProps: any = this.props.navigation.state.params;
+		this.projectName = this.props.navigation.state.params.title;
 		if (componentProps) {
-			console.log('CLAIMS', componentProps.myClaims);
 			this.setState({ claimsList: componentProps.myClaims, claimForm: componentProps.claimForm, pdsURL: componentProps.pdsURL });
 		}
 	}
 
+	onViewClaim(claimId: string) {
+		this.props.navigation.navigate('ViewClaim', {
+			claimFormKey: this.state.claimForm,
+			pdsURL: this.state.pdsURL,
+			projectDid: this.projectDid,
+			claimId: claimId
+		});
+	}
+
 	renderClaims() {
-		// if (this.state.claimsList) {
+		if (this.state.claimsList) {
 			return (
 				<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
-					{dummyData.map((claim: any) => {
-						return (
-							<TouchableOpacity key={claim.txHash}>
-								<LinearGradient
-									start={[0, 1]}
-									colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]}
-									style={[ClaimsStyles.ClaimBox]}
-								>
-									<Text style={{ color: ThemeColors.white, fontSize: 20 }}>{claim.txHash}</Text>
-									<Text style={{ color: ThemeColors.blue_lightest, fontSize: 15, paddingTop: 5 }}>Claim created {claim.submitDate}</Text>
-								</LinearGradient>
-							</TouchableOpacity>
-						);
-					})}
+					<Content>
+						{this.state.claimsList.map((claim: IClaim) => {
+							return (
+								<TouchableOpacity onPress={() => this.onViewClaim(claim.claimId)} key={claim.claimId}>
+									<LinearGradient start={[0, 1]} colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]} style={[ClaimsStyles.ClaimBox]}>
+										<Text style={{ color: ThemeColors.white, fontSize: 20 }}>{`${this.projectName} ${claim.claimId.slice(
+											claim.claimId.length - 12,
+											claim.claimId.length
+										)}`}</Text>
+										<Text style={{ color: ThemeColors.blue_lightest, fontSize: 11, paddingTop: 5 }}>
+											Claim created {moment(claim.date).format('YYYY-MM-DD')}
+										</Text>
+									</LinearGradient>
+								</TouchableOpacity>
+							);
+						})}
+					</Content>
 				</Container>
 			);
-		// }
+		}
 		return <Spinner color={ThemeColors.black} />;
 	}
 
@@ -135,9 +131,7 @@ class Claims extends React.Component<Props, State> {
 						</View>
 						<View>
 							<View style={[ClaimsStyles.flexLeft]}>
-								<Text style={[ClaimsStyles.header, { color: ThemeColors.blue_lightest }]}>
-									{this.props.screenProps.t('claims:noSubmissions')}
-								</Text>
+								<Text style={[ClaimsStyles.header, { color: ThemeColors.blue_lightest }]}>{this.props.screenProps.t('claims:noSubmissions')}</Text>
 							</View>
 							<View style={{ width: '100%' }}>
 								<View style={ClaimsStyles.divider} />
@@ -164,9 +158,7 @@ class Claims extends React.Component<Props, State> {
 						</View>
 						<View>
 							<View style={[ClaimsStyles.flexLeft]}>
-								<Text style={[ClaimsStyles.header, { color: ThemeColors.blue_lightest }]}>
-									{this.props.screenProps.t('claims:noClaims')}
-								</Text>
+								<Text style={[ClaimsStyles.header, { color: ThemeColors.blue_lightest }]}>{this.props.screenProps.t('claims:noClaims')}</Text>
 							</View>
 							<View style={{ width: '100%' }}>
 								<View style={ClaimsStyles.divider} />
@@ -182,11 +174,6 @@ class Claims extends React.Component<Props, State> {
 	}
 
 	render() {
-		const {
-			state: {
-				params: { projectDid = '', title }
-			}
-		} = this.props.navigation;
 		return (
 			<Container style={{ backgroundColor: ThemeColors.blue_dark }}>
 				<StatusBar barStyle="light-content" />
@@ -202,7 +189,8 @@ class Claims extends React.Component<Props, State> {
 					onPress={() =>
 						this.props.navigation.navigate('NewClaim', {
 							claimForm: this.state.claimForm,
-							pdsURL: this.state.pdsURL
+							pdsURL: this.state.pdsURL,
+							projectDid: this.projectDid
 						})
 					}
 					text={this.props.screenProps.t('claims:submitButton')}
