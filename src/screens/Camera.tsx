@@ -1,8 +1,8 @@
-import React from 'react';
-import { Modal, StatusBar } from 'react-native';
 import { Camera, Permissions } from 'expo';
-import { View, Text } from 'native-base';
-import { connect } from 'react-redux';
+import { Text, View } from 'native-base';
+import React from 'react';
+import { StatusBar } from 'react-native';
+import { IMnemonic } from '../models/sovrin';
 
 interface ParentProps {
 	navigation: any;
@@ -23,23 +23,6 @@ interface State {
 export interface Props extends ParentProps {}
 
 export class CameraCapture extends React.Component<Props, State> {
-	// static navigationOptions = ({ screenProps }: { screenProps: any }) => {
-	// 	return {
-	// 		headerStyle: {
-	// 			backgroundColor: ThemeColors.blue,
-	// 			borderBottomColor: ThemeColors.blue
-	// 		},
-	// 		headerRight: <Icon style={{ paddingRight: 10, color: ThemeColors.white }} name="flash" />,
-	// 		title: screenProps.t('scanQR:scan'),
-	// 		headerTitleStyle: {
-	// 			color: ThemeColors.white,
-	// 			textAlign: 'center',
-	// 			alignSelf: 'center'
-	// 		},
-	// 		headerTintColor: ThemeColors.white
-	// 	};
-	// };
-
 	state = {
 		hasCameraPermission: false,
 		type: Camera.Constants.Type.back,

@@ -1,7 +1,6 @@
 import React from 'react';
 import { StatusBar, TouchableOpacity, Dimensions } from 'react-native';
 import { Container, Icon, Content, Text, Switch, Picker, View } from 'native-base';
-
 import { ThemeColors } from '../styles/Colors';
 import ContainersStyles from '../styles/Containers';
 
@@ -9,9 +8,7 @@ const { width } = Dimensions.get('window');
 
 const Toggle = ({ name, value }: { name: string; value: boolean }) => (
 	<TouchableOpacity style={[ContainersStyles.flexRow, { justifyContent: 'space-between' }]}>
-		<Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 19, fontWeight: '500', paddingHorizontal: 5, paddingVertical: 10 }}>
-			{name}
-		</Text>
+		<Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 19, fontWeight: '500', paddingHorizontal: 5, paddingVertical: 10 }}>{name}</Text>
 		<Switch value={value} />
 	</TouchableOpacity>
 );
@@ -35,7 +32,7 @@ const PickerLink = () => (
 	</View>
 );
 
-interface PropTypes {
+interface ParentProps {
 	navigation: any;
 }
 
@@ -43,7 +40,7 @@ interface NavigationTypes {
 	navigation: any;
 }
 
-class Notifications extends React.Component<PropTypes> {
+class Notifications extends React.Component<ParentProps> {
 	static navigationOptions = (props: NavigationTypes) => {
 		return {
 			headerLeft: <Icon name="arrow-back" onPress={() => props.navigation.pop()} style={{ paddingLeft: 10, color: ThemeColors.grey }} />,

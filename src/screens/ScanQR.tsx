@@ -1,23 +1,20 @@
+import { Camera, Permissions, SecureStore } from 'expo';
+import { Icon, Input, Item, Label, Text, View } from 'native-base';
 import React from 'react';
-import { Modal, Dimensions, AsyncStorage, StatusBar, Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-import { Camera, Permissions } from 'expo';
-import { View, Text, Icon, Item, Label, Input, Button } from 'native-base';
-import { SecureStore } from 'expo';
+import { AsyncStorage, Dimensions, Image, KeyboardAvoidingView, Modal, StatusBar, TouchableOpacity } from 'react-native';
+import { NavigationActions, StackActions } from 'react-navigation';
 import { connect } from 'react-redux';
-
-import { ThemeColors } from '../styles/Colors';
-import ModalStyle from '../styles/Modal';
-import { IMnemonic } from '../models/sovrin';
-import { Decrypt, Encrypt, generateSovrinDID } from '../utils/sovrin';
-import { SecureStorageKeys, LocalStorageKeys, UserStorageKeys } from '../models/phoneStorage';
-import { StackActions, NavigationActions } from 'react-navigation';
-
-import LightButton from '../components/LightButton';
 import IconEyeOff from '../../assets/svg/IconEyeOff';
+import LightButton from '../components/LightButton';
+import { LocalStorageKeys, SecureStorageKeys, UserStorageKeys } from '../models/phoneStorage';
+import { IMnemonic } from '../models/sovrin';
 import { IUser } from '../models/user';
 import { initUser } from '../redux/user/user_action_creators';
-const keysafelogo = require('../../assets/keysafe-logo.png');
+import { ThemeColors } from '../styles/Colors';
+import ModalStyle from '../styles/Modal';
+import { Decrypt, generateSovrinDID } from '../utils/sovrin';
 
+const keysafelogo = require('../../assets/keysafe-logo.png');
 const { height, width } = Dimensions.get('window');
 
 interface ParentProps {

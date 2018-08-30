@@ -1,10 +1,8 @@
 import React from 'react';
 import { Image, View, StatusBar } from 'react-native';
 import { Spinner, Text } from 'native-base';
-
 import LoadingStyles from '../styles/Loading';
 import ContainerStyles from '../styles/Containers';
-
 import { ThemeColors } from '../styles/Colors';
 
 const logo = require('../../assets/logo.png');
