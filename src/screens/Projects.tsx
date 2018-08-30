@@ -78,9 +78,6 @@ export class Projects extends React.Component<Props, State> {
 			drawer: this.drawer
 		});
 		this.props.onIxoInit();
-		SecureStore.getItemAsync(SecureStorageKeys.encryptedMnemonic).then((encryptedMnemonic: string | null) => {
-			console.log(encryptedMnemonic);
-		});
 	}
 
 	componentDidUpdate(prevProps: Props) {

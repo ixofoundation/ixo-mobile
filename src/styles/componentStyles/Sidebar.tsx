@@ -1,6 +1,6 @@
-import { StyleSheet, ViewStyle, TextStyle, Dimensions } from 'react-native';
-
+import { Dimensions, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { ThemeColors } from '../../styles/Colors';
+
 const { height } = Dimensions.get('window');
 
 interface Style {
