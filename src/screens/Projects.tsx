@@ -1,4 +1,4 @@
-import { LinearGradient, SecureStore } from 'expo';
+import { LinearGradient } from 'expo';
 import moment from 'moment';
 import { Container, Content, Drawer, Header, Icon, Spinner, Text, View } from 'native-base';
 import React from 'react';
@@ -9,9 +9,9 @@ import { env } from '../../config';
 import DarkButton from '../components/DarkButton';
 import SideBar from '../components/SideBar';
 import { IClaim, IProject } from '../models/project';
+import { IUser } from '../models/user';
 import { initIxo } from '../redux/ixo/ixo_action_creators';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
-import { IUser } from '../models/user';
 import { ProjectStatus, ThemeColors } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
 import ProjectsStyles from '../styles/Projects';
@@ -48,7 +48,7 @@ export class Projects extends React.Component<Props, StateProps> {
 	state = {
 		projects: [],
 		isRefreshing: false,
-		isDrawerOpen: false,
+		isDrawerOpen: false
 	};
 
 	static navigationOptions = ({ navigation, screenProps }: { navigation: any; screenProps: any }) => {
@@ -90,13 +90,13 @@ export class Projects extends React.Component<Props, StateProps> {
 		// @ts-ignore
 		this.props.navigation.openDrawer();
 		this.setState({ isDrawerOpen: true });
-	}
+	};
 
 	closeDrawer = () => {
 		// @ts-ignore
 		this.props.navigation.closeDrawer();
 		this.setState({ isDrawerOpen: false });
-	}
+	};
 
 	getLatestClaim(claims: IClaim[]): string {
 		const myClaims: IClaim[] = claims.filter(claim => claim.saDid === this.props.user!.did);
@@ -309,7 +309,7 @@ export class Projects extends React.Component<Props, StateProps> {
 				onClose={() => this.closeDrawer()}
 			>
 				{this.state.projects.length > 0 ? this.renderNoProjectsView() : this.renderProjectsView()}
-				<DarkButton iconImage={qr} text={this.props.screenProps.t('projects:scan')} onPress={() => alert('bla')} />
+				<DarkButton iconImage={qr} text={this.props.screenProps.t('projects:scan')} onPress={() => this.props.navigation.navigate('ScanQR')} />
 			</Drawer>
 		);
 	}
