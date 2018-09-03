@@ -7,14 +7,15 @@ interface Style {
 	photoBoxContainer: ViewStyle;
 	photoBoxCloseIcon: TextStyle;
 	photoBoxCameraIcon: TextStyle;
+	navigatorContainer: ViewStyle;
+	backNavigatorButton: TextStyle;
+	claimNavigatorButton: TextStyle;
+	nextNavigatorButton: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
 	formContainer: {
-		flex: 1,
-		borderRadius: 1,
-		backgroundColor: ThemeColors.white,
-		marginBottom: '3%'
+		backgroundColor: ThemeColors.white
 	},
 	photoBoxContainer: {
 		width: width / 4,
@@ -31,6 +32,18 @@ const styles = StyleSheet.create<Style>({
 	photoBoxCameraIcon: {
 		color: ThemeColors.grey,
 		fontSize: 50
+	},
+	navigatorContainer: {
+		flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, paddingBottom: 15
+	},
+	backNavigatorButton: {
+		color: ThemeColors.blue_light, fontSize: 20, alignItems: 'center', paddingLeft: 5, fontFamily: 'Roboto_condensed'
+	},
+	claimNavigatorButton: {
+		color: ThemeColors.white, fontSize: 20, paddingRight: 5, fontFamily: 'Roboto_condensed'
+	},
+	nextNavigatorButton: {
+		color: ThemeColors.white, fontSize: 20, paddingRight: 5, fontFamily: 'Roboto_condensed'
 	}
 });
 
