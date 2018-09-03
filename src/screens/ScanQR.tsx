@@ -86,6 +86,10 @@ export class ScanQR extends React.Component<Props, State> {
 		this.props.onIxoInit();
 	}
 
+	resetProjectStateVars() {
+		this.setState({ projectTitle: '', serviceEndpoint: '', projectDid: '' });
+	}
+
 	_handleBarCodeRead = (payload: any) => {
 		if (!this.state.modalVisible) {
 			this.setState({ modalVisible: true, payload: payload.data });
@@ -97,6 +101,8 @@ export class ScanQR extends React.Component<Props, State> {
 			this.props.ixo.project.getProjectByProjectDid(projectDid).then((project: any) => {
 				this.setState({ projectTitle: project.data.title, serviceEndpoint: project.data.serviceEndpoint });
 			});
+		} else {
+			this.resetProjectStateVars();
 		}
 	};
 
@@ -134,8 +140,14 @@ export class ScanQR extends React.Component<Props, State> {
 
 			getSignature(agentData).then((signature: any) => {
 				this.props.ixo.agent.createAgent(agentData, signature, this.state.serviceEndpoint).then((res: any) => {
+					console.log('Response: ' + JSON.stringify(res));
 					if (res.error !== undefined) {
-						console.log(res.error.message);
+						Toast.show({
+							text: res.error.message,
+							type: 'danger',
+							position: 'top'
+						});
+						this.navigateToProjects();       
 					} else {
 						Toast.show({
 							text: `Successfully registered as ${agentData.role}`,
