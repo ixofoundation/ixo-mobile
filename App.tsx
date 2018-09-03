@@ -15,7 +15,8 @@ import './shim.js';
 import { createPublicSiteStore } from './src/redux/store';
 import Loading from './src/screens/Loading';
 
-const Roboto_medium = require('./assets/fonts/Roboto/Roboto-Medium.ttf');
+const Roboto_medium = require('./assets/fonts/Roboto/Roboto-Regular.ttf');
+const Roboto_condensed = require('./assets/fonts/Roboto/RobotoCondensed-Regular.ttf');
 
 interface State {
 	isReady: boolean;
@@ -41,7 +42,8 @@ export default class App extends React.Component<{}, State> {
 		ScreenOrientation.allow(ScreenOrientation.Orientation.PORTRAIT);
 		await Font.loadAsync({
 			Ionicons,
-			Roboto_medium
+			Roboto_medium,
+			Roboto_condensed
 		});
 		this.setState({ isReady: true });
 	}

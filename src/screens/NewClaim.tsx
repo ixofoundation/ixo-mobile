@@ -24,6 +24,7 @@ interface NavigationTypes {
 interface StateTypes {
 	formFile: string | null;
 	fetchedFile: any;
+	isLastCard: boolean;
 }
 export interface StateProps {
 	ixo?: any;
@@ -39,7 +40,8 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		super(props);
 		this.state = {
 			fetchedFile: null,
-			formFile: null
+			formFile: null,
+			isLastCard: false,
 		};
 		dynamicForm = React.createRef();
 	}
@@ -66,7 +68,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 				borderBottomColor: ThemeColors.blue_dark
 			},
 			title,
-			headerRight: <Text style={{ color: ThemeColors.blue_light, paddingRight: 10 }}>SAVE</Text>,
+			headerRight: <Text style={{ color: ThemeColors.blue_light, paddingRight: 10, fontFamily: 'Roboto_condensed' }}>SAVE</Text>,
 			headerTitleStyle: {
 				color: ThemeColors.white,
 				textAlign: 'center',
@@ -86,6 +88,10 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			.catch((error: Error) => {
 				console.log(error);
 			});
+	};
+
+	onToggleLastCard = (active: boolean) => {
+		this.setState({ isLastCard: active });
 	};
 
 	handleSubmitClaim = (claimData: any) => {
@@ -147,11 +153,11 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			return (
 				<DynamicSwiperForm
 					ref={dynamicForm}
-					editable={true}
 					screenProps={this.props.screenProps}
 					formSchema={claimParsed.fields}
 					formStyle={FormStyles.standard}
 					handleSubmit={this.onFormSubmit}
+					onToggleLastCard={this.onToggleLastCard}
 				/>
 			);
 		} else {
@@ -163,17 +169,24 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		return (
 			<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
 				<StatusBar barStyle="light-content" />
-				{/* <View style={{ height: height * 0.12, backgroundColor: ThemeColors.blue_dark, paddingHorizontal: '3%', paddingTop: '2%' }} /> */}
 				{this.renderForm()}
-				<View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, paddingBottom: 15 }}>
+				<View style={NewClaimStyles.navigatorContainer}>
 					<TouchableOpacity onPress={() => dynamicForm.current.goBack()} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}>
-						<Icon style={{ color: ThemeColors.white, fontSize: 23 }} name="arrow-back" />
-						<Text style={{ color: ThemeColors.white, fontSize: 20, alignItems: 'center', paddingLeft: 5 }}>BACK</Text>
+						<Icon style={{ color: ThemeColors.blue_light, fontSize: 23 }} name="arrow-back" />
+						<Text style={NewClaimStyles.backNavigatorButton}>{this.props.screenProps.t('claims:back')}</Text>
 					</TouchableOpacity>
-					<TouchableOpacity onPress={() => dynamicForm.current.goNext()} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}>
-						<Text style={{ color: ThemeColors.white, fontSize: 20, paddingRight: 5 }}>NEXT</Text>
-						<Icon style={{ color: ThemeColors.white, fontSize: 23 }} name="arrow-forward" />
-					</TouchableOpacity>
+					{
+						(this.state.isLastCard) ? 
+						<TouchableOpacity onPress={() => dynamicForm.current.handleSubmit()} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}>
+							<Text style={NewClaimStyles.claimNavigatorButton}>{this.props.screenProps.t('claims:submitClaim')}</Text>
+						</TouchableOpacity>
+						:
+						<TouchableOpacity onPress={() => dynamicForm.current.goNext()} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}>
+							<Text style={NewClaimStyles.nextNavigatorButton}>{this.props.screenProps.t('claims:next')}</Text>
+							<Icon style={{ color: ThemeColors.white, fontSize: 23 }} name="arrow-forward" />
+						</TouchableOpacity>
+					}
+					
 				</View>
 			</Container>
 		);
