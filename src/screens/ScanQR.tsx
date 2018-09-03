@@ -1,5 +1,5 @@
 import { Camera, Permissions, SecureStore } from 'expo';
-import { Icon, Input, Item, Label, Text, View } from 'native-base';
+import { Icon, Input, Item, Label, Text, Toast, View } from 'native-base';
 import React from 'react';
 import { AsyncStorage, Dimensions, Image, KeyboardAvoidingView, Modal, StatusBar, TouchableOpacity } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
@@ -54,17 +54,10 @@ export interface Props extends ParentProps, DispatchProps, StateProps {}
 export class ScanQR extends React.Component<Props, State> {
 	static navigationOptions = ({ screenProps }: { screenProps: any }) => {
 		return {
-			headerStyle: {
-				backgroundColor: ThemeColors.blue,
-				borderBottomColor: ThemeColors.blue
-			},
+			headerStyle: { backgroundColor: ThemeColors.blue, borderBottomColor: ThemeColors.blue },
 			headerRight: <Icon style={{ paddingRight: 10, color: ThemeColors.white }} name="flash" />,
 			title: screenProps.t('scanQR:scan'),
-			headerTitleStyle: {
-				color: ThemeColors.white,
-				textAlign: 'center',
-				alignSelf: 'center'
-			},
+			headerTitleStyle: { color: ThemeColors.white, textAlign: 'center', alignSelf: 'center' },
 			headerTintColor: ThemeColors.white
 		};
 	};
@@ -94,7 +87,6 @@ export class ScanQR extends React.Component<Props, State> {
 	}
 
 	_handleBarCodeRead = (payload: any) => {
-		console.log('QR SCAN: ' + JSON.stringify(payload));
 		if (!this.state.modalVisible) {
 			this.setState({ modalVisible: true, payload: payload.data });
 		}
@@ -126,12 +118,7 @@ export class ScanQR extends React.Component<Props, State> {
 				AsyncStorage.setItem(UserStorageKeys.verifyKey, user.verifyKey);
 
 				this.props.onUserInit(user);
-				this.props.navigation.dispatch(
-					StackActions.reset({
-						index: 0,
-						actions: [NavigationActions.navigate({ routeName: 'Login' })]
-					})
-				);
+				this.props.navigation.dispatch(StackActions.reset({ index: 0, actions: [NavigationActions.navigate({ routeName: 'Login' })] }));
 			} catch (exception) {
 				console.log(exception);
 				this.setState({ errors: true });
@@ -150,12 +137,26 @@ export class ScanQR extends React.Component<Props, State> {
 					if (res.error !== undefined) {
 						console.log(res.error.message);
 					} else {
-						console.log(`Successfully registered as ${agentData.role}`);
+						Toast.show({
+							text: `Successfully registered as ${agentData.role}`,
+							type: 'success',
+							position: 'top'
+						});
+						this.navigateToProjects();
 					}
 				});
 			});
 		}
 	};
+
+	navigateToProjects() {
+		this.props.navigation.dispatch(
+			StackActions.reset({
+				index: 0,
+				actions: [NavigationActions.navigate({ routeName: 'Projects' })]
+			})
+		);
+	}
 
 	handleResetScan = () => {
 		this.setState({ password: '', modalVisible: false, payload: null, errors: false });
@@ -191,7 +192,11 @@ export class ScanQR extends React.Component<Props, State> {
 						<Input
 							style={{ color: ThemeColors.white }}
 							value={this.state.password}
-							onChangeText={(password: string) => this.setState({ password })}
+							onChangeText={(password: string) =>
+								this.setState({
+									password
+								})
+							}
 							secureTextEntry={this.state.revealPassword}
 						/>
 					</Item>
@@ -208,13 +213,9 @@ export class ScanQR extends React.Component<Props, State> {
 	}
 
 	renderModal() {
-		const registerAction = StackActions.reset({
-			index: 0,
-			actions: [NavigationActions.navigate({ routeName: 'Register' })]
-		});
+		const registerAction = StackActions.reset({ index: 0, actions: [NavigationActions.navigate({ routeName: 'Register' })] });
 		if (!this.state.errors) {
 			return (
-				// successful
 				<KeyboardAvoidingView behavior={'position'}>
 					<View style={ModalStyle.modalOuterContainer}>
 						<View style={ModalStyle.modalInnerContainer}>
@@ -244,24 +245,25 @@ export class ScanQR extends React.Component<Props, State> {
 					</View>
 				</KeyboardAvoidingView>
 			);
-		}
-		return (
-			<View style={ModalStyle.modalOuterContainer}>
-				<View style={ModalStyle.modalInnerContainer}>
-					<View style={ModalStyle.flexRight}>
-						<Icon onPress={() => this.setModalVisible(false)} active name="close" style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
+		} else {
+			return (
+				<View style={ModalStyle.modalOuterContainer}>
+					<View style={ModalStyle.modalInnerContainer}>
+						<View style={ModalStyle.flexRight}>
+							<Icon onPress={() => this.setModalVisible(false)} active name="close" style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
+						</View>
+						<View style={ModalStyle.flexLeft}>
+							<Text style={{ color: ThemeColors.blue_lightest, fontSize: 29 }}>Scan unsuccessful</Text>
+						</View>
+						<View style={ModalStyle.divider} />
+						<View style={ModalStyle.flexLeft}>
+							<Text style={{ color: ThemeColors.white, fontSize: 15 }}>There has been an error connecting to the ixo Key Safe</Text>
+						</View>
+						<LightButton onPress={() => this.handleResetScan()} text={'TRY AGAIN'} />
 					</View>
-					<View style={ModalStyle.flexLeft}>
-						<Text style={{ color: ThemeColors.blue_lightest, fontSize: 29 }}>Scan unsuccessful</Text>
-					</View>
-					<View style={ModalStyle.divider} />
-					<View style={ModalStyle.flexLeft}>
-						<Text style={{ color: ThemeColors.white, fontSize: 15 }}>There has been an error connecting to the ixo Key Safe</Text>
-					</View>
-					<LightButton onPress={() => this.handleResetScan()} text={'TRY AGAIN'} />
 				</View>
-			</View>
-		);
+			);
+		}
 	}
 
 	render() {
