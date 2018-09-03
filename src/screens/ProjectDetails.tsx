@@ -20,9 +20,9 @@ const PhotoBox = () => (
 const AddMoreBox = () => (
 	<TouchableOpacity style={ProjectDetailStyles.photoBoxContainer}>
 		<View style={{ flex: 0.1 }} />
-		<View style={[ContainerStyles.flexRow, { flex: 0.8 }]}>
-			<Icon style={ProjectDetailStyles.photoBoxCameraIcon} name="add" />
-		</View>
+			<View style={[ContainerStyles.flexRow, { flex: 0.8 }]}>
+				<Icon style={ProjectDetailStyles.photoBoxCameraIcon} name="add" />
+			</View>
 		<View style={{ flex: 0.1 }} />
 	</TouchableOpacity>
 );

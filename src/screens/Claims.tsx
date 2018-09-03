@@ -11,6 +11,7 @@ import { IUser } from '../models/user';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import ClaimsStyles from '../styles/Claims';
 import { ClaimsButton, ThemeColors } from '../styles/Colors';
+import DarkButton from '../components/DarkButton';
 
 const background = require('../../assets/backgrounds/background_2.png');
 const addClaims = require('../../assets/savedclaims-visual.png');
@@ -184,8 +185,8 @@ class Claims extends React.Component<Props, State> {
 					</Tab>
 					<Tab heading={this.props.screenProps.t('claims:submitted')}>{this.renderNoSubmittedClaims()}</Tab>
 				</Tabs>
-				<LightButton
-					propStyles={{ backgroundColor: ThemeColors.red, borderColor: ThemeColors.red, borderRadius: 0 }}
+				<DarkButton
+					// propStyles={{ backgroundColor: ThemeColors.red, borderColor: ThemeColors.red, borderRadius: 0 }}
 					onPress={() =>
 						this.props.navigation.navigate('NewClaim', {
 							claimForm: this.state.claimForm,

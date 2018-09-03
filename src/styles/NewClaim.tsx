@@ -11,10 +11,7 @@ interface Style {
 
 const styles = StyleSheet.create<Style>({
 	formContainer: {
-		flex: 1,
-		borderRadius: 1,
-		backgroundColor: ThemeColors.white,
-		marginBottom: '3%'
+		backgroundColor: ThemeColors.white
 	},
 	photoBoxContainer: {
 		width: width / 4,

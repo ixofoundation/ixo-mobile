@@ -183,7 +183,7 @@ export default class DynamicForm extends React.Component<Props, State> {
 
 	renderImage(uri: string, index: number) {
 		return (
-			<View key={index}>
+			<View key={index} style={{ width: '100%'}}>
 				<Image resizeMode={'contain'} style={DynamicFormStyles.imageContainer} source={(uri === "") ? placeholder : { uri } } />
 			</View>
 		);
