@@ -11,7 +11,8 @@
 		"keySafeInfo": "Open the ixo Key Safe on your desktop",
 		"qrCodeInfo": "Go to your profile and scan the QR code to connect",
 		"scanButton": "SCAN IXO QR CODE",
-		"registerButton": "REGISTER"
+		"registerButton": "REGISTER",
+		"recover": "Recover from backup phrase"
 	},
 	"connectIXOComplete": {
 		"unlock": "UNLOCK",
@@ -20,7 +21,8 @@
 		"unlockInformation": "Please unlock your ixo information with your ixo Key Safe password."
 	},
 	"scanQR": {
-		"scan": "Scan"
+		"scan": "Scan",
+		"rescan": "RE-SCAN"
 	},
 	"login": {
 		"hi": "Hi",
@@ -29,7 +31,9 @@
 		"attention": "You have alerts for your attention.",
 		"forgotPassword": "Forgot your password?",
 		"wrongPassword": "Password incorrect",
-		"loginFailed": "Login Failed"
+		"loginFailed": "Login Failed",
+		"resetPassword": "Reset password?",
+		"requiredToReset": "You will require your IXO-keysafe or mnemonic back-up phrase"
 	},
 	"projects": {
 		"myProjects": "My projects",
@@ -62,7 +66,7 @@
 		"register": "Register",
 		"create": "Create",
 		"letsSetup": "Let's set up your account",
-		"yourName": "Your name",
+		"yourName": "Your Name",
 		"newPassword": "New Password",
 		"confirmPassword": "Confirm Password",
 		"secretPhrase": "Secret backup phrase",
@@ -79,5 +83,12 @@
 		"missingFields": "Missing fields.",
 		"missmatchPassword": "Mismatch on password.",
 		"ledgerDid" : "Please wait while your did is being ledgered."
+	},
+	"recover": {
+		"secretPhrase": "Enter backup phrase",
+		"secretParagraph_1": "Enter your backup phrase to continue the backup process",
+		"next": "NEXT",
+		"userNotFound": "No user found",
+		"mnemonic": "Mnemonic"
 	}
 }

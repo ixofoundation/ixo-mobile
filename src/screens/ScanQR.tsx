@@ -19,6 +19,7 @@ const { height, width } = Dimensions.get('window');
 
 interface ParentProps {
 	navigation: any;
+	screenProps: any;
 }
 
 export interface DispatchProps {
@@ -110,6 +111,8 @@ export class ScanQR extends React.Component<Props, State> {
 				console.log(exception);
 				this.setState({ errors: true });
 			}
+		} else {
+			this.setState({ errors: true });
 		}
 	};
 
@@ -124,7 +127,7 @@ export class ScanQR extends React.Component<Props, State> {
 	renderModal() {
 		const registerAction = StackActions.reset({
 			index: 0,
-			actions: [NavigationActions.navigate({ routeName: 'Register' })]
+			actions: [NavigationActions.navigate({ routeName: 'ConnectIXO' })]
 		});
 		if (!this.state.errors) {
 			return (
@@ -133,21 +136,14 @@ export class ScanQR extends React.Component<Props, State> {
 					<View style={ModalStyle.modalOuterContainer}>
 						<View style={ModalStyle.modalInnerContainer}>
 							<View style={ModalStyle.flexRight}>
-								<Icon
-									onPress={() => this.setModalVisible(false)}
-									active
-									name="close"
-									style={{ color: ThemeColors.white, top: 10, fontSize: 30 }}
-								/>
+								<Icon onPress={() => this.setModalVisible(false)} active name="close" style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
 							</View>
 							<View style={ModalStyle.flexLeft}>
 								<Text style={{ color: ThemeColors.blue_lightest, fontSize: 29 }}>Scan successful</Text>
 							</View>
 							<View style={ModalStyle.divider} />
 							<View style={ModalStyle.flexLeft}>
-								<Text style={{ color: ThemeColors.white, fontSize: 15 }}>
-									Unlock your existing ixo profile with your ixo Key Safe password.
-								</Text>
+								<Text style={{ color: ThemeColors.white, fontSize: 15 }}>Unlock your existing ixo profile with your ixo Key Safe password.</Text>
 							</View>
 							<View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20, alignItems: 'center' }}>
 								<Image
@@ -187,12 +183,7 @@ export class ScanQR extends React.Component<Props, State> {
 			<View style={ModalStyle.modalOuterContainer}>
 				<View style={ModalStyle.modalInnerContainer}>
 					<View style={ModalStyle.flexRight}>
-						<Icon
-							onPress={() => this.setModalVisible(false)}
-							active
-							name="close"
-							style={{ color: ThemeColors.white, top: 10, fontSize: 30 }}
-						/>
+						<Icon onPress={() => this.setModalVisible(false)} active name="close" style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
 					</View>
 					<View style={ModalStyle.flexLeft}>
 						<Text style={{ color: ThemeColors.blue_lightest, fontSize: 29 }}>Scan unsuccessful</Text>
@@ -201,13 +192,10 @@ export class ScanQR extends React.Component<Props, State> {
 					<View style={ModalStyle.flexLeft}>
 						<Text style={{ color: ThemeColors.white, fontSize: 15 }}>There has been an error connecting to the ixo Key Safe</Text>
 					</View>
-					<LightButton onPress={() => this.handleResetScan()} text={'TRY AGAIN'} />
-					{/* <View style={{ flexDirection: 'row', justifyContent: 'center', paddingBottom: 10 }}>
-            <Button onPress={() => this.handleResetScan()} bordered dark style={{ width: '100%', justifyContent: 'center' }}><Text>TRY AGAIN</Text></Button>
-          </View> */}
-					{/* <View style={{ flexDirection: 'row', justifyContent: 'center', paddingBottom: 10 }}>
-            <Text style={{ color: ThemeColors.blue_lightest }} onPress={() => this.props.navigation.dispatch(registerAction)}>Are you registered?</Text>
-          </View> */}
+					<LightButton onPress={() => this.handleResetScan()} text={this.props.screenProps.t('scanQR:rescan')} />
+					<TouchableOpacity onPress={() => this.props.navigation.dispatch(registerAction)}>
+						<Text style={{ color: ThemeColors.blue_lightest, fontSize: 15, textDecorationLine: 'underline', textAlign: 'center' }}>Are you registered?</Text>
+					</TouchableOpacity>
 				</View>
 			</View>
 		);

@@ -1,19 +1,17 @@
 import { Dimensions, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { ThemeColors } from '../styles/Colors';
 
-const deviceHeight = Dimensions.get('window').height;
+const { height } = Dimensions.get('window');
 
 interface Style {
 	button: ViewStyle;
-	selected: ViewStyle;
-	unSelect: ViewStyle;
 	wrapper: ViewStyle;
 	selectedBox: ViewStyle;
-	wordBox: TextStyle;
-	wordBoxGradient: ViewStyle;
 	flexLeft: ViewStyle;
 	header: TextStyle;
 	divider: ViewStyle;
+	keyboardContainer: ViewStyle;
+	paragraph: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -29,38 +27,10 @@ const styles = StyleSheet.create<Style>({
 		justifyContent: 'center',
 		marginTop: 20
 	},
-	selected: {
-		borderColor: ThemeColors.blue_lightest,
-		borderWidth: 1,
-		height: deviceHeight * 0.2,
-		flexDirection: 'row',
-		flexWrap: 'wrap',
-		padding: 10
-	},
-	unSelect: {
-		height: deviceHeight * 0.2,
-		flexDirection: 'row',
-		flexWrap: 'wrap',
-		padding: 10
-	},
 	selectedBox: {
 		borderColor: ThemeColors.blue_lightest,
 		borderWidth: 1,
-		height: deviceHeight * 0.2,
 		justifyContent: 'center'
-	},
-	wordBox: {
-		borderColor: ThemeColors.blue_lightest,
-		borderWidth: 1,
-		padding: 4,
-		margin: 4,
-		color: ThemeColors.white
-	},
-	wordBoxGradient: {
-		borderColor: ThemeColors.blue_lightest,
-		borderWidth: 1,
-		padding: 4,
-		margin: 4
 	},
 	header: {
 		color: ThemeColors.blue_lightest,
@@ -79,6 +49,14 @@ const styles = StyleSheet.create<Style>({
 		height: 1,
 		backgroundColor: ThemeColors.blue_medium,
 		marginBottom: 15
+	},
+	keyboardContainer: {
+		marginBottom: height * 0.1
+	},
+	paragraph: {
+		textAlign: 'left',
+		color: ThemeColors.white,
+		paddingBottom: 10
 	}
 });
 

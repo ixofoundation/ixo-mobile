@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, ViewStyle } from 'react-native';
+import { Dimensions, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import { ThemeColors } from './Colors';
 
 const { height, width } = Dimensions.get('window');
@@ -10,6 +10,7 @@ interface Style {
 	buttons: ViewStyle;
 	infoBlock: ViewStyle;
 	infoBlockImage: ViewStyle;
+	recover: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -40,6 +41,13 @@ const styles = StyleSheet.create<Style>({
 	infoBlockImage: {
 		width: width * 0.08,
 		height: width * 0.08
+	},
+	recover: {
+		marginVertical: height * 0.04,
+		color: ThemeColors.blue_lightest,
+		fontSize: 15,
+		textDecorationLine: 'underline',
+		textAlign: 'center'
 	}
 });
 

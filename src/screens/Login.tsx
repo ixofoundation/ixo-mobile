@@ -1,7 +1,7 @@
 import { Fingerprint, SecureStore } from 'expo';
 import { Input, Item, Label, Spinner, Text, Toast } from 'native-base';
 import React from 'react';
-import { Alert, AsyncStorage, Dimensions, Image, ImageBackground, KeyboardAvoidingView, Platform, StatusBar, TouchableOpacity, View } from 'react-native';
+import { Alert, AsyncStorage, Dimensions, Image, ImageBackground, KeyboardAvoidingView, Platform, StatusBar, TouchableOpacity, View, Alert } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import IconEyeOff from '../../assets/svg/IconEyeOff';
@@ -127,6 +127,23 @@ export class Login extends React.Component<Props, StateTypes> {
 		this.setState({ revealPassword: !this.state.revealPassword });
 	};
 
+	forgotPassword = () => {
+		const resetAction = StackActions.reset({
+			index: 0,
+			actions: [NavigationActions.navigate({ routeName: 'ConnectIXO' })]
+		});
+
+		Alert.alert(
+			`${this.props.screenProps.t('login:resetPassword')}`,
+			`${this.props.screenProps.t('login:requiredToReset')}`,
+			[
+			  {text: 'Continue', onPress: () => this.props.navigation.dispatch(resetAction)},
+			  {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+			],
+			{ cancelable: false }
+		);
+	};
+
 	signIn() {
 		this.setState({ loading: true });
 		SecureStore.getItemAsync(SecureStorageKeys.password)
@@ -203,9 +220,9 @@ export class Login extends React.Component<Props, StateTypes> {
 						) : (
 							<DarkButton text={this.props.screenProps.t('login:signIn')} onPress={() => this.signIn()} />
 						)}
-						<View style={[ContainerStyles.flexRow, { flex: 0.2 }]}>
+						<TouchableOpacity onPress={() => this.forgotPassword()} style={[ContainerStyles.flexRow, { flex: 0.2 }]}>
 							<Text style={LoginStyles.forgotPassword}>{this.props.screenProps.t('login:forgotPassword')}</Text>
-						</View>
+						</TouchableOpacity>
 						<TouchableOpacity
 							style={[ContainerStyles.flexRow, { flex: 0.2, paddingBottom: 20 }]}
 							onPress={() => (Platform.OS === 'android' ? this.showAndroidAlert() : this.scanFingerprint())}
