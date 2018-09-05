@@ -1,23 +1,27 @@
-// TODO styling needs to move to styling file
-import { LinearGradient } from 'expo';
-import moment from 'moment';
 import { Container, Content, Icon, Spinner, Tab, Tabs, Text, View } from 'native-base';
 import * as React from 'react';
+import moment from 'moment';
+import _ from 'underscore';
 import { Dimensions, Image, ImageBackground, StatusBar, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import LightButton from '../components/LightButton';
 import { IClaim } from '../models/project';
 import { IUser } from '../models/user';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import ClaimsStyles from '../styles/Claims';
-import { ClaimsButton, ThemeColors } from '../styles/Colors';
+import { ThemeColors, ClaimsButton } from '../styles/Colors';
 import DarkButton from '../components/DarkButton';
+import { LinearGradient } from 'expo';
 
 const background = require('../../assets/backgrounds/background_2.png');
 const addClaims = require('../../assets/savedclaims-visual.png');
 const submittedClaims = require('../../assets/submittedclaims-visual.png');
 const { height } = Dimensions.get('window');
 
+enum ClaimStatus {
+	Pending = '0',
+	Approved = '1',
+	Rejected = '2'
+}
 interface ParentProps {
 	navigation: any;
 	screenProps: any;
@@ -33,6 +37,23 @@ export interface StateProps {
 }
 
 export interface Props extends ParentProps, StateProps {}
+
+const ClaimListItem = ({ projectName, claimColor, claim, onViewClaim }: { projectName: string, claimColor: string, claim: IClaim, onViewClaim: Function }) => (
+	<TouchableOpacity onPress={() => onViewClaim(claim.claimId)} key={claim.claimId}>
+		<View style={{ flexDirection: 'row', justifyContent: 'flex-start', flex: 1, alignItems: 'center' }}>
+			<View style={{ backgroundColor: claimColor, width: 5, height: '40%' }} />
+			<LinearGradient start={[0, 1]} colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]} style={[ClaimsStyles.ClaimBox]}>
+				<Text style={{ color: ThemeColors.white, fontSize: 20 }}>{`${projectName} ${claim.claimId.slice(
+					claim.claimId.length - 12,
+					claim.claimId.length
+				)}`}</Text>
+				<Text style={{ color: ThemeColors.blue_lightest, fontSize: 11, paddingTop: 5 }}>
+					Claim created {moment(claim.date).format('YYYY-MM-DD')}
+				</Text>
+			</LinearGradient>
+		</View>
+	</TouchableOpacity>
+);
 
 class Claims extends React.Component<Props, State> {
 	projectName: string = '';
@@ -84,7 +105,7 @@ class Claims extends React.Component<Props, State> {
 		}
 	}
 
-	onViewClaim(claimId: string) {
+	onViewClaim = (claimId: string) => {
 		this.props.navigation.navigate('ViewClaim', {
 			claimFormKey: this.state.claimForm,
 			pdsURL: this.state.pdsURL,
@@ -95,23 +116,31 @@ class Claims extends React.Component<Props, State> {
 
 	renderClaims() {
 		if (this.state.claimsList) {
+			const groups = _.groupBy(this.state.claimsList, 'status');
+			const pending = groups[ClaimStatus.Pending] || [];
+			const approved = groups[ClaimStatus.Approved] || [];
+			const rejected = groups[ClaimStatus.Rejected] || [];
+			// debugger;
 			return (
 				<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
 					<Content>
-						{this.state.claimsList.map((claim: IClaim) => {
-							return (
-								<TouchableOpacity onPress={() => this.onViewClaim(claim.claimId)} key={claim.claimId}>
-									<LinearGradient start={[0, 1]} colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]} style={[ClaimsStyles.ClaimBox]}>
-										<Text style={{ color: ThemeColors.white, fontSize: 20 }}>{`${this.projectName} ${claim.claimId.slice(
-											claim.claimId.length - 12,
-											claim.claimId.length
-										)}`}</Text>
-										<Text style={{ color: ThemeColors.blue_lightest, fontSize: 11, paddingTop: 5 }}>
-											Claim created {moment(claim.date).format('YYYY-MM-DD')}
-										</Text>
-									</LinearGradient>
-								</TouchableOpacity>
-							);
+						<View>
+							<Text style={{ fontFamily: 'Roboto_condensed', color: ThemeColors.white, marginVertical: height * 0.04 }}>CLAIMS PENDING APPROVAL</Text>
+						</View>
+						{pending.map((claim: IClaim) => {
+							return <ClaimListItem key={claim.claimId} projectName={this.projectName} claim={claim} claimColor={ThemeColors.orange} onViewClaim={this.onViewClaim} />
+						})}
+						<View>
+							<Text style={{ fontFamily: 'Roboto_condensed', color: ThemeColors.white, marginVertical: height * 0.04 }}>CLAIMS REJECTED</Text>
+						</View>
+						{rejected.map((claim: IClaim) => {
+							return <ClaimListItem key={claim.claimId} projectName={this.projectName} claim={claim} claimColor={ThemeColors.red} onViewClaim={this.onViewClaim} />
+						})}
+						<View>
+							<Text style={{ fontFamily: 'Roboto_condensed', color: ThemeColors.white, marginVertical: height * 0.04 }}>CLAIMS APPROVED</Text>
+						</View>
+						{approved.map((claim: IClaim) => {
+							return <ClaimListItem key={claim.claimId} projectName={this.projectName} claim={claim} claimColor={ThemeColors.green} onViewClaim={this.onViewClaim} />
 						})}
 					</Content>
 				</Container>
