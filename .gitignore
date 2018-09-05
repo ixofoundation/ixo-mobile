@@ -101,6 +101,10 @@ android/app/src/main/java/host/exp/exponent/generated/ExponentKeys.java
 android/app/fabric.properties
 ios/Exponent/Supporting/Generated/EXKeys.h
 ios/RCTTest.podspec
+android/app/src/main/assets/shell-app.bundle
+android/app/src/main/assets/shell-app-manifest.json
+ios/ixo.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+ios/ixo.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
 
 # Open source
 ios/Podfile.lock
@@ -113,5 +117,6 @@ ios/Pods
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
 
 

@@ -16,9 +16,13 @@
 	},
 	"connectIXOComplete": {
 		"unlock": "UNLOCK",
-		"scanSuccessful": "Scan successful!",
+		"scanSuccessful": "Scan Successful!",
+		"registerAsServiceAgent": "Register As Service Agent?",
 		"privacyImportance": "Your privacy is of utmost importance.",
-		"unlockInformation": "Please unlock your ixo information with your ixo Key Safe password."
+		"unlockInformation": "Please unlock your ixo information with your ixo Key Safe password.",
+		"unlockButtonText": "UNLOCK",
+		"registerButtonText": "REGISTER",
+		"projectInformation": "You are about to become a service agent on the following project: "
 	},
 	"scanQR": {
 		"scan": "Scan",
@@ -54,7 +58,10 @@
 		"questions": "QUESTIONS",
 		"back": "BACK",
 		"submitClaim": "SUBMIT CLAIM",
-		"next": "NEXT"
+		"next": "NEXT",
+		"claimPending": "CLAIMS PENDING APPROVAL",
+		"claimRejected": "CLAIMS REJECTED",
+		"claimApproved": "CLAIMS APPROVED"
 	},
 	"submittedClaims": {
 		"successMessage": "Your claim has been successfully submitted",

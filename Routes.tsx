@@ -44,17 +44,35 @@ const AppNavigator = createStackNavigator(
 	}
 );
 
-const SettingsNavigator = createStackNavigator({
-	Settings: { screen: Settings },
-}, {
-	initialRouteName: 'Settings'
-})
+const SettingsNavigator = createStackNavigator(
+	{
+		Settings: { screen: Settings },
+		OnBoarding: {
+			screen: OnBoarding,
+			navigationOptions: {
+				header: null
+			}
+		},
+		ConnectIXO: {
+			screen: ConnectIXO,
+			navigationOptions: {
+				header: null
+			}
+		}
+	},
+	{
+		initialRouteName: 'Settings'
+	}
+);
 
-const HelpNavigator = createStackNavigator({
-	Help: { screen: Help },
-}, {
-	initialRouteName: 'Help'
-})
+const HelpNavigator = createStackNavigator(
+	{
+		Help: { screen: Help }
+	},
+	{
+		initialRouteName: 'Help'
+	}
+);
 
 const DrawerNavigator = createDrawerNavigator(
 	{

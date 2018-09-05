@@ -1,8 +1,10 @@
 import { Container, Content, Icon, Text } from 'native-base';
 import React from 'react';
-import { Dimensions, StatusBar, TouchableOpacity } from 'react-native';
+import { Dimensions, StatusBar, TouchableOpacity, AsyncStorage } from 'react-native';
 import { ThemeColors } from '../styles/Colors';
 import ContainersStyles from '../styles/Containers';
+import DarkButton from '../components/DarkButton';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 const SettingsLink = ({ name, route, navigation }: { name: string; route: string; navigation: any }) => (
 	<TouchableOpacity style={[ContainersStyles.flexRow, { justifyContent: 'space-between' }]} onPress={() => navigation.navigate(route)}>
@@ -39,14 +41,24 @@ class Settings extends React.Component<ParentProps> {
 		};
 	};
 
+	resetAccount() {
+		AsyncStorage.clear();
+		this.props.navigation.dispatch(
+			StackActions.reset({
+				index: 0,
+				actions: [NavigationActions.navigate({ routeName: 'OnBoarding' })]
+			})
+		);
+	}
+
 	render() {
 		return (
 			<Container style={{ backgroundColor: ThemeColors.white }}>
-                <StatusBar barStyle="dark-content" />
-                <Content contentContainerStyle={{ backgroundColor: ThemeColors.white, padding: 20 }}>
-                    <Text>Content to be confirmed</Text>
-                </Content>
-            </Container>   
+				<StatusBar barStyle="dark-content" />
+				<Content contentContainerStyle={{ backgroundColor: ThemeColors.white, padding: 20 }}>
+					<DarkButton text="Reset Account" onPress={() => this.resetAccount()} />
+				</Content>
+			</Container>
 		);
 	}
 }
