@@ -16,6 +16,7 @@ import Help from './src/screens/Help';
 import Register from './src/screens/Register';
 import ViewClaim from './src/screens/ViewClaim';
 import SideBar from './src/components/SideBar';
+import Recover from './src/screens/Recover';
 
 const AppNavigator = createStackNavigator(
 	{
@@ -128,7 +129,10 @@ const OnBoardingNavigator = createStackNavigator(
 		},
 		Register: {
 			screen: Register
-		}
+		},
+		Recover: {
+			screen: Recover,
+		},
 	},
 	{
 		initialRouteName: 'OnBoarding'
