@@ -50,7 +50,11 @@
 		"noSubmissions": "You have no submitted claims",
 		"savedSubmissionsInfo": "View your pending, approved and rejected claims here.",
 		"imageUploaded": "Image uploaded",
-		"signingFailed": "Unable to sign"
+		"signingFailed": "Unable to sign",
+		"questions": "QUESTIONS",
+		"back": "BACK",
+		"submitClaim": "SUBMIT CLAIM",
+		"next": "NEXT"
 	},
 	"submittedClaims": {
 		"successMessage": "Your claim has been successfully submitted",

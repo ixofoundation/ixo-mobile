@@ -6,7 +6,7 @@
     "@types/expo": "^27.0.3",
     "@types/jest": "^23.1.1",
     "@types/react": "^16.4.1",
-    "@types/react-native": "^0.55.22",
+    "@types/react-native": "^0.56.15",
     "@types/react-navigation": "^2.0.6",
     "@types/react-test-renderer": "^16.0.1",
     "jest-expo": "^29.0.0",

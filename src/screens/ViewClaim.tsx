@@ -145,7 +145,7 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 	renderForm() {
 		const claimParsed = JSON.parse(this.state.fetchedFile!);
 		if (this.state.fetchedFile) {
-			return <DynamicForm editable={false} screenProps={this.props.screenProps} formSchema={claimParsed.fields} formStyle={FormStyles.standard} />;
+			return <DynamicForm screenProps={this.props.screenProps} formSchema={claimParsed.fields} formStyle={FormStyles.standard} />;
 		} else {
 			return <Spinner color={ThemeColors.blue_light} />;
 		}
