@@ -40,14 +40,14 @@ export interface Props extends ParentProps, StateProps {}
 
 const ClaimListItem = ({ projectName, claimColor, claim, onViewClaim }: { projectName: string, claimColor: string, claim: IClaim, onViewClaim: Function }) => (
 	<TouchableOpacity onPress={() => onViewClaim(claim.claimId)} key={claim.claimId}>
-		<View style={{ flexDirection: 'row', justifyContent: 'flex-start', flex: 1, alignItems: 'center' }}>
-			<View style={{ backgroundColor: claimColor, width: 5, height: '40%' }} />
+		<View style={ClaimsStyles.claimListItemContainer}>
+			<View style={[ClaimsStyles.claimColorBlock, { backgroundColor: claimColor }]} />
 			<LinearGradient start={[0, 1]} colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]} style={[ClaimsStyles.ClaimBox]}>
-				<Text style={{ color: ThemeColors.white, fontSize: 20 }}>{`${projectName} ${claim.claimId.slice(
+				<Text style={ClaimsStyles.claimTitle}>{`${projectName} ${claim.claimId.slice(
 					claim.claimId.length - 12,
 					claim.claimId.length
 				)}`}</Text>
-				<Text style={{ color: ThemeColors.blue_lightest, fontSize: 11, paddingTop: 5 }}>
+				<Text style={ClaimsStyles.claimCreated}>
 					Claim created {moment(claim.date).format('YYYY-MM-DD')}
 				</Text>
 			</LinearGradient>
@@ -120,24 +120,23 @@ class Claims extends React.Component<Props, State> {
 			const pending = groups[ClaimStatus.Pending] || [];
 			const approved = groups[ClaimStatus.Approved] || [];
 			const rejected = groups[ClaimStatus.Rejected] || [];
-			// debugger;
 			return (
 				<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
 					<Content>
 						<View>
-							<Text style={{ fontFamily: 'Roboto_condensed', color: ThemeColors.white, marginVertical: height * 0.04 }}>CLAIMS PENDING APPROVAL</Text>
+							<Text style={{ fontFamily: 'Roboto_condensed', color: ThemeColors.white, marginVertical: height * 0.04 }}>{this.props.screenProps.t('claims:claimPending')}</Text>
 						</View>
 						{pending.map((claim: IClaim) => {
 							return <ClaimListItem key={claim.claimId} projectName={this.projectName} claim={claim} claimColor={ThemeColors.orange} onViewClaim={this.onViewClaim} />
 						})}
 						<View>
-							<Text style={{ fontFamily: 'Roboto_condensed', color: ThemeColors.white, marginVertical: height * 0.04 }}>CLAIMS REJECTED</Text>
+							<Text style={{ fontFamily: 'Roboto_condensed', color: ThemeColors.white, marginVertical: height * 0.04 }}>{this.props.screenProps.t('claims:claimRejected')}</Text>
 						</View>
 						{rejected.map((claim: IClaim) => {
 							return <ClaimListItem key={claim.claimId} projectName={this.projectName} claim={claim} claimColor={ThemeColors.red} onViewClaim={this.onViewClaim} />
 						})}
 						<View>
-							<Text style={{ fontFamily: 'Roboto_condensed', color: ThemeColors.white, marginVertical: height * 0.04 }}>CLAIMS APPROVED</Text>
+							<Text style={{ fontFamily: 'Roboto_condensed', color: ThemeColors.white, marginVertical: height * 0.04 }}>{this.props.screenProps.t('claims:claimApproved')}</Text>
 						</View>
 						{approved.map((claim: IClaim) => {
 							return <ClaimListItem key={claim.claimId} projectName={this.projectName} claim={claim} claimColor={ThemeColors.green} onViewClaim={this.onViewClaim} />

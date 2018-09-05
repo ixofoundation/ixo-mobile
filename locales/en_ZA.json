@@ -50,7 +50,10 @@
 		"questions": "QUESTIONS",
 		"back": "BACK",
 		"submitClaim": "SUBMIT CLAIM",
-		"next": "NEXT"
+		"next": "NEXT",
+		"claimPending": "CLAIMS PENDING APPROVAL",
+		"claimRejected": "CLAIMS REJECTED",
+		"claimApproved": "CLAIMS APPROVED"
 	},
 	"submittedClaims": {
 		"successMessage": "Your claim has been successfully submitted",

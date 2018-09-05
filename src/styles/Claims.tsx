@@ -16,6 +16,10 @@ interface Style {
 	divider: ViewStyle;
 	infoBox: TextStyle;
 	header: TextStyle;
+	claimListItemContainer: ViewStyle;
+	claimColorBlock: ViewStyle;
+	claimCreated: TextStyle;
+	claimTitle: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -94,6 +98,25 @@ const styles = StyleSheet.create<Style>({
 		color: ThemeColors.white,
 		fontSize: 29,
 		paddingBottom: 20
+	},
+	claimListItemContainer: {
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
+		flex: 1,
+		alignItems: 'center'
+	},
+	claimColorBlock: {
+		width: 5,
+		height: '40%'
+	},
+	claimCreated: {
+		color: ThemeColors.blue_lightest,
+		fontSize: 11,
+		paddingTop: 5
+	},
+	claimTitle: {
+		color: ThemeColors.white,
+		fontSize: 20
 	}
 });
 
