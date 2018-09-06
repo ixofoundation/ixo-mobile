@@ -81,5 +81,12 @@
 		"missingFields": "Missing fields.",
 		"missmatchPassword": "Mismatch on password.",
 		"ledgerDid": "Please wait while your did is being ledgered."
+	},
+	"recover": {
+		"secretPhrase": "Enter backup phrase",
+		"secretParagraph_1": "Enter your backup phrase to continue the backup process",
+		"next": "NEXT",
+		"userNotFound": "No user found",
+		"mnemonic": "Mnemonic"
 	}
 }

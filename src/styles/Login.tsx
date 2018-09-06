@@ -62,7 +62,8 @@ const styles = StyleSheet.create<Style>({
 		textAlign: 'left',
 		color: ThemeColors.blue_medium,
 		paddingBottom: 20,
-		paddingTop: 20
+		paddingTop: 20,
+		textDecorationLine: 'underline'
 	},
 	fingerImage: {
 		width: width * 0.16,

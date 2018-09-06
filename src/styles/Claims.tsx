@@ -16,6 +16,10 @@ interface Style {
 	divider: ViewStyle;
 	infoBox: TextStyle;
 	header: TextStyle;
+	claimListItemContainer: ViewStyle;
+	claimColorBlock: ViewStyle;
+	claimCreated: TextStyle;
+	claimTitle: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -37,7 +41,8 @@ const styles = StyleSheet.create<Style>({
 		paddingTop: 15,
 		borderWidth: 1,
 		borderColor: ThemeColors.blue_border,
-		marginTop: 10
+		marginTop: 10,
+		width: '97%'
 	},
 	SubmitButton: {
 		borderTopWidth: 1,
@@ -93,6 +98,25 @@ const styles = StyleSheet.create<Style>({
 		color: ThemeColors.white,
 		fontSize: 29,
 		paddingBottom: 20
+	},
+	claimListItemContainer: {
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
+		flex: 1,
+		alignItems: 'center'
+	},
+	claimColorBlock: {
+		width: 5,
+		height: '40%'
+	},
+	claimCreated: {
+		color: ThemeColors.blue_lightest,
+		fontSize: 11,
+		paddingTop: 5
+	},
+	claimTitle: {
+		color: ThemeColors.white,
+		fontSize: 20
 	}
 });
 

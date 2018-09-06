@@ -151,6 +151,8 @@ export class ScanQR extends React.Component<Props, State> {
 					}
 				});
 			});
+		} else {
+			this.setState({ errors: true });
 		}
 	};
 
@@ -250,10 +252,10 @@ export class ScanQR extends React.Component<Props, State> {
 					</View>
 				</KeyboardAvoidingView>
 			);
-		} else {
-			return (
-				<View style={ModalStyle.modalOuterContainer}>
-					<View style={ModalStyle.modalInnerContainer}>
+		}
+		return (
+			<View style={ModalStyle.modalOuterContainer}>
+				<View style={ModalStyle.modalInnerContainer}>
 						<View style={ModalStyle.flexRight}>
 							<Icon onPress={() => this.setModalVisible(false)} active name="close" style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
 						</View>
@@ -264,11 +266,13 @@ export class ScanQR extends React.Component<Props, State> {
 						<View style={ModalStyle.flexLeft}>
 							<Text style={{ color: ThemeColors.white, fontSize: 15 }}>There has been an error connecting to the ixo Key Safe</Text>
 						</View>
-						<LightButton onPress={() => this.handleResetScan()} text={'TRY AGAIN'} />
-					</View>
+						<LightButton onPress={() => this.handleResetScan()} text={this.props.screenProps.t('scanQR:rescan')} />
+						<TouchableOpacity onPress={() => this.props.navigation.dispatch(registerAction)}>
+							<Text style={{ color: ThemeColors.blue_lightest, fontSize: 15, textDecorationLine: 'underline', textAlign: 'center' }}>Are you registered?</Text>
+						</TouchableOpacity>
 				</View>
-			);
-		}
+			</View>
+		);
 	}
 
 	render() {

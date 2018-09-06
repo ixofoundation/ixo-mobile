@@ -1,6 +1,6 @@
 import { Text } from 'native-base';
 import * as React from 'react';
-import { Dimensions, Image, ImageBackground, StatusBar, View } from 'react-native';
+import { Dimensions, Image, ImageBackground, StatusBar, View, TouchableOpacity } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
 import DarkButton from '../components/DarkButton';
 import LightButton from '../components/LightButton';
@@ -43,10 +43,6 @@ interface ParentProps {
 
 export default class ConnectIXO extends React.Component<ParentProps, {}> {
 	render() {
-		const registerAction = StackActions.reset({
-			index: 0,
-			actions: [NavigationActions.navigate({ routeName: 'Register' })]
-		});
 		return (
 			<ImageBackground source={background} style={[ConnectIXOStyles.wrapper, { width: '100%', height: '100%', paddingHorizontal: 10 }]}>
 				<StatusBar barStyle="light-content" />
@@ -62,8 +58,11 @@ export default class ConnectIXO extends React.Component<ParentProps, {}> {
 					<LightButton
 						text={this.props.screenProps.t('connectIXO:registerButton')}
 						onPress={() => this.props.navigation.navigate('Register')}
-						propStyles={{ marginBottom: height * 0.1 }}
+						// propStyles={{ marginBottom: height * 0.1 }}
 					/>
+					<TouchableOpacity onPress={() => this.props.navigation.navigate('Recover')}>
+						<Text style={ConnectIXOStyles.recover}>{this.props.screenProps.t('connectIXO:recover')}</Text>
+					</TouchableOpacity>
 				</View>
 			</ImageBackground>
 		);
