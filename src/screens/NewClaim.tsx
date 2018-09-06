@@ -11,6 +11,7 @@ const { height } = Dimensions.get('window');
 import { connect } from 'react-redux';
 import { decode as base64Decode } from 'base-64';
 import { getSignature } from '../utils/sovrin';
+import { showToastMessage, ToastType, ToastPosition } from '../lib/util/toast';
 
 interface ParentProps {
 	navigation: any;
@@ -111,12 +112,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			})
 			.catch((error: Error) => {
 				console.log(error);
-				Toast.show({
-					text: this.props.screenProps.t('claims:signingFailed'),
-					buttonText: 'OK',
-					type: 'danger',
-					position: 'top'
-				});
+				showToastMessage(this.props.screenProps.t('claims:signingFailed'), ToastType.DANGER, ToastPosition.TOP);
 			});
 	};
 

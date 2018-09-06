@@ -1,5 +1,5 @@
 import { LinearGradient, SecureStore } from 'expo';
-import { Container, Icon, Text, Toast, View } from 'native-base';
+import { Container, Icon, Text, View } from 'native-base';
 import React from 'react';
 import { AsyncStorage, Dimensions, ImageBackground, KeyboardAvoidingView, StatusBar, TouchableOpacity } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
@@ -9,6 +9,7 @@ import { env } from '../../config';
 import DarkButton from '../components/DarkButton';
 import InputField from '../components/InputField';
 import LightButton from '../components/LightButton';
+import { showToastMessage, ToastPosition, ToastType } from '../lib/util/toast';
 import { LocalStorageKeys, SecureStorageKeys, UserStorageKeys } from '../models/phoneStorage';
 import { IUser } from '../models/user';
 import { initIxo } from '../redux/ixo/ixo_action_creators';
@@ -175,7 +176,7 @@ class Register extends React.Component<Props, StateTypes> {
 	}
 
 	ledgerDidOnBlockChain(did: string, pubKey: string) {
-		this.showToast('register:ledgerDid', toastType.SUCCESS);
+		showToastMessage(this.props.screenProps.t('register:ledgerDid'), ToastType.SUCCESS, ToastPosition.TOP);
 
 		let newDidDoc = {
 			did: did,
@@ -187,31 +188,23 @@ class Register extends React.Component<Props, StateTypes> {
 		getSignature(payload).then((signature: any) => {
 			this.props.ixo.user.registerUserDid(payload, signature).then((response: any) => {
 				if (response.code === 0) {
-					this.showToast('register:didLedgeredSuccess', toastType.SUCCESS);
+					showToastMessage(this.props.screenProps.t('register:didLedgeredSuccess'), ToastType.SUCCESS, ToastPosition.TOP);
 					this.navigateToLogin();
 				} else {
-					this.showToast('register:didLedgeredError', toastType.DANGER);
+					showToastMessage(this.props.screenProps.t('register:didLedgeredError'), ToastType.DANGER, ToastPosition.TOP);
 				}
 			});
 		});
 	}
 
-	showToast(toastText: string, toastType: toastType) {
-		return Toast.show({
-			text: this.props.screenProps.t(toastText),
-			type: toastType,
-			position: 'top'
-		});
-	}
-
 	handleCreatePassword() {
 		if (this.state.confirmPassword === '' || this.state.password === '' || this.state.username === '') {
-			this.showToast('register:missingFields', toastType.WARNING);
+			showToastMessage(this.props.screenProps.t('register:missingFields'), ToastType.WARNING, ToastPosition.TOP);
 			return;
 		}
 
 		if (this.state.password !== this.state.confirmPassword) {
-			this.showToast('register:missmatchPassword', toastType.WARNING);
+			showToastMessage(this.props.screenProps.t('register:missmatchPassword'), ToastType.WARNING, ToastPosition.TOP);
 			return;
 		}
 

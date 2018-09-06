@@ -1,5 +1,5 @@
 import { Camera, Permissions, SecureStore } from 'expo';
-import { Icon, Input, Item, Label, Text, Toast, View } from 'native-base';
+import { Icon, Input, Item, Label, Text, View } from 'native-base';
 import React from 'react';
 import { AsyncStorage, Dimensions, Image, KeyboardAvoidingView, Modal, StatusBar, TouchableOpacity } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import IconEyeOff from '../../assets/svg/IconEyeOff';
 import { env } from '../../config';
 import LightButton from '../components/LightButton';
+import { showToastMessage, ToastPosition, ToastType } from '../lib/util/toast';
 import { LocalStorageKeys, SecureStorageKeys, UserStorageKeys } from '../models/phoneStorage';
 import { IMnemonic } from '../models/sovrin';
 import { IUser } from '../models/user';
@@ -142,18 +143,10 @@ export class ScanQR extends React.Component<Props, State> {
 				this.props.ixo.agent.createAgent(agentData, signature, this.state.serviceEndpoint).then((res: any) => {
 					console.log('Response: ' + JSON.stringify(res));
 					if (res.error !== undefined) {
-						Toast.show({
-							text: res.error.message,
-							type: 'danger',
-							position: 'top'
-						});
-						this.navigateToProjects();       
+						showToastMessage(res.error.message, ToastType.DANGER, ToastPosition.TOP);
+						this.navigateToProjects();
 					} else {
-						Toast.show({
-							text: `Successfully registered as ${agentData.role}`,
-							type: 'success',
-							position: 'top'
-						});
+						showToastMessage(this.props.screenProps.t('scanQR:projectInformation') + agentData.role, ToastType.SUCCESS, ToastPosition.TOP);
 						this.navigateToProjects();
 					}
 				});
@@ -237,8 +230,8 @@ export class ScanQR extends React.Component<Props, State> {
 							<View style={ModalStyle.flexLeft}>
 								<Text style={{ color: ThemeColors.blue_lightest, fontSize: 29 }}>
 									{this.state.projectDid
-										? this.props.screenProps.t('connectIXOComplete:registerAsServiceAgent')
-										: this.props.screenProps.t('connectIXOComplete:scanSuccessful')}
+										? this.props.screenProps.t('scanQR:registerAsServiceAgent')
+										: this.props.screenProps.t('scanQR:scanSuccessful')}
 								</Text>
 							</View>
 							<View style={ModalStyle.divider} />
@@ -249,8 +242,8 @@ export class ScanQR extends React.Component<Props, State> {
 								onPress={() => this.handleButtonPress()}
 								text={
 									this.state.projectDid
-										? this.props.screenProps.t('connectIXOComplete:registerButtonText')
-										: this.props.screenProps.t('connectIXOComplete:unlockButtonText')
+										? this.props.screenProps.t('scanQR:registerButtonText')
+										: this.props.screenProps.t('scanQR:unlockButtonText')
 								}
 							/>
 						</View>

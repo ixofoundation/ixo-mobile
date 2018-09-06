@@ -1,11 +1,12 @@
 import { Fingerprint, SecureStore } from 'expo';
-import { Input, Item, Label, Spinner, Text, Toast } from 'native-base';
+import { Input, Item, Label, Spinner, Text } from 'native-base';
 import React from 'react';
 import { Alert, AsyncStorage, Dimensions, Image, ImageBackground, KeyboardAvoidingView, Platform, StatusBar, TouchableOpacity, View } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import IconEyeOff from '../../assets/svg/IconEyeOff';
 import DarkButton from '../components/DarkButton';
+import { showToastMessage, ToastPosition, ToastType } from '../lib/util/toast';
 import { SecureStorageKeys, UserStorageKeys } from '../models/phoneStorage';
 import { IUser } from '../models/user';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
@@ -140,22 +141,12 @@ export class Login extends React.Component<Props, StateTypes> {
 						})
 					);
 				} else {
-					Toast.show({
-						text: this.props.screenProps.t('login:wrongPassword'),
-						buttonText: 'OK',
-						type: 'warning',
-						position: 'top'
-					});
+					showToastMessage(this.props.screenProps.t('login:wrongPassword'), ToastType.WARNING, ToastPosition.TOP);
 					this.setState({ loading: false });
 				}
 			})
 			.catch(() => {
-				Toast.show({
-					text: this.props.screenProps.t('login:loginFailed'),
-					buttonText: 'OK',
-					type: 'warning',
-					position: 'top'
-				});
+				showToastMessage(this.props.screenProps.t('login:loginFailed'), ToastType.WARNING, ToastPosition.TOP);
 				this.setState({ loading: false });
 			});
 	}
@@ -164,11 +155,13 @@ export class Login extends React.Component<Props, StateTypes> {
 		return (
 			<ImageBackground source={background} style={[LoginStyles.wrapper]}>
 				<View style={[ContainerStyles.flexColumn]}>
-				<StatusBar barStyle="light-content" />
+					<StatusBar barStyle="light-content" />
 					<KeyboardAvoidingView behavior={'position'}>
 						<LogoView />
 						<View style={[LoginStyles.flexLeft]}>
-							<Text style={LoginStyles.header}>{this.props.screenProps.t('login:hi')} {this.state.userName}</Text>
+							<Text style={LoginStyles.header}>
+								{this.props.screenProps.t('login:hi')} {this.state.userName}
+							</Text>
 						</View>
 						<View style={{ width: '100%' }}>
 							<View style={LoginStyles.divider} />
