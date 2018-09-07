@@ -32,7 +32,6 @@ export default class OnBoarding extends React.Component<ParentProps> {
 	};
 
 	componentDidMount() {
-		AsyncStorage.clear();
 		AsyncStorage.getItem(LocalStorageKeys.firstLaunch, (error: any, firstLaunch: string | undefined) => {
 			if (!firstLaunch || error) {
 				this.setState({ showOnboarding: true });

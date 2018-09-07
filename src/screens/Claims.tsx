@@ -148,7 +148,7 @@ class Claims extends React.Component<Props, State> {
 		return <Spinner color={ThemeColors.black} />;
 	}
 
-	renderNoSubmittedClaims() {
+	renderNotSubmittedClaims() {
 		return (
 			<ImageBackground source={background} style={ClaimsStyles.backgroundImage}>
 				<Container>
@@ -208,13 +208,11 @@ class Claims extends React.Component<Props, State> {
 				<StatusBar barStyle="light-content" />
 				<Tabs tabBarUnderlineStyle={{ borderWidth: 1 }} tabContainerStyle={{ borderBottomColor: ThemeColors.blue_dark }}>
 					<Tab heading={this.props.screenProps.t('claims:saved')}>
-						{/* {this.state.claimsList.length > 0 ? this.renderClaims() : this.renderNoSavedClaims()} */}
-						{this.renderClaims()}
+						{this.renderNotSubmittedClaims()}
 					</Tab>
-					<Tab heading={this.props.screenProps.t('claims:submitted')}>{this.renderNoSubmittedClaims()}</Tab>
+					<Tab heading={this.props.screenProps.t('claims:submitted')}>{this.renderClaims()}</Tab>
 				</Tabs>
 				<DarkButton
-					// propStyles={{ backgroundColor: ThemeColors.red, borderColor: ThemeColors.red, borderRadius: 0 }}
 					onPress={() =>
 						this.props.navigation.navigate('NewClaim', {
 							claimForm: this.state.claimForm,
