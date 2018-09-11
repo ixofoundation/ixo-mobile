@@ -2,11 +2,12 @@ import { LinearGradient } from 'expo';
 import moment from 'moment';
 import { Container, Content, Drawer, Header, Icon, Spinner, Text, View } from 'native-base';
 import React from 'react';
+import { NetInfo } from 'react-native';
 import { Dimensions, Image, ImageBackground, RefreshControl, StatusBar, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'underscore';
 import { env } from '../../config';
-import { isConnected, initNetStatus } from '../utils/net';
+// import { isConnected, initNetStatus } from '../utils/net';
 import DarkButton from '../components/DarkButton';
 import SideBar from '../components/SideBar';
 import { IClaim, IProject } from '../models/project';
@@ -53,7 +54,7 @@ export class Projects extends React.Component<Props, StateProps> {
 		projects: [],
 		isRefreshing: false,
 		isDrawerOpen: false,
-		isConnected: true
+		isConnected: false
 	};
 
 	static navigationOptions = ({ navigation, screenProps }: { navigation: any; screenProps: any }) => {
@@ -83,10 +84,14 @@ export class Projects extends React.Component<Props, StateProps> {
 			openDrawer: this.openDrawer
 		});
 		this.props.onIxoInit();
-		initNetStatus((info: any) => {
-			console.log('INFO:::', info);
-			isConnected().then((isConnected) => this.setState({ isConnected }));
-		});
+		NetInfo.isConnected.addEventListener('connectionChange', this.networkConnectionChange);
+	}
+
+	networkConnectionChange = (isConnected: boolean) => {
+		this.setState({ isConnected });
+		if (isConnected) {
+			this.getProjectList();
+		}
 	}
 
 	componentDidUpdate(prevProps: Props) {
@@ -132,9 +137,10 @@ export class Projects extends React.Component<Props, StateProps> {
 					let myProjects = this.getMyProjects(projectList);
 					this.setState({ projects: myProjects, isRefreshing: false });
 				});
+			} else {
+				this.setState({ isRefreshing: false });
 			}
 		} else {
-			debugger;
 			this.setState({ projects: this.props.projects, isRefreshing: false });
 		}
 	}

@@ -15,6 +15,10 @@ import { LinearGradient } from 'expo';
 const background = require('../../assets/backgrounds/background_2.png');
 const addClaims = require('../../assets/savedclaims-visual.png');
 const submittedClaims = require('../../assets/submittedclaims-visual.png');
+const approvedIcon = require('../../assets/icon-approved.png');
+const rejectedIcon = require('../../assets/icon-rejected.png');
+const pendingIcon = require('../../assets/icon-pending.png');
+
 const { height } = Dimensions.get('window');
 
 enum ClaimStatus {
@@ -38,21 +42,25 @@ export interface StateProps {
 
 export interface Props extends ParentProps, StateProps {}
 
-const ClaimListItem = ({ projectName, claimColor, claim, onViewClaim }: { projectName: string, claimColor: string, claim: IClaim, onViewClaim: Function }) => (
+const ClaimListItem = ({ projectName, claimColor, claim, onViewClaim }: { projectName: string; claimColor: string; claim: IClaim; onViewClaim: Function }) => (
 	<TouchableOpacity onPress={() => onViewClaim(claim.claimId)} key={claim.claimId}>
 		<View style={ClaimsStyles.claimListItemContainer}>
 			<View style={[ClaimsStyles.claimColorBlock, { backgroundColor: claimColor }]} />
 			<LinearGradient start={[0, 1]} colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]} style={[ClaimsStyles.ClaimBox]}>
-				<Text style={ClaimsStyles.claimTitle}>{`${projectName} ${claim.claimId.slice(
-					claim.claimId.length - 12,
-					claim.claimId.length
-				)}`}</Text>
-				<Text style={ClaimsStyles.claimCreated}>
-					Claim created {moment(claim.date).format('YYYY-MM-DD')}
-				</Text>
+				<Text style={ClaimsStyles.claimTitle}>{`${projectName} ${claim.claimId.slice(claim.claimId.length - 12, claim.claimId.length)}`}</Text>
+				<Text style={ClaimsStyles.claimCreated}>Claim created {moment(claim.date).format('YYYY-MM-DD')}</Text>
 			</LinearGradient>
 		</View>
 	</TouchableOpacity>
+);
+
+const ClaimListItemHeading = ({ text, icon }: { text: string, icon: string }) => (
+	<View style={ClaimsStyles.claimHeadingContainer}>
+		<Image resizeMode={'contain'} style={ClaimsStyles.claimStatusIcons} source={icon} />
+		<Text style={ClaimsStyles.claimHeadingText}>
+			{text}
+		</Text>
+	</View>
 );
 
 class Claims extends React.Component<Props, State> {
@@ -112,7 +120,7 @@ class Claims extends React.Component<Props, State> {
 			projectDid: this.projectDid,
 			claimId: claimId
 		});
-	}
+	};
 
 	renderClaims() {
 		if (this.state.claimsList) {
@@ -123,23 +131,41 @@ class Claims extends React.Component<Props, State> {
 			return (
 				<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
 					<Content>
-						<View>
-							<Text style={{ fontFamily: 'Roboto_condensed', color: ThemeColors.white, marginVertical: height * 0.04 }}>{this.props.screenProps.t('claims:claimPending')}</Text>
-						</View>
+						<ClaimListItemHeading text={this.props.screenProps.t('claims:claimPending')} icon={pendingIcon} />
 						{pending.map((claim: IClaim) => {
-							return <ClaimListItem key={claim.claimId} projectName={this.projectName} claim={claim} claimColor={ThemeColors.orange} onViewClaim={this.onViewClaim} />
+							return (
+								<ClaimListItem
+									key={claim.claimId}
+									projectName={this.projectName}
+									claim={claim}
+									claimColor={ThemeColors.orange}
+									onViewClaim={this.onViewClaim}
+								/>
+							);
 						})}
-						<View>
-							<Text style={{ fontFamily: 'Roboto_condensed', color: ThemeColors.white, marginVertical: height * 0.04 }}>{this.props.screenProps.t('claims:claimRejected')}</Text>
-						</View>
+						<ClaimListItemHeading text={this.props.screenProps.t('claims:claimRejected')} icon={rejectedIcon} />
 						{rejected.map((claim: IClaim) => {
-							return <ClaimListItem key={claim.claimId} projectName={this.projectName} claim={claim} claimColor={ThemeColors.red} onViewClaim={this.onViewClaim} />
+							return (
+								<ClaimListItem
+									key={claim.claimId}
+									projectName={this.projectName}
+									claim={claim}
+									claimColor={ThemeColors.red}
+									onViewClaim={this.onViewClaim}
+								/>
+							);
 						})}
-						<View>
-							<Text style={{ fontFamily: 'Roboto_condensed', color: ThemeColors.white, marginVertical: height * 0.04 }}>{this.props.screenProps.t('claims:claimApproved')}</Text>
-						</View>
+						<ClaimListItemHeading text={this.props.screenProps.t('claims:claimApproved')} icon={approvedIcon} />
 						{approved.map((claim: IClaim) => {
-							return <ClaimListItem key={claim.claimId} projectName={this.projectName} claim={claim} claimColor={ThemeColors.green} onViewClaim={this.onViewClaim} />
+							return (
+								<ClaimListItem
+									key={claim.claimId}
+									projectName={this.projectName}
+									claim={claim}
+									claimColor={ThemeColors.green}
+									onViewClaim={this.onViewClaim}
+								/>
+							);
 						})}
 					</Content>
 				</Container>
@@ -207,9 +233,7 @@ class Claims extends React.Component<Props, State> {
 			<Container style={{ backgroundColor: ThemeColors.blue_dark }}>
 				<StatusBar barStyle="light-content" />
 				<Tabs tabBarUnderlineStyle={{ borderWidth: 1 }} tabContainerStyle={{ borderBottomColor: ThemeColors.blue_dark }}>
-					<Tab heading={this.props.screenProps.t('claims:saved')}>
-						{this.renderNotSubmittedClaims()}
-					</Tab>
+					<Tab heading={this.props.screenProps.t('claims:saved')}>{this.renderNotSubmittedClaims()}</Tab>
 					<Tab heading={this.props.screenProps.t('claims:submitted')}>{this.renderClaims()}</Tab>
 				</Tabs>
 				<DarkButton

@@ -25,6 +25,9 @@ DerivedData
 **/.idea/misc.xml
 **/.idea/modules.xml
 **/.idea/vcs.xml
+**/.idea/runConfigurations.xml
+**/.idea/codeStyles
+**/.idea/caches
 *.iml
 .gradle
 /android/app/build
