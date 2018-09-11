@@ -17,7 +17,7 @@ import { initUser } from '../redux/user/user_action_creators';
 import { ButtonDark, ThemeColors } from '../styles/Colors';
 import RegisterStyles from '../styles/Register';
 import { Encrypt, generateSovrinDID, getSignature } from '../utils/sovrin';
-import { showToast, toastType } from '../helpers/toasts';
+import { showToast, toastType } from '../utils/toasts';
 
 const bip39 = require('react-native-bip39');
 const background = require('../../assets/backgrounds/background_1.png');

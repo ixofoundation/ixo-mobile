@@ -8,7 +8,7 @@ const InputField = ({ password = false, value = '', labelName, onChangeText }: {
         ((labelName) ? 
         (
             <Item floatingLabel style={styles.itemStyle}>
-                <Label  style={styles.lableStyle}>{labelName}</Label>
+                <Label style={[styles.lableStyle]}>{labelName}</Label>
                 <Input secureTextEntry={password} style={styles.inputStyle} value={value} onChangeText={onChangeText} />
             </Item>
         )

@@ -1,8 +1,11 @@
 require('node-libs-react-native/globals');
+// @ts-ignore
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { Font, ScreenOrientation } from 'expo';
-import { Root, StyleProvider } from 'native-base';
+import { Root, StyleProvider, Text } from 'native-base';
 import * as React from 'react';
+// @ts-ignore
+import { PersistGate } from 'redux-persist/integration/react'
 import { I18nextProvider, translate } from 'react-i18next';
 import { Provider } from 'react-redux';
 import i18n from './i18n';
@@ -54,10 +57,12 @@ export default class App extends React.Component<{}, State> {
 				<Root>
 					<StyleProvider style={getTheme()}>
 						<ActionSheetProvider>
-							<Provider store={store}>
-								<I18nextProvider i18n={i18n}>
-									<ReloadAppOnLanguageChange />
-								</I18nextProvider>
+							<Provider store={store.store}>
+								<PersistGate loading={<Loading />} persistor={store.persistor}>
+									<I18nextProvider i18n={i18n}>
+										<ReloadAppOnLanguageChange />
+									</I18nextProvider>
+								</PersistGate>
 							</Provider>
 						</ActionSheetProvider>
 					</StyleProvider>
