@@ -1,6 +1,6 @@
 import { createAction } from '../../lib/redux_utils/actions';
 import { IProject } from '../../models/project';
-import { Projects, PROJECTS_UPDATE } from './projects_actions';
+import { Projects, Project, PROJECTS_UPDATE, PROJECT_SELECTED } from './projects_actions';
 
 export function updateProjects(projects: IProject[]) {
 	return (dispatch: Function) => {
@@ -11,3 +11,16 @@ export function updateProjects(projects: IProject[]) {
         );
 	};
 }
+
+export function loadProject(project: IProject) {
+    return (dispatch: Function) => {
+        dispatch(
+            createAction<Project>(PROJECT_SELECTED.type, {
+                selectedProject: project
+            })
+        );
+	};
+}
+
+
+

@@ -4,7 +4,7 @@ import moment from 'moment';
 import _ from 'underscore';
 import { Dimensions, Image, ImageBackground, StatusBar, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { IClaim } from '../models/project';
+import { IClaim, IProject } from '../models/project';
 import { IUser } from '../models/user';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import ClaimsStyles from '../styles/Claims';
@@ -30,17 +30,21 @@ interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
-interface State {
-	claimsList: IClaim[];
-	claimForm: any;
-	pdsURL: string;
-}
+
+export interface DispatchProps {}
+
 export interface StateProps {
 	ixo?: any;
 	user?: IUser;
+	project?: IProject;
 }
 
-export interface Props extends ParentProps, StateProps {}
+export interface StateProps {
+	claimForm: any;
+	claimsList: IClaim[];
+}
+
+export interface Props extends ParentProps, DispatchProps, StateProps {}
 
 const ClaimListItem = ({ projectName, claimColor, claim, onViewClaim }: { projectName: string; claimColor: string; claim: IClaim; onViewClaim: Function }) => (
 	<TouchableOpacity onPress={() => onViewClaim(claim.claimId)} key={claim.claimId}>
@@ -54,7 +58,7 @@ const ClaimListItem = ({ projectName, claimColor, claim, onViewClaim }: { projec
 	</TouchableOpacity>
 );
 
-const ClaimListItemHeading = ({ text, icon }: { text: string, icon: string }) => (
+const ClaimListItemHeading = ({ text, icon }: { text: string, icon: any }) => (
 	<View style={ClaimsStyles.claimHeadingContainer}>
 		<Image resizeMode={'contain'} style={ClaimsStyles.claimStatusIcons} source={icon} />
 		<Text style={ClaimsStyles.claimHeadingText}>
@@ -63,14 +67,17 @@ const ClaimListItemHeading = ({ text, icon }: { text: string, icon: string }) =>
 	</View>
 );
 
-class Claims extends React.Component<Props, State> {
+class Claims extends React.Component<Props, StateProps> {
 	projectName: string = '';
 	projectDid: string | undefined;
+	pdsURL: string = '';
+	claimsList: IClaim[];
+	claimForm: string = '';
 
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
 		const {
 			state: {
-				params: { title = 'Project Name' }
+				params: { projectName = 'Loading...' } = {}
 			}
 		} = navigation;
 		return {
@@ -79,7 +86,7 @@ class Claims extends React.Component<Props, State> {
 				borderBottomColor: ThemeColors.blue_dark
 			},
 			headerRight: <Icon name="search" onPress={() => alert('todo')} style={{ paddingRight: 10, color: ThemeColors.white }} />,
-			title,
+			title: projectName,
 			headerTitleStyle: {
 				color: ThemeColors.white,
 				textAlign: 'center',
@@ -91,40 +98,47 @@ class Claims extends React.Component<Props, State> {
 
 	constructor(props: Props) {
 		super(props);
-		this.state = {
-			claimsList: [],
-			claimForm: null,
-			pdsURL: ''
-		};
+		// this.state = {
+			// claimsList: [],
+			// claimForm: null
+		//};
 
-		const {
-			state: {
-				params: { projectDid = '', title }
-			}
-		} = this.props.navigation;
-		this.projectDid = projectDid;
+		// const {
+		// 	state: {
+		// 		params: { projectDid = '', title }
+		// 	}
+		// } = this.props.navigation;
+		this.projectDid = props.project.projectDid;
+		this.projectName = this.props.project.data.title;
+		this.pdsURL = this.props.project.data.serviceEndpoint;
+		this.claimsList = this.props.project.data.claims.filter(claim => claim.saDid === this.props.user!.did);
+		this.claimForm = this.props.project.data.templates.claim.form
 	}
 
 	componentDidMount() {
-		let componentProps: any = this.props.navigation.state.params;
-		this.projectName = this.props.navigation.state.params.title;
-		if (componentProps) {
-			this.setState({ claimsList: componentProps.myClaims, claimForm: componentProps.claimForm, pdsURL: componentProps.pdsURL });
-		}
+		this.props.navigation.setParams({
+			projectName: this.projectName
+		});
+		// let componentProps: any = this.props.navigation.state.params;
+		// this.projectName = this.props.navigation.state.params.title;
+		
+		// if (componentProps) {
+		// 	this.setState({ claimsList, claimForm: componentProps.claimForm });
+		// }
 	}
 
 	onViewClaim = (claimId: string) => {
 		this.props.navigation.navigate('ViewClaim', {
-			claimFormKey: this.state.claimForm,
-			pdsURL: this.state.pdsURL,
+			claimFormKey: this.claimForm,
+			pdsURL: this.pdsURL,
 			projectDid: this.projectDid,
 			claimId: claimId
 		});
 	};
 
 	renderClaims() {
-		if (this.state.claimsList) {
-			const groups = _.groupBy(this.state.claimsList, 'status');
+		if (this.claimsList) {
+			const groups = _.groupBy(this.claimsList, 'status');
 			const pending = groups[ClaimStatus.Pending] || [];
 			const approved = groups[ClaimStatus.Approved] || [];
 			const rejected = groups[ClaimStatus.Rejected] || [];
@@ -240,7 +254,7 @@ class Claims extends React.Component<Props, State> {
 					onPress={() =>
 						this.props.navigation.navigate('NewClaim', {
 							claimForm: this.state.claimForm,
-							pdsURL: this.state.pdsURL,
+							pdsURL: this.pdsURL,
 							projectDid: this.projectDid
 						})
 					}
@@ -254,7 +268,8 @@ class Claims extends React.Component<Props, State> {
 function mapStateToProps(state: PublicSiteStoreState) {
 	return {
 		ixo: state.ixoStore.ixo,
-		user: state.userStore.user
+		user: state.userStore.user,
+		project: state.projectsStore.selectedProject
 	};
 }
 

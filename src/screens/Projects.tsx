@@ -7,13 +7,12 @@ import { Dimensions, Image, ImageBackground, RefreshControl, StatusBar, Touchabl
 import { connect } from 'react-redux';
 import _ from 'underscore';
 import { env } from '../../config';
-// import { isConnected, initNetStatus } from '../utils/net';
 import DarkButton from '../components/DarkButton';
 import SideBar from '../components/SideBar';
 import { IClaim, IProject } from '../models/project';
 import { IUser } from '../models/user';
 import { initIxo } from '../redux/ixo/ixo_action_creators';
-import { updateProjects } from '../redux/projects/projects_action_creators';
+import { updateProjects, loadProject } from '../redux/projects/projects_action_creators';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { ProjectStatus, ThemeColors } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
@@ -32,6 +31,7 @@ interface ParentProps {
 export interface DispatchProps {
 	onIxoInit: () => void;
 	onProjectsUpdate: (project: IProject[]) => void;
+	onProjectSelect: (project: IProject) => void;
 }
 
 export interface StateProps {
@@ -71,9 +71,7 @@ export class Projects extends React.Component<Props, StateProps> {
 				alignSelf: 'center'
 			},
 			title: params.showTitle ? screenProps.t('projects:myProjects') : '',
-			// headerTintColor: ThemeColors.white,
 			headerLeft: <Icon name="menu" onPress={() => params.openDrawer()} style={{ paddingLeft: 10, color: ThemeColors.white }} />,
-			// headerRight: <HeaderSync />
 			headerRight: <Icon name="search" onPress={() => alert('to do')} style={{ paddingRight: 10, color: ThemeColors.white }} />
 		};
 	};
@@ -92,7 +90,7 @@ export class Projects extends React.Component<Props, StateProps> {
 		if (isConnected) {
 			this.getProjectList();
 		}
-	}
+	};
 
 	componentDidUpdate(prevProps: Props) {
 		if (this.props.ixo !== prevProps.ixo) {
@@ -188,15 +186,10 @@ export class Projects extends React.Component<Props, StateProps> {
 				{this.state.projects.map((project: IProject) => {
 					return (
 						<TouchableOpacity
-							onPress={() =>
-								this.props.navigation.navigate('Claims', {
-									claimForm: project.data.templates.claim.form,
-									myClaims: project.data.claims.filter(claim => claim.saDid === this.props.user!.did),
-									projectDid: project.projectDid,
-									title: project.data.title,
-									pdsURL: project.data.serviceEndpoint
-								})
-							}
+							onPress={() => {
+								this.props.onProjectSelect(project);
+								this.props.navigation.navigate('Claims');
+							}}
 							key={project.projectDid}
 							style={ProjectsStyles.projectBox}
 						>
@@ -361,6 +354,9 @@ function mapDispatchToProps(dispatch: any): DispatchProps {
 		},
 		onProjectsUpdate: (projects: any) => {
 			dispatch(updateProjects(projects));
+		},
+		onProjectSelect: (project: IProject) => {
+			dispatch(loadProject(project));
 		}
 	};
 }
@@ -369,3 +365,11 @@ export default connect(
 	mapStateToProps,
 	mapDispatchToProps
 )(Projects);
+
+// this.props.navigation.navigate('Claims', {
+// 	claimForm: project.data.templates.claim.form,
+// 	myClaims: project.data.claims.filter(claim => claim.saDid === this.props.user!.did),
+// 	projectDid: project.projectDid,
+// 	title: project.data.title,
+// 	pdsURL: project.data.serviceEndpoint
+// });
