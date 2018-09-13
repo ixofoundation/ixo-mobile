@@ -53,7 +53,6 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			this.projectName = props.project.data.title;
 			const projectsSavedClaims = _.find(this.props.savedClaims, (claim: IClaimsSaved) => claim.projectDid === this.projectDid);
 			this.projectFormFile = projectsSavedClaims && projectsSavedClaims.formFile;
-			debugger;
 		}
 	}
 
