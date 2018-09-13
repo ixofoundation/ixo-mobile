@@ -2,12 +2,12 @@ import { IClaim } from '../../models/project';
 
 export interface Claim {
     claim: IClaim;
-    projectDID: string;
+    projectDid: string;
 }
 
 export interface ClaimForm {
-    claimForm: any;
-    projectDID: string;
+    formFile: any;
+    projectDid: string;
 }
 
 export module CLAIM_ADD {

@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'underscore';
 import { StatusBar, TouchableOpacity } from 'react-native';
 import { Container, View, Spinner, Toast, Text, Icon } from 'native-base';
 import { ThemeColors } from '../styles/Colors';
@@ -8,8 +9,8 @@ import DynamicSwiperForm from '../components/form/DynamicSwiperForm';
 import { FormStyles } from '../models/form';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { saveClaim } from '../redux/claims/claims_action_creators';
+import { IClaimsSaved } from '../redux/claims/claims_reducer';
 import { connect } from 'react-redux';
-import { decode as base64Decode } from 'base-64';
 import { getSignature } from '../utils/sovrin';
 
 interface ParentProps {
@@ -17,12 +18,7 @@ interface ParentProps {
 	screenProps: any;
 }
 
-interface NavigationTypes {
-	navigation: any;
-}
-
 interface StateTypes {
-	fetchedFile: any;
 	isLastCard: boolean;
 }
 
@@ -33,6 +29,7 @@ export interface DispatchProps {
 export interface StateProps {
 	ixo?: any;
 	project?: IProject;
+	savedClaims: IClaimsSaved[];
 }
 export interface Props extends ParentProps, DispatchProps, StateProps {}
 
@@ -40,22 +37,23 @@ declare var dynamicForm: any;
 class NewClaim extends React.Component<Props, StateTypes> {
 	private pdsURL: string = '';
 	private projectDid: string | undefined;
-	private claimForm: string = '';
 	private projectName: string = '';
+	private projectFormFile: string = '';
 
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			fetchedFile: null,
 			isLastCard: false
 		};
 		dynamicForm = React.createRef();
 
 		if (props.project) {
 			this.pdsURL = props.project.data.serviceEndpoint;
-			this.claimForm = props.project.data.templates.claim.form;
 			this.projectDid = props.project.projectDid;
 			this.projectName = props.project.data.title;
+			const projectsSavedClaims = _.find(this.props.savedClaims, (claim: IClaimsSaved) => claim.projectDid === this.projectDid);
+			this.projectFormFile = projectsSavedClaims && projectsSavedClaims.formFile;
+			debugger;
 		}
 	}
 
@@ -77,31 +75,18 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			},
 			headerTintColor: ThemeColors.white
 		};
-	}
+	};
 
 	componentDidMount() {
 		this.props.navigation.setParams({
 			projectName: this.projectName,
 			saveText: this.props.screenProps.t('claims:saveClaim')
 		});
-		this.fetchFormFile(this.claimForm, this.pdsURL);
-	}
-
-	fetchFormFile = (claimFormKey: string, pdsURL: string) => {
-		this.props.ixo.project
-			.fetchPublic(claimFormKey, pdsURL)
-			.then((res: any) => {
-				let fileContents = base64Decode(res.data);
-				this.setState({ fetchedFile: fileContents });
-			})
-			.catch((error: Error) => {
-				console.log(error);
-			});
 	}
 
 	onToggleLastCard = (active: boolean) => {
 		this.setState({ isLastCard: active });
-	}
+	};
 
 	handleSubmitClaim = (claimData: any) => {
 		let claimPayload = Object.assign(claimData);
@@ -127,15 +112,13 @@ class NewClaim extends React.Component<Props, StateTypes> {
 					position: 'top'
 				});
 			});
-	}
+	};
 
-	onSaveClaim = () => {
-
-	}
+	onSaveClaim = () => {};
 
 	onFormSubmit = (formData: any) => {
 		// upload all the images and change the value to the returned hash of the image
-		let formDef = JSON.parse(this.state.fetchedFile);
+		let formDef = JSON.parse(this.projectFormFile);
 		let promises: Promise<any>[] = [];
 		formDef.fields.forEach((field: any) => {
 			if (field.type === 'image') {
@@ -158,11 +141,11 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		Promise.all(promises).then(results => {
 			this.handleSubmitClaim(formData);
 		});
-	}
+	};
 
 	renderForm() {
-		const claimParsed = JSON.parse(this.state.fetchedFile!);
-		if (this.state.fetchedFile) {
+		const claimParsed = JSON.parse(this.projectFormFile!);
+		if (this.projectFormFile) {
 			return (
 				<DynamicSwiperForm
 					ref={dynamicForm}
@@ -218,17 +201,18 @@ function mapDispatchToProps(dispatch: any): DispatchProps {
 		onClaimSave: (claim: IClaim, projectDID: string) => {
 			dispatch(saveClaim(claim, projectDID));
 		}
-	}
+	};
 }
 
 function mapStateToProps(state: PublicSiteStoreState) {
 	return {
 		ixo: state.ixoStore.ixo,
-		project: state.projectsStore.selectedProject
-	}
+		project: state.projectsStore.selectedProject,
+		savedClaims: state.claimsStore.savedClaims
+	};
 }
 
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(NewClaim)
+)(NewClaim);
