@@ -1,13 +1,13 @@
 import React from 'react';
-import { LinearGradient } from 'expo';
-import { StatusBar, Dimensions, TouchableOpacity } from 'react-native';
+import { StatusBar, TouchableOpacity } from 'react-native';
 import { Container, View, Spinner, Toast, Text, Icon } from 'native-base';
-import { ThemeColors, CardContainerBox } from '../styles/Colors';
+import { ThemeColors } from '../styles/Colors';
+import { IProject, IClaim } from '../models/project';
 import NewClaimStyles from '../styles/NewClaim';
 import DynamicSwiperForm from '../components/form/DynamicSwiperForm';
 import { FormStyles } from '../models/form';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
-const { height } = Dimensions.get('window');
+import { saveClaim } from '../redux/claims/claims_action_creators';
 import { connect } from 'react-redux';
 import { decode as base64Decode } from 'base-64';
 import { getSignature } from '../utils/sovrin';
@@ -22,53 +22,54 @@ interface NavigationTypes {
 }
 
 interface StateTypes {
-	formFile: string | null;
 	fetchedFile: any;
 	isLastCard: boolean;
 }
+
+export interface DispatchProps {
+	onClaimSave: (claim: IClaim, projectDID: string) => void;
+}
+
 export interface StateProps {
 	ixo?: any;
+	project?: IProject;
 }
-export interface Props extends ParentProps, StateProps {}
+export interface Props extends ParentProps, DispatchProps, StateProps {}
 
 declare var dynamicForm: any;
 class NewClaim extends React.Component<Props, StateTypes> {
 	private pdsURL: string = '';
 	private projectDid: string | undefined;
+	private claimForm: string = '';
+	private projectName: string = '';
 
 	constructor(props: Props) {
 		super(props);
 		this.state = {
 			fetchedFile: null,
-			formFile: null,
-			isLastCard: false,
+			isLastCard: false
 		};
 		dynamicForm = React.createRef();
-	}
 
-	componentDidMount() {
-		let componentProps: any = this.props.navigation.state.params;
-
-		if (componentProps) {
-			this.pdsURL = componentProps.pdsURL;
-			this.fetchFormFile(componentProps.claimForm, this.pdsURL);
-			this.projectDid = componentProps.projectDid;
+		if (props.project) {
+			this.pdsURL = props.project.data.serviceEndpoint;
+			this.claimForm = props.project.data.templates.claim.form;
+			this.projectDid = props.project.projectDid;
+			this.projectName = props.project.data.title;
 		}
 	}
 
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
 		const {
-			state: {
-				params: { title = 'New Claim' }
-			}
+			state: { params: { projectName = 'Loading...', saveText = '' } = {} }
 		} = navigation;
 		return {
 			headerStyle: {
 				backgroundColor: ThemeColors.blue_dark,
 				borderBottomColor: ThemeColors.blue_dark
 			},
-			title,
-			headerRight: <Text style={{ color: ThemeColors.blue_light, paddingRight: 10, fontFamily: 'Roboto_condensed' }}>SAVE</Text>,
+			title: projectName,
+			headerRight: <Text style={NewClaimStyles.headerSaveButton}>{saveText}</Text>,
 			headerTitleStyle: {
 				color: ThemeColors.white,
 				textAlign: 'center',
@@ -76,7 +77,15 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			},
 			headerTintColor: ThemeColors.white
 		};
-	};
+	}
+
+	componentDidMount() {
+		this.props.navigation.setParams({
+			projectName: this.projectName,
+			saveText: this.props.screenProps.t('claims:saveClaim')
+		});
+		this.fetchFormFile(this.claimForm, this.pdsURL);
+	}
 
 	fetchFormFile = (claimFormKey: string, pdsURL: string) => {
 		this.props.ixo.project
@@ -88,11 +97,11 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			.catch((error: Error) => {
 				console.log(error);
 			});
-	};
+	}
 
 	onToggleLastCard = (active: boolean) => {
 		this.setState({ isLastCard: active });
-	};
+	}
 
 	handleSubmitClaim = (claimData: any) => {
 		let claimPayload = Object.assign(claimData);
@@ -118,7 +127,11 @@ class NewClaim extends React.Component<Props, StateTypes> {
 					position: 'top'
 				});
 			});
-	};
+	}
+
+	onSaveClaim = () => {
+
+	}
 
 	onFormSubmit = (formData: any) => {
 		// upload all the images and change the value to the returned hash of the image
@@ -145,7 +158,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		Promise.all(promises).then(results => {
 			this.handleSubmitClaim(formData);
 		});
-	};
+	}
 
 	renderForm() {
 		const claimParsed = JSON.parse(this.state.fetchedFile!);
@@ -171,32 +184,51 @@ class NewClaim extends React.Component<Props, StateTypes> {
 				<StatusBar barStyle="light-content" />
 				{this.renderForm()}
 				<View style={NewClaimStyles.navigatorContainer}>
-					<TouchableOpacity onPress={() => dynamicForm.current.goBack()} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}>
+					<TouchableOpacity
+						onPress={() => dynamicForm.current.goBack()}
+						style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}
+					>
 						<Icon style={{ color: ThemeColors.blue_light, fontSize: 23 }} name="arrow-back" />
 						<Text style={NewClaimStyles.backNavigatorButton}>{this.props.screenProps.t('claims:back')}</Text>
 					</TouchableOpacity>
-					{
-						(this.state.isLastCard) ? 
-						<TouchableOpacity onPress={() => dynamicForm.current.handleSubmit()} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}>
+					{this.state.isLastCard ? (
+						<TouchableOpacity
+							onPress={() => dynamicForm.current.handleSubmit()}
+							style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}
+						>
 							<Text style={NewClaimStyles.claimNavigatorButton}>{this.props.screenProps.t('claims:submitClaim')}</Text>
 						</TouchableOpacity>
-						:
-						<TouchableOpacity onPress={() => dynamicForm.current.goNext()} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}>
+					) : (
+						<TouchableOpacity
+							onPress={() => dynamicForm.current.goNext()}
+							style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}
+						>
 							<Text style={NewClaimStyles.nextNavigatorButton}>{this.props.screenProps.t('claims:next')}</Text>
 							<Icon style={{ color: ThemeColors.white, fontSize: 23 }} name="arrow-forward" />
 						</TouchableOpacity>
-					}
-					
+					)}
 				</View>
 			</Container>
 		);
 	}
 }
 
-function mapStateToProps(state: PublicSiteStoreState) {
+function mapDispatchToProps(dispatch: any): DispatchProps {
 	return {
-		ixo: state.ixoStore.ixo
-	};
+		onClaimSave: (claim: IClaim, projectDID: string) => {
+			dispatch(saveClaim(claim, projectDID));
+		}
+	}
 }
 
-export default connect(mapStateToProps)(NewClaim);
+function mapStateToProps(state: PublicSiteStoreState) {
+	return {
+		ixo: state.ixoStore.ixo,
+		project: state.projectsStore.selectedProject
+	}
+}
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(NewClaim)

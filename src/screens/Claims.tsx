@@ -7,10 +7,12 @@ import { connect } from 'react-redux';
 import { IClaim, IProject } from '../models/project';
 import { IUser } from '../models/user';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
+import { saveForm } from '../redux/claims/claims_action_creators';
 import ClaimsStyles from '../styles/Claims';
 import { ThemeColors, ClaimsButton } from '../styles/Colors';
 import DarkButton from '../components/DarkButton';
 import { LinearGradient } from 'expo';
+import { decode as base64Decode } from 'base-64';
 
 const background = require('../../assets/backgrounds/background_2.png');
 const addClaims = require('../../assets/savedclaims-visual.png');
@@ -31,7 +33,9 @@ interface ParentProps {
 	screenProps: any;
 }
 
-export interface DispatchProps {}
+export interface DispatchProps {
+	onFormSave: (claimForm: any, projectDID: string) => void;
+}
 
 export interface StateProps {
 	ixo?: any;
@@ -59,12 +63,10 @@ const ClaimListItem = ({ projectName, claimColor, claim, onViewClaim }: { projec
 	</TouchableOpacity>
 );
 
-const ClaimListItemHeading = ({ text, icon }: { text: string, icon: any }) => (
+const ClaimListItemHeading = ({ text, icon }: { text: string; icon: any }) => (
 	<View style={ClaimsStyles.claimHeadingContainer}>
 		<Image resizeMode={'contain'} style={ClaimsStyles.claimStatusIcons} source={icon} />
-		<Text style={ClaimsStyles.claimHeadingText}>
-			{text}
-		</Text>
+		<Text style={ClaimsStyles.claimHeadingText}>{text}</Text>
 	</View>
 );
 
@@ -77,9 +79,7 @@ class Claims extends React.Component<Props, StateProps> {
 
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
 		const {
-			state: {
-				params: { projectName = 'Loading...' } = {}
-			}
+			state: { params: { projectName = 'Loading...' } = {} }
 		} = navigation;
 		return {
 			headerStyle: {
@@ -105,11 +105,13 @@ class Claims extends React.Component<Props, StateProps> {
 			this.projectName = props.project.data.title;
 			this.pdsURL = props.project.data.serviceEndpoint;
 			this.claimsList = props.project.data.claims.filter(claim => claim.saDid === this.props.user!.did);
-			this.claimForm = props.project.data.templates.claim.form
+			this.claimForm = props.project.data.templates.claim.form;
 		}
+		
 	}
 
 	componentDidMount() {
+		this.fetchFormFile(this.claimForm, this.pdsURL);
 		this.props.navigation.setParams({
 			projectName: this.projectName
 		});
@@ -123,6 +125,18 @@ class Claims extends React.Component<Props, StateProps> {
 			claimId: claimId
 		});
 	};
+
+	fetchFormFile = (claimFormKey: string, pdsURL: string) => {
+		this.props.ixo.project
+			.fetchPublic(claimFormKey, pdsURL)
+			.then((res: any) => {
+				let fileContents = base64Decode(res.data);
+				this.props.onFormSave(fileContents, this.projectDid || '');
+			})
+			.catch((error: Error) => {
+				console.log(error);
+			});
+	}
 
 	renderSubmittedClaims() {
 		if (_.isEmpty(this.claimsList)) {
@@ -150,13 +164,7 @@ class Claims extends React.Component<Props, StateProps> {
 					<ClaimListItemHeading text={this.props.screenProps.t('claims:claimRejected')} icon={rejectedIcon} />
 					{rejected.map((claim: IClaim) => {
 						return (
-							<ClaimListItem
-								key={claim.claimId}
-								projectName={this.projectName}
-								claim={claim}
-								claimColor={ThemeColors.red}
-								onViewClaim={this.onViewClaim}
-							/>
+							<ClaimListItem key={claim.claimId} projectName={this.projectName} claim={claim} claimColor={ThemeColors.red} onViewClaim={this.onViewClaim} />
 						);
 					})}
 					<ClaimListItemHeading text={this.props.screenProps.t('claims:claimApproved')} icon={approvedIcon} />
@@ -177,23 +185,24 @@ class Claims extends React.Component<Props, StateProps> {
 	}
 
 	renderSavedClaims() {
-		if(_.isEmpty(this.props.savedClaims)) {
+		if (_.isEmpty(this.props.savedClaims)) {
 			return this.renderNoSavedClaims();
 		}
 		return (
 			<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
 				<Content>
-					{this.props.savedClaims && this.props.savedClaims.map((claim: IClaim) => {
-						return (
-							<ClaimListItem
-								key={claim.claimId}
-								projectName={this.projectName}
-								claim={claim}
-								claimColor={ThemeColors.orange}
-								onViewClaim={this.onViewClaim}
-							/>
-						);
-					})}
+					{this.props.savedClaims &&
+						this.props.savedClaims.map((claim: IClaim) => {
+							return (
+								<ClaimListItem
+									key={claim.claimId}
+									projectName={this.projectName}
+									claim={claim}
+									claimColor={ThemeColors.orange}
+									onViewClaim={this.onViewClaim}
+								/>
+							);
+						})}
 				</Content>
 			</Container>
 		);
@@ -261,18 +270,17 @@ class Claims extends React.Component<Props, StateProps> {
 					<Tab heading={this.props.screenProps.t('claims:saved')}>{this.renderSavedClaims()}</Tab>
 					<Tab heading={this.props.screenProps.t('claims:submitted')}>{this.renderSubmittedClaims()}</Tab>
 				</Tabs>
-				<DarkButton
-					onPress={() =>
-						this.props.navigation.navigate('NewClaim', {
-							claimForm: this.state.claimForm,
-							pdsURL: this.pdsURL,
-							projectDid: this.projectDid
-						})
-					}
-					text={this.props.screenProps.t('claims:submitButton')}
-				/>
+				<DarkButton onPress={() => this.props.navigation.navigate('NewClaim')} text={this.props.screenProps.t('claims:submitButton')} />
 			</Container>
 		);
+	}
+}
+
+function mapDispatchToProps(dispatch: any): DispatchProps {
+	return {
+		onFormSave: (claimForm: any, projectDid: string) => {
+			dispatch(saveForm(claimForm, projectDid));
+		}
 	}
 }
 
@@ -284,4 +292,4 @@ function mapStateToProps(state: PublicSiteStoreState) {
 	};
 }
 
-export default connect(mapStateToProps)(Claims);
+export default connect(mapStateToProps, mapDispatchToProps)(Claims);

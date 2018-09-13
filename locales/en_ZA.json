@@ -61,7 +61,8 @@
 		"next": "NEXT",
 		"claimPending": "CLAIMS PENDING APPROVAL",
 		"claimRejected": "CLAIMS REJECTED",
-		"claimApproved": "CLAIMS APPROVED"
+		"claimApproved": "CLAIMS APPROVED",
+		"saveClaim": "SAVE"
 	},
 	"submittedClaims": {
 		"successMessage": "Your claim has been successfully submitted",

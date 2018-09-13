@@ -6,7 +6,6 @@ import logger from 'redux-logger';
 // @ts-ignore
 import storage from 'redux-persist/lib/storage'
 
-
 let publicStore: Store<PublicSiteStoreState>;
 
 const persistConfig = {
@@ -15,7 +14,6 @@ const persistConfig = {
 	blacklist: ['ixoStore']
 }
 
-// export function createPublicSiteStore(this: any, preloadedState?: PublicSiteStoreState): Store<PublicSiteStoreState> {
 export function createPublicSiteStore(this: any, preloadedState?: PublicSiteStoreState): any {
 	const middlewares: Middleware[] = [thunk];
 	middlewares.push(logger);
@@ -23,7 +21,6 @@ export function createPublicSiteStore(this: any, preloadedState?: PublicSiteStor
 	publicStore = createStore.call(this, persistedReducer, preloadedState, applyMiddleware(...middlewares));
 	let persistor = persistStore(publicStore)
 	return { store: publicStore, persistor }
-	// return publicStore;
 }
 
 export function getPublicStore(): Store<PublicSiteStoreState> {

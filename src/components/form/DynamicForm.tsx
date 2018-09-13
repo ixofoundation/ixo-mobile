@@ -17,7 +17,6 @@ import ContainerStyles from '../../styles/Containers';
 import { ThemeColors } from '../../styles/Colors';
 import DarkButton from '../DarkButton';
 
-
 export interface IImage {
 	fieldName: string; // used to keep track of which image list in schema e.g. (before or after images)
 	imageElement: JSX.Element;
@@ -49,7 +48,7 @@ export default class DynamicForm extends React.Component<Props, State> {
 	state = {
 		submitStatus: '',
 		hasCameraPermission: false,
-		imageList: [],
+		imageList: []
 	};
 
 	async componentWillMount() {
@@ -73,11 +72,7 @@ export default class DynamicForm extends React.Component<Props, State> {
 	renderPreview(fieldName: string) {
 		const imageObj: IImage | undefined = _.find(this.state.imageList, (imageList: IImage) => imageList.fieldName === fieldName);
 		if (imageObj) {
-			return (
-				<View key={imageObj.fieldName}>
-					{imageObj.imageElement}
-				</View>
-			);
+			return <View key={imageObj.fieldName}>{imageObj.imageElement}</View>;
 		}
 		return null;
 	}
@@ -85,42 +80,42 @@ export default class DynamicForm extends React.Component<Props, State> {
 	renderImage(uri: string, index: number) {
 		return (
 			<View key={index} style={{ width: '100%', alignItems: 'center' }}>
-				<Image resizeMode={'contain'} style={DynamicFormStyles.imageContainer} source={(uri === "") ? placeholder : { uri } } />
+				<Image resizeMode={'contain'} style={DynamicFormStyles.imageContainer} source={uri === '' ? placeholder : { uri }} />
 			</View>
 		);
 	}
 
 	render() {
 		return (
-				<Form>
-					{this.props.formSchema.map((field: any, i: any) => {
-						switch (field.type) {
-							case 'number':
-							case 'text':
-							case 'email':
-								return (
-									<Item key={i} floatingLabel >
-										<Label>{changeCase.sentenceCase(field.name)}</Label>
-										<Input disabled={true} value={field.value} />
-									</Item>
-								);
-							case 'textarea' :
-								return (
-									<View style={DynamicFormStyles.textArea} key={i}>
-										<Text>{changeCase.sentenceCase(field.name)}</Text>
-										<Text>{field.value}</Text>
-									</View>
-								);
-							case 'image' :
-								return (this.renderImage(field.value, i));
-							case 'select':
-							case 'country':
-							case 'template':
-							case 'radio':
-							default:
-								return <Label key={i}>{field.label}</Label>;
-						}
-					})}
+			<Form>
+				{this.props.formSchema.map((field: any, i: any) => {
+					switch (field.type) {
+						case 'number':
+						case 'text':
+						case 'email':
+							return (
+								<Item key={i} floatingLabel>
+									<Label>{changeCase.sentenceCase(field.name)}</Label>
+									<Input disabled={true} value={field.value} />
+								</Item>
+							);
+						case 'textarea':
+							return (
+								<View style={DynamicFormStyles.textArea} key={i}>
+									<Text>{changeCase.sentenceCase(field.name)}</Text>
+									<Text>{field.value}</Text>
+								</View>
+							);
+						case 'image':
+							return this.renderImage(field.value, i);
+						case 'select':
+						case 'country':
+						case 'template':
+						case 'radio':
+						default:
+							return <Label key={i}>{field.label}</Label>;
+					}
+				})}
 			</Form>
 		);
 	}
