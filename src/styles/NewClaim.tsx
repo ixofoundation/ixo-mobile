@@ -1,8 +1,9 @@
 import { Dimensions, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { ThemeColors } from '../styles/Colors';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 interface Style {
+	headerSaveButton: TextStyle,
 	formContainer: ViewStyle;
 	photoBoxContainer: ViewStyle;
 	photoBoxCloseIcon: TextStyle;
@@ -34,16 +35,34 @@ const styles = StyleSheet.create<Style>({
 		fontSize: 50
 	},
 	navigatorContainer: {
-		flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, paddingBottom: 15
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		paddingHorizontal: 10,
+		paddingBottom: 15
 	},
 	backNavigatorButton: {
-		color: ThemeColors.blue_light, fontSize: 20, alignItems: 'center', paddingLeft: 5, fontFamily: 'Roboto_condensed'
+		color: ThemeColors.blue_light,
+		fontSize: 20,
+		alignItems: 'center',
+		paddingLeft: 5,
+		fontFamily: 'Roboto_condensed'
 	},
 	claimNavigatorButton: {
-		color: ThemeColors.white, fontSize: 20, paddingRight: 5, fontFamily: 'Roboto_condensed'
+		color: ThemeColors.white,
+		fontSize: 20,
+		paddingRight: 5,
+		fontFamily: 'Roboto_condensed'
 	},
 	nextNavigatorButton: {
-		color: ThemeColors.white, fontSize: 20, paddingRight: 5, fontFamily: 'Roboto_condensed'
+		color: ThemeColors.white,
+		fontSize: 20,
+		paddingRight: 5,
+		fontFamily: 'Roboto_condensed'
+	},
+	headerSaveButton: {
+		color: ThemeColors.blue_light,
+		paddingRight: 10,
+		fontFamily: 'Roboto_condensed'
 	}
 });
 

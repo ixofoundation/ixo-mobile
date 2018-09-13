@@ -20,6 +20,9 @@ interface Style {
 	claimColorBlock: ViewStyle;
 	claimCreated: TextStyle;
 	claimTitle: TextStyle;
+	claimStatusIcons: TextStyle;
+	claimHeadingContainer: ViewStyle;
+	claimHeadingText: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -117,6 +120,21 @@ const styles = StyleSheet.create<Style>({
 	claimTitle: {
 		color: ThemeColors.white,
 		fontSize: 20
+	},
+	claimStatusIcons: {
+		width: width * 0.05,
+		height: width * 0.05
+	},
+	claimHeadingContainer: {
+		flexDirection: 'row',
+		flex: 1,
+		alignItems: 'center'
+	},
+	claimHeadingText: {
+		fontFamily: 'Roboto_condensed',
+		color: ThemeColors.white,
+		marginVertical: height * 0.04,
+		paddingLeft: 10
 	}
 });
 

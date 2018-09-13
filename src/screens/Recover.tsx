@@ -13,7 +13,7 @@ import { initIxo } from '../redux/ixo/ixo_action_creators';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { initUser } from '../redux/user/user_action_creators';
 import { Encrypt, generateSovrinDID } from '../utils/sovrin';
-import { showToast, toastType } from '../helpers/toasts';
+import { showToast, toastType } from '../utils/toasts';
 import InputField from '../components/InputField';
 import { ThemeColors } from '../styles/Colors';
 import RecoverStyles from '../styles/Recover';
@@ -78,10 +78,9 @@ class Recover extends React.Component<Props, StateTypes> {
 		errorMismatch: false
 	};
 
-	isAlreadyLedgered(did: string): Promise<boolean> {
+	isLedgered(did: string): Promise<boolean> {
 		return new Promise((resolve, reject) => {
 			this.props.ixo.user.getDidDoc(did).then((response: any) => {
-				debugger;
 				const { error = false } = response;
 				if (error) {
 					return reject('recover:userNotFound');
@@ -98,7 +97,7 @@ class Recover extends React.Component<Props, StateTypes> {
 			if (this.state.mnemonic === '') throw 'recover:secretPhrase';
 
 			const sovrin = generateSovrinDID(this.state.mnemonic);
-			const ledgered = await this.isAlreadyLedgered('did:sov:' + sovrin.did);
+			const ledgered = await this.isLedgered('did:sov:' + sovrin.did);
 			if (ledgered) {
 				const encryptedMnemonic = Encrypt(JSON.stringify({ mnemonic: this.state.mnemonic, name: this.state.username }), this.state.password); // encrypt securely on phone enlave
 				SecureStore.setItemAsync(SecureStorageKeys.encryptedMnemonic, encryptedMnemonic.toString());
@@ -120,7 +119,7 @@ class Recover extends React.Component<Props, StateTypes> {
 		}
 	}
 
-	navigateToLogin() {
+	navigateToLogin() {		
 		this.props.navigation.dispatch(
 			StackActions.reset({
 				index: 0,

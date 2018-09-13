@@ -2,6 +2,7 @@ import { LinearGradient } from 'expo';
 import moment from 'moment';
 import { Container, Content, Drawer, Header, Icon, Spinner, Text, View } from 'native-base';
 import React from 'react';
+import { NetInfo } from 'react-native';
 import { Dimensions, Image, ImageBackground, RefreshControl, StatusBar, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'underscore';
@@ -11,6 +12,7 @@ import SideBar from '../components/SideBar';
 import { IClaim, IProject } from '../models/project';
 import { IUser } from '../models/user';
 import { initIxo } from '../redux/ixo/ixo_action_creators';
+import { updateProjects, loadProject } from '../redux/projects/projects_action_creators';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { ProjectStatus, ThemeColors } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
@@ -28,6 +30,8 @@ interface ParentProps {
 }
 export interface DispatchProps {
 	onIxoInit: () => void;
+	onProjectsUpdate: (project: IProject[]) => void;
+	onProjectSelect: (project: IProject) => void;
 }
 
 export interface StateProps {
@@ -39,6 +43,7 @@ export interface StateProps {
 	projects: IProject[];
 	isRefreshing: boolean;
 	isDrawerOpen: boolean;
+	isConnected: boolean;
 }
 
 export interface Props extends ParentProps, DispatchProps, StateProps {}
@@ -48,7 +53,8 @@ export class Projects extends React.Component<Props, StateProps> {
 	state = {
 		projects: [],
 		isRefreshing: false,
-		isDrawerOpen: false
+		isDrawerOpen: false,
+		isConnected: false
 	};
 
 	static navigationOptions = ({ navigation, screenProps }: { navigation: any; screenProps: any }) => {
@@ -65,20 +71,26 @@ export class Projects extends React.Component<Props, StateProps> {
 				alignSelf: 'center'
 			},
 			title: params.showTitle ? screenProps.t('projects:myProjects') : '',
-			// headerTintColor: ThemeColors.white,
 			headerLeft: <Icon name="menu" onPress={() => params.openDrawer()} style={{ paddingLeft: 10, color: ThemeColors.white }} />,
-			// headerRight: <HeaderSync />
 			headerRight: <Icon name="search" onPress={() => alert('to do')} style={{ paddingRight: 10, color: ThemeColors.white }} />
 		};
 	};
 
-	componentDidMount() {
+	async componentDidMount() {
 		this.props.navigation.setParams({
 			// @ts-ignore
 			openDrawer: this.openDrawer
 		});
 		this.props.onIxoInit();
+		NetInfo.isConnected.addEventListener('connectionChange', this.networkConnectionChange);
 	}
+
+	networkConnectionChange = (isConnected: boolean) => {
+		this.setState({ isConnected });
+		if (isConnected) {
+			this.getProjectList();
+		}
+	};
 
 	componentDidUpdate(prevProps: Props) {
 		if (this.props.ixo !== prevProps.ixo) {
@@ -117,11 +129,17 @@ export class Projects extends React.Component<Props, StateProps> {
 	};
 
 	getProjectList() {
-		if (this.props.ixo) {
-			this.props.ixo.project.listProjects().then((projectList: any) => {
-				let myProjects = this.getMyProjects(projectList);
-				this.setState({ projects: myProjects, isRefreshing: false });
-			});
+		if (this.state.isConnected) {
+			if (this.props.ixo) {
+				this.props.ixo.project.listProjects().then((projectList: any) => {
+					let myProjects = this.getMyProjects(projectList);
+					this.setState({ projects: myProjects, isRefreshing: false });
+				});
+			} else {
+				this.setState({ isRefreshing: false });
+			}
+		} else {
+			this.setState({ projects: this.props.projects, isRefreshing: false });
 		}
 	}
 
@@ -130,6 +148,7 @@ export class Projects extends React.Component<Props, StateProps> {
 			let myProjects = projectList.filter((projectList: any) => {
 				return projectList.data.agents.some((agent: any) => agent.did === this.props.user!.did && agent.role === 'SA');
 			});
+			this.props.onProjectsUpdate(myProjects);
 			return myProjects;
 		} else {
 			return [];
@@ -167,15 +186,10 @@ export class Projects extends React.Component<Props, StateProps> {
 				{this.state.projects.map((project: IProject) => {
 					return (
 						<TouchableOpacity
-							onPress={() =>
-								this.props.navigation.navigate('Claims', {
-									claimForm: project.data.templates.claim.form,
-									myClaims: project.data.claims.filter(claim => claim.saDid === this.props.user!.did),
-									projectDid: project.projectDid,
-									title: project.data.title,
-									pdsURL: project.data.serviceEndpoint
-								})
-							}
+							onPress={() => {
+								this.props.onProjectSelect(project);
+								this.props.navigation.navigate('Claims');
+							}}
 							key={project.projectDid}
 							style={ProjectsStyles.projectBox}
 						>
@@ -298,6 +312,15 @@ export class Projects extends React.Component<Props, StateProps> {
 		);
 	}
 
+	renderConnectivity() {
+		if (this.state.isConnected) return null;
+		return (
+			<View style={{ height: height * 0.03, width: '100%', backgroundColor: ThemeColors.orange }}>
+				<Text style={{ textAlign: 'center', color: ThemeColors.white }}>Offline</Text>
+			</View>
+		);
+	}
+
 	render() {
 		return (
 			<Drawer
@@ -308,6 +331,7 @@ export class Projects extends React.Component<Props, StateProps> {
 				content={<SideBar navigation={this.props.navigation} />}
 				onClose={() => this.closeDrawer()}
 			>
+				{this.renderConnectivity()}
 				{this.state.projects.length > 0 ? this.renderNoProjectsView() : this.renderProjectsView()}
 				<DarkButton iconImage={qr} text={this.props.screenProps.t('projects:scan')} onPress={() => this.props.navigation.navigate('ScanQR')} />
 			</Drawer>
@@ -318,7 +342,8 @@ export class Projects extends React.Component<Props, StateProps> {
 function mapStateToProps(state: PublicSiteStoreState) {
 	return {
 		ixo: state.ixoStore.ixo,
-		user: state.userStore.user
+		user: state.userStore.user,
+		projects: state.projectsStore.projects
 	};
 }
 
@@ -326,6 +351,12 @@ function mapDispatchToProps(dispatch: any): DispatchProps {
 	return {
 		onIxoInit: () => {
 			dispatch(initIxo(env.REACT_APP_BLOCKCHAIN_IP, env.REACT_APP_BLOCK_SYNC_URL));
+		},
+		onProjectsUpdate: (projects: any) => {
+			dispatch(updateProjects(projects));
+		},
+		onProjectSelect: (project: IProject) => {
+			dispatch(loadProject(project));
 		}
 	};
 }

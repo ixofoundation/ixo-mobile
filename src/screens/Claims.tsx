@@ -1,20 +1,26 @@
-import { Container, Content, Icon, Spinner, Tab, Tabs, Text, View } from 'native-base';
+import { Container, Content, Icon, Tab, Tabs, Text, View } from 'native-base';
 import * as React from 'react';
 import moment from 'moment';
 import _ from 'underscore';
 import { Dimensions, Image, ImageBackground, StatusBar, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { IClaim } from '../models/project';
+import { IClaim, IProject } from '../models/project';
 import { IUser } from '../models/user';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
+import { saveForm } from '../redux/claims/claims_action_creators';
 import ClaimsStyles from '../styles/Claims';
 import { ThemeColors, ClaimsButton } from '../styles/Colors';
 import DarkButton from '../components/DarkButton';
 import { LinearGradient } from 'expo';
+import { decode as base64Decode } from 'base-64';
 
 const background = require('../../assets/backgrounds/background_2.png');
 const addClaims = require('../../assets/savedclaims-visual.png');
 const submittedClaims = require('../../assets/submittedclaims-visual.png');
+const approvedIcon = require('../../assets/icon-approved.png');
+const rejectedIcon = require('../../assets/icon-rejected.png');
+const pendingIcon = require('../../assets/icon-pending.png');
+
 const { height } = Dimensions.get('window');
 
 enum ClaimStatus {
@@ -26,44 +32,54 @@ interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
-interface State {
-	claimsList: IClaim[];
-	claimForm: any;
-	pdsURL: string;
+
+export interface DispatchProps {
+	onFormSave: (claimForm: any, projectDID: string) => void;
 }
+
 export interface StateProps {
 	ixo?: any;
 	user?: IUser;
+	project?: IProject;
+	savedClaims?: IClaim[];
 }
 
-export interface Props extends ParentProps, StateProps {}
+export interface StateProps {
+	claimForm: any;
+	claimsList: IClaim[];
+}
 
-const ClaimListItem = ({ projectName, claimColor, claim, onViewClaim }: { projectName: string, claimColor: string, claim: IClaim, onViewClaim: Function }) => (
+export interface Props extends ParentProps, DispatchProps, StateProps {}
+
+const ClaimListItem = ({ projectName, claimColor, claim, onViewClaim }: { projectName: string; claimColor: string; claim: IClaim; onViewClaim: Function }) => (
 	<TouchableOpacity onPress={() => onViewClaim(claim.claimId)} key={claim.claimId}>
 		<View style={ClaimsStyles.claimListItemContainer}>
 			<View style={[ClaimsStyles.claimColorBlock, { backgroundColor: claimColor }]} />
 			<LinearGradient start={[0, 1]} colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]} style={[ClaimsStyles.ClaimBox]}>
-				<Text style={ClaimsStyles.claimTitle}>{`${projectName} ${claim.claimId.slice(
-					claim.claimId.length - 12,
-					claim.claimId.length
-				)}`}</Text>
-				<Text style={ClaimsStyles.claimCreated}>
-					Claim created {moment(claim.date).format('YYYY-MM-DD')}
-				</Text>
+				<Text style={ClaimsStyles.claimTitle}>{`${projectName} ${claim.claimId.slice(claim.claimId.length - 12, claim.claimId.length)}`}</Text>
+				<Text style={ClaimsStyles.claimCreated}>Claim created {moment(claim.date).format('YYYY-MM-DD')}</Text>
 			</LinearGradient>
 		</View>
 	</TouchableOpacity>
 );
 
-class Claims extends React.Component<Props, State> {
+const ClaimListItemHeading = ({ text, icon }: { text: string; icon: any }) => (
+	<View style={ClaimsStyles.claimHeadingContainer}>
+		<Image resizeMode={'contain'} style={ClaimsStyles.claimStatusIcons} source={icon} />
+		<Text style={ClaimsStyles.claimHeadingText}>{text}</Text>
+	</View>
+);
+
+class Claims extends React.Component<Props, StateProps> {
 	projectName: string = '';
 	projectDid: string | undefined;
+	pdsURL: string = '';
+	claimsList: IClaim[] = [];
+	claimForm: string = '';
 
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
 		const {
-			state: {
-				params: { title = 'Project Name' }
-			}
+			state: { params: { projectName = 'Loading...' } = {} }
 		} = navigation;
 		return {
 			headerStyle: {
@@ -71,7 +87,7 @@ class Claims extends React.Component<Props, State> {
 				borderBottomColor: ThemeColors.blue_dark
 			},
 			headerRight: <Icon name="search" onPress={() => alert('todo')} style={{ paddingRight: 10, color: ThemeColors.white }} />,
-			title,
+			title: projectName,
 			headerTitleStyle: {
 				color: ThemeColors.white,
 				textAlign: 'center',
@@ -83,69 +99,113 @@ class Claims extends React.Component<Props, State> {
 
 	constructor(props: Props) {
 		super(props);
-		this.state = {
-			claimsList: [],
-			claimForm: null,
-			pdsURL: ''
-		};
 
-		const {
-			state: {
-				params: { projectDid = '', title }
-			}
-		} = this.props.navigation;
-		this.projectDid = projectDid;
+		if (props.project) {
+			this.projectDid = props.project.projectDid;
+			this.projectName = props.project.data.title;
+			this.pdsURL = props.project.data.serviceEndpoint;
+			this.claimsList = props.project.data.claims.filter(claim => claim.saDid === this.props.user!.did);
+			this.claimForm = props.project.data.templates.claim.form;
+		}
+		
 	}
 
 	componentDidMount() {
-		let componentProps: any = this.props.navigation.state.params;
-		this.projectName = this.props.navigation.state.params.title;
-		if (componentProps) {
-			this.setState({ claimsList: componentProps.myClaims, claimForm: componentProps.claimForm, pdsURL: componentProps.pdsURL });
-		}
+		this.fetchFormFile(this.claimForm, this.pdsURL);
+		this.props.navigation.setParams({
+			projectName: this.projectName
+		});
 	}
 
 	onViewClaim = (claimId: string) => {
 		this.props.navigation.navigate('ViewClaim', {
-			claimFormKey: this.state.claimForm,
-			pdsURL: this.state.pdsURL,
+			claimFormKey: this.claimForm,
+			pdsURL: this.pdsURL,
 			projectDid: this.projectDid,
 			claimId: claimId
 		});
+	};
+
+	fetchFormFile = (claimFormKey: string, pdsURL: string) => {
+		this.props.ixo.project
+			.fetchPublic(claimFormKey, pdsURL)
+			.then((res: any) => {
+				let fileContents = base64Decode(res.data);
+				this.props.onFormSave(fileContents, this.projectDid || '');
+			})
+			.catch((error: Error) => {
+				console.log(error);
+			});
 	}
 
-	renderClaims() {
-		if (this.state.claimsList) {
-			const groups = _.groupBy(this.state.claimsList, 'status');
-			const pending = groups[ClaimStatus.Pending] || [];
-			const approved = groups[ClaimStatus.Approved] || [];
-			const rejected = groups[ClaimStatus.Rejected] || [];
-			return (
-				<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
-					<Content>
-						<View>
-							<Text style={{ fontFamily: 'Roboto_condensed', color: ThemeColors.white, marginVertical: height * 0.04 }}>{this.props.screenProps.t('claims:claimPending')}</Text>
-						</View>
-						{pending.map((claim: IClaim) => {
-							return <ClaimListItem key={claim.claimId} projectName={this.projectName} claim={claim} claimColor={ThemeColors.orange} onViewClaim={this.onViewClaim} />
-						})}
-						<View>
-							<Text style={{ fontFamily: 'Roboto_condensed', color: ThemeColors.white, marginVertical: height * 0.04 }}>{this.props.screenProps.t('claims:claimRejected')}</Text>
-						</View>
-						{rejected.map((claim: IClaim) => {
-							return <ClaimListItem key={claim.claimId} projectName={this.projectName} claim={claim} claimColor={ThemeColors.red} onViewClaim={this.onViewClaim} />
-						})}
-						<View>
-							<Text style={{ fontFamily: 'Roboto_condensed', color: ThemeColors.white, marginVertical: height * 0.04 }}>{this.props.screenProps.t('claims:claimApproved')}</Text>
-						</View>
-						{approved.map((claim: IClaim) => {
-							return <ClaimListItem key={claim.claimId} projectName={this.projectName} claim={claim} claimColor={ThemeColors.green} onViewClaim={this.onViewClaim} />
-						})}
-					</Content>
-				</Container>
-			);
+	renderSubmittedClaims() {
+		if (_.isEmpty(this.claimsList)) {
+			return this.renderNoSubmittedClaims();
 		}
-		return <Spinner color={ThemeColors.black} />;
+		const groups = _.groupBy(this.claimsList, 'status');
+		const pending = groups[ClaimStatus.Pending] || [];
+		const approved = groups[ClaimStatus.Approved] || [];
+		const rejected = groups[ClaimStatus.Rejected] || [];
+		return (
+			<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
+				<Content>
+					<ClaimListItemHeading text={this.props.screenProps.t('claims:claimPending')} icon={pendingIcon} />
+					{pending.map((claim: IClaim) => {
+						return (
+							<ClaimListItem
+								key={claim.claimId}
+								projectName={this.projectName}
+								claim={claim}
+								claimColor={ThemeColors.orange}
+								onViewClaim={this.onViewClaim}
+							/>
+						);
+					})}
+					<ClaimListItemHeading text={this.props.screenProps.t('claims:claimRejected')} icon={rejectedIcon} />
+					{rejected.map((claim: IClaim) => {
+						return (
+							<ClaimListItem key={claim.claimId} projectName={this.projectName} claim={claim} claimColor={ThemeColors.red} onViewClaim={this.onViewClaim} />
+						);
+					})}
+					<ClaimListItemHeading text={this.props.screenProps.t('claims:claimApproved')} icon={approvedIcon} />
+					{approved.map((claim: IClaim) => {
+						return (
+							<ClaimListItem
+								key={claim.claimId}
+								projectName={this.projectName}
+								claim={claim}
+								claimColor={ThemeColors.green}
+								onViewClaim={this.onViewClaim}
+							/>
+						);
+					})}
+				</Content>
+			</Container>
+		);
+	}
+
+	renderSavedClaims() {
+		if (_.isEmpty(this.props.savedClaims)) {
+			return this.renderNoSavedClaims();
+		}
+		return (
+			<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
+				<Content>
+					{this.props.savedClaims &&
+						this.props.savedClaims.map((claim: IClaim) => {
+							return (
+								<ClaimListItem
+									key={claim.claimId}
+									projectName={this.projectName}
+									claim={claim}
+									claimColor={ThemeColors.orange}
+									onViewClaim={this.onViewClaim}
+								/>
+							);
+						})}
+				</Content>
+			</Container>
+		);
 	}
 
 	renderNoSubmittedClaims() {
@@ -207,33 +267,29 @@ class Claims extends React.Component<Props, State> {
 			<Container style={{ backgroundColor: ThemeColors.blue_dark }}>
 				<StatusBar barStyle="light-content" />
 				<Tabs tabBarUnderlineStyle={{ borderWidth: 1 }} tabContainerStyle={{ borderBottomColor: ThemeColors.blue_dark }}>
-					<Tab heading={this.props.screenProps.t('claims:saved')}>
-						{/* {this.state.claimsList.length > 0 ? this.renderClaims() : this.renderNoSavedClaims()} */}
-						{this.renderClaims()}
-					</Tab>
-					<Tab heading={this.props.screenProps.t('claims:submitted')}>{this.renderNoSubmittedClaims()}</Tab>
+					<Tab heading={this.props.screenProps.t('claims:saved')}>{this.renderSavedClaims()}</Tab>
+					<Tab heading={this.props.screenProps.t('claims:submitted')}>{this.renderSubmittedClaims()}</Tab>
 				</Tabs>
-				<DarkButton
-					// propStyles={{ backgroundColor: ThemeColors.red, borderColor: ThemeColors.red, borderRadius: 0 }}
-					onPress={() =>
-						this.props.navigation.navigate('NewClaim', {
-							claimForm: this.state.claimForm,
-							pdsURL: this.state.pdsURL,
-							projectDid: this.projectDid
-						})
-					}
-					text={this.props.screenProps.t('claims:submitButton')}
-				/>
+				<DarkButton onPress={() => this.props.navigation.navigate('NewClaim')} text={this.props.screenProps.t('claims:submitButton')} />
 			</Container>
 		);
+	}
+}
+
+function mapDispatchToProps(dispatch: any): DispatchProps {
+	return {
+		onFormSave: (claimForm: any, projectDid: string) => {
+			dispatch(saveForm(claimForm, projectDid));
+		}
 	}
 }
 
 function mapStateToProps(state: PublicSiteStoreState) {
 	return {
 		ixo: state.ixoStore.ixo,
-		user: state.userStore.user
+		user: state.userStore.user,
+		project: state.projectsStore.selectedProject
 	};
 }
 
-export default connect(mapStateToProps)(Claims);
+export default connect(mapStateToProps, mapDispatchToProps)(Claims);
