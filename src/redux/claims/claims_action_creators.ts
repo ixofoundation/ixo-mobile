@@ -1,12 +1,11 @@
 import { createAction } from '../../lib/redux_utils/actions';
-import { IClaim } from '../../models/project';
 import { Claim, ClaimForm, CLAIM_ADD, CLAIM_FILEFORM_SAVE } from './claims_actions';
 
-export function saveClaim(claim: IClaim, projectDid: string) {
+export function saveClaim(claimData: string, projectDid: string) {
 	return (dispatch: Function) => {
         dispatch(
             createAction<Claim>(CLAIM_ADD.type, {
-                claim,
+                claimData,
                 projectDid
             })
         );

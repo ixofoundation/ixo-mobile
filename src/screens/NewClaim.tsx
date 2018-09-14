@@ -9,7 +9,7 @@ import DynamicSwiperForm from '../components/form/DynamicSwiperForm';
 import { FormStyles } from '../models/form';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { saveClaim } from '../redux/claims/claims_action_creators';
-import { IClaimsSaved } from '../redux/claims/claims_reducer';
+import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
 import { connect } from 'react-redux';
 import { getSignature } from '../utils/sovrin';
 
@@ -23,13 +23,13 @@ interface StateTypes {
 }
 
 export interface DispatchProps {
-	onClaimSave: (claim: IClaim, projectDID: string) => void;
+	onClaimSave: (claim: string, projectDID: string) => void;
 }
 
 export interface StateProps {
 	ixo?: any;
 	project?: IProject;
-	savedClaims: IClaimsSaved[];
+	savedProjectsClaims: IProjectsClaimsSaved[];
 }
 export interface Props extends ParentProps, DispatchProps, StateProps {}
 
@@ -51,14 +51,14 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			this.pdsURL = props.project.data.serviceEndpoint;
 			this.projectDid = props.project.projectDid;
 			this.projectName = props.project.data.title;
-			const projectsSavedClaims = _.find(this.props.savedClaims, (claim: IClaimsSaved) => claim.projectDid === this.projectDid);
+			const projectsSavedClaims = _.find(this.props.savedProjectsClaims, (claim: IProjectsClaimsSaved) => claim.projectDid === this.projectDid);
 			this.projectFormFile = projectsSavedClaims && projectsSavedClaims.formFile;
 		}
 	}
 
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
 		const {
-			state: { params: { projectName = 'Loading...', saveText = '' } = {} }
+			state: { params: { projectName = 'Loading...', saveText = '', onSave = null } = {} }
 		} = navigation;
 		return {
 			headerStyle: {
@@ -66,7 +66,11 @@ class NewClaim extends React.Component<Props, StateTypes> {
 				borderBottomColor: ThemeColors.blue_dark
 			},
 			title: projectName,
-			headerRight: <Text style={NewClaimStyles.headerSaveButton}>{saveText}</Text>,
+			headerRight: (
+				<TouchableOpacity onPress={() => onSave()}>
+					<Text style={NewClaimStyles.headerSaveButton}>{saveText}</Text>
+				</TouchableOpacity>
+			),
 			headerTitleStyle: {
 				color: ThemeColors.white,
 				textAlign: 'center',
@@ -79,7 +83,8 @@ class NewClaim extends React.Component<Props, StateTypes> {
 	componentDidMount() {
 		this.props.navigation.setParams({
 			projectName: this.projectName,
-			saveText: this.props.screenProps.t('claims:saveClaim')
+			saveText: this.props.screenProps.t('claims:saveClaim'),
+			onSave: () => dynamicForm.current.handleSave()
 		});
 	}
 
@@ -113,7 +118,12 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			});
 	};
 
-	onSaveClaim = () => {};
+	onSaveClaim = (claimData: any) => {
+		if (this.projectDid) {
+			this.props.onClaimSave(claimData, this.projectDid);
+			this.props.navigation.pop();
+		}
+	};
 
 	onFormSubmit = (formData: any) => {
 		// upload all the images and change the value to the returned hash of the image
@@ -152,6 +162,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 					formSchema={claimParsed.fields}
 					formStyle={FormStyles.standard}
 					handleSubmit={this.onFormSubmit}
+					handleSave={this.onSaveClaim}
 					onToggleLastCard={this.onToggleLastCard}
 				/>
 			);
@@ -197,7 +208,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 
 function mapDispatchToProps(dispatch: any): DispatchProps {
 	return {
-		onClaimSave: (claim: IClaim, projectDID: string) => {
+		onClaimSave: (claim: string, projectDID: string) => {
 			dispatch(saveClaim(claim, projectDID));
 		}
 	};
@@ -207,7 +218,7 @@ function mapStateToProps(state: PublicSiteStoreState) {
 	return {
 		ixo: state.ixoStore.ixo,
 		project: state.projectsStore.selectedProject,
-		savedClaims: state.claimsStore.savedClaims
+		savedProjectsClaims: state.claimsStore.savedProjectsClaims
 	};
 }
 

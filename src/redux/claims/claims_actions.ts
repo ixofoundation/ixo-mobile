@@ -1,8 +1,9 @@
 import { IClaim } from '../../models/project';
 
 export interface Claim {
-    claim: IClaim;
+    claimData: string;
     projectDid: string;
+    claimId: string;
 }
 
 export interface ClaimForm {
@@ -12,6 +13,10 @@ export interface ClaimForm {
 
 export module CLAIM_ADD {
     export var type = 'CLAIM_ADD';
+}
+
+export module CLAIM_UPDATE {
+    export var type = 'CLAIM_UPDATE';
 }
 
 export module CLAIM_FILEFORM_SAVE {

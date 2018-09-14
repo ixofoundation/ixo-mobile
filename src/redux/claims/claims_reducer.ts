@@ -1,48 +1,23 @@
 import _ from 'underscore';
+// @ts-ignore
+import uuid from 'react-native-uuid';
 import { createReducer } from '../../lib/redux_utils/reducers';
-import { IClaim } from '../../models/project';
+import { IClaimSaved } from '../../models/project';
 import { Claim, ClaimForm, CLAIM_ADD, CLAIM_FILEFORM_SAVE } from './claims_actions';
 
-export interface IClaimsSaved {
+export interface IProjectsClaimsSaved {
 	formFile?: any;
 	projectDid: string;
-	claims: IClaim[];
+	claims?: IClaimSaved[];
 }
 
 export type IClaimsModelState = {
-	savedClaims: IClaimsSaved[];
+	savedProjectsClaims: IProjectsClaimsSaved[];
 };
 
 const initialState: IClaimsModelState = {
-	savedClaims: []
+	savedProjectsClaims: []
 };
-
-function addClaimToProject(savedClaims: IClaimsSaved[], projectDid: string, newClaim: IClaim): IClaimsSaved {
-	const projectSavedClaim: IClaimsSaved | undefined = _.find(savedClaims, savedClaim => savedClaim.projectDid === projectDid);
-	if (projectSavedClaim) {
-		// append claim
-		projectSavedClaim.claims.push(newClaim);
-		return { claims: projectSavedClaim.claims, projectDid: projectDid };
-	} else {
-		// claim project has no claims yet
-		return { claims: [newClaim], projectDid: projectDid };
-	}
-}
-
-function updateClaimFormOfProject(state: IClaimsModelState, action: ClaimForm): IClaimsSaved[] {	
-	const projectSavedClaim: IClaimsSaved | undefined = _.find(state.savedClaims, savedClaim => savedClaim.projectDid === action.projectDid);
-	if (projectSavedClaim) {
-		const test: IClaimsSaved[] = state.savedClaims.map((item) => {
-			if(action.projectDid !== item.projectDid) {
-				return item;
-			}
-			const itemCopy = Object.assign({ formFile: action.formFile }, item);
-			return itemCopy;
-		});
-		return test;
-	}
-	return [...state.savedClaims, { projectDid: action.projectDid, formFile: action.formFile, claims: [] }];
-}
 
 export let claimsReducer = createReducer<IClaimsModelState>(initialState, [
 	{
@@ -50,7 +25,21 @@ export let claimsReducer = createReducer<IClaimsModelState>(initialState, [
 		handler: (state: IClaimsModelState, action: Claim) => {
 			return {
 				...state,
-				savedClaims: [...state.savedClaims, addClaimToProject(state.savedClaims, action.projectDid, action.claim)]
+				savedProjectsClaims: {
+					...state.savedProjectsClaims,
+					[action.projectDid]: {
+						...state.savedProjectsClaims[action.projectDid],
+						claims: {
+							...state.savedProjectsClaims[action.projectDid].claims,
+							[uuid.v4()]: {
+								...state.savedProjectsClaims[action.projectDid][uuid.v4()],
+								claimData: action.claimData,
+								claimId: uuid.v4(),
+								date: new Date(),
+							}
+						}
+					}
+				}
 			};
 		}
 	},
@@ -59,7 +48,14 @@ export let claimsReducer = createReducer<IClaimsModelState>(initialState, [
 		handler: (state: IClaimsModelState, action: ClaimForm) => {
 			return {
 				...state,
-				savedClaims: updateClaimFormOfProject(state, action)
+				savedProjectsClaims: {
+					...state.savedProjectsClaims,
+					[action.projectDid]: {
+						...state.savedProjectsClaims[action.projectDid],
+						formFile: action.formFile,
+						projectDid: action.projectDid
+					}
+				}
 			};
 		}
 	}

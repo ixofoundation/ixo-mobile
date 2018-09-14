@@ -4,10 +4,11 @@ import moment from 'moment';
 import _ from 'underscore';
 import { Dimensions, Image, ImageBackground, StatusBar, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { IClaim, IProject } from '../models/project';
+import { IClaim, IProject, IClaimSaved } from '../models/project';
 import { IUser } from '../models/user';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { saveForm } from '../redux/claims/claims_action_creators';
+import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
 import ClaimsStyles from '../styles/Claims';
 import { ThemeColors, ClaimsButton } from '../styles/Colors';
 import DarkButton from '../components/DarkButton';
@@ -41,7 +42,7 @@ export interface StateProps {
 	ixo?: any;
 	user?: IUser;
 	project?: IProject;
-	savedClaims?: IClaim[];
+	savedProjectsClaims: IProjectsClaimsSaved[];
 }
 
 export interface StateProps {
@@ -51,10 +52,20 @@ export interface StateProps {
 
 export interface Props extends ParentProps, DispatchProps, StateProps {}
 
-const ClaimListItem = ({ projectName, claimColor, claim, onViewClaim }: { projectName: string; claimColor: string; claim: IClaim; onViewClaim: Function }) => (
+const ClaimListItem = ({
+	projectName,
+	claimColor,
+	claim,
+	onViewClaim
+}: {
+	projectName: string;
+	claimColor?: string;
+	claim: IClaim | IClaimSaved;
+	onViewClaim: Function;
+}) => (
 	<TouchableOpacity onPress={() => onViewClaim(claim.claimId)} key={claim.claimId}>
 		<View style={ClaimsStyles.claimListItemContainer}>
-			<View style={[ClaimsStyles.claimColorBlock, { backgroundColor: claimColor }]} />
+			{claimColor && <View style={[ClaimsStyles.claimColorBlock, { backgroundColor: claimColor }]} />}
 			<LinearGradient start={[0, 1]} colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]} style={[ClaimsStyles.ClaimBox]}>
 				<Text style={ClaimsStyles.claimTitle}>{`${projectName} ${claim.claimId.slice(claim.claimId.length - 12, claim.claimId.length)}`}</Text>
 				<Text style={ClaimsStyles.claimCreated}>Claim created {moment(claim.date).format('YYYY-MM-DD')}</Text>
@@ -107,7 +118,6 @@ class Claims extends React.Component<Props, StateProps> {
 			this.claimsList = props.project.data.claims.filter(claim => claim.saDid === this.props.user!.did);
 			this.claimForm = props.project.data.templates.claim.form;
 		}
-		
 	}
 
 	componentDidMount() {
@@ -136,7 +146,7 @@ class Claims extends React.Component<Props, StateProps> {
 			.catch((error: Error) => {
 				console.log(error);
 			});
-	}
+	};
 
 	renderSubmittedClaims() {
 		if (_.isEmpty(this.claimsList)) {
@@ -185,27 +195,27 @@ class Claims extends React.Component<Props, StateProps> {
 	}
 
 	renderSavedClaims() {
-		if (_.isEmpty(this.props.savedClaims)) {
-			return this.renderNoSavedClaims();
-		}
-		return (
-			<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
-				<Content>
-					{this.props.savedClaims &&
-						this.props.savedClaims.map((claim: IClaim) => {
+		const projectClaims: IProjectsClaimsSaved = this.props.savedProjectsClaims[this.projectDid];
+		if (projectClaims && projectClaims.claims) {
+			return (
+				<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
+					<Content>
+						{Object.keys(projectClaims.claims).map(key => {
+							const claim: IClaimSaved = projectClaims.claims[key];
 							return (
 								<ClaimListItem
 									key={claim.claimId}
 									projectName={this.projectName}
 									claim={claim}
-									claimColor={ThemeColors.orange}
 									onViewClaim={this.onViewClaim}
 								/>
 							);
 						})}
-				</Content>
-			</Container>
-		);
+					</Content>
+				</Container>
+			);
+		}
+		return this.renderNoSavedClaims();
 	}
 
 	renderNoSubmittedClaims() {
@@ -281,15 +291,19 @@ function mapDispatchToProps(dispatch: any): DispatchProps {
 		onFormSave: (claimForm: any, projectDid: string) => {
 			dispatch(saveForm(claimForm, projectDid));
 		}
-	}
+	};
 }
 
 function mapStateToProps(state: PublicSiteStoreState) {
 	return {
 		ixo: state.ixoStore.ixo,
 		user: state.userStore.user,
-		project: state.projectsStore.selectedProject
+		project: state.projectsStore.selectedProject,
+		savedProjectsClaims: state.claimsStore.savedProjectsClaims
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Claims);
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Claims);

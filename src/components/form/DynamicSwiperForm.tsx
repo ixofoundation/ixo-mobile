@@ -46,6 +46,7 @@ interface State {
 
 export interface Callbacks {
 	handleSubmit?: (formData: any) => void;
+	handleSave?: (formData: any) => void;
 }
 
 declare var formSwiperRef: any;
@@ -80,6 +81,12 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 			this.props.handleSubmit(this.formData);
 		}
 	};
+
+	handleSave = () => {
+		if (this.props.handleSave) {
+			this.props.handleSave(this.formData);
+		}
+	}
 
 	setFormState = (name: String, value: any) => {
 		const fields = name.split('.');
