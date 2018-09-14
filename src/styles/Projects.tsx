@@ -30,7 +30,7 @@ const styles = StyleSheet.create<Style>({
 	},
 	headerSync: {
 		paddingLeft: 10,
-		backgroundColor: ThemeColors.grey_sync,
+		backgroundColor: ThemeColors.red,
 		height: 30,
 		borderRadius: 30,
 		marginRight: 10
