@@ -9,15 +9,15 @@ export default (variables = variable) => {
       borderColor: variables.inputBorderColor
     },
     ".bordered": {
-      borderWidth: 1,
+      borderBottomWidth: 1,
       marginTop: 5,
-      borderColor: ThemeColors.orange
+      borderColor: ThemeColors.blue_lightest
     },
-    color: variables.textColor,
+    color: ThemeColors.white,
     paddingLeft: 10,
     paddingRight: 5,
     fontSize: 15,
-    textAlignVertical: "top"
+    textAlignVertical: "top",
   };
 
   return textAreaTheme;

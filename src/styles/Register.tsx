@@ -32,8 +32,6 @@ const styles = StyleSheet.create<Style>({
 	selected: {
 		borderColor: ThemeColors.blue_lightest,
 		borderWidth: 1,
-		// minHeight: deviceHeight * 0.2,
-		// maxHeight: deviceHeight * 0.2,
 		height: deviceHeight * 0.2,
 		flexDirection: 'row',
 		flexWrap: 'wrap',

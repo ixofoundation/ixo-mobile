@@ -61,6 +61,11 @@ export interface IClaim {
 	saDid: string;
 	eaDid?: string;
 }
+export interface IClaimSaved {
+	claimId: string;
+	claimData: string;
+	date: Date;
+}
 interface ILocation {
 	long: string;
 	lat: string;

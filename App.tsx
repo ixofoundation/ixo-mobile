@@ -1,22 +1,25 @@
 require('node-libs-react-native/globals');
-import * as React from 'react';
-import { StyleProvider, Root } from 'native-base';
-import { Provider } from 'react-redux';
-import { I18nextProvider, translate } from 'react-i18next';
-import { Font, ScreenOrientation, Util } from 'expo';
-import { ActionSheetProvider } from '@expo/react-native-action-sheet';
-import './shim.js';
-
 // @ts-ignore
-import getTheme from './native-base-theme/components';
-import Loading from './src/screens/Loading';
-import Stack from './Routes';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
+import { Font, ScreenOrientation } from 'expo';
+import { Root, StyleProvider, Text } from 'native-base';
+import * as React from 'react';
+// @ts-ignore
+import { PersistGate } from 'redux-persist/integration/react'
+import { I18nextProvider, translate } from 'react-i18next';
+import { Provider } from 'react-redux';
 import i18n from './i18n';
 // @ts-ignore
+import getTheme from './native-base-theme/components';
+// @ts-ignore
 import Ionicons from './node_modules/@expo/vector-icons/fonts/Ionicons.ttf';
-import { AsyncStorage } from './node_modules/@types/react-native';
+import OnBoardingNavigator from './Routes';
+import './shim.js';
 import { createPublicSiteStore } from './src/redux/store';
-const Roboto_medium = require('./assets/fonts/Roboto/Roboto-Medium.ttf');
+import Loading from './src/screens/Loading';
+
+const Roboto_medium = require('./assets/fonts/Roboto/Roboto-Regular.ttf');
+const Roboto_condensed = require('./assets/fonts/Roboto/RobotoCondensed-Regular.ttf');
 
 interface State {
 	isReady: boolean;
@@ -25,14 +28,13 @@ interface State {
 const store = createPublicSiteStore();
 
 const TranslateStack = () => {
-	return <Stack screenProps={{ t: i18n.getFixedT('') }} />;
+	return <OnBoardingNavigator screenProps={{ t: i18n.getFixedT('') }} />;
 };
 
 const ReloadAppOnLanguageChange = translate('translation', {
 	bindI18n: 'languageChanged',
 	bindStore: 'false'
 })(TranslateStack);
-
 
 export default class App extends React.Component<{}, State> {
 	state = {
@@ -43,7 +45,8 @@ export default class App extends React.Component<{}, State> {
 		ScreenOrientation.allow(ScreenOrientation.Orientation.PORTRAIT);
 		await Font.loadAsync({
 			Ionicons,
-			Roboto_medium
+			Roboto_medium,
+			Roboto_condensed
 		});
 		this.setState({ isReady: true });
 	}
@@ -54,10 +57,12 @@ export default class App extends React.Component<{}, State> {
 				<Root>
 					<StyleProvider style={getTheme()}>
 						<ActionSheetProvider>
-							<Provider store={store}>
-								<I18nextProvider i18n={ i18n }>
-									<ReloadAppOnLanguageChange />
-								</I18nextProvider>
+							<Provider store={store.store}>
+								<PersistGate loading={<Loading />} persistor={store.persistor}>
+									<I18nextProvider i18n={i18n}>
+										<ReloadAppOnLanguageChange />
+									</I18nextProvider>
+								</PersistGate>
 							</Provider>
 						</ActionSheetProvider>
 					</StyleProvider>

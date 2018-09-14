@@ -81,7 +81,7 @@ export default (variables = variable) => {
     },
     "NativeBase.Label": {
       fontSize: variables.inputFontSize,
-      color: variables.inputColorPlaceholder,
+      color: ThemeColors.blue_lightest,
       paddingRight: 5
     },
     "NativeBase.Icon": {

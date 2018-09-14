@@ -1,71 +1,76 @@
 import React from 'react';
-import { env } from '../../config';
-import { StatusBar, Dimensions } from 'react-native';
-import { Container, Content, View, Spinner, Toast } from 'native-base';
+import _ from 'underscore';
+import { StatusBar, TouchableOpacity } from 'react-native';
+import { Container, View, Spinner, Toast, Text, Icon } from 'native-base';
 import { ThemeColors } from '../styles/Colors';
+import { IProject, IClaim } from '../models/project';
 import NewClaimStyles from '../styles/NewClaim';
-import DynamicForm from '../components/form/DynamicForm';
+import DynamicSwiperForm from '../components/form/DynamicSwiperForm';
 import { FormStyles } from '../models/form';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
-const { height } = Dimensions.get('window');
+import { saveClaim } from '../redux/claims/claims_action_creators';
+import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
 import { connect } from 'react-redux';
-import { decode as base64Decode } from 'base-64';
 import { getSignature } from '../utils/sovrin';
-
-const placeholder = require('../../assets/ixo-placeholder.jpg');
 
 interface ParentProps {
 	navigation: any;
 	screenProps: any;
 }
 
-interface NavigationTypes {
-	navigation: any;
+interface StateTypes {
+	isLastCard: boolean;
 }
 
-interface StateTypes {
-	formFile: string | null;
-	fetchedFile: any;
+export interface DispatchProps {
+	onClaimSave: (claim: string, projectDID: string) => void;
 }
+
 export interface StateProps {
 	ixo?: any;
+	project?: IProject;
+	savedProjectsClaims: IProjectsClaimsSaved[];
 }
-export interface Props extends ParentProps, StateProps {}
+export interface Props extends ParentProps, DispatchProps, StateProps {}
 
+declare var dynamicForm: any;
 class NewClaim extends React.Component<Props, StateTypes> {
 	private pdsURL: string = '';
 	private projectDid: string | undefined;
+	private projectName: string = '';
+	private projectFormFile: string = '';
 
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			fetchedFile: null,
-			formFile: null
+			isLastCard: false
 		};
-	}
+		dynamicForm = React.createRef();
 
-	componentDidMount() {
-		let componentProps: any = this.props.navigation.state.params;
-
-		if (componentProps) {
-			this.pdsURL = componentProps.pdsURL;
-			this.fetchFormFile(componentProps.claimForm, this.pdsURL);
-			this.projectDid = componentProps.projectDid;
+		if (props.project) {
+			this.pdsURL = props.project.data.serviceEndpoint;
+			this.projectDid = props.project.projectDid;
+			this.projectName = props.project.data.title;
+			const projectsSavedClaims = _.find(this.props.savedProjectsClaims, (claim: IProjectsClaimsSaved) => claim.projectDid === this.projectDid);
+			this.projectFormFile = projectsSavedClaims && projectsSavedClaims.formFile;
 		}
 	}
 
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
 		const {
-			state: {
-				params: { title = 'New Claim' }
-			}
+			state: { params: { projectName = 'Loading...', saveText = '', onSave = null } = {} }
 		} = navigation;
 		return {
 			headerStyle: {
 				backgroundColor: ThemeColors.blue_dark,
 				borderBottomColor: ThemeColors.blue_dark
 			},
-			title,
+			title: projectName,
+			headerRight: (
+				<TouchableOpacity onPress={() => onSave()}>
+					<Text style={NewClaimStyles.headerSaveButton}>{saveText}</Text>
+				</TouchableOpacity>
+			),
 			headerTitleStyle: {
 				color: ThemeColors.white,
 				textAlign: 'center',
@@ -75,16 +80,16 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		};
 	};
 
-	fetchFormFile = (claimFormKey: string, pdsURL: string) => {
-		this.props.ixo.project
-			.fetchPublic(claimFormKey, pdsURL)
-			.then((res: any) => {
-				let fileContents = base64Decode(res.data);
-				this.setState({ fetchedFile: fileContents });
-			})
-			.catch((error: Error) => {
-				console.log(error);
-			});
+	componentDidMount() {
+		this.props.navigation.setParams({
+			projectName: this.projectName,
+			saveText: this.props.screenProps.t('claims:saveClaim'),
+			onSave: () => dynamicForm.current.handleSave()
+		});
+	}
+
+	onToggleLastCard = (active: boolean) => {
+		this.setState({ isLastCard: active });
 	};
 
 	handleSubmitClaim = (claimData: any) => {
@@ -113,9 +118,16 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			});
 	};
 
+	onSaveClaim = (claimData: any) => {
+		if (this.projectDid) {
+			this.props.onClaimSave(claimData, this.projectDid);
+			this.props.navigation.pop();
+		}
+	};
+
 	onFormSubmit = (formData: any) => {
 		// upload all the images and change the value to the returned hash of the image
-		let formDef = JSON.parse(this.state.fetchedFile);
+		let formDef = JSON.parse(this.projectFormFile);
 		let promises: Promise<any>[] = [];
 		formDef.fields.forEach((field: any) => {
 			if (field.type === 'image') {
@@ -141,39 +153,76 @@ class NewClaim extends React.Component<Props, StateTypes> {
 	};
 
 	renderForm() {
-		const claimParsed = JSON.parse(this.state.fetchedFile!);
-		if (this.state.fetchedFile) {
+		const claimParsed = JSON.parse(this.projectFormFile!);
+		if (this.projectFormFile) {
 			return (
-				<DynamicForm
-					editable={true}
+				<DynamicSwiperForm
+					ref={dynamicForm}
 					screenProps={this.props.screenProps}
 					formSchema={claimParsed.fields}
 					formStyle={FormStyles.standard}
 					handleSubmit={this.onFormSubmit}
+					handleSave={this.onSaveClaim}
+					onToggleLastCard={this.onToggleLastCard}
 				/>
 			);
 		} else {
-			return <Spinner color={ThemeColors.blue_light} />;
+			return <Spinner color={ThemeColors.white} />;
 		}
 	}
 
 	render() {
 		return (
-			<Container style={{ backgroundColor: ThemeColors.grey_sync, flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
+			<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
 				<StatusBar barStyle="light-content" />
-				<View style={{ height: height * 0.18, backgroundColor: ThemeColors.blue_dark, paddingHorizontal: '3%', paddingTop: '2%' }} />
-				<View style={[NewClaimStyles.formContainer, { position: 'absolute', height: height - 160, top: 30, alignSelf: 'center', width: '95%' }]}>
-					<Content style={{ paddingHorizontal: 10 }}>{this.renderForm()}</Content>
+				{this.renderForm()}
+				<View style={NewClaimStyles.navigatorContainer}>
+					<TouchableOpacity
+						onPress={() => dynamicForm.current.goBack()}
+						style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}
+					>
+						<Icon style={{ color: ThemeColors.blue_light, fontSize: 23 }} name="arrow-back" />
+						<Text style={NewClaimStyles.backNavigatorButton}>{this.props.screenProps.t('claims:back')}</Text>
+					</TouchableOpacity>
+					{this.state.isLastCard ? (
+						<TouchableOpacity
+							onPress={() => dynamicForm.current.handleSubmit()}
+							style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}
+						>
+							<Text style={NewClaimStyles.claimNavigatorButton}>{this.props.screenProps.t('claims:submitClaim')}</Text>
+						</TouchableOpacity>
+					) : (
+						<TouchableOpacity
+							onPress={() => dynamicForm.current.goNext()}
+							style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}
+						>
+							<Text style={NewClaimStyles.nextNavigatorButton}>{this.props.screenProps.t('claims:next')}</Text>
+							<Icon style={{ color: ThemeColors.white, fontSize: 23 }} name="arrow-forward" />
+						</TouchableOpacity>
+					)}
 				</View>
 			</Container>
 		);
 	}
 }
 
-function mapStateToProps(state: PublicSiteStoreState) {
+function mapDispatchToProps(dispatch: any): DispatchProps {
 	return {
-		ixo: state.ixoStore.ixo
+		onClaimSave: (claim: string, projectDID: string) => {
+			dispatch(saveClaim(claim, projectDID));
+		}
 	};
 }
 
-export default connect(mapStateToProps)(NewClaim);
+function mapStateToProps(state: PublicSiteStoreState) {
+	return {
+		ixo: state.ixoStore.ixo,
+		project: state.projectsStore.selectedProject,
+		savedProjectsClaims: state.claimsStore.savedProjectsClaims
+	};
+}
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(NewClaim);

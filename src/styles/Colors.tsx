@@ -5,12 +5,14 @@ const ThemeColors = {
 	blue_light: '#025F79',
 	blue_lightest: '#83D9F2',
 	blue_border: '#0D5068',
+	blue_white: '#B4EEFF',
 	white: '#FFF',
 	black: '#000',
 	grey: '#979797',
 	grey_sync: '#e0e0e0',
 	red: '#A11C43',
-	orange: '#F89D28'
+	orange: '#F89D28',
+	green: '#5AB946'
 };
 
 const ButtonDark = {
@@ -23,11 +25,21 @@ const ClaimsButton = {
 	colorSecondary: '#002D42'
 };
 
+const SignOutBox = {
+	colorPrimary: '#002D42',
+	colorSecondary: '#001E2D'
+};
+
 const ProjectStatus = {
 	notStarted: '#ff4b4b',
 	inProgress: '#FFA81E',
 	complete: '#008000'
 };
 
-export { ThemeColors, ProjectStatus, ButtonDark, ClaimsButton };
+const CardContainerBox = {
+	colorPrimary: '#016480',
+	colorSecondary: '#0292B5'
+};
+
+export { ThemeColors, ProjectStatus, ButtonDark, ClaimsButton, SignOutBox, CardContainerBox };
 

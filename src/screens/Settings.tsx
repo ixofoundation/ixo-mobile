@@ -1,8 +1,10 @@
 import { Container, Content, Icon, Text } from 'native-base';
 import React from 'react';
-import { Dimensions, StatusBar, TouchableOpacity } from 'react-native';
+import { Dimensions, StatusBar, TouchableOpacity, AsyncStorage } from 'react-native';
 import { ThemeColors } from '../styles/Colors';
 import ContainersStyles from '../styles/Containers';
+import DarkButton from '../components/DarkButton';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 const SettingsLink = ({ name, route, navigation }: { name: string; route: string; navigation: any }) => (
 	<TouchableOpacity style={[ContainersStyles.flexRow, { justifyContent: 'space-between' }]} onPress={() => navigation.navigate(route)}>
@@ -28,7 +30,7 @@ interface NavigationTypes {
 class Settings extends React.Component<ParentProps> {
 	static navigationOptions = (props: NavigationTypes) => {
 		return {
-			headerLeft: <Icon name="close" onPress={() => props.navigation.pop()} style={{ paddingLeft: 10 }} />,
+			headerLeft: <Icon name="close" onPress={() => props.navigation.navigate('Drawer')} style={{ paddingLeft: 10 }} />,
 			title: 'Settings',
 			headerTitleStyle: {
 				color: ThemeColors.black,
@@ -39,14 +41,22 @@ class Settings extends React.Component<ParentProps> {
 		};
 	};
 
+	resetAccount() {
+		AsyncStorage.clear();
+		this.props.navigation.dispatch(
+			StackActions.reset({
+				index: 0,
+				actions: [NavigationActions.navigate({ routeName: 'OnBoarding' })]
+			})
+		);
+	}
+
 	render() {
 		return (
 			<Container style={{ backgroundColor: ThemeColors.white }}>
 				<StatusBar barStyle="dark-content" />
 				<Content contentContainerStyle={{ backgroundColor: ThemeColors.white, padding: 20 }}>
-					<SettingsLink route={'Notifications'} name={'Notifications'} navigation={this.props.navigation} />
-					<SettingsLink route={'Privacy'} name={'Privacy'} navigation={this.props.navigation} />
-					<LogoutLink />
+					<DarkButton text="Reset Account" onPress={() => this.resetAccount()} />
 				</Content>
 			</Container>
 		);

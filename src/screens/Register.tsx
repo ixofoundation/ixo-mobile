@@ -17,6 +17,7 @@ import { initUser } from '../redux/user/user_action_creators';
 import { ButtonDark, ThemeColors } from '../styles/Colors';
 import RegisterStyles from '../styles/Register';
 import { Encrypt, generateSovrinDID, getSignature } from '../utils/sovrin';
+import { showToast, toastType } from '../utils/toasts';
 
 const bip39 = require('react-native-bip39');
 const background = require('../../assets/backgrounds/background_1.png');
@@ -27,11 +28,6 @@ enum registerSteps {
 	reenterMnemonic
 }
 
-enum toastType {
-	SUCCESS = 'success',
-	WARNING = 'warning',
-	DANGER = 'danger'
-}
 
 interface ParentProps {
 	navigation: any;
@@ -175,7 +171,7 @@ class Register extends React.Component<Props, StateTypes> {
 	}
 
 	ledgerDidOnBlockChain(did: string, pubKey: string) {
-		this.showToast('register:ledgerDid', toastType.SUCCESS);
+		showToast(this.props.screenProps.t('register:ledgerDid'), toastType.SUCCESS);
 
 		let newDidDoc = {
 			did: did,
@@ -187,31 +183,23 @@ class Register extends React.Component<Props, StateTypes> {
 		getSignature(payload).then((signature: any) => {
 			this.props.ixo.user.registerUserDid(payload, signature).then((response: any) => {
 				if (response.code === 0) {
-					this.showToast('register:didLedgeredSuccess', toastType.SUCCESS);
+					showToast(this.props.screenProps.t('register:didLedgeredSuccess'), toastType.SUCCESS);
 					this.navigateToLogin();
 				} else {
-					this.showToast('register:didLedgeredError', toastType.DANGER);
+					showToast(this.props.screenProps.t('register:didLedgeredError'), toastType.DANGER);
 				}
 			});
 		});
 	}
 
-	showToast(toastText: string, toastType: toastType) {
-		return Toast.show({
-			text: this.props.screenProps.t(toastText),
-			type: toastType,
-			position: 'top'
-		});
-	}
-
 	handleCreatePassword() {
 		if (this.state.confirmPassword === '' || this.state.password === '' || this.state.username === '') {
-			this.showToast('register:missingFields', toastType.WARNING);
+			showToast(this.props.screenProps.t('register:missingFields'), toastType.WARNING);
 			return;
 		}
 
 		if (this.state.password !== this.state.confirmPassword) {
-			this.showToast('register:missmatchPassword', toastType.WARNING);
+			showToast(this.props.screenProps.t('register:missmatchPassword'), toastType.WARNING);
 			return;
 		}
 
