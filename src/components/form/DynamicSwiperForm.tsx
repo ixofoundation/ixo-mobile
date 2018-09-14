@@ -46,6 +46,7 @@ interface State {
 
 export interface Callbacks {
 	handleSubmit?: (formData: any) => void;
+	handleSave?: (formData: any) => void;
 }
 
 declare var formSwiperRef: any;
@@ -60,7 +61,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 	state = {
 		submitStatus: '',
 		hasCameraPermission: false,
-		imageList: [],
+		imageList: []
 	};
 
 	async componentWillMount() {
@@ -80,6 +81,12 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 			this.props.handleSubmit(this.formData);
 		}
 	};
+
+	handleSave = () => {
+		if (this.props.handleSave) {
+			this.props.handleSave(this.formData);
+		}
+	}
 
 	setFormState = (name: String, value: any) => {
 		const fields = name.split('.');
@@ -121,7 +128,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 		if (this.isLastCardActive) {
 			return this.props.onToggleLastCard(false);
 		}
-	}
+	};
 
 	updateImageList = (fieldName: string, uri: string) => {
 		const imageListArray: IImage[] = this.state.imageList;
@@ -134,7 +141,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 		const index: number | undefined = _.findIndex(imageListArray, imageList => imageList.fieldName === fieldName);
 		imageListArray.splice(index, 1);
 		this.setState({ imageList: imageListArray });
-	}
+	};
 
 	async compressImage(uri: string) {
 		const compressedImage = await ImageManipulator.manipulate(uri, {}, { compress: 0.9, format: 'jpeg', base64: true });
@@ -185,7 +192,6 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 	};
 
 	renderEditImageField(field: any, index: number) {
-
 		const imageItem: IImage | undefined = _.find(this.state.imageList, (imageItem: IImage) => imageItem.fieldName === field.name);
 
 		if (_.isEmpty(this.state.imageList) || imageItem === undefined) {
@@ -197,9 +203,21 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 			);
 		}
 		return (
-			<View key={index} style={{ flexDirection: 'row', alignItems: 'center', width: '100%', backgroundColor: '#016C89', paddingHorizontal: '3%', justifyContent: 'space-between' }}>
+			<View
+				key={index}
+				style={{
+					flexDirection: 'row',
+					alignItems: 'center',
+					width: '100%',
+					backgroundColor: '#016C89',
+					paddingHorizontal: '3%',
+					justifyContent: 'space-between'
+				}}
+			>
 				<Text style={{ color: ThemeColors.blue_lightest, fontSize: 15 }}>{imageItem.filename}</Text>
-				<TouchableOpacity style={{ borderRadius: 35, justifyContent: 'center', alignItems: 'center' }}><Icon onPress={() => this.removeImageList(field.name)} style={{ color: ThemeColors.white }} name="close" /></TouchableOpacity>
+				<TouchableOpacity style={{ borderRadius: 35, justifyContent: 'center', alignItems: 'center' }}>
+					<Icon onPress={() => this.removeImageList(field.name)} style={{ color: ThemeColors.white }} name="close" />
+				</TouchableOpacity>
 			</View>
 		);
 	}
@@ -215,7 +233,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 				dotColor={ThemeColors.blue_light}
 				showsButtons={false}
 				paginationStyle={{ paddingBottom: 50 }}
-				onIndexChanged={(index: number) => this.onIndexChanged(index+1)}
+				onIndexChanged={(index: number) => this.onIndexChanged(index + 1)}
 			>
 				{this.props.formSchema.map((field: any, i: any) => {
 					const cardDetails = {
@@ -260,11 +278,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 
 	renderCard(input: JSX.Element, cardDetails: ICardDetails, index: number) {
 		return (
-			<LinearGradient
-				key={index}
-				colors={[CardContainerBox.colorPrimary, CardContainerBox.colorSecondary]}
-				style={[DynamicFormStyles.outerCardContainerActive]}
-			>
+			<LinearGradient key={index} colors={[CardContainerBox.colorPrimary, CardContainerBox.colorSecondary]} style={[DynamicFormStyles.outerCardContainerActive]}>
 				<View style={[ContainerStyles.flexColumn, DynamicFormStyles.innerCardContainer]} behavior={'position'}>
 					<View>
 						<Text style={[DynamicFormStyles.questionHeader]}>
@@ -281,6 +295,6 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 	}
 
 	render() {
-		return this.renderCards()
+		return this.renderCards();
 	}
 }

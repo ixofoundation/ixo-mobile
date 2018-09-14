@@ -1,17 +1,22 @@
 import { IClaim } from '../../models/project';
 
 export interface Claim {
-    claim: IClaim;
-    projectDID: string;
+    claimData: string;
+    projectDid: string;
+    claimId: string;
 }
 
 export interface ClaimForm {
-    claimForm: any;
-    projectDID: string;
+    formFile: any;
+    projectDid: string;
 }
 
 export module CLAIM_ADD {
     export var type = 'CLAIM_ADD';
+}
+
+export module CLAIM_UPDATE {
+    export var type = 'CLAIM_UPDATE';
 }
 
 export module CLAIM_FILEFORM_SAVE {

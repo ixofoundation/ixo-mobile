@@ -1,45 +1,23 @@
 import _ from 'underscore';
+// @ts-ignore
+import uuid from 'react-native-uuid';
 import { createReducer } from '../../lib/redux_utils/reducers';
-import { IClaim } from '../../models/project';
+import { IClaimSaved } from '../../models/project';
 import { Claim, ClaimForm, CLAIM_ADD, CLAIM_FILEFORM_SAVE } from './claims_actions';
 
-interface IClaimsSaved {
-	projectDID: string;
-	claims: IClaim[];
+export interface IProjectsClaimsSaved {
 	formFile?: any;
+	projectDid: string;
+	claims?: IClaimSaved[];
 }
 
 export type IClaimsModelState = {
-	savedClaims: IClaimsSaved[];
+	savedProjectsClaims: IProjectsClaimsSaved[];
 };
 
 const initialState: IClaimsModelState = {
-	savedClaims: []
+	savedProjectsClaims: []
 };
-
-function addClaimToProject(savedClaims: IClaimsSaved[], projectDID: string, newClaim: IClaim): IClaimsSaved {
-	const projectSavedClaim: IClaimsSaved | undefined = _.find(savedClaims, savedClaim => savedClaim.projectDID === projectDID);
-	if (projectSavedClaim) {
-		// append claim
-		projectSavedClaim.claims.push(newClaim);
-		return { claims: projectSavedClaim.claims, projectDID: projectDID };
-	} else {
-		// claim project has no claims yet
-		return { claims: [newClaim], projectDID: projectDID };
-	}
-}
-
-function updateClaimFormOfProject(savedClaims: IClaimsSaved[], action: ClaimForm) {
-	return savedClaims.map((item) => {
-		if(action.projectDID !== item.projectDID) {
-            return item;
-        }
-        return {
-            ...item,
-            ...action.claimForm
-        };
-	});
-}
 
 export let claimsReducer = createReducer<IClaimsModelState>(initialState, [
 	{
@@ -47,17 +25,37 @@ export let claimsReducer = createReducer<IClaimsModelState>(initialState, [
 		handler: (state: IClaimsModelState, action: Claim) => {
 			return {
 				...state,
-				savedClaims: [...state.savedClaims, addClaimToProject(state.savedClaims, action.projectDID, action.claim)]
+				savedProjectsClaims: {
+					...state.savedProjectsClaims,
+					[action.projectDid]: {
+						...state.savedProjectsClaims[action.projectDid],
+						claims: {
+							...state.savedProjectsClaims[action.projectDid].claims,
+							[uuid.v4()]: {
+								...state.savedProjectsClaims[action.projectDid][uuid.v4()],
+								claimData: action.claimData,
+								claimId: uuid.v4(),
+								date: new Date(),
+							}
+						}
+					}
+				}
 			};
 		}
 	},
 	{
 		action: CLAIM_FILEFORM_SAVE,
 		handler: (state: IClaimsModelState, action: ClaimForm) => {
-			debugger;
 			return {
 				...state,
-				savedClaims: [...updateClaimFormOfProject(state.savedClaims, action)]
+				savedProjectsClaims: {
+					...state.savedProjectsClaims,
+					[action.projectDid]: {
+						...state.savedProjectsClaims[action.projectDid],
+						formFile: action.formFile,
+						projectDid: action.projectDid
+					}
+				}
 			};
 		}
 	}

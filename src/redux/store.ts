@@ -19,7 +19,8 @@ export function createPublicSiteStore(this: any, preloadedState?: PublicSiteStor
 	middlewares.push(logger);
 	const persistedReducer = persistReducer(persistConfig, publicSiteReducer)
 	publicStore = createStore.call(this, persistedReducer, preloadedState, applyMiddleware(...middlewares));
-	let persistor = persistStore(publicStore)
+	let persistor = persistStore(publicStore);
+	persistor.purge();
 	return { store: publicStore, persistor }
 }
 
