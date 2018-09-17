@@ -9,6 +9,7 @@
     "@types/react-native": "^0.56.15",
     "@types/react-navigation": "^2.0.6",
     "@types/react-test-renderer": "^16.0.1",
+    "@types/validator": "^9.4.2",
     "jest-expo": "^29.0.0",
     "react-native-scripts-ts": "^1.15.0",
     "react-native-typescript-transformer": "^1.2.10",
@@ -115,6 +116,7 @@
     "url": "^0.10.3",
     "utf8": "^3.0.0",
     "util": "^0.10.4",
+    "validator": "^10.7.1",
     "vm-browserify": "0.0.4"
   },
   "react-native": {
