@@ -78,7 +78,7 @@ export class Projects extends React.Component<Props, StateProps> {
 			headerRight: (
 				<View style={ContainerStyles.flexRow}>
 					<Icon name="search" onPress={() => alert('to do')} style={{ paddingRight: 10, color: ThemeColors.white }} />
-					<HeaderSync />
+					<HeaderSync screenProps={screenProps} />
 				</View>
 			)
 		};
@@ -88,7 +88,7 @@ export class Projects extends React.Component<Props, StateProps> {
 		this.props.navigation.setParams({
 			// @ts-ignore
 			openDrawer: this.openDrawer,
-			savedProjectsClaims: this.props.savedProjectsClaims
+			savedProjectsClaims: this.props.savedProjectsClaims,
 		});
 		this.props.onIxoInit();
 		NetInfo.isConnected.addEventListener('connectionChange', this.networkConnectionChange);
@@ -324,8 +324,8 @@ export class Projects extends React.Component<Props, StateProps> {
 	renderConnectivity() {
 		if (this.state.isConnected) return null;
 		return (
-			<View style={{ height: height * 0.03, width: '100%', backgroundColor: ThemeColors.orange }}>
-				<Text style={{ textAlign: 'center', color: ThemeColors.white }}>Offline</Text>
+			<View style={{ height: height * 0.03, width: '100%', backgroundColor: ThemeColors.red, alignItems: 'center' }}>
+				<Text style={{ fontSize: height * 0.015, textAlign: 'center', color: ThemeColors.white, fontFamily: 'Roboto_condensed', paddingTop: 4 }}>OFFLINE MODE</Text>
 			</View>
 		);
 	}

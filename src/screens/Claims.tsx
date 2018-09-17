@@ -90,7 +90,7 @@ class Claims extends React.Component<Props, StateProps> {
 	claimsList: IClaim[] = [];
 	claimForm: string = '';
 
-	static navigationOptions = ({ navigation }: { navigation: any }) => {
+	static navigationOptions = ({ navigation, screenProps }: { navigation: any, screenProps: any }) => {
 		const {
 			state: { params: { projectName = 'Loading...' } = {} }
 		} = navigation;
@@ -102,7 +102,7 @@ class Claims extends React.Component<Props, StateProps> {
 			headerRight: (
 				<View style={ContainerStyles.flexRow}>
 					<Icon name="search" onPress={() => alert('to do')} style={{ paddingRight: 10, color: ThemeColors.white }} />
-					<HeaderSync />
+					<HeaderSync screenProps={screenProps} />
 				</View>
 			),
 			title: projectName,

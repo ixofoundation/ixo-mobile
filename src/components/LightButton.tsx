@@ -14,6 +14,7 @@ const LightButton = ({ onPress, text = '?', propStyles = {} }: { onPress: any, t
             fontSize: 15,
             color: ThemeColors.white,
             fontWeight: '400',
+            fontFamily: 'Roboto_condensed',
           }}>
           {text}
         </Text>

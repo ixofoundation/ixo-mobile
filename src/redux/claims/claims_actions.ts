@@ -22,3 +22,7 @@ export module CLAIM_UPDATE {
 export module CLAIM_FILEFORM_SAVE {
     export var type = 'CLAIM_FILEFORM_SAVE';
 }
+
+export module CLAIM_SUBMIT_ALL {
+    export var type
+}

@@ -1,21 +1,32 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, Modal } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon, Text } from 'native-base';
 
 import ContainerStyles from '../styles/Containers';
-import ProjectsStyles from '../styles/Projects';
+import HeaderSyncStyles from '../styles/componentStyles/HeaderSync';
 import { ThemeColors } from '../styles/Colors';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
 
+import ModalSubmitClaims from '../components/ModalSubmitClaims';
+interface ParentProps {
+	screenProps: any;
+}
+export interface StateProps {
+	modalVisible: boolean;
+}
 export interface DispatchProps {}
 export interface StateProps {
 	savedProjectsClaims?: IProjectsClaimsSaved[];
 }
 
-export interface Props extends DispatchProps, StateProps {}
+export interface Props extends DispatchProps, ParentProps {}
 class HeaderSync extends React.Component<Props, StateProps> {
+	state = {
+		modalVisible: false,
+	};
+
 	calculateTotalSavedClams(): number {
 		const projectClaims = this.props.savedProjectsClaims;
 		if (projectClaims) {
@@ -33,9 +44,16 @@ class HeaderSync extends React.Component<Props, StateProps> {
 	render() {
 		const numberOfSavedClaims = this.calculateTotalSavedClams();
 		return numberOfSavedClaims === 0 ? null : (
-			<TouchableOpacity style={[ContainerStyles.flexRow, ProjectsStyles.headerSync]}>
-				<Text style={{ color: ThemeColors.white, paddingRight: 5 }}>{this.calculateTotalSavedClams()}</Text>
-				<Icon style={{ marginRight: 10, fontSize: 20, color: ThemeColors.white }} ios="ios-sync" android="md-sync" />
+			<TouchableOpacity onPress={() => this.setState({ modalVisible: true })} style={[ContainerStyles.flexRow, HeaderSyncStyles.headerSync]}>
+				<Text style={HeaderSyncStyles.claimsAmount}>{this.calculateTotalSavedClams()}</Text>
+				<Icon style={HeaderSyncStyles.syncIcon} ios="ios-sync" android="md-sync" />
+				<Modal
+						animationType="slide"
+						transparent={true}
+						visible={this.state.modalVisible}
+					>
+					<ModalSubmitClaims onSubmit={() => this.onSubmit()} onClose={() => this.setState({ modalVisible: false })} screenProps={this.props.screenProps} />
+				</Modal>
 			</TouchableOpacity>
 		);
 	}
