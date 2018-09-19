@@ -37,7 +37,7 @@ interface ParentProps {
 }
 
 export interface DispatchProps {
-	onFormSave: (claimForm: any, projectDID: string) => void;
+	onFormSave: (claimForm: any, projectDID: string, pdsURL: string) => void;
 }
 
 export interface StateProps {
@@ -148,7 +148,7 @@ class Claims extends React.Component<Props, StateProps> {
 			.fetchPublic(claimFormKey, pdsURL)
 			.then((res: any) => {
 				let fileContents = base64Decode(res.data);
-				this.props.onFormSave(fileContents, this.projectDid || '');
+				this.props.onFormSave(fileContents, this.projectDid || '', this.pdsURL);
 			})
 			.catch((error: Error) => {
 				console.log(error);
@@ -202,7 +202,7 @@ class Claims extends React.Component<Props, StateProps> {
 	}
 
 	renderSavedClaims(projectClaims: any) {
-		if (projectClaims && projectClaims.claims) {
+		if (projectClaims && projectClaims.claims && Object.keys(projectClaims.claims).length !== 0) {
 			return (
 				<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
 					<Content>
@@ -303,8 +303,8 @@ class Claims extends React.Component<Props, StateProps> {
 
 function mapDispatchToProps(dispatch: any): DispatchProps {
 	return {
-		onFormSave: (claimForm: any, projectDid: string) => {
-			dispatch(saveForm(claimForm, projectDid));
+		onFormSave: (claimForm: any, projectDid: string, pdsURL: string) => {
+			dispatch(saveForm(claimForm, projectDid, pdsURL));
 		}
 	};
 }
