@@ -23,6 +23,8 @@ interface Style {
 	claimStatusIcons: TextStyle;
 	claimHeadingContainer: ViewStyle;
 	claimHeadingText: TextStyle;
+	tabCounterContainer: ViewStyle;
+	tabCounterText: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -135,6 +137,15 @@ const styles = StyleSheet.create<Style>({
 		color: ThemeColors.white,
 		marginVertical: height * 0.04,
 		paddingLeft: 10
+	},
+	tabCounterContainer: {
+		backgroundColor: ThemeColors.red,
+		padding: 4,
+		borderRadius: 10
+	},
+	tabCounterText: {
+		fontSize: 13,
+		color: ThemeColors.white
 	}
 });
 

@@ -3,7 +3,6 @@ import { ThemeColors } from '../styles/Colors';
 
 const { width, height } = Dimensions.get('window');
 interface Style {
-	headerSync: ViewStyle;
 	projectBox: ViewStyle;
 	projectBoxStatusBar: ViewStyle;
 	flexLeft: ViewStyle;
@@ -27,13 +26,6 @@ const styles = StyleSheet.create<Style>({
 	drawerOpen: {
 		opacity: 0.4,
 		backgroundColor: ThemeColors.black 
-	},
-	headerSync: {
-		paddingLeft: 10,
-		backgroundColor: ThemeColors.grey_sync,
-		height: 30,
-		borderRadius: 30,
-		marginRight: 10
 	},
 	projectBox: {
 		margin: 10

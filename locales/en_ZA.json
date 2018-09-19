@@ -62,7 +62,12 @@
 		"claimPending": "CLAIMS PENDING APPROVAL",
 		"claimRejected": "CLAIMS REJECTED",
 		"claimApproved": "CLAIMS APPROVED",
-		"saveClaim": "SAVE"
+		"saveClaim": "SAVE",
+		"submitAllClaims": "Submit all your saved claims?",
+		"submitAllDiscription": "This cannot be undone",
+		"submit": "SUBMIT",
+		"whatIsThis": "What is this?",
+		"failedSubmitClaim": "Failed to submit claim"
 	},
 	"submittedClaims": {
 		"successMessage": "Your claim has been successfully submitted",

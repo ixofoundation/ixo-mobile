@@ -14,9 +14,11 @@ import { IUser } from '../models/user';
 import { initIxo } from '../redux/ixo/ixo_action_creators';
 import { updateProjects, loadProject } from '../redux/projects/projects_action_creators';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
+import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
 import { ProjectStatus, ThemeColors } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
 import ProjectsStyles from '../styles/Projects';
+import HeaderSync from '../components/HeaderSync';
 
 const placeholder = require('../../assets/ixo-placeholder.jpg');
 const background = require('../../assets/backgrounds/background_2.png');
@@ -37,6 +39,7 @@ export interface DispatchProps {
 export interface StateProps {
 	ixo?: any;
 	user?: IUser;
+	savedProjectsClaims?: IProjectsClaimsSaved[];
 }
 
 export interface StateProps {
@@ -57,7 +60,7 @@ export class Projects extends React.Component<Props, StateProps> {
 		isConnected: false
 	};
 
-	static navigationOptions = ({ navigation, screenProps }: { navigation: any; screenProps: any }) => {
+	static navigationOptions = ({ navigation, screenProps, savedProjectsClaims }: { navigation: any; screenProps: any; savedProjectsClaims: IProjectsClaimsSaved }) => {
 		const { params = {} } = navigation.state;
 		return {
 			headerStyle: {
@@ -72,14 +75,20 @@ export class Projects extends React.Component<Props, StateProps> {
 			},
 			title: params.showTitle ? screenProps.t('projects:myProjects') : '',
 			headerLeft: <Icon name="menu" onPress={() => params.openDrawer()} style={{ paddingLeft: 10, color: ThemeColors.white }} />,
-			headerRight: <Icon name="search" onPress={() => alert('to do')} style={{ paddingRight: 10, color: ThemeColors.white }} />
+			headerRight: (
+				<View style={ContainerStyles.flexRow}>
+					<Icon name="search" onPress={() => alert('to do')} style={{ paddingRight: 10, color: ThemeColors.white }} />
+					<HeaderSync screenProps={screenProps} />
+				</View>
+			)
 		};
 	};
 
-	async componentDidMount() {
+	componentDidMount() {
 		this.props.navigation.setParams({
 			// @ts-ignore
-			openDrawer: this.openDrawer
+			openDrawer: this.openDrawer,
+			savedProjectsClaims: this.props.savedProjectsClaims,
 		});
 		this.props.onIxoInit();
 		NetInfo.isConnected.addEventListener('connectionChange', this.networkConnectionChange);
@@ -315,8 +324,8 @@ export class Projects extends React.Component<Props, StateProps> {
 	renderConnectivity() {
 		if (this.state.isConnected) return null;
 		return (
-			<View style={{ height: height * 0.03, width: '100%', backgroundColor: ThemeColors.orange }}>
-				<Text style={{ textAlign: 'center', color: ThemeColors.white }}>Offline</Text>
+			<View style={{ height: height * 0.03, width: '100%', backgroundColor: ThemeColors.red, alignItems: 'center' }}>
+				<Text style={{ fontSize: height * 0.015, textAlign: 'center', color: ThemeColors.white, fontFamily: 'Roboto_condensed', paddingTop: 4 }}>OFFLINE MODE</Text>
 			</View>
 		);
 	}
@@ -343,7 +352,8 @@ function mapStateToProps(state: PublicSiteStoreState) {
 	return {
 		ixo: state.ixoStore.ixo,
 		user: state.userStore.user,
-		projects: state.projectsStore.projects
+		projects: state.projectsStore.projects,
+		savedProjectsClaims: state.claimsStore.savedProjectsClaims
 	};
 }
 

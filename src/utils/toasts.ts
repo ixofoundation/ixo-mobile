@@ -9,7 +9,7 @@ export enum toastType {
 export function showToast(toastText: string, toastType: toastType) {
     return Toast.show({
         text: toastText,
-        type: 'warning',
+        type: toastType,
         position: 'top'
     });
 }

@@ -1,4 +1,4 @@
-import { Container, Content, Icon, Tab, Tabs, Text, View } from 'native-base';
+import { Container, Content, Icon, Tab, Tabs, TabHeading, Text, View } from 'native-base';
 import * as React from 'react';
 import moment from 'moment';
 import _ from 'underscore';
@@ -10,8 +10,10 @@ import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { saveForm } from '../redux/claims/claims_action_creators';
 import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
 import ClaimsStyles from '../styles/Claims';
+import ContainerStyles from '../styles/Containers';
 import { ThemeColors, ClaimsButton } from '../styles/Colors';
 import DarkButton from '../components/DarkButton';
+import HeaderSync from '../components/HeaderSync';
 import { LinearGradient } from 'expo';
 import { decode as base64Decode } from 'base-64';
 
@@ -35,7 +37,7 @@ interface ParentProps {
 }
 
 export interface DispatchProps {
-	onFormSave: (claimForm: any, projectDID: string) => void;
+	onFormSave: (claimForm: any, projectDID: string, pdsURL: string) => void;
 }
 
 export interface StateProps {
@@ -88,7 +90,7 @@ class Claims extends React.Component<Props, StateProps> {
 	claimsList: IClaim[] = [];
 	claimForm: string = '';
 
-	static navigationOptions = ({ navigation }: { navigation: any }) => {
+	static navigationOptions = ({ navigation, screenProps }: { navigation: any, screenProps: any }) => {
 		const {
 			state: { params: { projectName = 'Loading...' } = {} }
 		} = navigation;
@@ -97,7 +99,12 @@ class Claims extends React.Component<Props, StateProps> {
 				backgroundColor: ThemeColors.blue_dark,
 				borderBottomColor: ThemeColors.blue_dark
 			},
-			headerRight: <Icon name="search" onPress={() => alert('todo')} style={{ paddingRight: 10, color: ThemeColors.white }} />,
+			headerRight: (
+				<View style={ContainerStyles.flexRow}>
+					<Icon name="search" onPress={() => alert('to do')} style={{ paddingRight: 10, color: ThemeColors.white }} />
+					<HeaderSync screenProps={screenProps} />
+				</View>
+			),
 			title: projectName,
 			headerTitleStyle: {
 				color: ThemeColors.white,
@@ -141,7 +148,7 @@ class Claims extends React.Component<Props, StateProps> {
 			.fetchPublic(claimFormKey, pdsURL)
 			.then((res: any) => {
 				let fileContents = base64Decode(res.data);
-				this.props.onFormSave(fileContents, this.projectDid || '');
+				this.props.onFormSave(fileContents, this.projectDid || '', this.pdsURL);
 			})
 			.catch((error: Error) => {
 				console.log(error);
@@ -194,22 +201,14 @@ class Claims extends React.Component<Props, StateProps> {
 		);
 	}
 
-	renderSavedClaims() {
-		const projectClaims: IProjectsClaimsSaved = this.props.savedProjectsClaims[this.projectDid];
-		if (projectClaims && projectClaims.claims) {
+	renderSavedClaims(projectClaims: any) {
+		if (projectClaims && projectClaims.claims && Object.keys(projectClaims.claims).length !== 0) {
 			return (
 				<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
 					<Content>
 						{Object.keys(projectClaims.claims).map(key => {
 							const claim: IClaimSaved = projectClaims.claims[key];
-							return (
-								<ClaimListItem
-									key={claim.claimId}
-									projectName={this.projectName}
-									claim={claim}
-									onViewClaim={this.onViewClaim}
-								/>
-							);
+							return <ClaimListItem key={claim.claimId} projectName={this.projectName} claim={claim} onViewClaim={this.onViewClaim} />;
 						})}
 					</Content>
 				</Container>
@@ -272,12 +271,28 @@ class Claims extends React.Component<Props, StateProps> {
 		);
 	}
 
+	renderSavedTab(numberOfSavedClaims: number) {
+		if (numberOfSavedClaims === 0) {
+			return this.props.screenProps.t('claims:saved');
+		}
+		return (
+			<TabHeading>
+				<View style={ClaimsStyles.tabCounterContainer}>
+					<Text style={ClaimsStyles.tabCounterText}>{numberOfSavedClaims}</Text>
+				</View>
+				<Text>{this.props.screenProps.t('claims:saved')}</Text>
+			</TabHeading>
+		);
+	}
+
 	render() {
+		const projectClaims: IProjectsClaimsSaved = this.props.savedProjectsClaims[this.projectDid];
+		const numberOfSavedClaims: number = projectClaims && projectClaims.claims ? Object.keys(projectClaims.claims).length : 0;
 		return (
 			<Container style={{ backgroundColor: ThemeColors.blue_dark }}>
 				<StatusBar barStyle="light-content" />
-				<Tabs tabBarUnderlineStyle={{ borderWidth: 1 }} tabContainerStyle={{ borderBottomColor: ThemeColors.blue_dark }}>
-					<Tab heading={this.props.screenProps.t('claims:saved')}>{this.renderSavedClaims()}</Tab>
+				<Tabs tabBarUnderlineStyle={{ borderWidth: 1 }} tabContainerStyle={{ borderBottomColor: ThemeColors.blue_light }}>
+					<Tab heading={this.renderSavedTab(numberOfSavedClaims)}>{this.renderSavedClaims(projectClaims)}</Tab>
 					<Tab heading={this.props.screenProps.t('claims:submitted')}>{this.renderSubmittedClaims()}</Tab>
 				</Tabs>
 				<DarkButton onPress={() => this.props.navigation.navigate('NewClaim')} text={this.props.screenProps.t('claims:submitButton')} />
@@ -288,8 +303,8 @@ class Claims extends React.Component<Props, StateProps> {
 
 function mapDispatchToProps(dispatch: any): DispatchProps {
 	return {
-		onFormSave: (claimForm: any, projectDid: string) => {
-			dispatch(saveForm(claimForm, projectDid));
+		onFormSave: (claimForm: any, projectDid: string, pdsURL: string) => {
+			dispatch(saveForm(claimForm, projectDid, pdsURL));
 		}
 	};
 }

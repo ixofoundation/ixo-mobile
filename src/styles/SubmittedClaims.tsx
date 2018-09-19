@@ -21,7 +21,8 @@ const styles = StyleSheet.create<Style>({
 	header: {
 		color: ThemeColors.white,
 		fontSize: 29,
-		paddingBottom: 20
+		paddingBottom: 20,
+		fontFamily: 'Roboto_condensed'
 	},
 	flexLeft: {
 		flexDirection: 'row',
