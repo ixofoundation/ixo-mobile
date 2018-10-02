@@ -52,7 +52,6 @@ interface State {
 }
 
 export interface Props extends ParentProps, DispatchProps, StateProps {}
-
 export class ScanQR extends React.Component<Props, State> {
 	static navigationOptions = ({ screenProps }: { screenProps: any }) => {
 		return {

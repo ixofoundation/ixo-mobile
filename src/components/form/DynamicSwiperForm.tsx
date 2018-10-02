@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Swiper from 'react-native-swiper';
-// import { ImagePicker, Permissions, ImageManipulator, LinearGradient } from 'expo';
+import ImagePicker from 'react-native-image-picker';
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native';
 import { FormStyles } from '../../models/form';
@@ -49,9 +49,9 @@ export interface Callbacks {
 }
 
 declare var formSwiperRef: any;
+declare var cameraRef: any;
 
 export interface Props extends ParentProps, Callbacks {}
-// @connectActionSheet
 export default class DynamicSwiperForm extends React.Component<Props, State> {
 	private formData: any = {};
 	private activeScreenIndex: number = 1;
@@ -105,12 +105,12 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 
 	goBack() {
 		formSwiperRef.scrollBy(-1);
-		// this.isLastCard();
+		this.isLastCard();
 	}
 
 	goNext() {
 		formSwiperRef.scrollBy(1);
-		// this.isLastCard();
+		this.isLastCard();
 	}
 
 	onIndexChanged = (index: number) => {
@@ -142,46 +142,23 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 		this.setState({ imageList: imageListArray });
 	}
 
-	async compressImage(uri: string) {
-		// @ts-ignore
-		const compressedImage = await ImageManipulator.manipulate(uri, {}, { compress: 0.9, format: 'jpeg', base64: true });
-		const base64 = `data:image/jpeg;base64,${compressedImage.base64}`;
-		return base64;
-	}
-
-	async pickImage(fieldName: string) {
+	pickImage(fieldName: string) {
 		try {
-			// const { status: camera_roll } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-			// if (camera_roll === 'granted') {
-			// 	let result: any = await ImagePicker.launchImageLibraryAsync({
-			// 		allowsEditing: true,
-			// 		aspect: [4, 3]
-			// 	});
-			// 	if (!result.cancelled) {
-			// 		this.updateImageList(fieldName, result.uri);
-			// 		const base64 = await this.compressImage(result.uri);
-			// 		this.setFormState(fieldName, base64);
-			// 	}
-			// }
+			ImagePicker.launchImageLibrary({ quality: 0.9, mediaType: 'photo' }, (response)  => {
+				const base64 = `data:image/jpeg;base64,${response.data}`;
+				this.setFormState(fieldName, base64);
+			});
 		} catch (error) {
 			console.log(error);
 		}
 	}
 
-	async takePhoto(fieldName: string) {
+	takePhoto(fieldName: string) {
 		try {
-			// const { status: camera } = await Permissions.askAsync(Permissions.CAMERA);
-			// if (camera === 'granted') {
-			// 	let result: any = await ImagePicker.launchCameraAsync({
-			// 		allowsEditing: true,
-			// 		aspect: [4, 3]
-			// 	});
-			// 	if (!result.cancelled) {
-			// 		this.updateImageList(fieldName, result.uri);
-			// 		const base64 = await this.compressImage(result.uri);
-			// 		this.setFormState(fieldName, base64);
-			// 	}
-			// }
+			ImagePicker.launchCamera({ quality: 0.9, mediaType: 'photo' }, (response)  => {
+				const base64 = `data:image/jpeg;base64,${response.data}`;
+				this.setFormState(fieldName, base64);
+			});
 		} catch (error) {
 			console.log(error);
 		}
@@ -193,7 +170,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 
 	renderEditImageField(field: any, index: number) {
 		const imageItem: IImage | undefined = _.find(this.state.imageList, (imageItem: IImage) => imageItem.fieldName === field.name);
-
+		debugger;
 		if (_.isEmpty(this.state.imageList) || imageItem === undefined) {
 			return (
 				<View key={index}>
@@ -202,6 +179,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 				</View>
 			);
 		}
+		
 		return (
 			<View
 				key={index}

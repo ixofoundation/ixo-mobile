@@ -168,7 +168,7 @@ export class Projects extends React.Component<Props, StateProps> {
 		const rejectedWidth = Math.ceil((rejected / total) * 100);
 		return (
 			<View style={[ContainerStyles.flexRow, { justifyContent: 'flex-start', backgroundColor: 'transparent', paddingVertical: 10 }]}>
-				<LinearGradient start={[0, 1]} colors={['#016480', '#03d0FE']} style={{ height: 5, width: `${approvedWidth}%`, borderRadius: 2 }} />
+				<LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#016480', '#03d0FE']} style={{ height: 5, width: `${approvedWidth}%`, borderRadius: 2 }} />
 				<View style={[{ backgroundColor: '#E2223B', height: 5, width: `${rejectedWidth}%`, borderRadius: 2 }]} />
 				<View style={[{ backgroundColor: '#033C50', height: 5, width: `${100 - approvedWidth - rejectedWidth}%`, borderRadius: 2 }]} />
 			</View>

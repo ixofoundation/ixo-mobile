@@ -71,7 +71,6 @@ const styles = StyleSheet.create<Style>({
 		height: height * 0.3,
 		justifyContent: 'flex-end',
 		flexDirection: 'row',
-		paddingRight: 13,
 		borderLeftWidth: 1,
 		borderRightWidth: 1,
 		borderTopWidth: 1,

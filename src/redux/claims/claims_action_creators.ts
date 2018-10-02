@@ -4,7 +4,7 @@ import { Claim, ClaimForm, CLAIM_ADD, CLAIM_REMOVE, CLAIM_FILEFORM_SAVE } from '
 export function saveClaim(claimData: string, projectDid: string) {
 	return (dispatch: Function) => {
 		dispatch(
-			createAction<Claim>(CLAIM_ADD, {
+			createAction<Claim>(CLAIM_ADD.type, {
 				claimData,
 				projectDid
 			})
@@ -15,7 +15,7 @@ export function saveClaim(claimData: string, projectDid: string) {
 export function removeClaim(claimId: any, projectDid: string) {
 	return (dispatch: Function) => {
 		dispatch(
-			createAction<Claim>(CLAIM_REMOVE, {
+			createAction<Claim>(CLAIM_REMOVE.type, {
 				claimId,
 				projectDid
 			})
@@ -26,7 +26,7 @@ export function removeClaim(claimId: any, projectDid: string) {
 export function saveForm(formFile: any, projectDid: string, pdsURL: string) {
 	return (dispatch: Function) => {
 		dispatch(
-			createAction<ClaimForm>(CLAIM_FILEFORM_SAVE, {
+			createAction<ClaimForm>(CLAIM_FILEFORM_SAVE.type, {
 				formFile,
 				projectDid,
 				pdsURL

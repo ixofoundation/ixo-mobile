@@ -15,11 +15,10 @@ interface Props extends DispatchProps {}
 
 class TranslateStack extends React.Component<Props, {}> {
 	componentDidMount() {
-		// NetInfo.isConnected.fetch().then(isConnected => {
-		// 	console.log('CONNECTED:::', isConnected);
-		// 	this.props.onToggleConnection(isConnected);
-		// });
-		// NetInfo.isConnected.addEventListener('connectionChange', isConnected => this.props.onToggleConnection(isConnected));
+		NetInfo.isConnected.fetch().then(isConnected => {
+			this.props.onToggleConnection(isConnected);
+		});
+		NetInfo.isConnected.addEventListener('connectionChange', isConnected => this.props.onToggleConnection(isConnected));
 	}
 
 	render() {
@@ -29,7 +28,7 @@ class TranslateStack extends React.Component<Props, {}> {
 
 function mapStateToProps(state: PublicSiteStoreState) {
 	return {
-		// connectivity: state.connectivityStore.offline
+		connectivity: state.connectivityStore.offline
 	};
 }
 

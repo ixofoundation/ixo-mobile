@@ -68,7 +68,7 @@ const ClaimListItem = ({
 	<TouchableOpacity onPress={() => onViewClaim(claim.claimId)} key={claim.claimId}>
 		<View style={ClaimsStyles.claimListItemContainer}>
 			{claimColor && <View style={[ClaimsStyles.claimColorBlock, { backgroundColor: claimColor }]} />}
-			<LinearGradient start={[0, 1]} colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]} style={[ClaimsStyles.ClaimBox]}>
+			<LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]} style={[ClaimsStyles.ClaimBox]}>
 				<Text style={ClaimsStyles.claimTitle}>{`${projectName} ${claim.claimId.slice(claim.claimId.length - 12, claim.claimId.length)}`}</Text>
 				<Text style={ClaimsStyles.claimCreated}>Claim created {moment(claim.date).format('YYYY-MM-DD')}</Text>
 			</LinearGradient>

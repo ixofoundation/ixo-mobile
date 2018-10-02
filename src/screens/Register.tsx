@@ -16,7 +16,6 @@ import { SecureStorageKeys } from '../models/phoneStorage';
 import { initIxo } from '../redux/ixo/ixo_action_creators';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { initUser } from '../redux/user/user_action_creators';
-import { initSecureLocal } from '../redux/secure/secure_action_creators';
 import { ButtonDark, ThemeColors } from '../styles/Colors';
 import RegisterStyles from '../styles/Register';
 import { Encrypt, generateSovrinDID, getSignature } from '../utils/sovrin';
@@ -185,9 +184,7 @@ class Register extends React.Component<Props, StateTypes> {
 		let payload = { didDoc: newDidDoc };
 
 		getSignature(payload).then((signature: any) => {
-			debugger;
 			this.props.ixo.user.registerUserDid(payload, signature).then((response: any) => {
-				debugger;
 				if (response.code === 0) {
 					showToast(this.props.screenProps.t('register:didLedgeredSuccess'), toastType.SUCCESS);
 					this.navigateToLogin();
