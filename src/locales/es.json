@@ -1,0 +1,48 @@
+{
+    "onboarding": {
+        "appOnboarding": "pantallas de incorporación de aplicaciones",
+        "begin": "comenzar",
+        "pushNotification": "Permitir notificaciones push para actualizaciones importantes",
+        "pushNotificationButton": "Permitir notificaciones",
+        "locationLogging": "Permitir ubicación para el registro de ubicación",
+        "locationLoggingButton": "Permitir ubicación"
+    },
+    "connectIXO": {
+        "keySafeInfo": "Abra ixo Key Safe en su escritorio",
+        "qrCodeInfo": "Vaya a su perfil y escanee el código QR para conectarse",
+        "scanButton": "SCAN IXO QR CODE"
+    },
+    "connectIXOComplete": {
+        "unlock": "DESBLOQUEAR",
+        "scanSuccessful": "¡Escaneo exitoso!",
+        "privacyImportance": "Su privacidad es de suma importancia.",
+        "unlockInformation": "Desbloquea tu información de ixo con tu contraseña de ixo Key Safe"
+    },
+    "scanQR": {
+        "scan": "Escanear"
+    },
+    "login": {
+        "hi": "Hola",
+        "password": "contraseña",
+        "signIn": "INICIAR SESIÓN",
+        "attention": "Tienes alertas para tu atención",
+        "forgotPassword": "¿Olvidó su contraseña?",
+        "wrongPassword": "¿Olvidó su contraseña?",
+        "loginFailed": "Error de inicio de sesión"
+    },
+    "projects": {
+        "myProjects": "Mis proyectos",
+        "addFirstProject": "Agregue su primer proyecto",
+        "visitIXO": "Visite ixo.world e inscríbase para su primer proyecto",
+        "scan": "ESCANEAR"
+    },
+    "claims": {
+        "saved": "GUARDADO",
+        "submitted": "ENVIADO",
+        "noClaims": "No tiene reclamos guardados",
+        "saveClaimsOffline": "Guarde y edite sus reclamaciones sin conexión. Envíe cuando le resulte conveniente",
+        "submitButton": "ENVIAR NUEVO RECLAMO",
+        "noSubmissions": "No tiene reclamaciones enviadas",
+        "savedSubmissionsInfo": "Vea aquí sus reclamos pendientes, aprobados y rechazados."
+    }
+}
