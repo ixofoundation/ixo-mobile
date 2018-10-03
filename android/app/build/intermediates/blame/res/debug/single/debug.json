@@ -60,6 +60,10 @@
         "source": "/Users/mullerfourie/.gradle/caches/transforms-1/files-1.1/appcompat-v7-27.1.1.aar/faee8a7a582df0814d8c3273d2fd1bbd/res/anim/abc_slide_in_top.xml"
     },
     {
+        "merged": "/Users/mullerfourie/Documents/Repositories/ixo-world-mobile/android/app/build/intermediates/res/merged/debug/layout_list_item.xml.flat",
+        "source": "/Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native-image-picker/android/build/intermediates/packaged_res/debug/layout/list_item.xml"
+    },
+    {
         "merged": "/Users/mullerfourie/Documents/Repositories/ixo-world-mobile/android/app/build/intermediates/res/merged/debug/color-v23_abc_btn_colored_text_material.xml.flat",
         "source": "/Users/mullerfourie/.gradle/caches/transforms-1/files-1.1/appcompat-v7-27.1.1.aar/faee8a7a582df0814d8c3273d2fd1bbd/res/color-v23/abc_btn_colored_text_material.xml"
     },
@@ -1154,6 +1158,10 @@
     {
         "merged": "/Users/mullerfourie/Documents/Repositories/ixo-world-mobile/android/app/build/intermediates/res/merged/debug/drawable-v21_abc_btn_colored_material.xml.flat",
         "source": "/Users/mullerfourie/.gradle/caches/transforms-1/files-1.1/appcompat-v7-27.1.1.aar/faee8a7a582df0814d8c3273d2fd1bbd/res/drawable-v21/abc_btn_colored_material.xml"
+    },
+    {
+        "merged": "/Users/mullerfourie/Documents/Repositories/ixo-world-mobile/android/app/build/intermediates/res/merged/debug/xml_provider_paths.xml.flat",
+        "source": "/Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native-image-picker/android/build/intermediates/packaged_res/debug/xml/provider_paths.xml"
     },
     {
         "merged": "/Users/mullerfourie/Documents/Repositories/ixo-world-mobile/android/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_abc_list_pressed_holo_dark.9.png.flat",

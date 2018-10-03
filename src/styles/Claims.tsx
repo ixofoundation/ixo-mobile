@@ -80,7 +80,6 @@ const styles = StyleSheet.create<Style>({
 		flex: 1,
 		width: '100%',
 		height: '100%',
-		paddingHorizontal: 10,
 		backgroundColor: ThemeColors.blue_dark
 	},
 	flexLeft: {

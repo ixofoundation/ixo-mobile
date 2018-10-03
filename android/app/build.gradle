@@ -145,6 +145,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-image-picker')
     compile project(':react-native-fingerprint-scanner')
     compile project(':react-native-sensitive-info')
     compile project(':react-native-linear-gradient')

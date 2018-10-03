@@ -263,12 +263,12 @@ export class Projects extends React.Component<Props, StateProps> {
 				// @ts-ignore
 				onScroll={event => this._onScroll(event)}
 			>
-				<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
+				<Header noShadow style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
 					<View style={[ProjectsStyles.flexLeft]}>
 						<Text style={ProjectsStyles.header}>{this.props.screenProps.t('projects:myProjects')}</Text>
 					</View>
 				</Header>
-				<StatusBar barStyle="light-content" />
+				<StatusBar backgroundColor={ThemeColors.blue_dark} barStyle="light-content" />
 				<Content>{this.renderProject()}</Content>
 			</Content>
 		);
@@ -283,7 +283,7 @@ export class Projects extends React.Component<Props, StateProps> {
 							<Text style={ProjectsStyles.header}>{this.props.screenProps.t('projects:myProjects')}</Text>
 						</View>
 					</Header>
-					<StatusBar barStyle="light-content" />
+					<StatusBar backgroundColor={ThemeColors.blue_dark} barStyle="light-content" />
 					{this.state.isRefreshing ? (
 						<ActivityIndicator color={ThemeColors.white} />
 					) : (

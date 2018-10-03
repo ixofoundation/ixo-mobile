@@ -125,7 +125,7 @@ export class Login extends React.Component<Props, StateTypes> {
 
 	revealPassword = () => {
 		this.setState({ revealPassword: !this.state.revealPassword });
-	};
+	}
 
 	forgotPassword = () => {
 		const resetAction = StackActions.reset({
@@ -142,7 +142,7 @@ export class Login extends React.Component<Props, StateTypes> {
 			],
 			{ cancelable: false }
 		);
-	};
+	}
 
 	signIn() {
 		this.setState({ loading: true });
@@ -182,7 +182,7 @@ export class Login extends React.Component<Props, StateTypes> {
 		return (
 			<ImageBackground source={background} style={[LoginStyles.wrapper]}>
 				<View style={[ContainerStyles.flexColumn]}>
-					<StatusBar barStyle="light-content" />
+					<StatusBar backgroundColor={ThemeColors.blue_dark} barStyle="light-content" />
 					<KeyboardAvoidingView behavior={'position'}>
 						<LogoView />
 						<View style={[LoginStyles.flexLeft]}>

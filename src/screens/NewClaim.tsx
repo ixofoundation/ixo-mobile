@@ -63,7 +63,8 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		return {
 			headerStyle: {
 				backgroundColor: ThemeColors.blue_dark,
-				borderBottomColor: ThemeColors.blue_dark
+				borderBottomColor: ThemeColors.blue_dark,
+				elevation: 0
 			},
 			title: projectName,
 			headerRight: (

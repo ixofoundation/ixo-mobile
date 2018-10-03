@@ -97,7 +97,8 @@ class Claims extends React.Component<Props, StateProps> {
 		return {
 			headerStyle: {
 				backgroundColor: ThemeColors.blue_dark,
-				borderBottomColor: ThemeColors.blue_dark
+				borderBottomColor: ThemeColors.blue_dark,
+				elevation: 0
 			},
 			headerRight: (
 				<View style={ContainerStyles.flexRow}>
@@ -247,7 +248,7 @@ class Claims extends React.Component<Props, StateProps> {
 	renderNoSavedClaims() {
 		return (
 			<ImageBackground source={background} style={ClaimsStyles.backgroundImage}>
-				<Container>
+				<Container style={{ paddingHorizontal: 10 }}>
 					<View>
 						<View style={{ height: height * 0.4, flexDirection: 'row', justifyContent: 'center' }}>
 							<View style={{ flexDirection: 'column', justifyContent: 'center' }}>
@@ -291,9 +292,9 @@ class Claims extends React.Component<Props, StateProps> {
 		return (
 			<Container style={{ backgroundColor: ThemeColors.blue_dark }}>
 				<StatusBar barStyle="light-content" />
-				<Tabs tabBarUnderlineStyle={{ borderWidth: 1 }} tabContainerStyle={{ borderBottomColor: ThemeColors.blue_light }}>
-					<Tab heading={this.renderSavedTab(numberOfSavedClaims)}>{this.renderSavedClaims(projectClaims)}</Tab>
-					<Tab heading={this.props.screenProps.t('claims:submitted')}>{this.renderSubmittedClaims()}</Tab>
+				<Tabs tabBarUnderlineStyle={{ borderWidth: 1 }} tabContainerStyle={{ borderBottomColor: ThemeColors.blue_light, elevation: 0 }}>
+					<Tab activeTabStyle={{ backgroundColor: ThemeColors.blue_dark }} tabStyle={{ backgroundColor: ThemeColors.blue_dark }} heading={this.renderSavedTab(numberOfSavedClaims)}>{this.renderSavedClaims(projectClaims)}</Tab>
+					<Tab activeTabStyle={{ backgroundColor: ThemeColors.blue_dark }} tabStyle={{ backgroundColor: ThemeColors.blue_dark }} heading={this.props.screenProps.t('claims:submitted')}>{this.renderSubmittedClaims()}</Tab>
 				</Tabs>
 				<DarkButton onPress={() => this.props.navigation.navigate('NewClaim')} text={this.props.screenProps.t('claims:submitButton')} />
 			</Container>
