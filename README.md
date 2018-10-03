@@ -17,6 +17,16 @@ $ pod install
 react-native start
 ```
 
+### Android Studio
+
+#### Development
+1. Make sure the project builds on from the android folder
+2. Might need to do a cache reset (File -> Invalidate caches / restart)
+3. Build the project to emulator / android device
+
+#### Build a release version
+1. Build -> Select Build Variant
+
 ## Native Libraries
 
 * react-native-sensitive-info [https://www.npmjs.com/package/react-native-sensitive-info]

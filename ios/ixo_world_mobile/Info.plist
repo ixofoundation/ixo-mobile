@@ -44,7 +44,7 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>IXO needs the camera roll to upload a image</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-    <string>IXO would like to save photos to your photo gallery</string>
+	<string>IXO would like to save photos to your photo gallery</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Roboto-Regular.ttf</string>
