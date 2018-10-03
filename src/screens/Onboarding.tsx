@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StackActions, NavigationActions } from 'react-navigation';
-import { View, StatusBar, Image, AsyncStorage } from 'react-native';
+import { View, StatusBar, Image, AsyncStorage, Platform } from 'react-native';
 import { Text, Button } from 'native-base';
 import Swiper from 'react-native-swiper';
 import Permissions from 'react-native-permissions';
@@ -46,19 +46,24 @@ export default class OnBoarding extends React.Component<ParentProps> {
 		});
 	}
 
-	getNotifications() {
-		Permissions.request('notification').then(response => {
+	async getNotifications() {
+		if (Platform.OS === 'ios') {
+			Permissions.request('notification').then(response => {
+				swiperRef.scrollBy(1);
+			});
+		} else {
 			swiperRef.scrollBy(1);
-		});
+			// TODO once push notification's are added
+		}
 	}
 
 	getLocation() {
 		Permissions.request('location').then(response => {
-				const resetAction = StackActions.reset({
-					index: 0,
-					actions: [NavigationActions.navigate({ routeName: 'ConnectIXO' })]
-				});
-				this.props.navigation.dispatch(resetAction);
+			const resetAction = StackActions.reset({
+				index: 0,
+				actions: [NavigationActions.navigate({ routeName: 'ConnectIXO' })]
+			});
+			this.props.navigation.dispatch(resetAction);
 		});
 	}
 

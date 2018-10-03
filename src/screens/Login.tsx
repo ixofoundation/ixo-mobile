@@ -73,8 +73,6 @@ export class Login extends React.Component<Props, StateTypes> {
 	};
 
 	componentDidMount() {
-		// this.checkDeviceForHardware();
-		// this.checkForFingerprints();
 		if (this.props.user === null) {
 			this.retrieveUserFromStorage();
 		} else {
@@ -102,16 +100,6 @@ export class Login extends React.Component<Props, StateTypes> {
 		}
 	}
 
-	async checkDeviceForHardware() {
-		// let compatible = await Fingerprint.hasHardwareAsync();
-		// this.setState({ compatible }); // add these to states when logic is added
-	}
-
-	async checkForFingerprints() {
-		// let fingerprints = await Fingerprint.isEnrolledAsync();
-		// this.setState({ fingerprints }); // add these to states when logic is added
-	}
-
 	async scanFingerprint() {
 		// let result = await Fingerprint.authenticateAsync('Authenticate to sign in');
 		// if (result.success) {
@@ -137,7 +125,7 @@ export class Login extends React.Component<Props, StateTypes> {
 
 	revealPassword = () => {
 		this.setState({ revealPassword: !this.state.revealPassword });
-	}
+	};
 
 	forgotPassword = () => {
 		const resetAction = StackActions.reset({
@@ -154,7 +142,7 @@ export class Login extends React.Component<Props, StateTypes> {
 			],
 			{ cancelable: false }
 		);
-	}
+	};
 
 	signIn() {
 		this.setState({ loading: true });

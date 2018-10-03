@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Wed Oct 03 13:53:05 SAST 2018
+#Wed Oct 03 14:07:49 SAST 2018
 5.base=/Users/mullerfourie/Documents/Repositories/ixo-world-mobile/android/app/build/intermediates/transforms/mergeJniLibs/debug/0
 22.path=lib/x86/libjsc.so
 32.set=NATIVE_RESOURCE
