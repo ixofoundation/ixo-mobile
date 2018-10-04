@@ -18,6 +18,7 @@ import com.facebook.soloader.SoLoader;
 import com.horcrux.svg.SvgPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.imagepicker.ImagePickerPackage;
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +44,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RandomBytesPackage(),
             new RNOSModule(),
             new RNCameraPackage(),
-            new ImagePickerPackage()
+            new ImagePickerPackage(),
+            new SplashScreenReactPackage()
       );
     }
 

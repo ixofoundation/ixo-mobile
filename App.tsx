@@ -1,5 +1,6 @@
 require('node-libs-react-native/globals');
 import * as React from 'react';
+import SplashScreen from 'react-native-splash-screen';
 import './shim.js';
 // @ts-ignore
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
@@ -14,8 +15,8 @@ import Loading from './src/screens/Loading';
 // @ts-ignore
 import getTheme from './src/native-base-theme/components/index.js';
 // @ts-ignore
-import { YellowBox } from 'react-native';
-YellowBox.ignoreWarnings(['Class RCTCxxModule']);
+import { Platform } from 'react-native';
+// YellowBox.ignoreWarnings(['Class RCTCxxModule']);
 
 interface State {
 	isReady: boolean;
@@ -24,9 +25,11 @@ interface State {
 const store = createAppStore();
 
 export default class App extends React.Component<{}, State> {
-	state = {
-		isReady: false
-	};
+	componentDidMount() {
+		if (Platform.OS === 'android') {
+			SplashScreen.hide();
+		}
+	}
 
 	render() {
 		return (

@@ -154,6 +154,7 @@ dependencies {
     compile project(':react-native-tcp')
     compile project(':react-native-randombytes')
     compile project(':react-native-os')
+    compile project(':react-native-splash-screen')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation 'com.facebook.react:react-native:+'
