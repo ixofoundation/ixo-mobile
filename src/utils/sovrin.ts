@@ -24,8 +24,10 @@ export function verifyDocumentSignature(signature: string, publicKey: string) {
 
 export function getSignature(payload: object): Promise<any> {
 	return new Promise((resolve, reject) => {
+		// @ts-ignore
 		SInfo.getItem(SecureStorageKeys.encryptedMnemonic, {}).then((encryptedMnemonic: string | null) => {
 			if (encryptedMnemonic) {
+				// @ts-ignore
 				SInfo.getItem(SecureStorageKeys.password, {}).then((password: string | null) => {
 					if (password) {
 						const mnemonicJson: IMnemonic = Decrypt(encryptedMnemonic, password);

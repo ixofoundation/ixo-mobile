@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, TextStyle, ViewStyle } from 'react-native';
+import { Dimensions, StyleSheet, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 import { ThemeColors } from '../../styles/Colors';
 
 const { width } = Dimensions.get('window');
@@ -7,7 +7,7 @@ interface Style {
 	photoBoxContainer: ViewStyle;
 	photoBoxCloseIcon: TextStyle;
 	photoBoxCameraIcon: TextStyle;
-	imageContainer: ViewStyle;
+	imageContainer: ImageStyle;
 	textArea: ViewStyle;
 	imageType: ViewStyle;
 }

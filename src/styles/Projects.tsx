@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, TextStyle, ViewStyle } from 'react-native';
+import { Dimensions, StyleSheet, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 import { ThemeColors } from '../styles/Colors';
 
 const { width, height } = Dimensions.get('window');

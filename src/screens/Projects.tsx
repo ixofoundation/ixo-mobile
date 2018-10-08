@@ -1,8 +1,9 @@
 import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
+import { showToast, toastType } from '../utils/toasts';
 import { Container, Content, Drawer, Header, Icon, Text, View, Fab } from 'native-base';
 import * as React from 'react';
-import { Dimensions, Image, ImageBackground, RefreshControl, StatusBar, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Dimensions, Image, ImageBackground, RefreshControl, StatusBar, TouchableOpacity, ActivityIndicator, YellowBox } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'underscore';
 import { env } from '../config';
@@ -17,6 +18,7 @@ import { ProjectStatus, ThemeColors } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
 import ProjectsStyles from '../styles/Projects';
 import HeaderSync from '../components/HeaderSync';
+YellowBox.ignoreWarnings(['ForwardRef']);
 
 const placeholder = require('../../assets/ixo-placeholder.jpg');
 const background = require('../../assets/background_2.png');
@@ -59,7 +61,7 @@ export class Projects extends React.Component<Props, StateProps> {
 		isConnected: true
 	};
 
-	static navigationOptions = ({ navigation, screenProps }: { navigation: any; screenProps: any; }) => {
+	static navigationOptions = ({ navigation, screenProps }: { navigation: any; screenProps: any }) => {
 		const { params = {} } = navigation.state;
 		return {
 			headerStyle: {
@@ -76,12 +78,12 @@ export class Projects extends React.Component<Props, StateProps> {
 			headerLeft: <Icon name="menu" onPress={() => params.openDrawer()} style={{ paddingLeft: 10, color: ThemeColors.white }} />,
 			headerRight: (
 				<View style={ContainerStyles.flexRow}>
-					<Icon name="search" onPress={() => alert('to do')} style={{ paddingRight: 10, color: ThemeColors.white }} />
+					<Icon name="search" style={{ paddingRight: 10, color: ThemeColors.white }} />
 					<HeaderSync screenProps={screenProps} />
 				</View>
 			)
 		};
-	}
+	};
 
 	componentDidMount() {
 		this.props.navigation.setParams({
@@ -90,7 +92,6 @@ export class Projects extends React.Component<Props, StateProps> {
 			savedProjectsClaims: this.props.savedProjectsClaims
 		});
 		this.props.onIxoInit();
-		
 	}
 
 	componentDidUpdate(prevProps: Props) {
@@ -103,13 +104,13 @@ export class Projects extends React.Component<Props, StateProps> {
 		// @ts-ignore
 		this.props.navigation.openDrawer();
 		this.setState({ isDrawerOpen: true });
-	}
+	};
 
 	closeDrawer = () => {
 		// @ts-ignore
 		this.props.navigation.closeDrawer();
 		this.setState({ isDrawerOpen: false });
-	}
+	};
 
 	getLatestClaim(claims: IClaim[]): string {
 		const myClaims: IClaim[] = claims.filter(claim => claim.saDid === this.props.user!.did);
@@ -127,7 +128,7 @@ export class Projects extends React.Component<Props, StateProps> {
 		} else {
 			return { placeholder };
 		}
-	}
+	};
 
 	getProjectList() {
 		if (this.state.isConnected) {
@@ -168,16 +169,24 @@ export class Projects extends React.Component<Props, StateProps> {
 		const rejectedWidth = Math.ceil((rejected / total) * 100);
 		return (
 			<View style={[ContainerStyles.flexRow, { justifyContent: 'flex-start', backgroundColor: 'transparent', paddingVertical: 10 }]}>
-				<LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#016480', '#03d0FE']} style={{ height: 5, width: `${approvedWidth}%`, borderRadius: 2 }} />
+				<LinearGradient
+					start={{ x: 0, y: 0 }}
+					end={{ x: 1, y: 0 }}
+					colors={['#016480', '#03d0FE']}
+					style={{ height: 5, width: `${approvedWidth}%`, borderRadius: 2 }}
+				/>
 				<View style={[{ backgroundColor: '#E2223B', height: 5, width: `${rejectedWidth}%`, borderRadius: 2 }]} />
 				<View style={[{ backgroundColor: '#033C50', height: 5, width: `${100 - approvedWidth - rejectedWidth}%`, borderRadius: 2 }]} />
 			</View>
 		);
-	}
+	};
 
 	refreshProjects() {
-		this.setState({ isRefreshing: true, projects: [] });
-		this.getProjectList();
+		if (this.props.offline) {
+			this.setState({ isRefreshing: true, projects: [] });
+			this.getProjectList();
+		}
+		showToast('No internet connection', toastType.WARNING);
 	}
 
 	renderProject() {
@@ -253,7 +262,7 @@ export class Projects extends React.Component<Props, StateProps> {
 			});
 			this.headerTitleShown = false;
 		}
-	}
+	};
 
 	renderNoProjectsView() {
 		return (
@@ -336,7 +345,7 @@ export class Projects extends React.Component<Props, StateProps> {
 			>
 				{this.renderConnectivity()}
 				{this.state.projects.length > 0 ? this.renderNoProjectsView() : this.renderProjectsView()}
-				<Fab direction="up" style={ProjectsStyles.fabIcon} position="bottomRight" onPress={() => this.props.navigation.navigate('ScanQR')}>
+				<Fab direction='up' style={{ backgroundColor: ThemeColors.red }} position='bottomRight' onPress={() => this.props.navigation.navigate('ScanQR')}>
 					<Image resizeMode={'contain'} style={{ width: width * 0.08, height: width * 0.08 }} source={qr} />
 				</Fab>
 			</Drawer>
@@ -350,7 +359,7 @@ function mapStateToProps(state: PublicSiteStoreState) {
 		user: state.userStore.user,
 		projects: state.projectsStore.projects,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
-		offline: state.connectivityStore.offline,
+		offline: state.connectivityStore.offline
 	};
 }
 

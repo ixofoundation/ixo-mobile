@@ -1,4 +1,4 @@
-import { Dimensions, Platform, StyleSheet, TextStyle, ViewStyle } from 'react-native';
+import { Dimensions, Platform, StyleSheet, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 import { ThemeColors } from '../styles/Colors';
 
 const { width, height } = Dimensions.get('window');
@@ -20,7 +20,7 @@ interface Style {
 	claimColorBlock: ViewStyle;
 	claimCreated: TextStyle;
 	claimTitle: TextStyle;
-	claimStatusIcons: TextStyle;
+	claimStatusIcons: ImageStyle;
 	claimHeadingContainer: ViewStyle;
 	claimHeadingText: TextStyle;
 	tabCounterContainer: ViewStyle;

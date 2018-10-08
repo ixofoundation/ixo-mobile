@@ -60,7 +60,7 @@ const styles = StyleSheet.create<Style>({
 		alignItems: 'flex-start',
 		justifyContent: 'flex-start',
 		paddingTop: height * 0.2,
-		paddingHorizontal: width * 0.05,
+		paddingHorizontal: width * 0.05
 	},
 	outerCardContainerActive: {
 		position: 'absolute',
@@ -81,7 +81,7 @@ const styles = StyleSheet.create<Style>({
 		flex: 1,
 		borderRadius: 1,
 		marginBottom: '3%'
-	},
+	}
 });
 
 export default styles;

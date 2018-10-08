@@ -24,7 +24,15 @@ const UnSuccessfulView = (navigation: any) => (
 		<View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
 			<View style={[ContainerStyles.flexColumn, { height: '100%', justifyContent: 'space-between', paddingBottom: 20 }]}>
 				<Text style={{ textAlign: 'left', color: ThemeColors.grey }}>Do you have a key?</Text>
-				<Button onPress={() => navigation.navigate('Login')} style={ConnectIXOStyles.buttons} bordered dark>
+				<Button
+					onPress={() => navigation.navigate('Login')}
+					style={{
+						width: '100%',
+						justifyContent: 'center'
+					}}
+					bordered
+					dark
+				>
 					<Text>Try Again</Text>
 				</Button>
 				<Text style={{ textAlign: 'left', color: ThemeColors.grey }}>Having issues logging in?</Text>

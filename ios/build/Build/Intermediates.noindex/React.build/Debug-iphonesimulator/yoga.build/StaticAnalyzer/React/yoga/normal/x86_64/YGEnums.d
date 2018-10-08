@@ -1,4 +1,4 @@
 dependencies: \
-  /Users/mullerfourie/Desktop/react-native-typescript/ixo_world_mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGEnums.cpp \
-  /Users/mullerfourie/Desktop/react-native-typescript/ixo_world_mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGEnums.h \
-  /Users/mullerfourie/Desktop/react-native-typescript/ixo_world_mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGMacros.h
+  /Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGEnums.cpp \
+  /Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGEnums.h \
+  /Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGMacros.h

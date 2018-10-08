@@ -1,6 +1,6 @@
-// import { SecureStore } from 'expo';
 import { Container, Icon, Text, View } from 'native-base';
 import * as React from 'react';
+import SInfo from 'react-native-sensitive-info';
 import { AsyncStorage, Dimensions, ImageBackground, StatusBar, KeyboardAvoidingView } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -94,6 +94,10 @@ class Recover extends React.Component<Props, StateTypes> {
 			const ledgered = await this.isLedgered('did:sov:' + sovrin.did);
 			if (ledgered) {
 				const encryptedMnemonic = Encrypt(JSON.stringify({ mnemonic: this.state.mnemonic, name: this.state.username }), this.state.password); // encrypt securely on phone enlave
+				// @ts-ignore
+				SInfo.setItem(SecureStorageKeys.encryptedMnemonic, encryptedMnemonic.toString(), {});
+				// @ts-ignore
+				SInfo.setItem(SecureStorageKeys.password, this.state.password, {});
 				// SecureStore.setItemAsync(SecureStorageKeys.encryptedMnemonic, encryptedMnemonic.toString());
 				// SecureStore.setItemAsync(SecureStorageKeys.password, this.state.password); // save local password
 				AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true'); // stop first time onboarding

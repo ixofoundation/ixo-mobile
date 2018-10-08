@@ -81,7 +81,7 @@ class Register extends React.Component<Props, StateTypes> {
 			},
 			headerTintColor: ThemeColors.white
 		};
-	}
+	};
 
 	state = {
 		username: '',
@@ -96,11 +96,11 @@ class Register extends React.Component<Props, StateTypes> {
 
 	async generateMnemonic() {
 		const mnemonic = await bip39.generateMnemonic();
-		let mnemonicArray: IMnemonic[] = [];
+		const mnemonicArray: IMnemonic[] = [];
 		_.each(this.shuffleArray(mnemonic.split(' ')), (word, index) => {
 			mnemonicArray.push({ key: index, word });
 		});
-		this.setState({ unSelectedWords: mnemonicArray, mnemonic: mnemonic });
+		this.setState({ unSelectedWords: mnemonicArray, mnemonic });
 	}
 
 	shuffleArray(array: string[]) {
@@ -117,7 +117,7 @@ class Register extends React.Component<Props, StateTypes> {
 		selectedWords.push(mnemonic);
 		this.setState({
 			unSelectedWords: this.state.unSelectedWords.filter((e: IMnemonic) => e.key !== mnemonic.key),
-			selectedWords: selectedWords
+			selectedWords
 		});
 	}
 
@@ -126,12 +126,12 @@ class Register extends React.Component<Props, StateTypes> {
 		unSelectedWords.push(mnemonic);
 		this.setState({
 			selectedWords: this.state.selectedWords.filter((e: IMnemonic) => e.key !== mnemonic.key),
-			unSelectedWords: unSelectedWords
+			unSelectedWords
 		});
 	}
 
 	getMnemonicString(mnemonicArray: IMnemonic[]) {
-		let mnemonicString: string[] = [];
+		const mnemonicString: string[] = [];
 		_.each(mnemonicArray, (mnemonic: IMnemonic) => {
 			mnemonicString.push(mnemonic.word);
 		});
@@ -149,7 +149,7 @@ class Register extends React.Component<Props, StateTypes> {
 			SInfo.setItem(SecureStorageKeys.password, this.state.password, {});
 			AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true'); // stop first time onboarding
 
-			let user: IUser = {
+			const user: IUser = {
 				did: 'did:sov:' + generateSovrinDID(this.state.mnemonic).did,
 				name: this.state.username,
 				verifyKey: generateSovrinDID(this.state.mnemonic).verifyKey
@@ -176,12 +176,12 @@ class Register extends React.Component<Props, StateTypes> {
 	ledgerDidOnBlockChain(did: string, pubKey: string) {
 		showToast(this.props.screenProps.t('register:ledgerDid'), toastType.SUCCESS);
 
-		let newDidDoc = {
-			did: did,
-			pubKey: pubKey,
+		const newDidDoc = {
+			did,
+			pubKey,
 			credentials: []
 		};
-		let payload = { didDoc: newDidDoc };
+		const payload = { didDoc: newDidDoc };
 
 		getSignature(payload).then((signature: any) => {
 			this.props.ixo.user.registerUserDid(payload, signature).then((response: any) => {
@@ -263,7 +263,7 @@ class Register extends React.Component<Props, StateTypes> {
 						<TouchableOpacity onPress={() => this.generateMnemonic()} style={[RegisterStyles.selectedBox]}>
 							{this.state.mnemonic.length <= 0 ? (
 								<View>
-									<Icon name="lock" color={ThemeColors.black} style={{ fontSize: 60, textAlign: 'center', color: ThemeColors.white }} />
+									<Icon name='lock' color={ThemeColors.black} style={{ fontSize: 60, textAlign: 'center', color: ThemeColors.white }} />
 									<Text style={{ textAlign: 'center', color: ThemeColors.white, paddingHorizontal: 10 }}>
 										{this.props.screenProps.t('register:tapReveal')}
 									</Text>
@@ -351,7 +351,7 @@ class Register extends React.Component<Props, StateTypes> {
 	render() {
 		return (
 			<Container>
-				<StatusBar barStyle="light-content" />
+				<StatusBar barStyle='light-content' />
 				<ImageBackground source={background} style={[RegisterStyles.wrapper]}>
 					<View style={{ height: Dimensions.get('window').height * 0.1 }} />
 					{this.renderStep(this.state.registerState)}

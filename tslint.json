@@ -1,134 +1,59 @@
 {
     "extends": [
-        "tslint-react"
+        "tslint-react-recommended"
     ],
     "rules": {
-        "jsx-boolean-value": false,
-        "align": [
-            true,
-            "parameters",
-            "arguments",
-            "statements"
-        ],
-        "ban": false,
-        "class-name": true,
-        "comment-format": [
-            true,
-            "check-space"
-        ],
-        "curly": false,
-        "eofline": false,
-        "forin": true,
-        "indent": [
-            true,
-            "tabs"
-        ],
-        "interface-name": [
-            false,
-            "never-prefix"
-        ],
-        "jsdoc-format": true,
-        "jsx-no-lambda": false,
-        "jsx-no-multiline-js": false,
-        "label-position": true,
-        "max-line-length": [
-            false,
-            180
-        ],
-        "member-ordering": [
-            true,
-			{
-				"order": [
-					"public-before-private",
-					"static-before-instance",
-					"variables-before-functions"
-				]
-			}
-        ],
-        "no-any": false,
-        "no-arg": true,
-        "no-bitwise": true,
-        "no-console": [
-            false,
-            "log",
-            "error",
-            "debug",
-            "info",
-            "time",
-            "timeEnd",
-            "trace"
-        ],
-        "no-consecutive-blank-lines": true,
-        "no-construct": true,
-        "no-debugger": false,
-        "no-duplicate-variable": true,
-        "no-empty": false,
-        "no-eval": true,
-        "no-shadowed-variable": false,
-        "no-string-literal": false,
-        "no-switch-case-fall-through": true,
-        "no-trailing-whitespace": false,
-        "no-unused-expression": [
-            true,
-            "allow-fast-null-checks"
-        ],
-        "no-use-before-declare": true,
-        "one-line": [
-            true,
-            "check-catch",
-            "check-else",
-            "check-open-brace",
-            "check-whitespace"
+        "ordered-imports": [
+            false
         ],
         "quotemark": [
             true,
             "single",
-            "jsx-double"
+            "jsx-single",
+            "avoid-escape"
         ],
-        "radix": true,
         "semicolon": [
-            true,
-            "always"
+            false,
+            "never"
         ],
-        "switch-default": false,
-        "trailing-comma": [
+        "member-access": [
             false
         ],
-        "triple-equals": [
-            true,
-            "allow-null-check"
+        "member-ordering": [
+            false
         ],
-        "typedef": [
-            true,
-            "parameter",
-            "property-declaration"
-        ],
-        "typedef-whitespace": [
-            true,
+        "trailing-comma": [
+            false,
             {
-                "call-signature": "nospace",
-                "index-signature": "nospace",
-                "parameter": "nospace",
-                "property-declaration": "nospace",
-                "variable-declaration": "nospace"
+                "singleline": "never",
+                "multiline": "always"
             }
         ],
-        "variable-name": [
-            false,
-            "ban-keywords",
-            "check-format",
-            "allow-leading-underscore",
-            "allow-pascal-case"
-        ],
-        "whitespace": [
+        "no-empty": false,
+        "no-submodule-imports": false,
+        "no-implicit-dependencies": false,
+        "no-constant-condition": false,
+        "triple-equals": [
             true,
-            "check-branch",
-            "check-decl",
-            "check-module",
-            "check-operator",
-            "check-separator",
-            "check-type",
-            "check-typecast"
+            "allow-undefined-check"
+        ],
+        "indent": [
+            true,
+            "tabs",
+            2
+        ],
+        "ter-indent": [
+            false,
+            2,
+            { "SwitchCase": 1 }
+        ],
+        "no-non-null-assertion": false,
+        "no-duplicate-imports": false,
+        "jsx-alignment": true,
+        "jsx-no-bind": true,
+        "jsx-no-lambda": false,
+        "max-classes-per-file": [
+            false
         ]
     }
 }

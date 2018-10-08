@@ -1,5 +1,5 @@
-import { Camera, Permissions } from 'expo';
 import { Text, View } from 'native-base';
+import { RNCamera } from 'react-native-camera';
 import * as React from 'react';
 import { StatusBar } from 'react-native';
 import { IMnemonic } from '../models/sovrin';
@@ -25,7 +25,7 @@ export interface Props extends ParentProps {}
 export class CameraCapture extends React.Component<Props, State> {
 	state = {
 		hasCameraPermission: false,
-		type: Camera.Constants.Type.back,
+		type: RNCamera.Constants.Type.back,
 		qrFound: false,
 		loading: false,
 		modalVisible: false,
@@ -36,8 +36,8 @@ export class CameraCapture extends React.Component<Props, State> {
 	};
 
 	async componentWillMount() {
-		const { status } = await Permissions.askAsync(Permissions.CAMERA);
-		this.setState({ hasCameraPermission: status === 'granted' });
+		// const { status } = await Permissions.askAsync(Permissions.CAMERA);
+		// this.setState({ hasCameraPermission: status === 'granted' });
 	}
 
 	render() {
@@ -51,7 +51,7 @@ export class CameraCapture extends React.Component<Props, State> {
 		} else {
 			return (
 				<View style={{ flex: 1 }}>
-					<StatusBar barStyle="light-content" />
+					{/* <StatusBar barStyle="light-content" /> */}
 					{/* <Modal
 						animationType="slide"
 						transparent={true}
@@ -62,7 +62,7 @@ export class CameraCapture extends React.Component<Props, State> {
 					>
 						{this.renderModal()}
 					</Modal> */}
-					<Camera style={{ flex: 1 }} type={this.state.type} />
+					{/* <Camera style={{ flex: 1 }} type={this.state.type} /> */}
 				</View>
 			);
 		}

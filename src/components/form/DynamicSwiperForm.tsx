@@ -49,7 +49,6 @@ export interface Callbacks {
 }
 
 declare var formSwiperRef: any;
-declare var cameraRef: any;
 
 export interface Props extends ParentProps, Callbacks {}
 export default class DynamicSwiperForm extends React.Component<Props, State> {
@@ -89,7 +88,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 
 	setFormState = (name: String, value: any) => {
 		const fields = name.split('.');
-		let formData: any = this.formData;
+		let formData: any = Object.assign({}, this.formData);
 		fields.forEach((field, index) => {
 			if (index === fields.length - 1) {
 				formData[field] = value;
@@ -147,6 +146,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 			ImagePicker.launchImageLibrary({ quality: 0.9, mediaType: 'photo' }, (response)  => {
 				const base64 = `data:image/jpeg;base64,${response.data}`;
 				this.setFormState(fieldName, base64);
+				this.updateImageList(fieldName, response.uri);
 			});
 		} catch (error) {
 			console.log(error);
@@ -158,6 +158,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 			ImagePicker.launchCamera({ quality: 0.9, mediaType: 'photo' }, (response)  => {
 				const base64 = `data:image/jpeg;base64,${response.data}`;
 				this.setFormState(fieldName, base64);
+				this.updateImageList(fieldName, response.uri);
 			});
 		} catch (error) {
 			console.log(error);
@@ -170,7 +171,6 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 
 	renderEditImageField(field: any, index: number) {
 		const imageItem: IImage | undefined = _.find(this.state.imageList, (imageItem: IImage) => imageItem.fieldName === field.name);
-		debugger;
 		if (_.isEmpty(this.state.imageList) || imageItem === undefined) {
 			return (
 				<View key={index}>
@@ -223,13 +223,13 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 						case 'text':
 						case 'email':
 							return this.renderCard(
-								<InputField value={field.value} onChangeText={(text: string) => this.onFormValueChanged(field.name, text)} />,
+								<InputField onChangeText={(text: string) => this.onFormValueChanged(field.name, text)} />,
 								cardDetails,
 								i
 							);
 						case 'textarea':
 							return this.renderCard(
-								<InputFieldArea value={field.value} onChangeText={(text: string) => this.onFormValueChanged(field.name, text)} />,
+								<InputFieldArea onChangeText={(text: string) => this.onFormValueChanged(field.name, text)} />,
 								cardDetails,
 								i
 							);

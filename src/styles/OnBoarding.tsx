@@ -1,10 +1,10 @@
-import { Dimensions, StyleSheet, ViewStyle } from 'react-native';
+import { Dimensions, ViewStyle, StyleSheet, ImageStyle } from 'react-native';
 
 const { height, width } = Dimensions.get('window');
 interface Style {
 	wrapper: ViewStyle;
 	slide: ViewStyle;
-	logo: ViewStyle;
+	logo: ImageStyle;
 	textBox: ViewStyle;
 	textBoxButtonContainer: ViewStyle;
 	buttons: ViewStyle;

@@ -23,7 +23,7 @@ i18n.use(languageDetector).init({
 	fallbackLng: 'en_ZA',
 	resources: {
 		en_ZA,
-		es: es,
+		es,
 		ns: ['translation'],
 		defaultNS: 'translation',
 		interpolation: {

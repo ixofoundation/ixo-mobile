@@ -93,7 +93,7 @@ export class ScanQR extends React.Component<Props, State> {
 				});
 			}
 		}
-	};
+	}
 
 	handleButtonPress = () => {
 		if (this.state.payload && this.state.password) {
@@ -151,7 +151,7 @@ export class ScanQR extends React.Component<Props, State> {
 		} else {
 			this.setState({ errors: true });
 		}
-	};
+	}
 
 	navigateToProjects() {
 		this.props.navigation.dispatch(
@@ -271,13 +271,13 @@ export class ScanQR extends React.Component<Props, State> {
 	render() {
 		return (
 			<View style={{ flex: 1 }}>
-				<StatusBar barStyle="light-content" />
+				<StatusBar barStyle='light-content' />
 				<Modal
-					animationType="slide"
+					animationType='slide'
 					transparent={true}
 					visible={this.state.modalVisible}
 					onRequestClose={() => {
-						alert('Modal has been closed.');
+						// alert('Modal has been closed.');
 					}}
 				>
 					{this.renderModal()}

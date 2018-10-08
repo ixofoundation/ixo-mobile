@@ -42,10 +42,20 @@ class SideBar extends React.Component<PropTypes, StateTypes> {
 
 	render() {
 		return (
-			<Container style={[ContainerStyles.flexColumn, { backgroundColor: ThemeColors.blue }]}>
+			<Container
+				style={[
+					{
+						flex: 1,
+						alignItems: 'center',
+						justifyContent: 'center',
+						flexDirection: 'column',
+						backgroundColor: ThemeColors.blue
+					}
+				]}
+			>
 				<LinearGradient style={SideBarStyles.userInfoBox} colors={[ClaimsButton.colorSecondary, ClaimsButton.colorPrimary]}>
 					<View style={[ContainerStyles.flexRow, { justifyContent: 'space-between', alignItems: 'center' }]}>
-						<Icon onPress={() => this.props.navigation.closeDrawer()} style={SideBarStyles.closeDrawer} name="close" />
+						<Icon onPress={() => this.props.navigation.closeDrawer()} style={SideBarStyles.closeDrawer} name='close' />
 						<Image source={ixoLogo} style={SideBarStyles.ixoLogo} />
 					</View>
 					<View style={[ContainerStyles.flexRow, { justifyContent: 'flex-start', width: '100%', paddingTop: 10 }]}>

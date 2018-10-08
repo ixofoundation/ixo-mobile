@@ -27,7 +27,7 @@ class ConnectIXOComplete extends React.Component<ParentProps, StateTypes, {}> {
 
 	revealPassword = () => {
 		this.setState({ revealPassword: !this.state.revealPassword });
-	}
+	};
 
 	verifySafeKey() {
 		// add decryption here
@@ -46,14 +46,22 @@ class ConnectIXOComplete extends React.Component<ParentProps, StateTypes, {}> {
 				<View style={[ContainerStyles.flexRow, { width: width * 0.8, flex: 0.2, paddingBottom: 20 }]}>
 					<Item style={{ width: width * 0.8 }} stackedLabel={!this.state.revealPassword} floatingLabel={this.state.revealPassword}>
 						<Label>YOUR IXO KEY SAFE PASSWORD</Label>
-						<Input value={this.state.password} onChangeText={password => this.setState({ password: password })} secureTextEntry={this.state.revealPassword} />
+						<Input value={this.state.password} onChangeText={password => this.setState({ password })} secureTextEntry={this.state.revealPassword} />
 					</Item>
 					<Icon onPress={() => this.revealPassword()} active name="eye" style={{ color: ThemeColors.black, top: 10 }} />
 				</View>
 
 				<View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
 					<View style={[ContainerStyles.flexColumn]}>
-						<Button onPress={() => this.verifySafeKey()} style={ConnectIXOStyles.buttons} bordered dark>
+						<Button
+							onPress={() => this.verifySafeKey()}
+							style={{
+								width: '100%',
+								justifyContent: 'center'
+							}}
+							bordered
+							dark
+						>
 							<Text>{this.props.screenProps.t('connectIXOComplete:unlock')}</Text>
 						</Button>
 					</View>
@@ -73,14 +81,22 @@ class ConnectIXOComplete extends React.Component<ParentProps, StateTypes, {}> {
 				<View style={[ContainerStyles.flexRow, { width: width * 0.8, flex: 0.2, paddingBottom: 20 }]}>
 					<Item style={{ width: width * 0.8 }} stackedLabel={!this.state.revealPassword} floatingLabel={this.state.revealPassword}>
 						<Label>CREATE PASSWORD</Label>
-						<Input value={this.state.password} onChangeText={password => this.setState({ password: password })} secureTextEntry={this.state.revealPassword} />
+						<Input value={this.state.password} onChangeText={password => this.setState({ password })} secureTextEntry={this.state.revealPassword} />
 					</Item>
 					<Icon onPress={() => this.revealPassword()} active name="eye" style={{ color: ThemeColors.black, top: 10 }} />
 				</View>
 
 				<View style={[ContainerStyles.flexRow, ContainerStyles.textBoxLeft]}>
 					<View style={[ContainerStyles.flexColumn]}>
-						<Button onPress={() => this.props.navigation.navigate('Login')} style={ConnectIXOStyles.buttons} bordered dark>
+						<Button
+							onPress={() => this.props.navigation.navigate('Login')}
+							style={{
+								width: '100%',
+								justifyContent: 'center'
+							}}
+							bordered
+							dark
+						>
 							<Text>Unlock</Text>
 						</Button>
 					</View>

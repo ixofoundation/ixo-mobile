@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, TextStyle, ViewStyle } from 'react-native';
+import { Dimensions, StyleSheet, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 import { ThemeColors } from '../../styles/Colors';
 
 const { height } = Dimensions.get('window');
@@ -9,11 +9,11 @@ interface Style {
 	userName: TextStyle;
 	userDid: TextStyle;
 	linksBox: ViewStyle;
-	iconLinks: ViewStyle;
+	iconLinks: ImageStyle;
 	textLinks: TextStyle;
 	signOut: TextStyle;
 	linkBox: ViewStyle;
-	ixoLogo: ViewStyle;
+	ixoLogo: ImageStyle;
 	signOutBox: ViewStyle;
 }
 

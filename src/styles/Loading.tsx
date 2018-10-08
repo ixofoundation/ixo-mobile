@@ -1,8 +1,8 @@
-import { Dimensions, StyleSheet, ViewStyle } from 'react-native';
+import { Dimensions, StyleSheet, ViewStyle, ImageStyle } from 'react-native';
 
 const { height, width } = Dimensions.get('window');
 interface Style {
-	logo: ViewStyle;
+	logo: ImageStyle;
 }
 
 const styles = StyleSheet.create<Style>({

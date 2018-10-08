@@ -64,7 +64,7 @@ export interface IClaim {
 export interface IClaimSaved {
 	claimId: string;
 	claimData: string;
-	date: Date;
+	date?: Date;
 }
 interface ILocation {
 	long: string;

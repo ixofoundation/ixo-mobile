@@ -2,7 +2,7 @@
 import uuid from 'react-native-uuid';
 import { createReducer } from '../../lib/redux_utils/reducers';
 import { IClaimSaved } from '../../models/project';
-import { Claim, ClaimForm, CLAIM_ADD, CLAIM_REMOVE, CLAIM_FILEFORM_SAVE } from './claims_actions';
+import { Claim, ClaimForm, SelectedClaim, CLAIM_ADD, CLAIM_REMOVE, CLAIM_FILEFORM_SAVE, CLAIM_SELECTED } from './claims_actions';
 
 export interface IProjectsClaimsSaved {
 	formFile?: any;
@@ -13,6 +13,7 @@ export interface IProjectsClaimsSaved {
 
 export type IClaimsModelState = {
 	savedProjectsClaims: IProjectsClaimsSaved[];
+	selectedSavedClaim?: IClaimSaved;
 };
 
 const initialState: IClaimsModelState = {
@@ -77,6 +78,15 @@ export let claimsReducer = createReducer<IClaimsModelState>(initialState, [
 						pdsURL: action.pdsURL
 					}
 				}
+			};
+		}
+	},
+	{
+		action: CLAIM_SELECTED,
+		handler: (state: IClaimsModelState, action: SelectedClaim) => {
+			state.selectedSavedClaim = { claimId: action.claimId, claimData: undefined };
+			return {
+				...state
 			};
 		}
 	}

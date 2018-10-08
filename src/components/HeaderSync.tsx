@@ -56,7 +56,9 @@ class HeaderSync extends React.Component<Props, StateProps> {
 		if (projectClaims) {
 			let totalClaims: number = 0;
 			Object.keys(projectClaims).map(key => {
+				// @ts-ignore
 				if ('claims' in projectClaims[key]) {
+					// @ts-ignore
 					totalClaims += Object.keys(projectClaims[key].claims).length;
 				}
 			});
@@ -68,7 +70,7 @@ class HeaderSync extends React.Component<Props, StateProps> {
 	onSubmitAll = () => {
 		this.toggleSpinnerAnimation(true);
 		const projectClaims = this.props.savedProjectsClaims;
-		let promises: Promise<any>[] = [];
+		const promises: Promise<any>[] = [];
 		if (projectClaims) {
 			Object.keys(projectClaims).map((key: any) => {
 				if ('claims' in projectClaims[key]) {

@@ -1,12 +1,12 @@
 dependencies: \
-  /Users/mullerfourie/Desktop/react-native-typescript/ixo_world_mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGLayout.cpp \
-  /Users/mullerfourie/Desktop/react-native-typescript/ixo_world_mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGLayout.h \
-  /Users/mullerfourie/Desktop/react-native-typescript/ixo_world_mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGFloatOptional.h \
-  /Users/mullerfourie/Desktop/react-native-typescript/ixo_world_mobile/node_modules/react-native/ReactCommon/yoga/yoga/Yoga-internal.h \
-  /Users/mullerfourie/Desktop/react-native-typescript/ixo_world_mobile/node_modules/react-native/ReactCommon/yoga/yoga/Yoga.h \
-  /Users/mullerfourie/Desktop/react-native-typescript/ixo_world_mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGEnums.h \
-  /Users/mullerfourie/Desktop/react-native-typescript/ixo_world_mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGMacros.h \
-  /Users/mullerfourie/Desktop/react-native-typescript/ixo_world_mobile/node_modules/react-native/ReactCommon/yoga/yoga/Utils.h \
-  /Users/mullerfourie/Desktop/react-native-typescript/ixo_world_mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGNode.h \
-  /Users/mullerfourie/Desktop/react-native-typescript/ixo_world_mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGConfig.h \
-  /Users/mullerfourie/Desktop/react-native-typescript/ixo_world_mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGStyle.h
+  /Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGLayout.cpp \
+  /Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGLayout.h \
+  /Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGFloatOptional.h \
+  /Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native/ReactCommon/yoga/yoga/Yoga-internal.h \
+  /Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native/ReactCommon/yoga/yoga/Yoga.h \
+  /Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGEnums.h \
+  /Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGMacros.h \
+  /Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native/ReactCommon/yoga/yoga/Utils.h \
+  /Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGNode.h \
+  /Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGConfig.h \
+  /Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native/ReactCommon/yoga/yoga/YGStyle.h

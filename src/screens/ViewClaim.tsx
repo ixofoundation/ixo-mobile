@@ -5,11 +5,13 @@ import { Dimensions, StatusBar, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 import DynamicForm from '../components/form/DynamicForm';
 import { FormStyles } from '../models/form';
-import { IClaim } from '../models/project';
+import { IClaim, IClaimSaved, IProject } from '../models/project';
+import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { ThemeColors } from '../styles/Colors';
 import NewClaimStyles from '../styles/NewClaim';
 import { getSignature } from '../utils/sovrin';
+import DoubleButton from '../components/DoubleButton';
 
 const { height } = Dimensions.get('window');
 
@@ -19,10 +21,7 @@ interface ParentProps {
 }
 
 interface NavigationTypes {
-	pdsURL: string;
-	projectDid: string;
-	claimId: string;
-	claimFormKey: string;
+	editable: boolean;
 }
 
 interface StateTypes {
@@ -32,15 +31,22 @@ interface StateTypes {
 
 interface StateProps {
 	ixo?: any;
+	savedProjectsClaims: IProjectsClaimsSaved[];
+	selectedSavedClaim: IClaimSaved;
+	selectedProject: IProject;
 }
 
 interface Props extends ParentProps, StateProps {}
 
 class ViewClaim extends React.Component<Props, StateTypes> {
 	private pdsURL: string = '';
-	private projectDid: string;
-	private claimId: string | undefined;
-	private claimFormKey: string;
+	private projectDid: string = '';
+	private claimFormKey: string = '';
+	private claimId: string = '';
+	private formFile: string = '';
+	private editable: boolean = true;
+	// private savedClaim: IClaimSaved = { claimId: '', claimData: '', date: undefined };
+	// private savedProject: IProjectsClaimsSaved = 
 
 	static navigationOptions = () => {
 		return {
@@ -64,18 +70,32 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 			formFile: null
 		};
 
-		let componentProps: NavigationTypes = this.props.navigation.state.params;
-		this.pdsURL = componentProps.pdsURL;
-		this.claimId = componentProps.claimId;
-		this.projectDid = componentProps.projectDid;
-		this.claimFormKey = componentProps.claimFormKey;
+		const componentProps: NavigationTypes = this.props.navigation.state.params;
+		this.editable = componentProps.editable;
 	}
 
 	componentDidMount() {
-		this.loadData();
+		if (this.editable) { // saved claim
+			// @ts-ignore
+			const { claims, formFile, pdsURL }: { claims: IClaimSaved[]; formFile: any, pdsURL: string } = this.props.savedProjectsClaims[this.props.selectedProject.projectDid];
+			this.formFile = formFile;
+			this.pdsURL = pdsURL;
+
+			if (claims) {
+				// @ts-ignore
+				const claim: IClaimSaved = claims[this.props.selectedSavedClaim.claimId];
+				this.mergeClaimToForm(formFile, claim.claimData);
+			}
+		} else { // submitted claim
+			this.projectDid = this.props.selectedProject.projectDid;
+			this.claimId = this.props.selectedSavedClaim.claimId;
+			this.pdsURL = this.props.selectedProject.data.serviceEndpoint;
+			this.claimFormKey = this.props.selectedProject.data.templates.claim.form;
+			this.loadSubmittedClaim();
+		}
 	}
 
-	loadData() {
+	loadSubmittedClaim() {
 		const ProjectDIDPayload: Object = { projectDid: this.projectDid };
 		getSignature(ProjectDIDPayload).then((signature: any) => {
 			const claimPromise: Promise<any> = this.handleGetClaim(ProjectDIDPayload, signature);
@@ -116,7 +136,7 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 			this.props.ixo.project
 				.fetchPublic(claimFormKey, pdsURL)
 				.then((res: any) => {
-					let fileContents = base64Decode(res.data);
+					const fileContents = base64Decode(res.data);
 					return resolve(fileContents);
 				})
 				.catch((error: Error) => {
@@ -127,12 +147,12 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 
 	handleFetchClaimImages = (mergedFormFile: any, claim: any) => {
 		const { fields = [] } = JSON.parse(mergedFormFile);
-		let promises: any = [];
+		const promises: any = [];
 		fields.forEach((field: any) => {
 			if (field.type === 'image') {
 				promises.push(
 					this.props.ixo.project.fetchPublic(claim[field.name], this.pdsURL).then((res: any) => {
-						let imageSrc = 'data:' + res.contentType + ';base64,' + res.data;
+						const imageSrc = `data:${res.contentType};base64,${res.data}`;
 						field.value = imageSrc;
 						this.setState({ fetchedFile: JSON.stringify({ fields }) });
 					})
@@ -154,11 +174,14 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 	render() {
 		return (
 			<Container style={{ backgroundColor: ThemeColors.grey_sync, flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
-				<StatusBar barStyle="light-content" />
+				<StatusBar barStyle='light-content' />
 				<View style={{ height: height * 0.18, backgroundColor: ThemeColors.blue_dark, paddingHorizontal: '3%', paddingTop: '2%' }} />
-				<View style={[NewClaimStyles.formContainer, { position: 'absolute', height: height - 160, top: 30, alignSelf: 'center', width: '95%' }]}>
+				<View style={[NewClaimStyles.formContainer, { position: 'absolute', height: height - 100, top: 30, alignSelf: 'center', width: '95%' }]}>
 					<Content style={{ paddingHorizontal: 10 }}>{this.renderForm()}</Content>
 				</View>
+				{this.editable ? (
+					<DoubleButton text={'SAVE'} secondText={'SUBMIT'} onPress={() => console.log('test')} secondOnPress={() => console.log('test2')} />
+				) : null}
 			</Container>
 		);
 	}
@@ -166,7 +189,10 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 
 function mapStateToProps(state: PublicSiteStoreState) {
 	return {
-		ixo: state.ixoStore.ixo
+		ixo: state.ixoStore.ixo,
+		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
+		selectedSavedClaim: state.claimsStore.selectedSavedClaim,
+		selectedProject: state.projectsStore.selectedProject
 	};
 }
 

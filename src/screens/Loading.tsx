@@ -12,7 +12,7 @@ class LoadingScreen extends React.Component {
 	render() {
 		return (
 			<View style={[ContainerStyles.flexColumn, { backgroundColor: ThemeColors.blue }]}>
-				<StatusBar barStyle="light-content" />
+				<StatusBar barStyle='light-content' />
 				<View style={ContainerStyles.flexColumn}>
 					<View style={ContainerStyles.flexRow}>
 						<Image resizeMode={'contain'} style={LoadingStyles.logo} source={logo} />

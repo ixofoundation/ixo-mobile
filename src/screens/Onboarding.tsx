@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StackActions, NavigationActions } from 'react-navigation';
-import { View, StatusBar, Image, AsyncStorage, Platform } from 'react-native';
+import { View, StatusBar, Image, AsyncStorage, Platform, Dimensions } from 'react-native';
 import { Text, Button } from 'native-base';
 import Swiper from 'react-native-swiper';
 import Permissions from 'react-native-permissions';
@@ -11,6 +11,7 @@ import { ThemeColors } from '../styles/Colors';
 import { LocalStorageKeys } from '../models/phoneStorage';
 
 const logo = require('../../assets/logo.png');
+const { width } = Dimensions.get('window');
 declare var swiperRef: any;
 
 const LogoView = () => (
@@ -83,11 +84,20 @@ export default class OnBoarding extends React.Component<ParentProps> {
 							<LogoView />
 							<View>
 								<Text style={{ textAlign: 'center', color: ThemeColors.white, paddingBottom: 10 }}>
-									{this.props.screenProps.t('onboarding:appOnboarding')}
+									{/* {this.props.screenProps.t('onboarding:appOnboarding')} */}
+									TEST1
 								</Text>
 							</View>
 							<View style={[ContainerStyles.flexRow]}>
-								<Button style={OnBoardingStyles.buttons} onPress={() => swiperRef.scrollBy(1)} bordered light>
+								<Button
+									style={{
+										justifyContent: 'center',
+										width: width * 0.8
+									}}
+									onPress={() => swiperRef.scrollBy(1)}
+									bordered
+									light
+								>
 									<Text>{this.props.screenProps.t('onboarding:begin')}</Text>
 								</Button>
 							</View>
@@ -99,7 +109,15 @@ export default class OnBoarding extends React.Component<ParentProps> {
 									<Text style={{ textAlign: 'center', color: ThemeColors.white }}>{this.props.screenProps.t('onboarding:pushNotification')}</Text>
 								</View>
 								<View style={[ContainerStyles.flexRow]}>
-									<Button style={OnBoardingStyles.buttons} onPress={() => this.getNotifications()} bordered light>
+									<Button
+										style={{
+											justifyContent: 'center',
+											width: width * 0.8
+										}}
+										onPress={() => this.getNotifications()}
+										bordered
+										light
+									>
 										<Text>{this.props.screenProps.t('onboarding:pushNotificationButton')}</Text>
 									</Button>
 								</View>
@@ -112,7 +130,15 @@ export default class OnBoarding extends React.Component<ParentProps> {
 									<Text style={{ textAlign: 'center', color: ThemeColors.white }}>{this.props.screenProps.t('onboarding:locationLogging')}</Text>
 								</View>
 								<View style={[ContainerStyles.flexRow]}>
-									<Button style={OnBoardingStyles.buttons} onPress={() => this.getLocation()} bordered light>
+									<Button
+										style={{
+											justifyContent: 'center',
+											width: width * 0.8
+										}}
+										onPress={() => this.getLocation()}
+										bordered
+										light
+									>
 										<Text>{this.props.screenProps.t('onboarding:locationLoggingButton')}</Text>
 									</Button>
 								</View>

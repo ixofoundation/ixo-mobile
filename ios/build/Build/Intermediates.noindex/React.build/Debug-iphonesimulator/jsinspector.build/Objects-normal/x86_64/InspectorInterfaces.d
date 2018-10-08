@@ -1,3 +1,3 @@
 dependencies: \
-  /Users/mullerfourie/Desktop/react-native-typescript/ixo_world_mobile/node_modules/react-native/ReactCommon/jsinspector/InspectorInterfaces.cpp \
-  /Users/mullerfourie/Desktop/react-native-typescript/ixo_world_mobile/node_modules/react-native/ReactCommon/jsinspector/InspectorInterfaces.h
+  /Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native/ReactCommon/jsinspector/InspectorInterfaces.cpp \
+  /Users/mullerfourie/Documents/Repositories/ixo-world-mobile/node_modules/react-native/ReactCommon/jsinspector/InspectorInterfaces.h

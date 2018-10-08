@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { Dimensions, StyleSheet, ViewStyle, TextStyle, ImageStyle } from 'react-native';
 import { ThemeColors } from './Colors';
 
 const { height, width } = Dimensions.get('window');
@@ -6,10 +6,10 @@ const { height, width } = Dimensions.get('window');
 interface Style {
 	wrapper: ViewStyle;
 	slide: ViewStyle;
-	logo: ViewStyle;
+	logo: ImageStyle;
 	buttons: ViewStyle;
 	infoBlock: ViewStyle;
-	infoBlockImage: ViewStyle;
+	infoBlockImage: ImageStyle;
 	recover: TextStyle;
 }
 
