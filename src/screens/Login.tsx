@@ -1,4 +1,4 @@
-import { Input, Item, Label, Text, Toast } from 'native-base';
+import { Toast, Text } from 'native-base';
 import SInfo from 'react-native-sensitive-info';
 import * as React from 'react';
 import {
@@ -25,6 +25,7 @@ import { initUser } from '../redux/user/user_action_creators';
 import { ThemeColors } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
 import LoginStyles from '../styles/Login';
+import InputField from '../components/InputField';
 
 const { width } = Dimensions.get('window');
 const logo = require('../../assets/logo.png');
@@ -90,9 +91,9 @@ export class Login extends React.Component<Props, StateTypes> {
 
 			if (name && did && verifyKey) {
 				this.props.onUserInit({
-					name: name,
-					did: did,
-					verifyKey: verifyKey
+					name,
+					did,
+					verifyKey
 				});
 			}
 		} catch (error) {
@@ -125,7 +126,7 @@ export class Login extends React.Component<Props, StateTypes> {
 
 	revealPassword = () => {
 		this.setState({ revealPassword: !this.state.revealPassword });
-	}
+	};
 
 	forgotPassword = () => {
 		const resetAction = StackActions.reset({
@@ -142,7 +143,7 @@ export class Login extends React.Component<Props, StateTypes> {
 			],
 			{ cancelable: false }
 		);
-	}
+	};
 
 	signIn() {
 		this.setState({ loading: true });
@@ -182,7 +183,7 @@ export class Login extends React.Component<Props, StateTypes> {
 		return (
 			<ImageBackground source={background} style={[LoginStyles.wrapper]}>
 				<View style={[ContainerStyles.flexColumn]}>
-					<StatusBar backgroundColor={ThemeColors.blue_dark} barStyle="light-content" />
+					<StatusBar backgroundColor={ThemeColors.blue_dark} barStyle='light-content' />
 					<KeyboardAvoidingView behavior={'position'}>
 						<LogoView />
 						<View style={[LoginStyles.flexLeft]}>
@@ -193,39 +194,20 @@ export class Login extends React.Component<Props, StateTypes> {
 						<View style={{ width: '100%' }}>
 							<View style={LoginStyles.divider} />
 						</View>
-
 						<View style={LoginStyles.flexLeft}>
 							<Text style={LoginStyles.infoBox}>{this.props.screenProps.t('login:attention')} </Text>
 						</View>
-
-						<View style={[ContainerStyles.flexRow, { width: width * 0.8, flex: 0.2, paddingBottom: 20 }]}>
-							<Item
-								style={{ flex: 1, borderColor: ThemeColors.blue_lightest }}
-								stackedLabel={!this.state.revealPassword}
-								floatingLabel={this.state.revealPassword}
-							>
-								<Label style={{ color: ThemeColors.blue_lightest }}>{this.props.screenProps.t('login:password')}</Label>
-								<Input
-									style={{ color: ThemeColors.white }}
-									value={this.state.password}
-									onChangeText={password => this.setState({ password })}
-									secureTextEntry={this.state.revealPassword}
-								/>
-							</Item>
-							<TouchableOpacity style={{ backgroundColor: 'red' }} onPress={() => this.revealPassword()}>
-								<View style={{ position: 'absolute' }}>
-									<IconEyeOff width={width * 0.06} height={width * 0.06} />
-								</View>
-							</TouchableOpacity>
-						</View>
+						<InputField
+							icon={<TouchableOpacity onPress={() => this.revealPassword()}><IconEyeOff width={width * 0.06} height={width * 0.06} /></TouchableOpacity>}
+							labelName={this.props.screenProps.t('login:password')}
+							onChangeText={(password: string) => this.setState({ password })}
+							password={this.state.revealPassword}
+						/>
 						{this.state.loading ? (
 							<ActivityIndicator color={ThemeColors.blue_medium} />
 						) : (
 							<DarkButton text={this.props.screenProps.t('login:signIn')} onPress={() => this.signIn()} />
 						)}
-						<TouchableOpacity onPress={() => this.forgotPassword()} style={[ContainerStyles.flexRow, { flex: 0.2 }]}>
-							<Text style={LoginStyles.forgotPassword}>{this.props.screenProps.t('login:forgotPassword')}</Text>
-						</TouchableOpacity>
 						<TouchableOpacity
 							style={[ContainerStyles.flexRow, { flex: 0.2, paddingBottom: 20 }]}
 							onPress={() => (Platform.OS === 'android' ? this.showAndroidAlert() : this.scanFingerprint())}

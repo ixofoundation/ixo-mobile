@@ -6,7 +6,8 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
     "postinstall": "./node_modules/.bin/rn-nodeify --hack --install",
-    "ios": "node node_modules/react-native/local-cli/cli.js run-ios",
+    "ios_dev": "node node_modules/react-native/local-cli/cli.js run-ios",
+    "ios_production": "node node_modules/react-native/local-cli/cli.js run-ios",
     "android": "node node_modules/react-native/local-cli/cli.js run-android",
     "lint": "tslint -p \".\" -t stylish"
   },
@@ -63,6 +64,7 @@
     "react-native-image-picker": "^0.26.10",
     "react-native-level-fs": "^3.0.1",
     "react-native-linear-gradient": "^2.4.2",
+    "react-native-material-textfield": "^0.12.0",
     "react-native-os": "^1.2.1",
     "react-native-permissions": "^1.1.1",
     "react-native-randombytes": "^3.5.0",
@@ -97,7 +99,7 @@
   },
   "devDependencies": {
     "@types/jest": "^23.1.1",
-    "@types/react": "^16.4.14",
+    "@types/react": "^16.4.16",
     "@types/react-native": "^0.57.0",
     "@types/react-navigation": "^2.0.6",
     "@types/react-test-renderer": "^16.0.1",

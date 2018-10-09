@@ -1,7 +1,7 @@
 import LinearGradient from 'react-native-linear-gradient';
 import { Container, Icon, Text, View } from 'native-base';
 import React from 'react';
-import { AsyncStorage, Dimensions, ImageBackground, KeyboardAvoidingView, StatusBar, TouchableOpacity } from 'react-native';
+import { AsyncStorage, Dimensions, ImageBackground, KeyboardAvoidingView, StatusBar, TouchableOpacity, TextInput } from 'react-native';
 import SInfo from 'react-native-sensitive-info';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -73,7 +73,7 @@ class Register extends React.Component<Props, StateTypes> {
 				backgroundColor: ThemeColors.blue_dark,
 				borderBottomColor: ThemeColors.blue_dark
 			},
-			headerLeft: <Icon name="arrow-back" onPress={() => navigation.pop()} style={{ paddingLeft: 10, color: ThemeColors.white }} />,
+			headerLeft: <Icon name='arrow-back' onPress={() => navigation.pop()} style={{ paddingLeft: 10, color: ThemeColors.white }} />,
 			headerTitleStyle: {
 				color: ThemeColors.white,
 				textAlign: 'center',
@@ -196,6 +196,9 @@ class Register extends React.Component<Props, StateTypes> {
 	}
 
 	handleCreatePassword() {
+		console.log('PASSWORD2', this.state.confirmPassword);
+		console.log('UERNAME2', this.state.password);
+		console.log('CONFIRM2', this.state.username);
 		if (this.state.confirmPassword === '' || this.state.password === '' || this.state.username === '') {
 			showToast(this.props.screenProps.t('register:missingFields'), toastType.WARNING);
 			return;
