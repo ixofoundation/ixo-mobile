@@ -128,8 +128,8 @@ class NewClaim extends React.Component<Props, StateTypes> {
 
 	onFormSubmit = (formData: any) => {
 		// upload all the images and change the value to the returned hash of the image
-		let formDef = JSON.parse(this.projectFormFile);
-		let promises: Promise<any>[] = [];
+		const formDef = JSON.parse(this.projectFormFile);
+		const promises: Promise<any>[] = [];
 		formDef.fields.forEach((field: any) => {
 			if (field.type === 'image') {
 				if (formData[field.name] && formData[field.name].length > 0) {
@@ -194,7 +194,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 						</TouchableOpacity>
 					) : (
 						<TouchableOpacity
-							onPress={() => dynamicForm.current.goNext()}
+						onPress={() => dynamicForm.current.goNext()}
 							style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}
 						>
 							<Text style={NewClaimStyles.nextNavigatorButton}>{this.props.screenProps.t('claims:next')}</Text>

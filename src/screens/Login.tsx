@@ -198,7 +198,7 @@ export class Login extends React.Component<Props, StateTypes> {
 							<Text style={LoginStyles.infoBox}>{this.props.screenProps.t('login:attention')} </Text>
 						</View>
 						<InputField
-							icon={<TouchableOpacity onPress={() => this.revealPassword()}><IconEyeOff width={width * 0.06} height={width * 0.06} /></TouchableOpacity>}
+							icon={<TouchableOpacity style={{ position: 'relative', top: 10 }} onPress={() => this.revealPassword()}><IconEyeOff width={width * 0.06} height={width * 0.06} /></TouchableOpacity>}
 							labelName={this.props.screenProps.t('login:password')}
 							onChangeText={(password: string) => this.setState({ password })}
 							password={this.state.revealPassword}

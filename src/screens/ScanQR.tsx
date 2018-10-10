@@ -19,6 +19,7 @@ import { ThemeColors } from '../styles/Colors';
 import ModalStyle from '../styles/Modal';
 import { Decrypt, generateSovrinDID, getSignature } from '../utils/sovrin';
 import validator from 'validator';
+import InputField from '../components/InputField';
 
 const keysafelogo = require('../../assets/keysafe-logo.png');
 const { width } = Dimensions.get('window');
@@ -56,12 +57,12 @@ export class ScanQR extends React.Component<Props, State> {
 	static navigationOptions = ({ screenProps }: { screenProps: any }) => {
 		return {
 			headerStyle: { backgroundColor: ThemeColors.blue, borderBottomColor: ThemeColors.blue },
-			headerRight: <Icon style={{ paddingRight: 10, color: ThemeColors.white }} name="flash" />,
+			headerRight: <Icon style={{ paddingRight: 10, color: ThemeColors.white }} name='flash' />,
 			title: screenProps.t('scanQR:scan'),
 			headerTitleStyle: { color: ThemeColors.white, textAlign: 'center', alignSelf: 'center' },
 			headerTintColor: ThemeColors.white
 		};
-	}
+	};
 
 	state = {
 		type: RNCamera.Constants.Type.back,
@@ -87,13 +88,13 @@ export class ScanQR extends React.Component<Props, State> {
 				this.setState({ modalVisible: true, payload: payload.data });
 			} else if (payload.data.includes('projects')) {
 				const projectDid = payload.data.substring(payload.data.length - 39, payload.data.length - 9);
-				this.setState({ modalVisible: true, payload: null, projectDid: projectDid });
+				this.setState({ modalVisible: true, payload: null, projectDid });
 				this.props.ixo.project.getProjectByProjectDid(projectDid).then((project: any) => {
 					this.setState({ projectTitle: project.data.title, serviceEndpoint: project.data.serviceEndpoint });
 				});
 			}
 		}
-	}
+	};
 
 	handleButtonPress = () => {
 		if (this.state.payload && this.state.password) {
@@ -105,7 +106,7 @@ export class ScanQR extends React.Component<Props, State> {
 				SInfo.setItem(SecureStorageKeys.password, this.state.password!, {});
 				AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true');
 
-				let user: IUser = {
+				const user: IUser = {
 					did: 'did:sov:' + generateSovrinDID(mnemonicJson.mnemonic).did,
 					name: mnemonicJson.name,
 					verifyKey: generateSovrinDID(mnemonicJson.mnemonic).verifyKey
@@ -151,7 +152,7 @@ export class ScanQR extends React.Component<Props, State> {
 		} else {
 			this.setState({ errors: true });
 		}
-	}
+	};
 
 	navigateToProjects() {
 		this.props.navigation.dispatch(
@@ -164,7 +165,7 @@ export class ScanQR extends React.Component<Props, State> {
 
 	resetStateVars = () => {
 		this.setState({ modalVisible: false, password: undefined, payload: null, errors: false, projectDid: null, projectTitle: null, serviceEndpoint: null });
-	}
+	};
 
 	renderDescriptionText() {
 		if (this.state.projectDid !== null) {
@@ -187,24 +188,21 @@ export class ScanQR extends React.Component<Props, State> {
 			return (
 				<View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20, alignItems: 'center' }}>
 					<Image resizeMode={'contain'} style={{ width: width * 0.06, height: width * 0.06, position: 'absolute', top: width * 0.06 }} source={keysafelogo} />
-					<Item style={{ flex: 1, borderColor: ThemeColors.blue_lightest }} stackedLabel={!this.state.revealPassword} floatingLabel={this.state.revealPassword}>
-						<Label style={{ color: ThemeColors.blue_lightest }}>Password</Label>
-						<Input
-							style={{ color: ThemeColors.white }}
-							value={this.state.password}
-							onChangeText={(password: string) =>
-								this.setState({
-									password
-								})
-							}
-							secureTextEntry={this.state.revealPassword}
-						/>
-					</Item>
-					<TouchableOpacity onPress={() => this.setState({ revealPassword: !this.state.revealPassword })}>
-						<View style={{ position: 'absolute' }}>
-							<IconEyeOff width={width * 0.06} height={width * 0.06} />
-						</View>
-					</TouchableOpacity>
+					<InputField
+						password={this.state.revealPassword}
+						icon={
+							<TouchableOpacity onPress={() => this.setState({ revealPassword: !this.state.revealPassword })}>
+								<View style={{ position: 'relative' }}>
+									<IconEyeOff width={width * 0.06} height={width * 0.06} />
+								</View>
+							</TouchableOpacity>}
+						labelName={'Password'}
+						onChangeText={(password: string) =>
+							this.setState({
+								password
+							})
+						}
+					/>
 				</View>
 			);
 		} else {
@@ -220,7 +218,7 @@ export class ScanQR extends React.Component<Props, State> {
 					<View style={ModalStyle.modalOuterContainer}>
 						<View style={ModalStyle.modalInnerContainer}>
 							<View style={ModalStyle.flexRight}>
-								<Icon onPress={() => this.resetStateVars()} active name="close" style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
+								<Icon onPress={() => this.resetStateVars()} active name='close' style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
 							</View>
 							<View style={ModalStyle.flexLeft}>
 								<Text style={{ color: ThemeColors.blue_lightest, fontSize: 29 }}>
@@ -250,7 +248,7 @@ export class ScanQR extends React.Component<Props, State> {
 			<View style={ModalStyle.modalOuterContainer}>
 				<View style={ModalStyle.modalInnerContainer}>
 					<View style={ModalStyle.flexRight}>
-						<Icon name="close" style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
+						<Icon name='close' style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
 					</View>
 					<View style={ModalStyle.flexLeft}>
 						<Text style={{ color: ThemeColors.blue_lightest, fontSize: 29 }}>Scan unsuccessful</Text>

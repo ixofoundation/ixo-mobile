@@ -7,7 +7,7 @@
     "test": "jest",
     "postinstall": "./node_modules/.bin/rn-nodeify --hack --install",
     "ios_dev": "node node_modules/react-native/local-cli/cli.js run-ios",
-    "ios_production": "node node_modules/react-native/local-cli/cli.js run-ios",
+    "ios_prod": "node node_modules/react-native/local-cli/cli.js run-ios --configuration Release",
     "android": "node node_modules/react-native/local-cli/cli.js run-android",
     "lint": "tslint -p \".\" -t stylish"
   },

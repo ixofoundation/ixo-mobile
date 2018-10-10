@@ -11,10 +11,17 @@ $ rm -rf Pods
 $ pod install
 ```
 
-### Run debug mode
+### Development
 
 ```sh
-react-native start
+react-native start or yarn run ios_dev ( you might need to cancel the metro bundler and start your own instance using  react-start start)
+```
+
+### Production
+
+```sh
+yarn run ios_prod (ios)
+yarn run android_prod (android)
 ```
 
 ### Android Studio

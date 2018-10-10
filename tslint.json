@@ -48,6 +48,7 @@
             { "SwitchCase": 1 }
         ],
         "no-non-null-assertion": false,
+        "curly": false,
         "no-duplicate-imports": false,
         "jsx-alignment": true,
         "jsx-no-bind": true,

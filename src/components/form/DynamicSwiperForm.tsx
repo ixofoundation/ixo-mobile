@@ -143,7 +143,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 
 	pickImage(fieldName: string) {
 		try {
-			ImagePicker.launchImageLibrary({ quality: 0.9, mediaType: 'photo' }, (response)  => {
+			ImagePicker.launchImageLibrary({ quality: 0.9, mediaType: 'photo' }, (response) => {
 				const base64 = `data:image/jpeg;base64,${response.data}`;
 				this.setFormState(fieldName, base64);
 				this.updateImageList(fieldName, response.uri);
@@ -155,7 +155,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 
 	takePhoto(fieldName: string) {
 		try {
-			ImagePicker.launchCamera({ quality: 0.9, mediaType: 'photo' }, (response)  => {
+			ImagePicker.launchCamera({ quality: 0.9, mediaType: 'photo' }, (response) => {
 				const base64 = `data:image/jpeg;base64,${response.data}`;
 				this.setFormState(fieldName, base64);
 				this.updateImageList(fieldName, response.uri);
@@ -179,7 +179,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 				</View>
 			);
 		}
-		
+
 		return (
 			<View
 				key={index}
@@ -194,7 +194,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 			>
 				<Text style={{ color: ThemeColors.blue_lightest, fontSize: 15 }}>{imageItem.filename}</Text>
 				<TouchableOpacity style={{ borderRadius: 35, justifyContent: 'center', alignItems: 'center' }}>
-					<Icon onPress={() => this.removeImageList(field.name)} style={{ color: ThemeColors.white }} name="close" />
+					<Icon onPress={() => this.removeImageList(field.name)} style={{ color: ThemeColors.white }} name='close' />
 				</TouchableOpacity>
 			</View>
 		);

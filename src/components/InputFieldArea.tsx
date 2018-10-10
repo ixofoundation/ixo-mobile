@@ -5,7 +5,6 @@ import { Textarea } from 'native-base';
 const { height } = Dimensions.get('window');
 
 const InputFieldArea = ({ value, onChangeText }: { onChangeText: any; value?: string }) =>
-	
 	value ? (
 		// @ts-ignore
 		<Textarea style={styles.textArea} value={value} onChangeText={onChangeText} rowSpan={5} bordered />

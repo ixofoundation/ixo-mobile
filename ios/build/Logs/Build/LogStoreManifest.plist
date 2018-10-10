@@ -5,6 +5,36 @@
 	<key>logFormatVersion</key>
 	<integer>9</integer>
 	<key>logs</key>
-	<dict/>
+	<dict>
+		<key>D9E37DF3-2DA3-45A5-8D5D-D9BA3A4076A4</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.DebugLog</string>
+			<key>fileName</key>
+			<string>D9E37DF3-2DA3-45A5-8D5D-D9BA3A4076A4.xcactivitylog</string>
+			<key>highLevelStatus</key>
+			<string>W</string>
+			<key>schemeIdentifier-containerName</key>
+			<string>ixo_world_mobile project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>ixo_world_mobile</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building workspace ixo_world_mobile with scheme ixo_world_mobile and configuration Release</string>
+			<key>timeStartedRecording</key>
+			<real>560787618.27926803</real>
+			<key>timeStoppedRecording</key>
+			<real>560787676.56301296</real>
+			<key>title</key>
+			<string>Building workspace ixo_world_mobile with scheme ixo_world_mobile and configuration Release</string>
+			<key>uniqueIdentifier</key>
+			<string>D9E37DF3-2DA3-45A5-8D5D-D9BA3A4076A4</string>
+		</dict>
+	</dict>
 </dict>
 </plist>
