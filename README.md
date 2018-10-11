@@ -13,8 +13,16 @@ $ pod install
 
 ### Development
 
+#### IOS
+
 ```sh
-react-native start or yarn run ios_dev ( you might need to cancel the metro bundler and start your own instance using  react-start start)
+react-native start or yarn run ios_dev ( You will need to cancel the metro bundler and start your own instance using react-start start)
+```
+
+#### ANDROID
+
+```sh
+react-native start or yarn run android_dev ( You will need to cancel the metro bundler and start your own instance using  react-start start)
 ```
 
 ### Production

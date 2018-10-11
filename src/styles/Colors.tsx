@@ -41,4 +41,9 @@ const CardContainerBox = {
 	colorSecondary: '#0292B5'
 };
 
-export { ThemeColors, ProjectStatus, ButtonDark, ClaimsButton, SignOutBox, CardContainerBox };
+const OnboardingBox = {
+	colorPrimary: '#01364D',
+	colorSecondary: '#026381'
+}
+
+export { ThemeColors, ProjectStatus, ButtonDark, ClaimsButton, SignOutBox, CardContainerBox, OnboardingBox };

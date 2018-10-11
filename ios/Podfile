@@ -3,10 +3,24 @@
 
 target 'ixo_world_mobile' do
   pod 'React', :path => '../node_modules/react-native', :subspecs => [
+    'Core',
+    'CxxBridge', # Include this for RN >= 0.47
+    'DevSupport', # Include this to enable In-App Devmenu if RN >= 0.43
+    'RCTText',
+    'RCTNetwork',
+    'RCTWebSocket', # Needed for debugging
+    'RCTAnimation', # Needed for FlatList and animations running on native UI thread
     'RCTImage'
   ]
-  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+  
   pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
+
+    # Third party deps podspec link
+  pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
+  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
+  pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
+  pod 'react-native-video', :path => '../node_modules/react-native-video/react-native-video.podspec'
+  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
   pod 'react-native-camera', path: '../node_modules/react-native-camera'
   pod 'ReactNativePermissions', :path => '../node_modules/react-native-permissions'
   pod 'RNSVG', :path => '../node_modules/react-native-svg'

@@ -75,11 +75,15 @@ class Recover extends React.Component<Props, StateTypes> {
 	isLedgered(did: string): Promise<boolean> {
 		return new Promise((resolve, reject) => {
 			this.props.ixo.user.getDidDoc(did).then((response: any) => {
+				debugger;
 				const { error = false } = response;
 				if (error) {
 					return reject('recover:userNotFound');
 				}
 				return resolve(true);
+			}).catch((error) => {
+				console.log(error);
+				showToast('Error occured', toastType.WARNING);
 			});
 		});
 	}
@@ -98,10 +102,8 @@ class Recover extends React.Component<Props, StateTypes> {
 				SInfo.setItem(SecureStorageKeys.encryptedMnemonic, encryptedMnemonic.toString(), {});
 				// @ts-ignore
 				SInfo.setItem(SecureStorageKeys.password, this.state.password, {});
-				// SecureStore.setItemAsync(SecureStorageKeys.encryptedMnemonic, encryptedMnemonic.toString());
-				// SecureStore.setItemAsync(SecureStorageKeys.password, this.state.password); // save local password
 				AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true'); // stop first time onboarding
-				let user: IUser = {
+				const user: IUser = {
 					did: 'did:sov:' + sovrin.did,
 					name: this.state.username,
 					verifyKey: sovrin.verifyKey

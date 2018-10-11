@@ -19,6 +19,7 @@ import com.horcrux.svg.SvgPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.imagepicker.ImagePickerPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
+import com.brentvatne.react.ReactVideoPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +46,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RNOSModule(),
             new RNCameraPackage(),
             new ImagePickerPackage(),
-            new SplashScreenReactPackage()
+            new SplashScreenReactPackage(),
+            new ReactVideoPackage()
       );
     }
 

@@ -1,24 +1,28 @@
 import * as React from 'react';
+import Video from 'react-native-video';
 import { StackActions, NavigationActions } from 'react-navigation';
 import { View, StatusBar, Image, AsyncStorage, Platform, Dimensions } from 'react-native';
 import { Text, Button } from 'native-base';
 import Swiper from 'react-native-swiper';
 import Permissions from 'react-native-permissions';
+import LinearGradient from 'react-native-linear-gradient';
 import Loading from '../screens/Loading';
 import OnBoardingStyles from '../styles/OnBoarding';
 import ContainerStyles from '../styles/Containers';
-import { ThemeColors } from '../styles/Colors';
+import { ThemeColors, OnboardingBox } from '../styles/Colors';
 import { LocalStorageKeys } from '../models/phoneStorage';
+import ConnectIXO from '../screens/ConnectIXO';
 
 const logo = require('../../assets/logo.png');
+const makeAnImpact = require('../../assets/asdf.mp4');
+const noConnection = require('../../assets/asdf2.mp4');
+
 const { width } = Dimensions.get('window');
 declare var swiperRef: any;
 
 const LogoView = () => (
-	<View style={ContainerStyles.flexColumn}>
-		<View style={ContainerStyles.flexRow}>
-			<Image resizeMode={'contain'} style={OnBoardingStyles.logo} source={logo} />
-		</View>
+	<View style={ContainerStyles.flexRow}>
+		<Image resizeMode={'contain'} style={OnBoardingStyles.logo} source={logo} />
 	</View>
 );
 
@@ -33,7 +37,7 @@ export default class OnBoarding extends React.Component<ParentProps> {
 	};
 
 	componentDidMount() {
-		// AsyncStorage.clear();
+		AsyncStorage.clear();
 		AsyncStorage.getItem(LocalStorageKeys.firstLaunch, (error: any, firstLaunch: string | undefined) => {
 			if (!firstLaunch || error) {
 				this.setState({ showOnboarding: true });
@@ -71,81 +75,95 @@ export default class OnBoarding extends React.Component<ParentProps> {
 	render() {
 		if (this.state.showOnboarding) {
 			return (
-				<View style={OnBoardingStyles.wrapper}>
-					<StatusBar barStyle="light-content" />
+				<LinearGradient
+					start={{ x: 0, y: 0.2 }}
+					end={{ x: 0.4, y: 0.3 }}
+					style={OnBoardingStyles.wrapper}
+					colors={[OnboardingBox.colorSecondary, OnboardingBox.colorPrimary]}
+				>
+					<StatusBar barStyle='light-content' />
 					<Swiper
 						ref={swiper => (swiperRef = swiper)}
-						scrollEnabled={false}
-						activeDotColor={ThemeColors.white}
+						scrollEnabled={true}
+						activeDotColor={ThemeColors.blue_medium}
 						dotColor={ThemeColors.blue_light}
 						showsButtons={false}
+						activeDotStyle={OnBoardingStyles.dotStyle}
+						dotStyle={OnBoardingStyles.dotStyle}
 					>
-						<View style={[ContainerStyles.flexColumn, ContainerStyles.backgroundColorDark]}>
-							<LogoView />
-							<View>
-								<Text style={{ textAlign: 'center', color: ThemeColors.white, paddingBottom: 10 }}>
-									{/* {this.props.screenProps.t('onboarding:appOnboarding')} */}
-									TEST1
-								</Text>
-							</View>
-							<View style={[ContainerStyles.flexRow]}>
-								<Button
-									style={{
+						<View style={{ flexDirection: 'column', justifyContent: 'center', flex: 1 }}>
+							<View
+								style={[
+									{
+										alignItems: 'center',
 										justifyContent: 'center',
-										width: width * 0.8
-									}}
-									onPress={() => swiperRef.scrollBy(1)}
-									bordered
-									light
-								>
-									<Text>{this.props.screenProps.t('onboarding:begin')}</Text>
-								</Button>
+										flexDirection: 'row'
+									}
+								]}
+							>
+								<Image resizeMode={'contain'} style={OnBoardingStyles.logo} source={logo} />
 							</View>
-						</View>
-						<View style={[OnBoardingStyles.slide, ContainerStyles.backgroundColorDark]}>
-							<LogoView />
-							<View style={OnBoardingStyles.textBoxButtonContainer}>
-								<View style={OnBoardingStyles.textBox}>
-									<Text style={{ textAlign: 'center', color: ThemeColors.white }}>{this.props.screenProps.t('onboarding:pushNotification')}</Text>
+							<Video
+								repeat
+								source={makeAnImpact} // Can be a URL or a local file.
+								ref={ref => {
+									this.player = ref;
+								}} // Store reference
+								// onBuffer={this.onBuffer} // Callback when remote video is buffering
+								// onError={this.videoError} // Callback when video cannot be loaded
+								style={{
+									alignItems: 'center',
+									justifyContent: 'center',
+									flex: 0.5
+								}}
+							/>
+							<View>
+								<View>
+									<Text style={{ textAlign: 'center', color: ThemeColors.blue_lightest, paddingBottom: 10, fontSize: 28 }}>Make Your Impact</Text>
 								</View>
-								<View style={[ContainerStyles.flexRow]}>
-									<Button
-										style={{
-											justifyContent: 'center',
-											width: width * 0.8
-										}}
-										onPress={() => this.getNotifications()}
-										bordered
-										light
-									>
-										<Text>{this.props.screenProps.t('onboarding:pushNotificationButton')}</Text>
-									</Button>
-								</View>
-							</View>
-						</View>
-						<View style={[OnBoardingStyles.slide, ContainerStyles.backgroundColorDark]}>
-							<LogoView />
-							<View style={OnBoardingStyles.textBoxButtonContainer}>
-								<View style={OnBoardingStyles.textBox}>
-									<Text style={{ textAlign: 'center', color: ThemeColors.white }}>{this.props.screenProps.t('onboarding:locationLogging')}</Text>
-								</View>
-								<View style={[ContainerStyles.flexRow]}>
-									<Button
-										style={{
-											justifyContent: 'center',
-											width: width * 0.8
-										}}
-										onPress={() => this.getLocation()}
-										bordered
-										light
-									>
-										<Text>{this.props.screenProps.t('onboarding:locationLoggingButton')}</Text>
-									</Button>
+								<View>
+									<Text style={{ textAlign: 'center', color: ThemeColors.white, paddingBottom: 10, fontSize: 18 }}>Submit claims of what you have done</Text>
 								</View>
 							</View>
 						</View>
+						<View style={{ flexDirection: 'column', justifyContent: 'center', flex: 1 }}>
+							<View
+								style={[
+									{
+										alignItems: 'center',
+										justifyContent: 'center',
+										flexDirection: 'row'
+									}
+								]}
+							>
+								<Image resizeMode={'contain'} style={OnBoardingStyles.logo} source={logo} />
+							</View>
+							<Video
+								repeat
+								source={noConnection} // Can be a URL or a local file.
+								ref={ref => {
+									this.player = ref;
+								}} // Store reference
+								// onBuffer={this.onBuffer} // Callback when remote video is buffering
+								// onError={this.videoError} // Callback when video cannot be loaded
+								style={{
+									alignItems: 'center',
+									justifyContent: 'center',
+									flex: 0.5
+								}}
+							/>
+							<View>
+								<View>
+									<Text style={{ textAlign: 'center', color: ThemeColors.blue_lightest, paddingBottom: 10, fontSize: 28 }}>No connection?</Text>
+								</View>
+								<View>
+									<Text style={{ textAlign: 'center', color: ThemeColors.white, paddingBottom: 10, fontSize: 18 }}>Save your claims and submit them later</Text>
+								</View>
+							</View>
+						</View>
+						<ConnectIXO navigation={this.props.navigation} screenProps={this.props.screenProps} />
 					</Swiper>
-				</View>
+				</LinearGradient>
 			);
 		}
 		return <Loading />;

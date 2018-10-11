@@ -7,7 +7,7 @@
             false
         ],
         "quotemark": [
-            true,
+            false,
             "single",
             "jsx-single",
             "avoid-escape"
