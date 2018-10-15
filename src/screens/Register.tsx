@@ -185,9 +185,7 @@ class Register extends React.Component<Props, StateTypes> {
 		const payload = { didDoc: newDidDoc };
 
 		getSignature(payload).then((signature: any) => {
-			debugger;
 			this.props.ixo.user.registerUserDid(payload, signature).then((response: any) => {
-				debugger;
 				if (response.code === 0) {
 					showToast(this.props.screenProps.t('register:didLedgeredSuccess'), toastType.SUCCESS);
 					this.navigateToLogin();

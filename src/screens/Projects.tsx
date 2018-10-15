@@ -147,7 +147,6 @@ export class Projects extends React.Component<Props, StateProps> {
 
 	getMyProjects(projectList: any): IProject[] {
 		if (this.props.user !== null) {
-			debugger;
 			const myProjects = projectList.filter((projects: any) => {
 				return projects.data.agents.some((agent: any) => agent.did === this.props.user!.did && agent.role === 'SA');
 			});
