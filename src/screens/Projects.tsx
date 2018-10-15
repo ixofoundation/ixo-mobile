@@ -134,7 +134,7 @@ export class Projects extends React.Component<Props, StateProps> {
 		if (this.state.isConnected) {
 			if (this.props.ixo) {
 				this.props.ixo.project.listProjects().then((projectList: any) => {
-					let myProjects = this.getMyProjects(projectList);
+					const myProjects = this.getMyProjects(projectList);
 					this.setState({ projects: myProjects, isRefreshing: false });
 				});
 			} else {
@@ -147,8 +147,9 @@ export class Projects extends React.Component<Props, StateProps> {
 
 	getMyProjects(projectList: any): IProject[] {
 		if (this.props.user !== null) {
-			let myProjects = projectList.filter((projectList: any) => {
-				return projectList.data.agents.some((agent: any) => agent.did === this.props.user!.did && agent.role === 'SA');
+			debugger;
+			const myProjects = projectList.filter((projects: any) => {
+				return projects.data.agents.some((agent: any) => agent.did === this.props.user!.did && agent.role === 'SA');
 			});
 			this.props.onProjectsUpdate(myProjects);
 			return myProjects;
