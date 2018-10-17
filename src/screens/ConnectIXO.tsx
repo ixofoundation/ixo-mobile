@@ -1,5 +1,6 @@
 import { Text } from 'native-base';
 import * as React from 'react';
+import Video from 'react-native-video';
 import { Dimensions, Image, ImageBackground, StatusBar, View, TouchableOpacity } from 'react-native';
 import DarkButton from '../components/DarkButton';
 import LightButton from '../components/LightButton';
@@ -11,16 +12,17 @@ const logo = require('../../assets/logo.png');
 const background = require('../../assets/background_1.png');
 const keysafelogo = require('../../assets/keysafe-logo.png');
 const qr = require('../../assets/qr.png');
+const globe = require('../../assets/globe.mp4');
 
 const { height, width } = Dimensions.get('window');
 
-const LogoView = () => (
-	<View style={ContainerStyles.flexColumn}>
-		<View style={ContainerStyles.flexRow}>
-			<Image resizeMode={'contain'} style={ConnectIXOStyles.logo} source={logo} />
-		</View>
-	</View>
-);
+// const LogoView = () => (
+// 	<View style={ContainerStyles.flexColumn}>
+// 		<View style={ContainerStyles.flexRow}>
+// 			<Image resizeMode={'contain'} style={ConnectIXOStyles.logo} source={logo} />
+// 		</View>
+// 	</View>
+// );
 
 const InfoBlocks = ({ keySafeText, qrCodeText }: { keySafeText: string; qrCodeText: string }) => (
 	<View style={[ContainerStyles.flexRow, { alignItems: 'flex-end', marginBottom: height * 0.04 }]}>
@@ -43,27 +45,39 @@ interface ParentProps {
 export default class ConnectIXO extends React.Component<ParentProps, {}> {
 	render() {
 		return (
-			<ImageBackground source={background} style={[ConnectIXOStyles.wrapper, { width: '100%', height: '100%', paddingHorizontal: 10 }]}>
-				<StatusBar barStyle="light-content" />
+			<View style={ConnectIXOStyles.loginWrapper}>
+				<StatusBar barStyle='light-content' />
+				<Video
+					source={globe}
+					rate={1.0}
+					volume={1.0}
+					muted={false}
+					resizeMode={'cover'}
+					repeat
+					style={ConnectIXOStyles.globeView}
+				/>
 				<View style={[ContainerStyles.flexColumn, { justifyContent: 'space-between' }]}>
-					<LogoView />
-					<InfoBlocks qrCodeText={this.props.screenProps.t('connectIXO:qrCodeInfo')} keySafeText={this.props.screenProps.t('connectIXO:keySafeInfo')} />
-					<DarkButton
-						text={this.props.screenProps.t('connectIXO:scanButton')}
-						onPress={() => this.props.navigation.navigate('ScanQR')}
-						propStyles={{ marginBottom: 10 }}
-					/>
-
-					<LightButton
-						text={this.props.screenProps.t('connectIXO:registerButton')}
-						onPress={() => this.props.navigation.navigate('Register')}
-						// propStyles={{ marginBottom: height * 0.1 }}
-					/>
-					<TouchableOpacity onPress={() => this.props.navigation.navigate('Recover')}>
-						<Text style={ConnectIXOStyles.recover}>{this.props.screenProps.t('connectIXO:recover')}</Text>
-					</TouchableOpacity>
+					<View
+						style={{
+							alignItems: 'center',
+							justifyContent: 'center',
+							flexDirection: 'row'
+						}}
+					>
+						<Image resizeMode={'contain'} style={ConnectIXOStyles.logo} source={logo} />
+					</View>
+					<View style={{ width: '100%' }}>
+						<LightButton propStyles={{ marginBottom: 10 }} text={this.props.screenProps.t('connectIXO:registerButton')} onPress={() => this.props.navigation.navigate('Register')} />
+						<DarkButton
+							text={this.props.screenProps.t('connectIXO:scanButton')}
+							onPress={() => this.props.navigation.navigate('ScanQR')}
+						/>
+						<TouchableOpacity onPress={() => this.props.navigation.navigate('Recover')}>
+							<Text style={ConnectIXOStyles.recover}>{this.props.screenProps.t('connectIXO:recover')}</Text>
+						</TouchableOpacity>
+					</View>
 				</View>
-			</ImageBackground>
+			</View>
 		);
 	}
 }

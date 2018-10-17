@@ -50,7 +50,8 @@ const styles = StyleSheet.create<Style>({
 	header: {
 		color: ThemeColors.blue_lightest,
 		fontSize: 29,
-		paddingBottom: 20
+		paddingBottom: 20,
+		fontFamily: 'RobotoCondensed-Regular'
 	},
 	infoBox: {
 		color: ThemeColors.white,

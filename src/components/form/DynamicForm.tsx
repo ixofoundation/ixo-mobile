@@ -1,7 +1,10 @@
 import * as React from 'react';
-import { Image } from 'react-native';
+import moment from 'moment';
+import { Image, TouchableOpacity, Alert } from 'react-native';
 import { FormStyles } from '../../models/form';
-import { Item, Form, Input, View, Label, Text } from 'native-base';
+import { Form, View, Label, Text, Icon } from 'native-base';
+import { InputField, InputColorTypes } from '../../components/InputField';
+import ImagePicker from 'react-native-image-picker';
 // @ts-ignore
 // import { connectActionSheet } from '@expo/react-native-action-sheet';
 import * as changeCase from 'change-case';
@@ -10,6 +13,7 @@ import * as _ from 'underscore';
 const placeholder = require('../../../assets/ixo-placeholder.jpg');
 
 import DynamicFormStyles from '../../styles/componentStyles/DynamicForm';
+import { ThemeColors } from '../../styles/Colors';
 
 export interface IImage {
 	fieldName: string; // used to keep track of which image list in schema e.g. (before or after images)
@@ -22,16 +26,19 @@ export interface ParentProps {
 	presetValues?: any[];
 	showActionSheetWithOptions?: any;
 	screenProps: any;
+	editMode: boolean;
+	claimDate: Date;
 }
 
 export interface State {
 	submitStatus: string;
-	hasCameraPermission: boolean;
+	refresh: boolean;
 	imageList: IImage[];
 }
 
 export interface Callbacks {
 	handleSubmit?: (formData: any) => void;
+	handleSave?: (formData: any) => void;
 }
 
 export interface Props extends ParentProps, Callbacks {}
@@ -43,27 +50,96 @@ export default class DynamicForm extends React.Component<Props, State> {
 
 	state = {
 		submitStatus: '',
-		hasCameraPermission: false,
+		refresh: false,
 		imageList: []
 	};
 
 	async componentWillMount() {
-		// let hiddenCount = 0;
+		let hiddenCount = 0;
 		this.props.formSchema.map((field: any) => {
 			if (field.hidden) {
-				// this.setFormState(field.name, this.props.presetValues![hiddenCount]);
-				// hiddenCount++;
+				this.setFormState(field.name, this.props.presetValues![hiddenCount]);
+				hiddenCount++;
 			} else {
-				// this.setFormState(field.name, '');
+				this.setFormState(field.name, '');
 			}
 		});
+
+		if (this.props.editMode) {
+			this.buildFormState();
+		}
 	}
+
+	buildFormState = () => {
+		const formData = {};
+		this.props.formSchema.map((field: any, i: any) => {
+			formData[field.name] = field.value;
+		});
+		this.formData = formData;
+	};
+
+	setFormState = (name: String, value: any) => {
+		const fields = name.split('.');
+		let formData: any = { ...this.formData };
+		fields.forEach((field, index) => {
+			if (index === fields.length - 1) {
+				formData[field] = value;
+			} else {
+				if (!formData[field]) {
+					formData[field] = {};
+				}
+				formData = formData[field];
+			}
+		});
+		this.formData = formData;
+	};
+
+	pickImage(fieldName: string) {
+		try {
+			ImagePicker.launchImageLibrary({ quality: 0.9, mediaType: 'photo' }, response => {
+				const base64 = `data:image/jpeg;base64,${response.data}`;
+				this.props.formSchema.find(x => x.name === fieldName).value = base64;
+				this.setFormState(fieldName, base64);
+				this.setState({ refresh: false });
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	takePhoto(fieldName: string) {
+		try {
+			ImagePicker.launchCamera({ quality: 0.9, mediaType: 'photo' }, response => {
+				const base64 = `data:image/jpeg;base64,${response.data}`;
+				this.props.formSchema.find(x => x.name === fieldName).value = base64;
+				this.setFormState(fieldName, base64);
+				this.setState({ refresh: false });
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	removePhoto(name: string) {
+		const imageFound = this.props.formSchema.find(x => x.name === name);
+		if (imageFound) {
+			imageFound.value = '';
+		}
+		this.setFormState(name, '');
+		this.setState({ refresh: false });
+	}
+
+	handleSave = () => {
+		if (this.props.handleSave) {
+			this.props.handleSave(this.formData);
+		}
+	};
 
 	handleSubmit = () => {
 		if (this.props.handleSubmit) {
 			this.props.handleSubmit(this.formData);
 		}
-	}
+	};
 
 	renderPreview(fieldName: string) {
 		const imageObj: IImage | undefined = _.find(this.state.imageList, (imageList: IImage) => imageList.fieldName === fieldName);
@@ -73,9 +149,39 @@ export default class DynamicForm extends React.Component<Props, State> {
 		return null;
 	}
 
-	renderImage(uri: string, index: number) {
+	renderImage(uri: string, name: string, key: string) {
+		if (uri === '') {
+			return (
+				<TouchableOpacity
+					key={key}
+					style={DynamicFormStyles.addImageContainer}
+					onPress={() =>
+						Alert.alert('Upload Media', '', [
+							{ text: 'Select from Camera Roll', onPress: () => this.pickImage(name) },
+							{ text: 'Take photo', onPress: () => this.takePhoto(name) },
+							{ text: 'Cancel', style: 'cancel' }
+						])
+					}
+				>
+					<Icon name={'add'} style={{ color: ThemeColors.blue_lightest, fontSize: 50 }} />
+				</TouchableOpacity>
+			);
+		}
 		return (
-			<View key={index} style={{ width: '100%', alignItems: 'center' }}>
+			<View key={key}>
+				{this.props.editMode && (
+					<TouchableOpacity
+						onPress={() =>
+							Alert.alert('Remove Image?', '', [{ text: 'Remove', onPress: () => this.removePhoto(name) }, { text: 'Cancel', style: 'cancel' }], {
+								cancelable: true
+							})
+						}
+						style={DynamicFormStyles.removePhoto}
+					>
+						<Icon name={'close'} style={DynamicFormStyles.removePhotoIcon} />
+					</TouchableOpacity>
+				)}
+
 				<Image resizeMode={'contain'} style={DynamicFormStyles.imageContainer} source={uri === '' ? placeholder : { uri }} />
 			</View>
 		);
@@ -84,34 +190,79 @@ export default class DynamicForm extends React.Component<Props, State> {
 	render() {
 		return (
 			<Form>
-				{this.props.formSchema.map((field: any, i: any) => {
-					switch (field.type) {
-						case 'number':
-						case 'text':
-						case 'email':
-							return (
-								<Item key={i} floatingLabel>
-									<Label>{changeCase.sentenceCase(field.name)}</Label>
-									<Input disabled={true} value={field.value} />
-								</Item>
-							);
-						case 'textarea':
-							return (
-								<View style={DynamicFormStyles.textArea} key={i}>
-									<Text>{changeCase.sentenceCase(field.name)}</Text>
-									<Text>{field.value}</Text>
-								</View>
-							);
-						case 'image':
-							return this.renderImage(field.value, i);
-						case 'select':
-						case 'country':
-						case 'template':
-						case 'radio':
-						default:
-							return <Label key={i}>{field.label}</Label>;
-					}
-				})}
+				<Text style={{ color: ThemeColors.blue_lightest, fontSize: 12, paddingLeft: 3 }}>
+					{this.props.screenProps.t('claims:claimCreated')} {moment(this.props.claimDate).format('YYYY-MM-DD')}
+				</Text>
+				<View
+					style={{
+						backgroundColor: ThemeColors.white,
+						marginVertical: 5,
+						shadowOffset: { width: 2, height: 2 },
+						shadowColor: ThemeColors.grey,
+						shadowOpacity: 3.0,
+						borderRadius: 2
+					}}
+				>
+					{this.props.formSchema.map((field: any, i: any) => {
+						switch (field.type) {
+							case 'number':
+							case 'text':
+							case 'email':
+								return (
+									<View key={i} style={{ borderBottomColor: ThemeColors.grey_light, borderBottomWidth: 1 }}>
+										<InputField
+											disable={!this.props.editMode}
+											onChangeText={text => this.setFormState(field.name, text)}
+											colorPalette={InputColorTypes.Light}
+											value={field.value}
+											labelName={changeCase.sentenceCase(field.name)}
+										/>
+									</View>
+								);
+							case 'textarea':
+								return (
+									<InputField
+										key={i}
+										disable={!this.props.editMode}
+										onChangeText={text => this.setFormState(field.name, text)}
+										colorPalette={InputColorTypes.Light}
+										value={field.value}
+										labelName={changeCase.sentenceCase(field.name)}
+									/>
+								);
+							case 'image':
+								return null;
+							case 'select':
+							case 'country':
+							case 'template':
+							case 'radio':
+							default:
+								return <Label key={i}>{field.label}</Label>;
+						}
+					})}
+				</View>
+				<View
+					key={'images'}
+					style={{
+						flex: 1,
+						marginVertical: 5,
+						alignItems: 'flex-start',
+						flexWrap: 'wrap',
+						backgroundColor: ThemeColors.white,
+						flexDirection: 'row',
+						padding: 10,
+						shadowOffset: { width: 2, height: 2 },
+						shadowColor: ThemeColors.grey,
+						shadowOpacity: 3.0,
+						borderRadius: 2
+					}}
+				>
+					{this.props.formSchema.map((field: any, i: any) => {
+						if (field.type === 'image') {
+							return this.renderImage(field.value, field.name, i);
+						}
+					})}
+				</View>
 			</Form>
 		);
 	}

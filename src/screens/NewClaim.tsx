@@ -94,7 +94,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 	}
 
 	handleSubmitClaim = (claimData: any) => {
-		let claimPayload = Object.assign(claimData);
+		const claimPayload = Object.assign(claimData);
 		claimPayload['projectDid'] = this.projectDid;
 
 		getSignature(claimPayload)
@@ -194,7 +194,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 						</TouchableOpacity>
 					) : (
 						<TouchableOpacity
-						onPress={() => dynamicForm.current.goNext()}
+							onPress={() => dynamicForm.current.goNext()}
 							style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}
 						>
 							<Text style={NewClaimStyles.nextNavigatorButton}>{this.props.screenProps.t('claims:next')}</Text>

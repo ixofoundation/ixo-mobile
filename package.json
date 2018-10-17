@@ -8,7 +8,8 @@
     "postinstall": "./node_modules/.bin/rn-nodeify --hack --install",
     "ios_dev": "node node_modules/react-native/local-cli/cli.js run-ios",
     "ios_prod": "node node_modules/react-native/local-cli/cli.js run-ios --configuration Release",
-    "android": "node node_modules/react-native/local-cli/cli.js run-android",
+    "android_dev": "node node_modules/react-native/local-cli/cli.js run-android",
+    "android_prod": "node node_modules/react-native/local-cli/cli.js run-android --variant=release",
     "lint": "tslint -p \".\" -t stylish"
   },
   "rnpm": {
@@ -75,6 +76,7 @@
     "react-native-tcp": "^3.3.0",
     "react-native-udp": "^2.3.1",
     "react-native-uuid": "^1.4.9",
+    "react-native-video": "^3.2.1",
     "react-navigation": "^2.9.3",
     "react-persist": "^1.0.2",
     "react-redux": "^5.0.7",

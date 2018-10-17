@@ -62,20 +62,22 @@ const ClaimListItem = ({
 	claimColor,
 	claim,
 	onViewClaim,
-	savedClaim
+	savedClaim,
+	screenProps
 }: {
 	projectName: string;
 	claimColor?: string;
 	claim: IClaim | IClaimSaved;
 	onViewClaim: Function;
 	savedClaim: boolean;
+	screenProps: string;
 }) => (
 	<TouchableOpacity onPress={() => onViewClaim(claim.claimId, savedClaim)} key={claim.claimId}>
 		<View style={ClaimsStyles.claimListItemContainer}>
 			{claimColor && <View style={[ClaimsStyles.claimColorBlock, { backgroundColor: claimColor }]} />}
 			<LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]} style={[ClaimsStyles.ClaimBox]}>
 				<Text style={ClaimsStyles.claimTitle}>{`${projectName} ${claim.claimId.slice(claim.claimId.length - 12, claim.claimId.length)}`}</Text>
-				<Text style={ClaimsStyles.claimCreated}>Claim created {moment(claim.date).format('YYYY-MM-DD')}</Text>
+				<Text style={ClaimsStyles.claimCreated}>{screenProps} {moment(claim.date).format('YYYY-MM-DD')}</Text>
 			</LinearGradient>
 		</View>
 	</TouchableOpacity>
@@ -183,6 +185,7 @@ class Claims extends React.Component<Props, StateProps> {
 								claim={claim}
 								claimColor={ThemeColors.orange}
 								onViewClaim={this.onViewClaim}
+								screenProps={this.props.screenProps.t('claims:claimCreated')}
 							/>
 						);
 					})}
@@ -196,6 +199,7 @@ class Claims extends React.Component<Props, StateProps> {
 								claim={claim}
 								claimColor={ThemeColors.red}
 								onViewClaim={this.onViewClaim}
+								screenProps={this.props.screenProps.t('claims:claimCreated')}
 							/>
 						);
 					})}
@@ -204,6 +208,7 @@ class Claims extends React.Component<Props, StateProps> {
 						return (
 							<ClaimListItem
 								key={claim.claimId}
+								screenProps={this.props.screenProps.t('claims:claimCreated')}
 								savedClaim={false}
 								projectName={this.projectName}
 								claim={claim}
@@ -224,7 +229,7 @@ class Claims extends React.Component<Props, StateProps> {
 					<Content>
 						{Object.keys(projectClaims.claims).map(key => {
 							const claim: IClaimSaved = projectClaims.claims[key];
-							return <ClaimListItem key={claim.claimId} savedClaim={true} projectName={this.projectName} claim={claim} onViewClaim={this.onViewClaim} />;
+							return <ClaimListItem screenProps={this.props.screenProps.t('claims:claimCreated')} key={claim.claimId} savedClaim={true} projectName={this.projectName} claim={claim} onViewClaim={this.onViewClaim} />;
 						})}
 					</Content>
 				</Container>

@@ -9,9 +9,11 @@ import { IClaim, IClaimSaved, IProject } from '../models/project';
 import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { ThemeColors } from '../styles/Colors';
-import NewClaimStyles from '../styles/NewClaim';
+import ViewClaimsStyles from '../styles/ViewClaim';
+import { updateClaim, removeClaim } from '../redux/claims/claims_action_creators';
 import { getSignature } from '../utils/sovrin';
 import DoubleButton from '../components/DoubleButton';
+import { showToast, toastType } from '../utils/toasts';
 
 const { height } = Dimensions.get('window');
 
@@ -29,6 +31,11 @@ interface StateTypes {
 	fetchedFile: any;
 }
 
+export interface DispatchProps {
+	onClaimUpdate: (claimData: string, projectDID: string, claimId) => void;
+	onRemoveClaim: (claimId: any, projectDid: string) => void;
+}
+
 interface StateProps {
 	ixo?: any;
 	savedProjectsClaims: IProjectsClaimsSaved[];
@@ -36,17 +43,17 @@ interface StateProps {
 	selectedProject: IProject;
 }
 
-interface Props extends ParentProps, StateProps {}
-
+interface Props extends ParentProps, DispatchProps, StateProps {}
+declare var dynamicForm: any;
 class ViewClaim extends React.Component<Props, StateTypes> {
 	private pdsURL: string = '';
 	private projectDid: string = '';
 	private claimFormKey: string = '';
 	private claimId: string = '';
 	private formFile: string = '';
+	private savedClaim: IClaimSaved;
 	private editable: boolean = true;
-	// private savedClaim: IClaimSaved = { claimId: '', claimData: '', date: undefined };
-	// private savedProject: IProjectsClaimsSaved = 
+	private claimDate: Date;
 
 	static navigationOptions = () => {
 		return {
@@ -61,7 +68,7 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 			},
 			headerTintColor: ThemeColors.white
 		};
-	}
+	};
 
 	constructor(props: Props) {
 		super(props);
@@ -69,24 +76,32 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 			fetchedFile: null,
 			formFile: null
 		};
+		dynamicForm = React.createRef();
 
 		const componentProps: NavigationTypes = this.props.navigation.state.params;
 		this.editable = componentProps.editable;
 	}
 
 	componentDidMount() {
-		if (this.editable) { // saved claim
+		if (this.editable) {
+			// saved claim
 			// @ts-ignore
-			const { claims, formFile, pdsURL }: { claims: IClaimSaved[]; formFile: any, pdsURL: string } = this.props.savedProjectsClaims[this.props.selectedProject.projectDid];
+			const { claims, formFile, pdsURL }: { claims: IClaimSaved[]; formFile: any; pdsURL: string } = this.props.savedProjectsClaims[
+				this.props.selectedProject.projectDid
+			];
 			this.formFile = formFile;
 			this.pdsURL = pdsURL;
 
 			if (claims) {
 				// @ts-ignore
-				const claim: IClaimSaved = claims[this.props.selectedSavedClaim.claimId];
-				this.mergeClaimToForm(formFile, claim.claimData);
+				this.projectDid = this.props.selectedProject.projectDid;
+				this.savedClaim = claims[this.props.selectedSavedClaim.claimId];
+				this.claimDate = this.savedClaim.date;
+				this.mergeClaimToForm(formFile, this.savedClaim.claimData);
+				this.claimId = this.props.selectedSavedClaim.claimId;
 			}
-		} else { // submitted claim
+		} else {
+			// submitted claim
 			this.projectDid = this.props.selectedProject.projectDid;
 			this.claimId = this.props.selectedSavedClaim.claimId;
 			this.pdsURL = this.props.selectedProject.data.serviceEndpoint;
@@ -98,10 +113,11 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 	loadSubmittedClaim() {
 		const ProjectDIDPayload: Object = { projectDid: this.projectDid };
 		getSignature(ProjectDIDPayload).then((signature: any) => {
-			const claimPromise: Promise<any> = this.handleGetClaim(ProjectDIDPayload, signature);
-			const formFilePromise: Promise<any> = this.handleFetchFile(this.claimFormKey, this.pdsURL);
+			const claimPromise: Promise<IClaim> = this.handleGetClaim(ProjectDIDPayload, signature);
+			const formFilePromise: Promise<string> = this.handleFetchFile(this.claimFormKey, this.pdsURL);
 
 			Promise.all([claimPromise, formFilePromise]).then(([claim, formFile]) => {
+				this.claimDate = claim._created;
 				const mergedFormFile = this.mergeClaimToForm(formFile, claim);
 				this.handleFetchClaimImages(mergedFormFile, claim);
 			});
@@ -115,10 +131,11 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 		});
 		const mergedFormFile = JSON.stringify({ fields });
 		this.setState({ fetchedFile: mergedFormFile });
+
 		return mergedFormFile;
 	}
 
-	handleGetClaim = (ProjectDIDPayload: object, signature: string) => {
+	handleGetClaim = (ProjectDIDPayload: object, signature: string): Promise<IClaim> => {
 		return new Promise(resolve => {
 			this.props.ixo.claim.listClaimsForProject(ProjectDIDPayload, signature, this.pdsURL).then((response: any) => {
 				if (response.error) {
@@ -131,7 +148,7 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 		});
 	}
 
-	handleFetchFile = (claimFormKey: string, pdsURL: string) => {
+	handleFetchFile = (claimFormKey: string, pdsURL: string): Promise<string> => {
 		return new Promise(resolve => {
 			this.props.ixo.project
 				.fetchPublic(claimFormKey, pdsURL)
@@ -143,6 +160,35 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 					console.log(error);
 				});
 		});
+	}
+
+	onSaveClaim = (claimData: any) => {
+		if (this.projectDid) {
+			this.props.onClaimUpdate(claimData, this.projectDid, this.claimId);
+			this.props.navigation.pop();
+		}
+	}
+
+	handleSubmitClaim = (claimData: any) => {
+		const claimPayload = {...claimData};
+		claimPayload['projectDid'] = this.projectDid;
+
+		getSignature(claimPayload)
+			.then((signature: any) => {
+				this.props.ixo.claim
+					.createClaim(claimPayload, signature, this.pdsURL)
+					.then(() => {
+						this.props.onRemoveClaim(this.claimId, this.projectDid);
+						this.props.navigation.navigate('SubmittedClaims', { claimSubmitted: true });
+					})
+					.catch(() => {
+						this.props.navigation.navigate('SubmittedClaims', { claimSubmitted: false });
+					});
+			})
+			.catch((error: Error) => {
+				console.log(error);
+				showToast(this.props.screenProps.t('claims:signingFailed'), toastType.DANGER);
+			});
 	}
 
 	handleFetchClaimImages = (mergedFormFile: any, claim: any) => {
@@ -160,12 +206,23 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 			}
 		});
 		Promise.all(promises);
-	}
+	};
 
 	renderForm() {
 		const claimParsed = JSON.parse(this.state.fetchedFile!);
 		if (this.state.fetchedFile) {
-			return <DynamicForm screenProps={this.props.screenProps} formSchema={claimParsed.fields} formStyle={FormStyles.standard} />;
+			return (
+				<DynamicForm
+					ref={dynamicForm}
+					handleSave={data => this.onSaveClaim(data)}
+					handleSubmit={data => this.handleSubmitClaim(data)}
+					claimDate={this.claimDate}
+					editMode={this.editable}
+					screenProps={this.props.screenProps}
+					formSchema={claimParsed.fields}
+					formStyle={FormStyles.standard}
+				/>
+			);
 		} else {
 			return <ActivityIndicator color={ThemeColors.blue_light} />;
 		}
@@ -174,17 +231,28 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 	render() {
 		return (
 			<Container style={{ backgroundColor: ThemeColors.grey_sync, flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
-				<StatusBar barStyle='light-content' />
+				<StatusBar barStyle="light-content" />
 				<View style={{ height: height * 0.18, backgroundColor: ThemeColors.blue_dark, paddingHorizontal: '3%', paddingTop: '2%' }} />
-				<View style={[NewClaimStyles.formContainer, { position: 'absolute', height: height - 100, top: 30, alignSelf: 'center', width: '95%' }]}>
-					<Content style={{ paddingHorizontal: 10 }}>{this.renderForm()}</Content>
+				<View style={[{ position: 'absolute', height: height - 100, top: 30, alignSelf: 'center', width: '95%' }]}>
+					<Content>{this.renderForm()}</Content>
 				</View>
 				{this.editable ? (
-					<DoubleButton text={'SAVE'} secondText={'SUBMIT'} onPress={() => console.log('test')} secondOnPress={() => console.log('test2')} />
+					<DoubleButton text={'SAVE'} secondText={'SUBMIT'} onPress={() => dynamicForm.current.handleSave()} secondOnPress={() => dynamicForm.current.handleSubmit()} />
 				) : null}
 			</Container>
 		);
 	}
+}
+
+function mapDispatchToProps(dispatch: any): DispatchProps {
+	return {
+		onClaimUpdate: (claimData: string, projectDID: string, claimId: string) => {
+			dispatch(updateClaim(claimData, projectDID, claimId));
+		},
+		onRemoveClaim: (claimId: any, projectDid: string) => {
+			dispatch(removeClaim(claimId, projectDid));
+		}
+	};
 }
 
 function mapStateToProps(state: PublicSiteStoreState) {
@@ -196,4 +264,7 @@ function mapStateToProps(state: PublicSiteStoreState) {
 	};
 }
 
-export default connect(mapStateToProps)(ViewClaim);
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(ViewClaim);

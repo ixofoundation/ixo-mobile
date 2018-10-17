@@ -8,6 +8,7 @@ interface Style {
 	textBox: ViewStyle;
 	textBoxButtonContainer: ViewStyle;
 	buttons: ViewStyle;
+	dotStyle: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -39,6 +40,11 @@ const styles = StyleSheet.create<Style>({
 		// width: '100%',
 		justifyContent: 'center',
 		width: width * 0.8
+	},
+	dotStyle: {
+		width: width * 0.03,
+		height: width * 0.03,
+		borderRadius: 10
 	}
 });
 

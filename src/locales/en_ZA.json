@@ -10,9 +10,9 @@
 	"connectIXO": {
 		"keySafeInfo": "Open the ixo Key Safe on your desktop",
 		"qrCodeInfo": "Go to your profile and scan the QR code to connect",
-		"scanButton": "SCAN IXO QR CODE",
+		"scanButton": "LOGIN WITH IXO KEYSAFE",
 		"registerButton": "REGISTER",
-		"recover": "Recover from backup phrase"
+		"recover": "Login with your backup phrase"
 	},
 	"connectIXOComplete": {
 		"unlock": "UNLOCK",
@@ -67,7 +67,8 @@
 		"submitAllDiscription": "This cannot be undone",
 		"submit": "SUBMIT",
 		"whatIsThis": "What is this?",
-		"failedSubmitClaim": "Failed to submit claim"
+		"failedSubmitClaim": "Failed to submit claim",
+		"claimCreated": "Claim created"
 	},
 	"submittedClaims": {
 		"successMessage": "Your claim has been successfully submitted",

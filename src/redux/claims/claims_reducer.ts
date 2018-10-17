@@ -2,7 +2,7 @@
 import uuid from 'react-native-uuid';
 import { createReducer } from '../../lib/redux_utils/reducers';
 import { IClaimSaved } from '../../models/project';
-import { Claim, ClaimForm, SelectedClaim, CLAIM_ADD, CLAIM_REMOVE, CLAIM_FILEFORM_SAVE, CLAIM_SELECTED } from './claims_actions';
+import { Claim, ClaimForm, SelectedClaim, CLAIM_ADD, CLAIM_UPDATE, CLAIM_REMOVE, CLAIM_FILEFORM_SAVE, CLAIM_SELECTED } from './claims_actions';
 
 export interface IProjectsClaimsSaved {
 	formFile?: any;
@@ -37,6 +37,29 @@ export let claimsReducer = createReducer<IClaimsModelState>(initialState, [
 								...state.savedProjectsClaims[action.projectDid][claimId],
 								claimData: action.claimData,
 								claimId,
+								date: new Date(),
+							}
+						}
+					}
+				}
+			};
+		}
+	},
+	{
+		action: CLAIM_UPDATE,
+		handler: (state: IClaimsModelState, action: Claim) => {
+			return {
+				...state,
+				savedProjectsClaims: {
+					...state.savedProjectsClaims,
+					[action.projectDid]: {
+						...state.savedProjectsClaims[action.projectDid],
+						claims: {
+							...state.savedProjectsClaims[action.projectDid].claims,
+							[action.claimId]: {
+								...state.savedProjectsClaims[action.projectDid][action.claimId],
+								claimData: action.claimData,
+								claimId: action.claimId,
 								date: new Date(),
 							}
 						}

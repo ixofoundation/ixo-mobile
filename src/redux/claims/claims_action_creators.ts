@@ -12,6 +12,18 @@ export function saveClaim(claimData: string, projectDid: string) {
 	};
 }
 
+export function updateClaim(claimData: string, projectDid: string, claimId: string) {
+	return (dispatch: Function) => {
+		dispatch(
+			createAction<Claim>(CLAIM_UPDATE.type, {
+				claimData,
+				projectDid,
+				claimId
+			})
+		);
+	};
+}
+
 export function removeClaim(claimId: any, projectDid: string) {
 	return (dispatch: Function) => {
 		dispatch(

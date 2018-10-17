@@ -3,6 +3,7 @@
 import { Container, Icon, Text, View } from 'native-base';
 import * as React from 'react';
 import { ImageBackground, StatusBar } from 'react-native';
+import { NavigationActions, StackActions } from 'react-navigation';
 import IconReject from '../components/svg/IconReject';
 import IconSuccess from '../components/svg/IconSuccess';
 import { ThemeColors } from '../styles/Colors';
@@ -17,6 +18,10 @@ interface ParentProps {
 
 export default class SubmittedClaims extends React.Component<ParentProps> {
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
+		const resetAction = StackActions.reset({
+			index: 0,
+			actions: [NavigationActions.navigate({ routeName: 'Projects' })]
+		});
 		return {
 			headerStyle: {
 				backgroundColor: ThemeColors.blue_dark,
@@ -27,7 +32,7 @@ export default class SubmittedClaims extends React.Component<ParentProps> {
 				textAlign: 'center',
 				alignSelf: 'center'
 			},
-			headerLeft: <Icon name="arrow-back" onPress={() => navigation.pop()} style={{ paddingLeft: 10, color: ThemeColors.white }} />
+			headerLeft: <Icon name="arrow-back" onPress={() => navigation.dispatch(resetAction)} style={{ paddingLeft: 10, color: ThemeColors.white }} />
 		};
 	}
 
