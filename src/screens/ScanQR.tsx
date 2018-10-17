@@ -1,9 +1,8 @@
-// import { Camera, Permissions, SecureStore } from 'expo';
 import { RNCamera } from 'react-native-camera';
 import SInfo from 'react-native-sensitive-info';
-import { Icon, Input, Item, Label, Text, Toast, View } from 'native-base';
+import { Icon, Text, Toast, View } from 'native-base';
 import * as React from 'react';
-import { AsyncStorage, Dimensions, Image, KeyboardAvoidingView, Modal, StatusBar, TouchableOpacity } from 'react-native';
+import { AsyncStorage, Dimensions, Image, KeyboardAvoidingView, Modal, StatusBar, TouchableOpacity, PermissionsAndroid, Platform } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import IconEyeOff from '../components/svg/IconEyeOff';
@@ -19,7 +18,8 @@ import { ThemeColors } from '../styles/Colors';
 import ModalStyle from '../styles/Modal';
 import { Decrypt, generateSovrinDID, getSignature } from '../utils/sovrin';
 import validator from 'validator';
-import InputField from '../components/InputField';
+import { InputField } from '../components/InputField';
+import { showToast, toastType } from '../utils/toasts';
 
 const keysafelogo = require('../../assets/keysafe-logo.png');
 const { width } = Dimensions.get('window');
@@ -50,14 +50,21 @@ interface State {
 	projectTitle: string | null;
 	projectDid: string | null;
 	serviceEndpoint: string | null;
+	cameraActive: boolean;
 }
 
 export interface Props extends ParentProps, DispatchProps, StateProps {}
 export class ScanQR extends React.Component<Props, State> {
+	constructor(props) {
+		super(props);
+
+		this._handleBarCodeRead = this._handleBarCodeRead.bind(this);
+	}
+
 	static navigationOptions = ({ screenProps }: { screenProps: any }) => {
 		return {
 			headerStyle: { backgroundColor: ThemeColors.blue, borderBottomColor: ThemeColors.blue },
-			headerRight: <Icon style={{ paddingRight: 10, color: ThemeColors.white }} name='flash' />,
+			headerRight: <Icon style={{ paddingRight: 10, color: ThemeColors.white }} name="flash" />,
 			title: screenProps.t('scanQR:scan'),
 			headerTitleStyle: { color: ThemeColors.white, textAlign: 'center', alignSelf: 'center' },
 			headerTintColor: ThemeColors.white
@@ -75,14 +82,16 @@ export class ScanQR extends React.Component<Props, State> {
 		errors: false,
 		projectTitle: null,
 		projectDid: null,
-		serviceEndpoint: null
+		serviceEndpoint: null,
+		cameraActive: true
 	};
 
 	async componentDidMount() {
 		this.props.onIxoInit();
 	}
 
-	_handleBarCodeRead = (payload: any) => {
+	_handleBarCodeRead(payload: any) {
+		this.disableCamera();
 		if (!this.state.modalVisible) {
 			if (validator.isBase64(payload.data)) {
 				this.setState({ modalVisible: true, payload: payload.data });
@@ -94,7 +103,13 @@ export class ScanQR extends React.Component<Props, State> {
 				});
 			}
 		}
-	};
+	}
+
+	disableCamera() {
+		if (Platform.OS === 'android') {
+			this.setState({ cameraActive: false });
+		}
+	}
 
 	handleButtonPress = () => {
 		if (this.state.payload && this.state.password) {
@@ -131,7 +146,6 @@ export class ScanQR extends React.Component<Props, State> {
 			};
 			getSignature(agentData).then((signature: any) => {
 				this.props.ixo.agent.createAgent(agentData, signature, this.state.serviceEndpoint).then((res: any) => {
-					console.log('Response: ' + JSON.stringify(res));
 					if (res.error !== undefined) {
 						Toast.show({
 							text: res.error.message,
@@ -195,7 +209,8 @@ export class ScanQR extends React.Component<Props, State> {
 								<View style={{ position: 'relative' }}>
 									<IconEyeOff width={width * 0.06} height={width * 0.06} />
 								</View>
-							</TouchableOpacity>}
+							</TouchableOpacity>
+						}
 						labelName={'Password'}
 						onChangeText={(password: string) =>
 							this.setState({
@@ -214,41 +229,41 @@ export class ScanQR extends React.Component<Props, State> {
 		const registerAction = StackActions.reset({ index: 0, actions: [NavigationActions.navigate({ routeName: 'Register' })] });
 		if (!this.state.errors) {
 			return (
-				<KeyboardAvoidingView behavior={'position'}>
-					<View style={ModalStyle.modalOuterContainer}>
-						<View style={ModalStyle.modalInnerContainer}>
-							<View style={ModalStyle.flexRight}>
-								<Icon onPress={() => this.resetStateVars()} active name='close' style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
-							</View>
-							<View style={ModalStyle.flexLeft}>
-								<Text style={{ color: ThemeColors.blue_lightest, fontSize: 29 }}>
-									{this.state.projectDid !== null
-										? this.props.screenProps.t('connectIXOComplete:registerAsServiceAgent')
-										: this.props.screenProps.t('connectIXOComplete:scanSuccessful')}
-								</Text>
-							</View>
-							<View style={ModalStyle.divider} />
-							{this.renderDescriptionText()}
-							<Text style={{ color: ThemeColors.blue_lightest, fontSize: 18 }}>{this.state.projectTitle}</Text>
-							{this.renderPasswordField()}
-							<LightButton
-								onPress={() => this.handleButtonPress()}
-								text={
-									this.state.projectDid !== null
-										? this.props.screenProps.t('connectIXOComplete:registerButtonText')
-										: this.props.screenProps.t('connectIXOComplete:unlockButtonText')
-								}
-							/>
+				// <KeyboardAvoidingView behavior={'position'}>
+				<View style={ModalStyle.modalOuterContainer}>
+					<View style={ModalStyle.modalInnerContainer}>
+						<View style={ModalStyle.flexRight}>
+							<Icon onPress={() => this.resetStateVars()} active name="close" style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
 						</View>
+						<View style={ModalStyle.flexLeft}>
+							<Text style={{ color: ThemeColors.blue_lightest, fontSize: 29 }}>
+								{this.state.projectDid !== null
+									? this.props.screenProps.t('connectIXOComplete:registerAsServiceAgent')
+									: this.props.screenProps.t('connectIXOComplete:scanSuccessful')}
+							</Text>
+						</View>
+						<View style={ModalStyle.divider} />
+						{this.renderDescriptionText()}
+						<Text style={{ color: ThemeColors.blue_lightest, fontSize: 18 }}>{this.state.projectTitle}</Text>
+						{this.renderPasswordField()}
+						<LightButton
+							onPress={() => this.handleButtonPress()}
+							text={
+								this.state.projectDid !== null
+									? this.props.screenProps.t('connectIXOComplete:registerButtonText')
+									: this.props.screenProps.t('connectIXOComplete:unlockButtonText')
+							}
+						/>
 					</View>
-				</KeyboardAvoidingView>
+				</View>
+				// </KeyboardAvoidingView>
 			);
 		}
 		return (
 			<View style={ModalStyle.modalOuterContainer}>
 				<View style={ModalStyle.modalInnerContainer}>
 					<View style={ModalStyle.flexRight}>
-						<Icon name='close' style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
+						<Icon name="close" style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
 					</View>
 					<View style={ModalStyle.flexLeft}>
 						<Text style={{ color: ThemeColors.blue_lightest, fontSize: 29 }}>Scan unsuccessful</Text>
@@ -269,9 +284,9 @@ export class ScanQR extends React.Component<Props, State> {
 	render() {
 		return (
 			<View style={{ flex: 1 }}>
-				<StatusBar barStyle='light-content' />
+				<StatusBar barStyle="light-content" />
 				<Modal
-					animationType='slide'
+					animationType="slide"
 					transparent={true}
 					visible={this.state.modalVisible}
 					onRequestClose={() => {
@@ -280,14 +295,16 @@ export class ScanQR extends React.Component<Props, State> {
 				>
 					{this.renderModal()}
 				</Modal>
-				<RNCamera
-					style={{ flex: 1 }}
-					type={this.state.type}
-					onBarCodeRead={this._handleBarCodeRead}
-					flashMode={RNCamera.Constants.FlashMode.on}
-					permissionDialogTitle={'Permission to use camera'}
-					permissionDialogMessage={'We need your permission to use your camera phone'}
-				/>
+				{this.state.cameraActive ? (
+					<RNCamera
+						style={{ flex: 1 }}
+						type={this.state.type}
+						onBarCodeRead={this._handleBarCodeRead}
+						flashMode={RNCamera.Constants.FlashMode.on}
+						permissionDialogTitle={'Permission to use camera'}
+						permissionDialogMessage={'We need your permission to use your camera phone'}
+					/>
+				) : null}
 			</View>
 		);
 		// }

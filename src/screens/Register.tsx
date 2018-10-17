@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import _ from 'underscore';
 import { env } from '../config';
 import DarkButton from '../components/DarkButton';
-import InputField from '../components/InputField';
+import { InputField } from '../components/InputField';
 import LightButton from '../components/LightButton';
 import { LocalStorageKeys, UserStorageKeys } from '../models/phoneStorage';
 import { IUser } from '../models/user';
@@ -71,9 +71,10 @@ class Register extends React.Component<Props, StateTypes> {
 		return {
 			headerStyle: {
 				backgroundColor: ThemeColors.blue_dark,
-				borderBottomColor: ThemeColors.blue_dark
+				borderBottomColor: ThemeColors.blue_dark,
+				elevation: 0
 			},
-			headerLeft: <Icon name='arrow-back' onPress={() => navigation.pop()} style={{ paddingLeft: 10, color: ThemeColors.white }} />,
+			headerLeft: <Icon name="arrow-back" onPress={() => navigation.pop()} style={{ paddingLeft: 10, color: ThemeColors.white }} />,
 			headerTitleStyle: {
 				color: ThemeColors.white,
 				textAlign: 'center',
@@ -263,7 +264,7 @@ class Register extends React.Component<Props, StateTypes> {
 						<TouchableOpacity onPress={() => this.generateMnemonic()} style={[RegisterStyles.selectedBox]}>
 							{this.state.mnemonic.length <= 0 ? (
 								<View>
-									<Icon name='lock' color={ThemeColors.black} style={{ fontSize: 60, textAlign: 'center', color: ThemeColors.white }} />
+									<Icon name="lock" color={ThemeColors.black} style={{ fontSize: 60, textAlign: 'center', color: ThemeColors.white }} />
 									<Text style={{ textAlign: 'center', color: ThemeColors.white, paddingHorizontal: 10 }}>
 										{this.props.screenProps.t('register:tapReveal')}
 									</Text>
@@ -351,7 +352,7 @@ class Register extends React.Component<Props, StateTypes> {
 	render() {
 		return (
 			<Container>
-				<StatusBar barStyle='light-content' />
+				<StatusBar barStyle="light-content" />
 				<ImageBackground source={background} style={[RegisterStyles.wrapper]}>
 					<View style={{ height: Dimensions.get('window').height * 0.1 }} />
 					{this.renderStep(this.state.registerState)}

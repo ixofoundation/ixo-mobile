@@ -212,7 +212,7 @@ export default (variables = variable) => {
     borderTopWidth: 0,
     borderRightWidth: 0,
     borderLeftWidth: 0,
-    borderColor: ThemeColors.orange,
+    borderColor: "transparent",
     backgroundColor: "transparent",
     flexDirection: "row",
     alignItems: "center",

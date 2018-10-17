@@ -11,12 +11,26 @@ interface Style {
 	infoBlock: ViewStyle;
 	infoBlockImage: ImageStyle;
 	recover: TextStyle;
+	loginWrapper: ViewStyle;
+	globeView: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
 	wrapper: {
 		flex: 1,
 		backgroundColor: ThemeColors.blue_dark
+	},
+	globeView: {
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		bottom: 0,
+		right: 0
+	},
+	loginWrapper: {
+		flex: 1,
+		paddingVertical: 50,
+		paddingHorizontal: 20
 	},
 	slide: {
 		flex: 1,
@@ -45,7 +59,7 @@ const styles = StyleSheet.create<Style>({
 	recover: {
 		marginVertical: height * 0.04,
 		color: ThemeColors.blue_lightest,
-		fontSize: 15,
+		fontSize: 12,
 		textDecorationLine: 'underline',
 		textAlign: 'center'
 	}

@@ -13,9 +13,10 @@ import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { initUser } from '../redux/user/user_action_creators';
 import { Encrypt, generateSovrinDID } from '../utils/sovrin';
 import { showToast, toastType } from '../utils/toasts';
-import InputField from '../components/InputField';
+import { InputField } from '../components/InputField';
 import { ThemeColors } from '../styles/Colors';
 import RecoverStyles from '../styles/Recover';
+
 
 const background = require('../../assets/background_1.png');
 
@@ -62,7 +63,7 @@ class Recover extends React.Component<Props, StateTypes> {
 			},
 			headerTintColor: ThemeColors.white
 		};
-	}
+	};
 
 	state = {
 		username: '',
@@ -72,15 +73,21 @@ class Recover extends React.Component<Props, StateTypes> {
 		errorMismatch: false
 	};
 
-	isLedgered(did: string): Promise<boolean> {
+	isLedgered(did: string) {
 		return new Promise((resolve, reject) => {
-			this.props.ixo.user.getDidDoc(did).then((response: any) => {
-				const { error = false } = response;
-				if (error) {
-					return reject('recover:userNotFound');
-				}
-				return resolve(true);
-			});
+			this.props.ixo.user
+				.getDidDoc(did)
+				.then((response: any) => {
+					const { error = false } = response;
+					if (error) {
+						return reject('recover:userNotFound');
+					}
+					return resolve(true);
+				})
+				.catch(error => {
+					console.log(error);
+					showToast('Error occured', toastType.DANGER);
+				});
 		});
 	}
 
@@ -98,10 +105,8 @@ class Recover extends React.Component<Props, StateTypes> {
 				SInfo.setItem(SecureStorageKeys.encryptedMnemonic, encryptedMnemonic.toString(), {});
 				// @ts-ignore
 				SInfo.setItem(SecureStorageKeys.password, this.state.password, {});
-				// SecureStore.setItemAsync(SecureStorageKeys.encryptedMnemonic, encryptedMnemonic.toString());
-				// SecureStore.setItemAsync(SecureStorageKeys.password, this.state.password); // save local password
 				AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true'); // stop first time onboarding
-				let user: IUser = {
+				const user: IUser = {
 					did: 'did:sov:' + sovrin.did,
 					name: this.state.username,
 					verifyKey: sovrin.verifyKey
@@ -117,7 +122,7 @@ class Recover extends React.Component<Props, StateTypes> {
 		}
 	}
 
-	navigateToLogin() {		
+	navigateToLogin() {
 		this.props.navigation.dispatch(
 			StackActions.reset({
 				index: 0,

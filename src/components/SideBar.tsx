@@ -76,7 +76,7 @@ class SideBar extends React.Component<PropTypes, StateTypes> {
 					</TouchableOpacity>
 				</View>
 				<LinearGradient colors={[SignOutBox.colorSecondary, SignOutBox.colorPrimary]} style={[ContainerStyles.flexColumn, SideBarStyles.signOutBox]}>
-					<TouchableOpacity onPress={() => this.props.navigation.navigate('OnBoarding')}>
+					<TouchableOpacity onPress={() => this.props.navigation.navigate('Login')}>
 						<Text style={SideBarStyles.signOut}>SIGN OUT</Text>
 					</TouchableOpacity>
 				</LinearGradient>

@@ -54,6 +54,7 @@ interface IClaimStats {
 }
 export interface IClaim {
 	claimId: string;
+	_created: Date;
 	date: Date;
 	location: ILocation;
 	txHash: string;

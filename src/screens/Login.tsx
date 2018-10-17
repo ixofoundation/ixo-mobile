@@ -25,7 +25,7 @@ import { initUser } from '../redux/user/user_action_creators';
 import { ThemeColors } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
 import LoginStyles from '../styles/Login';
-import InputField from '../components/InputField';
+import { InputField } from '../components/InputField';
 
 const { width } = Dimensions.get('window');
 const logo = require('../../assets/logo.png');

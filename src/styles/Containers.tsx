@@ -26,7 +26,7 @@ const styles = StyleSheet.create<Style>({
 		flexDirection: 'column'
 	},
 	backgroundColorDark: {
-		backgroundColor: ThemeColors.blue
+		// backgroundColor: ThemeColors.blue
 	},
 	backgroundColorLight: {
 		backgroundColor: ThemeColors.white

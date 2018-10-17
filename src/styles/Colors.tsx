@@ -8,7 +8,8 @@ const ThemeColors = {
 	blue_white: '#B4EEFF',
 	white: '#FFF',
 	black: '#000',
-	grey: '#979797',
+	grey: '#989898',
+	grey_light: '#DBDBDB',
 	grey_sync: '#e0e0e0',
 	red: '#A11C43',
 	orange: '#F89D28',
@@ -41,4 +42,9 @@ const CardContainerBox = {
 	colorSecondary: '#0292B5'
 };
 
-export { ThemeColors, ProjectStatus, ButtonDark, ClaimsButton, SignOutBox, CardContainerBox };
+const OnboardingBox = {
+	colorPrimary: '#01364D',
+	colorSecondary: '#026381'
+}
+
+export { ThemeColors, ProjectStatus, ButtonDark, ClaimsButton, SignOutBox, CardContainerBox, OnboardingBox };

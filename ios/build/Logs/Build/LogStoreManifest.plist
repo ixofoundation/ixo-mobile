@@ -6,7 +6,7 @@
 	<integer>9</integer>
 	<key>logs</key>
 	<dict>
-		<key>D9E37DF3-2DA3-45A5-8D5D-D9BA3A4076A4</key>
+		<key>84E5F3F9-BD52-47F2-868E-560B76504F17</key>
 		<dict>
 			<key>className</key>
 			<string>IDECommandLineBuildLog</string>
@@ -15,7 +15,7 @@
 			<key>domainType</key>
 			<string>Xcode.IDEActivityLogDomainType.DebugLog</string>
 			<key>fileName</key>
-			<string>D9E37DF3-2DA3-45A5-8D5D-D9BA3A4076A4.xcactivitylog</string>
+			<string>84E5F3F9-BD52-47F2-868E-560B76504F17.xcactivitylog</string>
 			<key>highLevelStatus</key>
 			<string>W</string>
 			<key>schemeIdentifier-containerName</key>
@@ -25,15 +25,15 @@
 			<key>schemeIdentifier-sharedScheme</key>
 			<integer>1</integer>
 			<key>signature</key>
-			<string>Building workspace ixo_world_mobile with scheme ixo_world_mobile and configuration Release</string>
+			<string>Building workspace ixo_world_mobile with scheme ixo_world_mobile and configuration Debug</string>
 			<key>timeStartedRecording</key>
-			<real>560787618.27926803</real>
+			<real>560853987.40093899</real>
 			<key>timeStoppedRecording</key>
-			<real>560787676.56301296</real>
+			<real>560853995.91397405</real>
 			<key>title</key>
-			<string>Building workspace ixo_world_mobile with scheme ixo_world_mobile and configuration Release</string>
+			<string>Building workspace ixo_world_mobile with scheme ixo_world_mobile and configuration Debug</string>
 			<key>uniqueIdentifier</key>
-			<string>D9E37DF3-2DA3-45A5-8D5D-D9BA3A4076A4</string>
+			<string>84E5F3F9-BD52-47F2-868E-560B76504F17</string>
 		</dict>
 	</dict>
 </dict>
