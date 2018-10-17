@@ -18,7 +18,7 @@ import { ThemeColors } from '../styles/Colors';
 import ModalStyle from '../styles/Modal';
 import { Decrypt, generateSovrinDID, getSignature } from '../utils/sovrin';
 import validator from 'validator';
-import InputField from '../components/InputField';
+import { InputField } from '../components/InputField';
 import { showToast, toastType } from '../utils/toasts';
 
 const keysafelogo = require('../../assets/keysafe-logo.png');

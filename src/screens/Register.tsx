@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import _ from 'underscore';
 import { env } from '../config';
 import DarkButton from '../components/DarkButton';
-import InputField from '../components/InputField';
+import { InputField } from '../components/InputField';
 import LightButton from '../components/LightButton';
 import { LocalStorageKeys, UserStorageKeys } from '../models/phoneStorage';
 import { IUser } from '../models/user';

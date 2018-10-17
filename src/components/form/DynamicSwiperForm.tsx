@@ -11,7 +11,7 @@ import changeCase from 'change-case';
 import _ from 'underscore';
 
 import InputFieldArea from '../../components/InputFieldArea';
-import InputField from '../../components/InputField';
+import { InputField } from '../../components/InputField';
 
 import DynamicFormStyles from '../../styles/componentStyles/DynamicSwiperForm';
 import ContainerStyles from '../../styles/Containers';
@@ -88,7 +88,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 
 	setFormState = (name: String, value: any) => {
 		const fields = name.split('.');
-		let formData: any = Object.assign({}, this.formData);
+		let formData: any = {...this.formData};
 		fields.forEach((field, index) => {
 			if (index === fields.length - 1) {
 				formData[field] = value;

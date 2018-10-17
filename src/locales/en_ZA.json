@@ -67,7 +67,8 @@
 		"submitAllDiscription": "This cannot be undone",
 		"submit": "SUBMIT",
 		"whatIsThis": "What is this?",
-		"failedSubmitClaim": "Failed to submit claim"
+		"failedSubmitClaim": "Failed to submit claim",
+		"claimCreated": "Claim created"
 	},
 	"submittedClaims": {
 		"successMessage": "Your claim has been successfully submitted",
