@@ -1,7 +1,7 @@
 # Uncomment the next line to define a global platform for your project
 # platform :ios, '9.0'
 
-target 'ixo_world_mobile' do
+target 'ixo' do
   pod 'React', :path => '../node_modules/react-native', :subspecs => [
     'Core',
     'CxxBridge', # Include this for RN >= 0.47
@@ -24,4 +24,12 @@ target 'ixo_world_mobile' do
   pod 'react-native-camera', path: '../node_modules/react-native-camera'
   pod 'ReactNativePermissions', :path => '../node_modules/react-native-permissions'
   pod 'RNSVG', :path => '../node_modules/react-native-svg'
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+
+  pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
+
+  pod 'react-native-sensitive-info', :path => '../node_modules/react-native-sensitive-info'
+
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
 end

@@ -14,15 +14,41 @@ import { IUser } from '../models/user';
 import { initIxo } from '../redux/ixo/ixo_action_creators';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { initUser } from '../redux/user/user_action_creators';
-import { ThemeColors } from '../styles/Colors';
 import ModalStyle from '../styles/Modal';
 import { Decrypt, generateSovrinDID, getSignature } from '../utils/sovrin';
 import validator from 'validator';
 import { InputField } from '../components/InputField';
-import { showToast, toastType } from '../utils/toasts';
+
+import { ThemeColors } from '../styles/Colors';
+import ContainerStyles from '../styles/Containers';
+import ScanQRStyles from '../styles/ScanQR';
 
 const keysafelogo = require('../../assets/keysafe-logo.png');
+const qr = require('../../assets/qr.png');
 const { width } = Dimensions.get('window');
+
+const InfoBlocks = ({ keySafeText, qrCodeText, helpText }: { keySafeText: string; qrCodeText: string, helpText: string }) => (
+	<View style={ScanQRStyles.infoBlockOuterContainer}>
+		<View style={[ContainerStyles.flexRow, { alignItems: 'flex-end' }]}>
+			<View style={[ContainerStyles.flexRow, ScanQRStyles.infoBlock]}>
+				<Image resizeMode={'contain'} style={ScanQRStyles.infoBlockImage} source={keysafelogo} />
+				<Text style={ScanQRStyles.keysafeText}>{keySafeText}</Text>
+			</View>
+			<View style={[ContainerStyles.flexRow, ScanQRStyles.infoBlock]}>
+				<Image resizeMode={'contain'} style={ScanQRStyles.infoBlockImage} source={qr} />
+				<Text style={ScanQRStyles.infoText}>{qrCodeText}</Text>
+			</View>
+		</View>
+		<View style={ScanQRStyles.dividerContainer}>
+			<View style={ScanQRStyles.divider} />
+		</View>
+		<View style={[ContainerStyles.flexRow, ScanQRStyles.moreInfoTextContainer]}>
+			<TouchableOpacity onPress={() => console.log('TODO')}>
+				<Text style={ScanQRStyles.moreInfoText}>{helpText}</Text>
+			</TouchableOpacity>
+		</View>
+	</View>
+);
 
 interface ParentProps {
 	navigation: any;
@@ -303,7 +329,9 @@ export class ScanQR extends React.Component<Props, State> {
 						flashMode={RNCamera.Constants.FlashMode.on}
 						permissionDialogTitle={'Permission to use camera'}
 						permissionDialogMessage={'We need your permission to use your camera phone'}
-					/>
+					>
+						<InfoBlocks helpText={this.props.screenProps.t('scanQR:loginHelp')} qrCodeText={this.props.screenProps.t('connectIXO:qrCodeInfo')} keySafeText={this.props.screenProps.t('connectIXO:keySafeInfo')} />
+					</RNCamera>
 				) : null}
 			</View>
 		);

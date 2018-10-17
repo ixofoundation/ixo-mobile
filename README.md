@@ -11,6 +11,10 @@ $ rm -rf Pods
 $ pod install
 ```
 
+add RNRandomBytes manually
+add RNIMagePicker manually
+add RNSensitiveInfo manually
+
 ### Development
 
 #### IOS
