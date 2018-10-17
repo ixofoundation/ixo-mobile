@@ -35,6 +35,35 @@
 			<key>uniqueIdentifier</key>
 			<string>84E5F3F9-BD52-47F2-868E-560B76504F17</string>
 		</dict>
+		<key>D1722CDF-98FF-47C7-987F-0F4DBD7C42AE</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.DebugLog</string>
+			<key>fileName</key>
+			<string>D1722CDF-98FF-47C7-987F-0F4DBD7C42AE.xcactivitylog</string>
+			<key>highLevelStatus</key>
+			<string>W</string>
+			<key>schemeIdentifier-containerName</key>
+			<string>ixo_world_mobile project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>ixo_world_mobile</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building workspace ixo_world_mobile with scheme ixo_world_mobile and configuration Release</string>
+			<key>timeStartedRecording</key>
+			<real>561463660.89365005</real>
+			<key>timeStoppedRecording</key>
+			<real>561463738.80168998</real>
+			<key>title</key>
+			<string>Building workspace ixo_world_mobile with scheme ixo_world_mobile and configuration Release</string>
+			<key>uniqueIdentifier</key>
+			<string>D1722CDF-98FF-47C7-987F-0F4DBD7C42AE</string>
+		</dict>
 	</dict>
 </dict>
 </plist>

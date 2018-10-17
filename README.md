@@ -31,6 +31,9 @@ react-native start or yarn run android_dev ( You will need to cancel the metro b
 yarn run ios_prod (ios)
 yarn run android_prod (android)
 ```
+#### Production build to local device
+1.) Detect local phone using `ios-deploy --detect` (install ios-deploy npm globally `npm install -g ios-deploy`)
+2.) Run locally `yarn run ios_prod --device "Max's iPhone"`
 
 ### Android Studio
 
@@ -47,4 +50,10 @@ yarn run android_prod (android)
 * react-native-sensitive-info [https://www.npmjs.com/package/react-native-sensitive-info]
 * react-native-camera [https://github.com/react-native-community/react-native-camera]
 * react-native-permissions [https://github.com/yonahforst/react-native-permissions]
-
+* react-native-image-picker
+* react-native-fingerprint-scanner
+* react-native-linear-gradient
+* react-native-svg
+* react-native-randombytes
+* react-native-splash-screen
+* react-native-video
