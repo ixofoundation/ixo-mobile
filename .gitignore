@@ -22,6 +22,9 @@ DerivedData
 project.xcworkspace
 ios/build
 
+# Pods
+/ios/Pods
+
 # Gradle
 /build/
 /RNTester/android/app/build/
