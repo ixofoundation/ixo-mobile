@@ -40,7 +40,7 @@ export interface StateProps {
 	ixo?: any;
 	user?: IUser;
 	savedProjectsClaims?: IProjectsClaimsSaved[];
-	offline?: boolean;
+	online?: boolean;
 }
 
 export interface StateProps {
@@ -182,11 +182,12 @@ export class Projects extends React.Component<Props, StateProps> {
 	};
 
 	refreshProjects() {
-		if (this.props.offline) {
+		if (this.props.online) {
 			this.setState({ isRefreshing: true, projects: [] });
 			this.getProjectList();
+		} else {
+			showToast('No internet connection', toastType.WARNING);
 		}
-		showToast('No internet connection', toastType.WARNING);
 	}
 
 	renderProject() {
@@ -323,7 +324,7 @@ export class Projects extends React.Component<Props, StateProps> {
 	}
 
 	renderConnectivity() {
-		if (this.props.offline) return null;
+		if (this.props.online) return null;
 		return (
 			<View style={{ height: height * 0.03, width: '100%', backgroundColor: ThemeColors.red, alignItems: 'center' }}>
 				<Text style={{ fontSize: height * 0.015, textAlign: 'center', color: ThemeColors.white, fontFamily: 'RobotoCondensed-Regular', paddingTop: 4 }}>
@@ -359,7 +360,7 @@ function mapStateToProps(state: PublicSiteStoreState) {
 		user: state.userStore.user,
 		projects: state.projectsStore.projects,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
-		offline: state.connectivityStore.offline
+		online: state.connectivityStore.online
 	};
 }
 

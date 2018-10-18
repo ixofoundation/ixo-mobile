@@ -16,6 +16,7 @@ import DarkButton from '../components/DarkButton';
 import HeaderSync from '../components/HeaderSync';
 import LinearGradient from 'react-native-linear-gradient';
 import { decode as base64Decode } from 'base-64';
+import { showToast, toastType } from '../utils/toasts';
 
 const background = require('../../assets/background_2.png');
 const addClaims = require('../../assets/savedclaims-visual.png');
@@ -47,7 +48,7 @@ export interface StateProps {
 	user?: IUser;
 	project?: IProject;
 	savedProjectsClaims: IProjectsClaimsSaved[];
-	offline?: boolean;
+	online?: boolean;
 }
 
 export interface StateProps {
@@ -147,8 +148,12 @@ class Claims extends React.Component<Props, StateProps> {
 			this.props.onLoadSavedClaim(claimId);
 			this.props.navigation.navigate('ViewClaim', { editable: true });
 		} else {
-			this.props.onLoadSubmittedClaim(claimId);
-			this.props.navigation.navigate('ViewClaim', { editable: false });
+			if (this.props.online) {
+				this.props.onLoadSubmittedClaim(claimId);
+				this.props.navigation.navigate('ViewClaim', { editable: false });
+			} else {
+				showToast(this.props.screenProps.t('claims:noInternet'), toastType.WARNING);
+			}
 		}
 	};
 
@@ -310,7 +315,7 @@ class Claims extends React.Component<Props, StateProps> {
 	}
 
 	renderConnectivity() {
-		if (this.props.offline) return null;
+		if (this.props.online) return null;
 		return (
 			<View style={{ height: height * 0.03, width: '100%', backgroundColor: ThemeColors.red, alignItems: 'center' }}>
 				<Text style={{ fontSize: height * 0.015, textAlign: 'center', color: ThemeColors.white, fontFamily: 'RobotoCondensed-Regular', paddingTop: 4 }}>
@@ -369,7 +374,7 @@ function mapStateToProps(state: PublicSiteStoreState) {
 		user: state.userStore.user,
 		project: state.projectsStore.selectedProject,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
-		offline: state.connectivityStore.offline
+		online: state.connectivityStore.online
 	};
 }
 

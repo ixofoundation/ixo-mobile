@@ -8,7 +8,7 @@ import { toggleConnection } from './redux/connectivity/connectivity_action_creat
 import i18n from './i18n';
 
 export interface DispatchProps {
-	onToggleConnection: (offlineState: boolean) => void;
+	onToggleConnection: (onlineState: boolean) => void;
 }
 
 interface Props extends DispatchProps {}
@@ -28,14 +28,14 @@ class TranslateStack extends React.Component<Props, {}> {
 
 function mapStateToProps(state: PublicSiteStoreState) {
 	return {
-		connectivity: state.connectivityStore.offline
+		connectivity: state.connectivityStore.online
 	};
 }
 
 function mapDispatchToProps(dispatch: any): DispatchProps {
 	return {
-		onToggleConnection: (offlineState: boolean) => {
-			dispatch(toggleConnection(offlineState));
+		onToggleConnection: (onlineState: boolean) => {
+			dispatch(toggleConnection(onlineState));
 		}
 	};
 }
