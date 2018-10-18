@@ -38,6 +38,7 @@ interface ParentProps {
 interface IMnemonic {
 	key: number;
 	word: string;
+	selected: boolean;
 }
 
 export interface DispatchProps {
@@ -115,19 +116,25 @@ class Register extends React.Component<Props, StateTypes> {
 
 	handleUnselectedToSelected(mnemonic: IMnemonic) {
 		const selectedWords: IMnemonic[] = this.state.selectedWords;
-		selectedWords.push(mnemonic);
+		if (!this.state.selectedWords.includes(mnemonic)) {
+			selectedWords.push(mnemonic);
+		}
+		const mnemonicWords: IMnemonic[] = [...this.state.unSelectedWords];
+		const mnemonicWord = mnemonicWords.find((e: IMnemonic) => e.key === mnemonic.key);
+		mnemonicWord.selected = true;
 		this.setState({
-			unSelectedWords: this.state.unSelectedWords.filter((e: IMnemonic) => e.key !== mnemonic.key),
+			unSelectedWords: mnemonicWords,
 			selectedWords
 		});
 	}
 
 	handleSelectedToUnselected(mnemonic: IMnemonic) {
-		const unSelectedWords: IMnemonic[] = this.state.unSelectedWords;
-		unSelectedWords.push(mnemonic);
+		const mnemonicWords: IMnemonic[] = [...this.state.unSelectedWords];
+		const mnemonicWord = mnemonicWords.find((e: IMnemonic) => e.key === mnemonic.key);
+		mnemonicWord.selected = false;
 		this.setState({
 			selectedWords: this.state.selectedWords.filter((e: IMnemonic) => e.key !== mnemonic.key),
-			unSelectedWords
+			unSelectedWords: mnemonicWords
 		});
 	}
 
@@ -332,15 +339,15 @@ class Register extends React.Component<Props, StateTypes> {
 	renderUnSelected() {
 		return (
 			<View style={this.state.selectedWords.length > 0 ? [RegisterStyles.unSelect] : [RegisterStyles.unSelect]}>
-				{this.state.unSelectedWords.map((mnemonic: IMnemonic) => {
+				{this.state.unSelectedWords.map((mnemonicWord: IMnemonic) => {
 					return (
-						<TouchableOpacity onPress={() => this.handleUnselectedToSelected(mnemonic)} key={mnemonic.key}>
-							{this.state.selectedWords.length > 0 ? (
+						<TouchableOpacity onPress={() => this.handleUnselectedToSelected(mnemonicWord)} key={mnemonicWord.key}>
+							{mnemonicWord.selected ? (
 								<LinearGradient style={RegisterStyles.wordBoxGradient} colors={[ButtonDark.colorPrimary, ButtonDark.colorSecondary]}>
-									<Text style={{ color: ThemeColors.white }}>{mnemonic.word}</Text>
+									<Text style={{ color: ThemeColors.white }}>{mnemonicWord.word}</Text>
 								</LinearGradient>
 							) : (
-								<Text style={RegisterStyles.wordBox}>{mnemonic.word}</Text>
+								<Text style={RegisterStyles.wordBox}>{mnemonicWord.word}</Text>
 							)}
 						</TouchableOpacity>
 					);
