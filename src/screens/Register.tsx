@@ -59,6 +59,7 @@ interface StateTypes {
 	selectedWords: IMnemonic[] | any[];
 	unSelectedWords: IMnemonic[] | any[];
 	errorMismatch: boolean;
+	userEnteredMnemonicCorrect: boolean;
 }
 
 export interface Props extends ParentProps, DispatchProps, StateProps {}
@@ -95,7 +96,8 @@ class Register extends React.Component<Props, StateTypes> {
 		mnemonic: '',
 		selectedWords: [],
 		unSelectedWords: [],
-		errorMismatch: false
+		errorMismatch: false,
+		userEnteredMnemonicCorrect: false
 	};
 
 	onBackButton = () => {
@@ -140,16 +142,28 @@ class Register extends React.Component<Props, StateTypes> {
 			unSelectedWords: mnemonicWords,
 			selectedWords
 		});
+
+		const mnemonicEntered: string = this.getMnemonicString(this.state.selectedWords)
+		if ((this.state.selectedWords.length === this.state.unSelectedWords.length) && mnemonicEntered !== this.state.mnemonic) {
+			this.setState({ errorMismatch: true });
+		} else if ((this.state.selectedWords.length === this.state.unSelectedWords.length) && mnemonicEntered === this.state.mnemonic) {
+			this.setState({ userEnteredMnemonicCorrect: true });
+		}
 	}
 
 	handleSelectedToUnselected(mnemonic: IMnemonic) {
 		const mnemonicWords: IMnemonic[] = [...this.state.unSelectedWords];
 		const mnemonicWord = mnemonicWords.find((e: IMnemonic) => e.key === mnemonic.key);
 		mnemonicWord.selected = false;
+
 		this.setState({
 			selectedWords: this.state.selectedWords.filter((e: IMnemonic) => e.key !== mnemonic.key),
 			unSelectedWords: mnemonicWords
 		});
+
+		if (this.state.errorMismatch) {
+			this.setState({ errorMismatch: false, userEnteredMnemonicCorrect: false });
+		}
 	}
 
 	getMnemonicString(mnemonicArray: IMnemonic[]) {
@@ -331,11 +345,7 @@ class Register extends React.Component<Props, StateTypes> {
 						)}
 						{this.renderSelected()}
 						{this.renderUnSelected()}
-						{this.state.selectedWords.length > 0 ? (
-							<DarkButton text={this.props.screenProps.t('register:confirm')} onPress={() => this.handleConfirmMnemonic()} />
-						) : (
-							<LightButton text={this.props.screenProps.t('register:confirm')} onPress={() => this.handleConfirmMnemonic()} />
-						)}
+						<DarkButton disabled={!this.state.userEnteredMnemonicCorrect} text={this.props.screenProps.t('register:confirm')} onPress={() => this.handleConfirmMnemonic()} />
 					</View>
 				);
 		}

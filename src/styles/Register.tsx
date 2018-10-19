@@ -31,6 +31,7 @@ const styles = StyleSheet.create<Style>({
 		marginTop: 20
 	},
 	selected: {
+		backgroundColor: ThemeColors.blue_dark,
 		borderColor: ThemeColors.blue_lightest,
 		borderWidth: 1,
 		height: deviceHeight * 0.2,
