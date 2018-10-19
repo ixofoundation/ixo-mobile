@@ -64,6 +64,11 @@ interface StateTypes {
 export interface Props extends ParentProps, DispatchProps, StateProps {}
 
 class Register extends React.Component<Props, StateTypes> {
+	componentDidMount() {
+		this.props.onIxoInit();
+		this.props.navigation.setParams({ onBackButton: this.onBackButton });
+	}
+
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
 		const { params = {} } = navigation.state;
 		return {
@@ -92,11 +97,6 @@ class Register extends React.Component<Props, StateTypes> {
 		unSelectedWords: [],
 		errorMismatch: false
 	};
-
-	componentDidMount() {
-		this.props.onIxoInit();
-		this.props.navigation.setParams({ onBackButton: this.onBackButton })
-	}
 
 	onBackButton = () => {
 		if (this.state.registerState === registerSteps.captureDetails) {
@@ -229,7 +229,6 @@ class Register extends React.Component<Props, StateTypes> {
 		}
 
 		if (this.state.password === this.state.confirmPassword) {
-			this.props.navigation.setParams({ registerState: registerSteps.revealMnemonic });
 			this.setState({ registerState: registerSteps.revealMnemonic });
 		}
 	}
@@ -238,38 +237,33 @@ class Register extends React.Component<Props, StateTypes> {
 		switch (index) {
 			case registerSteps.captureDetails:
 				return (
-					<View>
-						<KeyboardAvoidingView behavior={'position'}>
-							<View style={[RegisterStyles.flexLeft]}>
-								<Text style={[RegisterStyles.header]}>{this.props.screenProps.t('register:register')}</Text>
-							</View>
-							<View style={{ width: '100%' }}>
-								<View style={RegisterStyles.divider} />
-							</View>
-							<Text style={{ textAlign: 'left', color: ThemeColors.white, paddingBottom: 10 }}>{this.props.screenProps.t('register:letsSetup')}</Text>
-							<InputField
-								value={this.state.username}
-								labelName={this.props.screenProps.t('register:yourName')}
-								onChangeText={(text: string) => this.setState({ username: text })}
-							/>
-							<InputField
-								password={true}
-								value={this.state.password}
-								labelName={this.props.screenProps.t('register:newPassword')}
-								onChangeText={(text: string) => this.setState({ password: text })}
-							/>
-							<InputField
-								password={true}
-								value={this.state.confirmPassword}
-								labelName={this.props.screenProps.t('register:confirmPassword')}
-								onChangeText={(text: string) => this.setState({ confirmPassword: text })}
-							/>
-							<DarkButton propStyles={{ marginTop: 20 }} onPress={() => this.handleCreatePassword()} text={this.props.screenProps.t('register:create')} />
-						</KeyboardAvoidingView>
-						<TouchableOpacity style={RegisterStyles.recoverTextContainer} onPress={() => this.props.navigation.navigate('Recover')}>
-							<Text style={RegisterStyles.recoverText}>{this.props.screenProps.t('register:recoverAccount')}</Text>
-						</TouchableOpacity>
-					</View>
+					<KeyboardAvoidingView behavior={'position'}>
+						<View style={[RegisterStyles.flexLeft]}>
+							<Text style={[RegisterStyles.header]}>{this.props.screenProps.t('register:register')}</Text>
+						</View>
+						<View style={{ width: '100%' }}>
+							<View style={RegisterStyles.divider} />
+						</View>
+						<Text style={{ textAlign: 'left', color: ThemeColors.white, paddingBottom: 10 }}>{this.props.screenProps.t('register:letsSetup')}</Text>
+						<InputField
+							value={this.state.username}
+							labelName={this.props.screenProps.t('register:yourName')}
+							onChangeText={(text: string) => this.setState({ username: text })}
+						/>
+						<InputField
+							password={true}
+							value={this.state.password}
+							labelName={this.props.screenProps.t('register:newPassword')}
+							onChangeText={(text: string) => this.setState({ password: text })}
+						/>
+						<InputField
+							password={true}
+							value={this.state.confirmPassword}
+							labelName={this.props.screenProps.t('register:confirmPassword')}
+							onChangeText={(text: string) => this.setState({ confirmPassword: text })}
+						/>
+						<DarkButton propStyles={{ marginTop: 20 }} onPress={() => this.handleCreatePassword()} text={this.props.screenProps.t('register:create')} />
+					</KeyboardAvoidingView>
 				);
 			case registerSteps.revealMnemonic:
 				return (
@@ -288,7 +282,7 @@ class Register extends React.Component<Props, StateTypes> {
 							{this.props.screenProps.t('register:secretParagraph_2')}
 						</Text>
 
-						<TouchableOpacity onPress={() => this.generateMnemonic()} style={[RegisterStyles.selectedBox]}>
+						<TouchableOpacity disabled={(this.state.mnemonic.length > 0)} onPress={() => this.generateMnemonic()} style={[RegisterStyles.selectedBox]}>
 							{this.state.mnemonic.length <= 0 ? (
 								<View>
 									<Icon name="lock" color={ThemeColors.black} style={{ fontSize: 60, textAlign: 'center', color: ThemeColors.white }} />
@@ -302,12 +296,13 @@ class Register extends React.Component<Props, StateTypes> {
 								</View>
 							)}
 						</TouchableOpacity>
-            <DarkButton
-							disabled={(this.state.mnemonic.length <= 0)}
-							propStyles={{ marginTop: 15 }}
-							text={this.props.screenProps.t('register:next')}
-							onPress={() => this.setState({ registerState: registerSteps.reenterMnemonic })}
-						/>
+						{this.state.mnemonic.length > 0 && (
+							<DarkButton
+								propStyles={{ marginTop: 15 }}
+								text={this.props.screenProps.t('register:next')}
+								onPress={() => this.setState({ registerState: registerSteps.reenterMnemonic })}
+							/>
+						)}
 					</View>
 				);
 			case registerSteps.reenterMnemonic:
