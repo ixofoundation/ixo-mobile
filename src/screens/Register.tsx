@@ -282,13 +282,12 @@ class Register extends React.Component<Props, StateTypes> {
 								</View>
 							)}
 						</TouchableOpacity>
-						{this.state.mnemonic.length > 0 && (
-							<DarkButton
-								propStyles={{ marginTop: 15 }}
-								text={this.props.screenProps.t('register:next')}
-								onPress={() => this.setState({ registerState: registerSteps.reenterMnemonic })}
-							/>
-						)}
+						<DarkButton
+							disabled={(this.state.mnemonic.length <= 0)}
+							propStyles={{ marginTop: 15 }}
+							text={this.props.screenProps.t('register:next')}
+							onPress={() => this.setState({ registerState: registerSteps.reenterMnemonic })}
+						/>
 					</View>
 				);
 			case registerSteps.reenterMnemonic:
