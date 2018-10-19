@@ -15,7 +15,6 @@ interface Style {
 	header: TextStyle;
 	divider: ViewStyle;
 	recoverText: TextStyle;
-	recoverTextContainer: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -85,15 +84,12 @@ const styles = StyleSheet.create<Style>({
 		marginBottom: 15
 	},
 	recoverText: {
+		marginTop: 20,
 		color: ThemeColors.blue_lightest,
 		fontSize: 12,
 		textDecorationLine: 'underline',
 		textAlign: 'center'
-	},
-	recoverTextContainer: {
-		marginTop: 20,
-		alignItems: 'center',
-	},
+	}
 });
 
 export default styles;
