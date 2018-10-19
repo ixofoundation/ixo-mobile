@@ -228,6 +228,11 @@ class Register extends React.Component<Props, StateTypes> {
 			return;
 		}
 
+		if (this.state.password.length < 8) {
+			showToast(this.props.screenProps.t('register:passwordShort'), toastType.WARNING);
+			return;
+		}
+
 		if (this.state.password === this.state.confirmPassword) {
 			this.setState({ registerState: registerSteps.revealMnemonic });
 		}
