@@ -53,7 +53,8 @@ class Recover extends React.Component<Props, StateTypes> {
 		return {
 			headerStyle: {
 				backgroundColor: ThemeColors.blue_dark,
-				borderBottomColor: ThemeColors.blue_dark
+				borderBottomColor: ThemeColors.blue_dark,
+				elevation: 0
 			},
 			headerLeft: <Icon name="arrow-back" onPress={() => navigation.pop()} style={{ paddingLeft: 10, color: ThemeColors.white }} />,
 			headerTitleStyle: {

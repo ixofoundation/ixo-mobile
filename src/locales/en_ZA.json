@@ -99,7 +99,8 @@
 		"missingFields": "Missing fields.",
 		"missmatchPassword": "Mismatch on password.",
 		"ledgerDid" : "Please wait while your did is being ledgered.",
-		"next": "NEXT"
+		"next": "NEXT",
+		"recoverAccount": "Recover from backup phrase"
 	},
 	"recover": {
 		"secretPhrase": "Enter backup phrase",
