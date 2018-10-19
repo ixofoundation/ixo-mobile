@@ -14,6 +14,8 @@ interface Style {
 	flexLeft: ViewStyle;
 	header: TextStyle;
 	divider: ViewStyle;
+	recoverText: TextStyle;
+	recoverTextContainer: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -80,7 +82,17 @@ const styles = StyleSheet.create<Style>({
 		height: 1,
 		backgroundColor: ThemeColors.blue_medium,
 		marginBottom: 15
-	}
+	},
+	recoverText: {
+		color: ThemeColors.blue_lightest,
+		fontSize: 12,
+		textDecorationLine: 'underline',
+		textAlign: 'center'
+	},
+	recoverTextContainer: {
+		marginTop: 20,
+		alignItems: 'center',
+	},
 });
 
 export default styles;
