@@ -133,7 +133,7 @@ export class ScanQR extends React.Component<Props, State> {
 
 	disableCamera() {
 		if (Platform.OS === 'android') {
-			this.setState({ cameraActive: false });
+			// this.setState({ cameraActive: false });
 		}
 	}
 
@@ -205,6 +205,7 @@ export class ScanQR extends React.Component<Props, State> {
 
 	resetStateVars = () => {
 		this.setState({ modalVisible: false, password: undefined, payload: null, errors: false, projectDid: null, projectTitle: null, serviceEndpoint: null });
+
 	};
 
 	renderDescriptionText() {
@@ -255,7 +256,6 @@ export class ScanQR extends React.Component<Props, State> {
 		const registerAction = StackActions.reset({ index: 0, actions: [NavigationActions.navigate({ routeName: 'Register' })] });
 		if (!this.state.errors) {
 			return (
-				// <KeyboardAvoidingView behavior={'position'}>
 				<View style={ModalStyle.modalOuterContainer}>
 					<View style={ModalStyle.modalInnerContainer}>
 						<View style={ModalStyle.flexRight}>
@@ -282,7 +282,6 @@ export class ScanQR extends React.Component<Props, State> {
 						/>
 					</View>
 				</View>
-				// </KeyboardAvoidingView>
 			);
 		}
 		return (

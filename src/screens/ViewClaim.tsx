@@ -59,7 +59,8 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 		return {
 			headerStyle: {
 				backgroundColor: ThemeColors.blue_dark,
-				borderBottomColor: ThemeColors.blue_dark
+				borderBottomColor: ThemeColors.blue_dark,
+				elevation: 0
 			},
 			headerTitleStyle: {
 				color: ThemeColors.white,

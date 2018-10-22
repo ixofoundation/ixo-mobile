@@ -1,4 +1,5 @@
 import { Text } from 'native-base';
+import { StackActions, NavigationActions } from 'react-navigation';
 import * as React from 'react';
 import Video from 'react-native-video';
 import { Dimensions, Image, ImageBackground, StatusBar, View, TouchableOpacity } from 'react-native';
@@ -17,19 +18,19 @@ interface ParentProps {
 }
 
 export default class ConnectIXO extends React.Component<ParentProps, {}> {
+	handleOnScanNavigate() {
+		const resetAction = StackActions.reset({
+			index: 1, // it means change state to C which can goBack to previousView A
+			actions: [NavigationActions.navigate({ routeName: 'ConnectIXO' }), NavigationActions.navigate({ routeName: 'ScanQR' })]
+		});
+		this.props.navigation.dispatch(resetAction);
+	}
+
 	render() {
 		return (
 			<View style={ConnectIXOStyles.loginWrapper}>
-				<StatusBar barStyle='light-content' />
-				<Video
-					source={globe}
-					rate={1.0}
-					volume={1.0}
-					muted={false}
-					resizeMode={'cover'}
-					repeat
-					style={ConnectIXOStyles.globeView}
-				/>
+				<StatusBar barStyle="light-content" />
+				<Video source={globe} rate={1.0} volume={1.0} muted={false} resizeMode={'cover'} repeat style={ConnectIXOStyles.globeView} />
 				<View style={[ContainerStyles.flexColumn, { justifyContent: 'space-between' }]}>
 					<View
 						style={{
@@ -41,11 +42,12 @@ export default class ConnectIXO extends React.Component<ParentProps, {}> {
 						<Image resizeMode={'contain'} style={ConnectIXOStyles.logo} source={logo} />
 					</View>
 					<View style={{ width: '100%' }}>
-						<LightButton propStyles={{ marginBottom: 10 }} text={this.props.screenProps.t('connectIXO:registerButton')} onPress={() => this.props.navigation.navigate('Register')} />
-						<DarkButton
-							text={this.props.screenProps.t('connectIXO:scanButton')}
-							onPress={() => this.props.navigation.navigate('ScanQR')}
+						<LightButton
+							propStyles={{ marginBottom: 10 }}
+							text={this.props.screenProps.t('connectIXO:registerButton')}
+							onPress={() => this.props.navigation.navigate('Register')}
 						/>
+						<DarkButton text={this.props.screenProps.t('connectIXO:scanButton')} onPress={() => this.handleOnScanNavigate()} />
 						<TouchableOpacity onPress={() => this.props.navigation.navigate('Recover')}>
 							<Text style={ConnectIXOStyles.recover}>{this.props.screenProps.t('connectIXO:recover')}</Text>
 						</TouchableOpacity>

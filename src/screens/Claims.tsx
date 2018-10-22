@@ -278,7 +278,7 @@ class Claims extends React.Component<Props, StateProps> {
 						<View style={{ height: height * 0.4, flexDirection: 'row', justifyContent: 'center' }}>
 							<View style={{ flexDirection: 'column', justifyContent: 'center' }}>
 								<Image
-									resizeMode={'center'}
+									resizeMode={'stretch'}
 									source={addClaims}
 								/>
 							</View>
