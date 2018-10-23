@@ -43,12 +43,7 @@ class Settings extends React.Component<ParentProps> {
 
 	resetAccount() {
 		AsyncStorage.clear();
-		this.props.navigation.dispatch(
-			StackActions.reset({
-				index: 0,
-				actions: [NavigationActions.navigate({ routeName: 'OnBoarding' })]
-			})
-		);
+		this.props.navigation.navigate('OnBoarding');
 	}
 
 	render() {

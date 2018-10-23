@@ -13,6 +13,7 @@ interface Style {
 	infoText: TextStyle;
 	dividerContainer: ViewStyle;
 	divider: ViewStyle;
+	closeIcon: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -65,6 +66,11 @@ const styles = StyleSheet.create<Style>({
 		height: 1,
 		backgroundColor: ThemeColors.blue_lightest,
 		alignSelf: 'center'
+	},
+	closeIcon: {
+		color: ThemeColors.white,
+		top: 10,
+		fontSize: 30
 	}
 });
 

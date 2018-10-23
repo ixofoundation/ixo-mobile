@@ -300,7 +300,7 @@ export class Projects extends React.Component<Props, StateProps> {
 						<View>
 							<View style={{ height: height * 0.4, flexDirection: 'row', justifyContent: 'center' }}>
 								<View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-									<Image resizeMode={'center'} source={addProjects} />
+									<Image resizeMode={'stretch'} source={addProjects} />
 								</View>
 							</View>
 							<View>
@@ -341,12 +341,12 @@ export class Projects extends React.Component<Props, StateProps> {
 					// @ts-ignore
 					this.drawer = ref;
 				}}
-				content={<SideBar navigation={this.props.navigation} />}
+				content={<SideBar screenProps={this.props.screenProps} navigation={this.props.navigation} />}
 				onClose={() => this.closeDrawer()}
 			>
 				{this.renderConnectivity()}
 				{this.state.projects.length > 0 ? this.renderNoProjectsView() : this.renderProjectsView()}
-				<Fab direction='up' style={{ backgroundColor: ThemeColors.red }} position='bottomRight' onPress={() => this.props.navigation.navigate('ScanQR')}>
+				<Fab direction='up' style={{ backgroundColor: ThemeColors.red }} position='bottomRight' onPress={() => this.props.navigation.navigate('ScanQR', { projectScan: true })}>
 					<Image resizeMode={'contain'} style={{ width: width * 0.08, height: width * 0.08 }} source={qr} />
 				</Fab>
 			</Drawer>

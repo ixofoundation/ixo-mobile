@@ -21,7 +21,7 @@ export default class ConnectIXO extends React.Component<ParentProps, {}> {
 	handleOnScanNavigate() {
 		const resetAction = StackActions.reset({
 			index: 1, // it means change state to C which can goBack to previousView A
-			actions: [NavigationActions.navigate({ routeName: 'ConnectIXO' }), NavigationActions.navigate({ routeName: 'ScanQR' })]
+			actions: [NavigationActions.navigate({ routeName: 'ConnectIXO' }), NavigationActions.navigate({ routeName: 'ScanQR', params: { projectScan: false }})]
 		});
 		this.props.navigation.dispatch(resetAction);
 	}

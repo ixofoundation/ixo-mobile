@@ -1,4 +1,9 @@
 {
+	"sidebar": {
+		"settings": "Settings",
+		"help": "Help",
+		"signOut": "SIGN OUT"
+	},
 	"onboarding": {
 		"appOnboarding": "App onboarding screens",
 		"begin": "Begin",
@@ -22,12 +27,23 @@
 		"unlockInformation": "Please unlock your ixo information with your ixo Key Safe password.",
 		"unlockButtonText": "UNLOCK",
 		"registerButtonText": "REGISTER",
-		"projectInformation": "You are about to become a service agent on the following project: "
+		"projectInformation": "Service Providers delivers the impact to a project. They are the people on the ground submitting claims, and making a difference."
 	},
 	"scanQR": {
+		"close": "CLOSE",
+		"serviceProviderMessage": "You are now a service provider and can start submitting claims.",
+		"welcomeMessage": "Welcome to",
+		"email": "Email",
 		"scan": "Scan",
 		"rescan": "RE-SCAN",
-		"loginHelp": "Need help logging in?"
+		"loginHelp": "Need help logging in?",
+		"scanFailed": "Scan unsuccessful",
+		"errorKeySafe": "There has been an error connecting to the ixo Key Safe",
+		"registered": "Are you registered?",
+		"successRegistered": "Successfully registered as ",
+		"serviceProviderHelp": "What is a service provider?",
+		"serviceProviderScan": "Go to the project page and scan the QR code to connect",
+		"password": "Password"
 	},
 	"login": {
 		"hi": "Hi",
