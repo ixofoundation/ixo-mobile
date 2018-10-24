@@ -85,7 +85,7 @@
 		"submit": "SUBMIT",
 		"whatIsThis": "What is this?",
 		"failedSubmitClaim": "Failed to submit claim",
-		"claimCreated": "Claim created",
+		"claimCreated": "Claim submitted",
 		"noInternet": "No internet connection"
 	},
 	"submittedClaims": {

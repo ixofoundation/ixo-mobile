@@ -21,6 +21,7 @@ interface Style {
 	spinnerCenterColumn: ViewStyle;
 	drawerOpen: ViewStyle;
 	fabIcon: ViewStyle;
+	myProjectsHeader: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -41,6 +42,12 @@ const styles = StyleSheet.create<Style>({
 		width: '100%'
 	},
 	header: {
+		fontFamily: 'RobotoCondensed-Regular',
+		color: ThemeColors.white,
+		fontSize: 29,
+		paddingBottom: 20
+	},
+	myProjectsHeader: {
 		color: ThemeColors.white,
 		fontSize: 29,
 		paddingBottom: 20
@@ -49,10 +56,14 @@ const styles = StyleSheet.create<Style>({
 		alignItems: 'flex-start',
 		justifyContent: 'flex-start',
 		borderColor: ThemeColors.blue_light,
-		borderLeftWidth: 1,
-		borderRightWidth: 1,
-		borderBottomWidth: 1,
-		padding: width * 0.05
+		borderLeftWidth: 0.8,
+		borderRightWidth: 0.8,
+		borderBottomWidth: 0.8,
+		padding: width * 0.08,
+		shadowOffset: { width: 2, height: 2 },
+		shadowColor: ThemeColors.grey,
+		shadowOpacity: 3.0,
+		elevation: 8
 	},
 	divider: {
 		width: '30%',
@@ -70,17 +81,17 @@ const styles = StyleSheet.create<Style>({
 		width: '100%',
 		height: height * 0.3,
 		justifyContent: 'flex-end',
-		flexDirection: 'row',
-		borderLeftWidth: 1,
-		borderRightWidth: 1,
-		borderTopWidth: 1,
-		borderColor: ThemeColors.blue_light
+		flexDirection: 'row'
+		// borderLeftWidth: 1,
+		// borderRightWidth: 1,
+		// borderTopWidth: 1,
+		// borderColor: ThemeColors.blue_light
 	},
 	projectTitle: {
 		textAlign: 'left',
 		color: ThemeColors.white,
-		fontSize: 21,
-		fontWeight: '500'
+		fontSize: 21
+		// fontWeight: '500'
 	},
 	projectSuccessfulAmountText: {
 		textAlign: 'left',
@@ -90,8 +101,8 @@ const styles = StyleSheet.create<Style>({
 	projectRequiredClaimsText: {
 		textAlign: 'left',
 		color: ThemeColors.white,
-		fontSize: 21,
-		fontWeight: '500'
+		fontSize: 21
+		// fontWeight: '500'
 	},
 	projectImpactActionText: {
 		textAlign: 'left',
@@ -107,7 +118,6 @@ const styles = StyleSheet.create<Style>({
 		flex: 1,
 		width: '100%',
 		height: '100%',
-		paddingHorizontal: 10,
 		backgroundColor: ThemeColors.blue_dark
 	},
 	spinnerCenterRow: {
@@ -121,7 +131,7 @@ const styles = StyleSheet.create<Style>({
 		justifyContent: 'center'
 	},
 	fabIcon: {
-		backgroundColor: ThemeColors.red,
+		backgroundColor: ThemeColors.red
 	}
 });
 

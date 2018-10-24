@@ -17,6 +17,8 @@ import HeaderSync from '../components/HeaderSync';
 import LinearGradient from 'react-native-linear-gradient';
 import { decode as base64Decode } from 'base-64';
 import { showToast, toastType } from '../utils/toasts';
+import LightButton from '../components/LightButton';
+import Banner from '../components/Banner';
 
 const background = require('../../assets/background_2.png');
 const addClaims = require('../../assets/savedclaims-visual.png');
@@ -24,8 +26,6 @@ const submittedClaims = require('../../assets/submittedclaims-visual.png');
 const approvedIcon = require('../../assets/icon-approved.png');
 const rejectedIcon = require('../../assets/icon-rejected.png');
 const pendingIcon = require('../../assets/icon-pending.png');
-
-const { height } = Dimensions.get('window');
 
 enum ClaimStatus {
 	Pending = '0',
@@ -59,14 +59,14 @@ export interface StateProps {
 export interface Props extends ParentProps, DispatchProps, StateProps {}
 
 const ClaimListItem = ({
-	projectName,
+	impactAction,
 	claimColor,
 	claim,
 	onViewClaim,
 	savedClaim,
 	screenProps
 }: {
-	projectName: string;
+	impactAction: string;
 	claimColor?: string;
 	claim: IClaim | IClaimSaved;
 	onViewClaim: Function;
@@ -77,8 +77,10 @@ const ClaimListItem = ({
 		<View style={ClaimsStyles.claimListItemContainer}>
 			{claimColor && <View style={[ClaimsStyles.claimColorBlock, { backgroundColor: claimColor }]} />}
 			<LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]} style={[ClaimsStyles.ClaimBox]}>
-				<Text style={ClaimsStyles.claimTitle}>{`${projectName} ${claim.claimId.slice(claim.claimId.length - 12, claim.claimId.length)}`}</Text>
-				<Text style={ClaimsStyles.claimCreated}>{screenProps} {moment(claim.date).format('YYYY-MM-DD')}</Text>
+				<Text style={ClaimsStyles.claimTitle}>{`${impactAction} ${claim.claimId.slice(claim.claimId.length - 12, claim.claimId.length)}`}</Text>
+				<Text style={ClaimsStyles.claimCreated}>
+					{screenProps} {moment(claim.date).format('YYYY-MM-DD')}
+				</Text>
 			</LinearGradient>
 		</View>
 	</TouchableOpacity>
@@ -93,6 +95,7 @@ const ClaimListItemHeading = ({ text, icon }: { text: string; icon: any }) => (
 
 class Claims extends React.Component<Props, StateProps> {
 	projectName: string = '';
+	impactAction: string = '';
 	projectDid: string | undefined;
 	pdsURL: string = '';
 	claimsList: IClaim[] = [];
@@ -110,7 +113,7 @@ class Claims extends React.Component<Props, StateProps> {
 			},
 			headerRight: (
 				<View style={ContainerStyles.flexRow}>
-					<Icon name='search' style={{ paddingRight: 10, color: ThemeColors.white }} />
+					<Icon name="search" style={{ paddingRight: 10, color: ThemeColors.white }} />
 					<HeaderSync screenProps={screenProps} />
 				</View>
 			),
@@ -130,6 +133,7 @@ class Claims extends React.Component<Props, StateProps> {
 		if (props.project) {
 			this.projectDid = props.project.projectDid;
 			this.projectName = props.project.data.title;
+			this.impactAction = props.project.data.impactAction;
 			this.pdsURL = props.project.data.serviceEndpoint;
 			this.claimsList = props.project.data.claims.filter(claim => claim.saDid === this.props.user!.did);
 			this.claimForm = props.project.data.templates.claim.form;
@@ -186,7 +190,7 @@ class Claims extends React.Component<Props, StateProps> {
 							<ClaimListItem
 								key={claim.claimId}
 								savedClaim={false}
-								projectName={this.projectName}
+								impactAction={this.impactAction}
 								claim={claim}
 								claimColor={ThemeColors.orange}
 								onViewClaim={this.onViewClaim}
@@ -200,7 +204,7 @@ class Claims extends React.Component<Props, StateProps> {
 							<ClaimListItem
 								key={claim.claimId}
 								savedClaim={false}
-								projectName={this.projectName}
+								impactAction={this.impactAction}
 								claim={claim}
 								claimColor={ThemeColors.red}
 								onViewClaim={this.onViewClaim}
@@ -215,7 +219,7 @@ class Claims extends React.Component<Props, StateProps> {
 								key={claim.claimId}
 								screenProps={this.props.screenProps.t('claims:claimCreated')}
 								savedClaim={false}
-								projectName={this.projectName}
+								impactAction={this.impactAction}
 								claim={claim}
 								claimColor={ThemeColors.green}
 								onViewClaim={this.onViewClaim}
@@ -234,7 +238,16 @@ class Claims extends React.Component<Props, StateProps> {
 					<Content>
 						{Object.keys(projectClaims.claims).map(key => {
 							const claim: IClaimSaved = projectClaims.claims[key];
-							return <ClaimListItem screenProps={this.props.screenProps.t('claims:claimCreated')} key={claim.claimId} savedClaim={true} projectName={this.projectName} claim={claim} onViewClaim={this.onViewClaim} />;
+							return (
+								<ClaimListItem
+									screenProps={this.props.screenProps.t('claims:claimCreated')}
+									key={claim.claimId}
+									savedClaim={true}
+									impactAction={this.impactAction}
+									claim={claim}
+									onViewClaim={this.onViewClaim}
+								/>
+							);
 						})}
 					</Content>
 				</Container>
@@ -246,16 +259,16 @@ class Claims extends React.Component<Props, StateProps> {
 	renderNoSubmittedClaims() {
 		return (
 			<ImageBackground source={background} style={ClaimsStyles.backgroundImage}>
-				<Container>
+				<Container style={{ paddingHorizontal: 30 }}>
 					<View>
-						<View style={{ height: height * 0.4, flexDirection: 'row', justifyContent: 'center' }}>
+						<View style={ClaimsStyles.imageContainer}>
 							<View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-								<Image resizeMode={'center'} source={submittedClaims} />
+								<Image resizeMode={'stretch'} source={submittedClaims} />
 							</View>
 						</View>
 						<View>
 							<View style={[ClaimsStyles.flexLeft]}>
-								<Text style={[ClaimsStyles.header, { color: ThemeColors.blue_lightest }]}>{this.props.screenProps.t('claims:noSubmissions')}</Text>
+								<Text style={[ClaimsStyles.header]}>{this.props.screenProps.t('claims:noSubmissions')}</Text>
 							</View>
 							<View style={{ width: '100%' }}>
 								<View style={ClaimsStyles.divider} />
@@ -273,19 +286,16 @@ class Claims extends React.Component<Props, StateProps> {
 	renderNoSavedClaims() {
 		return (
 			<ImageBackground source={background} style={ClaimsStyles.backgroundImage}>
-				<Container style={{ paddingHorizontal: 10 }}>
+				<Container style={{ paddingHorizontal: 30 }}>
 					<View>
-						<View style={{ height: height * 0.4, flexDirection: 'row', justifyContent: 'center' }}>
+						<View style={ClaimsStyles.imageContainer}>
 							<View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-								<Image
-									resizeMode={'stretch'}
-									source={addClaims}
-								/>
+								<Image resizeMode={'stretch'} source={addClaims} />
 							</View>
 						</View>
 						<View>
 							<View style={[ClaimsStyles.flexLeft]}>
-								<Text style={[ClaimsStyles.header, { color: ThemeColors.blue_lightest, fontFamily: 'RobotoCondensed-Regular' }]}>{this.props.screenProps.t('claims:noClaims')}</Text>
+								<Text style={[ClaimsStyles.header]}>{this.props.screenProps.t('claims:noClaims')}</Text>
 							</View>
 							<View style={{ width: '100%' }}>
 								<View style={ClaimsStyles.divider} />
@@ -316,13 +326,7 @@ class Claims extends React.Component<Props, StateProps> {
 
 	renderConnectivity() {
 		if (this.props.online) return null;
-		return (
-			<View style={{ height: height * 0.03, width: '100%', backgroundColor: ThemeColors.red, alignItems: 'center' }}>
-				<Text style={{ fontSize: height * 0.015, textAlign: 'center', color: ThemeColors.white, fontFamily: 'RobotoCondensed-Regular', paddingTop: 4 }}>
-					{this.props.screenProps.t('connectivity:offlineMode')}
-				</Text>
-			</View>
-		);
+		return <Banner text={this.props.screenProps.t('connectivity:offlineMode')} />;
 	}
 
 	render() {
@@ -331,8 +335,11 @@ class Claims extends React.Component<Props, StateProps> {
 		return (
 			<Container style={{ backgroundColor: ThemeColors.blue_dark }}>
 				{this.renderConnectivity()}
-				<StatusBar barStyle='light-content' />
-				<Tabs tabBarUnderlineStyle={{ borderWidth: 1 }} tabContainerStyle={{ borderBottomColor: ThemeColors.blue_light, elevation: 0 }}>
+				<StatusBar barStyle="light-content" />
+				<Tabs
+					tabBarUnderlineStyle={{ backgroundColor: ThemeColors.blue_lightest, height: 1 }}
+					tabContainerStyle={{ borderBottomColor: ThemeColors.blue, elevation: 0, borderBottomWidth: 1 }}
+				>
 					<Tab
 						activeTabStyle={{ backgroundColor: ThemeColors.blue_dark }}
 						tabStyle={{ backgroundColor: ThemeColors.blue_dark }}
@@ -348,7 +355,15 @@ class Claims extends React.Component<Props, StateProps> {
 						{this.renderSubmittedClaims()}
 					</Tab>
 				</Tabs>
-				<DarkButton onPress={() => this.props.navigation.navigate('NewClaim')} text={this.props.screenProps.t('claims:submitButton')} />
+				{numberOfSavedClaims === 0 ? (
+					<LightButton
+						propStyles={{ backgroundColor: ThemeColors.red, borderColor: ThemeColors.red, borderRadius: 0 }}
+						onPress={() => this.props.navigation.navigate('NewClaim')}
+						text={this.props.screenProps.t('claims:submitButton')}
+					/>
+				) : (
+					<DarkButton onPress={() => this.props.navigation.navigate('NewClaim')} text={this.props.screenProps.t('claims:submitButton')} />
+				)}
 			</Container>
 		);
 	}

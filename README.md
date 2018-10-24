@@ -14,6 +14,7 @@ $ pod install
 add RNRandomBytes manually
 add RNIMagePicker manually
 add RNSensitiveInfo manually
+add react-native-vector-icons manually
 
 ### Development
 
