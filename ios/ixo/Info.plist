@@ -38,7 +38,7 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>IXO would like camera access to take photo's of claims and scan barcodes</string>
+	<string>IXO would like camera access to take photo&apos;s of claims and scan barcodes</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
@@ -47,6 +47,7 @@
 	<string>IXO needs the camera roll to upload a image</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>icomoon.ttf</string>
 		<string>Roboto-Regular.ttf</string>
 		<string>RobotoCondensed-Regular.ttf</string>
 		<string>Entypo.ttf</string>

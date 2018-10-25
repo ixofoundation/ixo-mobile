@@ -44,7 +44,7 @@ export const InputField = ({
 		<View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
 			<TextField
 				secureTextEntry={password}
-				label={labelName}
+				label={labelName ? labelName : ''}
 				value={value ? value : undefined}
 				onChangeText={onChangeText}
 				baseColor={(colorPalette === InputColorTypes.Dark) ? darkPalettes.baseColor : lightPalettes.baseColor}

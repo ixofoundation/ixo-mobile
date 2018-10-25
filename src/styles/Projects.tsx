@@ -22,6 +22,7 @@ interface Style {
 	drawerOpen: ViewStyle;
 	fabIcon: ViewStyle;
 	myProjectsHeader: TextStyle;
+	progressBarContainer: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -82,16 +83,11 @@ const styles = StyleSheet.create<Style>({
 		height: height * 0.3,
 		justifyContent: 'flex-end',
 		flexDirection: 'row'
-		// borderLeftWidth: 1,
-		// borderRightWidth: 1,
-		// borderTopWidth: 1,
-		// borderColor: ThemeColors.blue_light
 	},
 	projectTitle: {
 		textAlign: 'left',
 		color: ThemeColors.white,
 		fontSize: 21
-		// fontWeight: '500'
 	},
 	projectSuccessfulAmountText: {
 		textAlign: 'left',
@@ -102,7 +98,6 @@ const styles = StyleSheet.create<Style>({
 		textAlign: 'left',
 		color: ThemeColors.white,
 		fontSize: 21
-		// fontWeight: '500'
 	},
 	projectImpactActionText: {
 		textAlign: 'left',
@@ -132,6 +127,9 @@ const styles = StyleSheet.create<Style>({
 	},
 	fabIcon: {
 		backgroundColor: ThemeColors.red
+	},
+	progressBarContainer: {
+		justifyContent: 'flex-start', backgroundColor: 'transparent', paddingVertical: 10
 	}
 });
 

@@ -15,7 +15,7 @@ import { initIxo } from '../redux/ixo/ixo_action_creators';
 import { updateProjects, loadProject } from '../redux/projects/projects_action_creators';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
-import { ThemeColors, ProjectStatus, ClaimsButton } from '../styles/Colors';
+import { ThemeColors, ProjectStatus, ClaimsButton, ProgressSuccess } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
 import ProjectsStyles from '../styles/Projects';
 import HeaderSync from '../components/HeaderSync';
@@ -170,18 +170,21 @@ export class Projects extends React.Component<Props, StateProps> {
 	}
 
 	renderProgressBar = (total: number, approved: number, rejected: number) => {
+		if (rejected > (total - approved)) {
+			rejected = total - approved;
+		}
 		const approvedWidth = Math.ceil((approved / total) * 100);
 		const rejectedWidth = Math.ceil((rejected / total) * 100);
 		return (
-			<View style={[ContainerStyles.flexRow, { justifyContent: 'flex-start', backgroundColor: 'transparent', paddingVertical: 10 }]}>
+			<View style={[ContainerStyles.flexRow, ProjectsStyles.progressBarContainer]}>
 				<LinearGradient
 					start={{ x: 0, y: 0 }}
 					end={{ x: 1, y: 0 }}
-					colors={['#016480', '#03d0FE']}
+					colors={[ProgressSuccess.colorPrimary, ProgressSuccess.colorSecondary]}
 					style={{ height: 5, width: `${approvedWidth}%`, borderRadius: 2 }}
 				/>
-				<View style={[{ backgroundColor: '#E2223B', height: 5, width: `${rejectedWidth}%`, borderRadius: 2 }]} />
-				<View style={[{ backgroundColor: '#033C50', height: 5, width: `${100 - approvedWidth - rejectedWidth}%`, borderRadius: 2 }]} />
+				<View style={[{ backgroundColor: ThemeColors.progressRed, height: 5, width: `${rejectedWidth}%`, borderRadius: 2, borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }]} />
+				<View style={[{ backgroundColor: ThemeColors.progressNotCounted, height: 5, width: `${100 - approvedWidth - rejectedWidth}%`, borderRadius: 2 }]} />
 			</View>
 		);
 	};

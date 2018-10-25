@@ -61,6 +61,8 @@ PODS:
     - React
   - RNSVG (7.0.3):
     - React
+  - RNVectorIcons (6.0.2):
+    - React
   - yoga (0.57.1.React)
 
 DEPENDENCIES:
@@ -81,6 +83,7 @@ DEPENDENCIES:
   - React/RCTWebSocket (from `../node_modules/react-native`)
   - ReactNativePermissions (from `../node_modules/react-native-permissions`)
   - RNSVG (from `../node_modules/react-native-svg`)
+  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -108,6 +111,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-permissions"
   RNSVG:
     :path: "../node_modules/react-native-svg"
+  RNVectorIcons:
+    :path: "../node_modules/react-native-vector-icons"
   yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -123,8 +128,9 @@ SPEC CHECKSUMS:
   react-native-video: 6db316323366025251a815c49ca0e2edabe30a2a
   ReactNativePermissions: 9f2d9c45c98800795e6c2ed330e25d11a66a8169
   RNSVG: 6252323c0312735f0af5f58b5adf2965b6a9ffbf
+  RNVectorIcons: 8c52e1e8da1153613fdef44748e865c25556cb9c
   yoga: b1ce48b6cf950b98deae82838f5173ea7cf89e85
 
-PODFILE CHECKSUM: fc1fe9f690a503662603b941edbc6c095ae3ea11
+PODFILE CHECKSUM: 7c7bc6d78e3750c6202ce92cc524686d46b974ca
 
 COCOAPODS: 1.5.3
