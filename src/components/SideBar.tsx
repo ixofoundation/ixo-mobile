@@ -1,15 +1,17 @@
 import * as React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import { View, Icon, Text, Container } from 'native-base';
-import { Image, TouchableOpacity, AsyncStorage } from 'react-native';
+import { View, Text, Container } from 'native-base';
+import { Image, TouchableOpacity, AsyncStorage, Dimensions } from 'react-native';
 
 import ContainerStyles from '../styles/Containers';
 import SideBarStyles from '../styles/componentStyles/Sidebar';
-import { ThemeColors, ClaimsButton, SignOutBox } from '../styles/Colors';
+import { ClaimsButton, SignOutBox } from '../styles/Colors';
+import CustomIcon from '../components/svg/CustomIcons';
 import { UserStorageKeys } from '../models/phoneStorage';
 const ixoLogo = require('../../assets/logo.png');
 const helpIcon = require('../../assets/help.png');
 const settingIcon = require('../../assets/settings.png');
+const { height } = Dimensions.get('window');
 
 interface PropTypes {
 	navigation: any;
@@ -49,7 +51,7 @@ class SideBar extends React.Component<PropTypes, StateTypes> {
 			>
 				<LinearGradient style={SideBarStyles.userInfoBox} colors={[ClaimsButton.colorSecondary, ClaimsButton.colorPrimary]}>
 					<View style={[ContainerStyles.flexRow, { justifyContent: 'space-between', alignItems: 'center' }]}>
-						<Icon onPress={() => this.props.navigation.closeDrawer()} style={SideBarStyles.closeDrawer} name='close' />
+						<CustomIcon name="close" onPress={() => this.props.navigation.closeDrawer()} style={SideBarStyles.closeDrawer} />
 						<Image source={ixoLogo} style={SideBarStyles.ixoLogo} />
 					</View>
 					<View style={[ContainerStyles.flexRow, SideBarStyles.userBox]}>

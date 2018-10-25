@@ -34,7 +34,7 @@ const styles = StyleSheet.create<Style>({
 	},
 	closeDrawer: {
 		color: 'white',
-		fontSize: height * 0.04
+		fontSize: height * 0.02
 	},
 	userBox: {
 		justifyContent: 'flex-start',

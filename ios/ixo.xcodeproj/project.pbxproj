@@ -43,10 +43,10 @@
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		4B14B8B971BB4FF58828ADDB /* libRNOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0426CA70FE754C31B5FC0F22 /* libRNOS.a */; };
 		5532774A8748438D92CB4EE1 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2E8028D465234B5D85DB9635 /* EvilIcons.ttf */; };
+		607069362181ED6900D9846C /* icomoon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 607069352181ED6900D9846C /* icomoon.ttf */; };
 		6096BA4B2177679F00C63D83 /* libRNRandomBytes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6096BA482177678600C63D83 /* libRNRandomBytes.a */; };
 		6096BA95217785CB00C63D83 /* libRNSensitiveInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6096BA92217785BA00C63D83 /* libRNSensitiveInfo.a */; };
 		6096BA9C2177889900C63D83 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6096BA9B2177888B00C63D83 /* libRNImagePicker.a */; };
-		60C79DFF2181BAB40058A61F /* icomoon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 60C79DD12181BAB40058A61F /* icomoon.ttf */; };
 		66CD4C7C0BE8406F9641BF9E /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5262C552FF5F4757A412A338 /* Zocial.ttf */; };
 		680758F6413F4CBB90156370 /* libUdpSockets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A2DE3DF597494F34BB3EF25B /* libUdpSockets.a */; };
 		6C0275240C944E419FFFD6AF /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA31556053C14C588F7B9DCB /* Foundation.ttf */; };
@@ -434,10 +434,10 @@
 		5262C552FF5F4757A412A338 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/native-base/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		56C6A1F3430B4601BBBB31DA /* libReactNativeFingerprintScanner.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeFingerprintScanner.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
+		607069352181ED6900D9846C /* icomoon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = icomoon.ttf; path = ../assets/fonts/icomoon.ttf; sourceTree = "<group>"; };
 		6096BA422177678600C63D83 /* RNRandomBytes.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNRandomBytes.xcodeproj; path = "../node_modules/react-native-randombytes/RNRandomBytes.xcodeproj"; sourceTree = "<group>"; };
 		6096BA64217785BA00C63D83 /* RNSensitiveInfo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSensitiveInfo.xcodeproj; path = "../node_modules/react-native-sensitive-info/ios/RNSensitiveInfo.xcodeproj"; sourceTree = "<group>"; };
 		6096BA962177888B00C63D83 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
-		60C79DD12181BAB40058A61F /* icomoon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = icomoon.ttf; path = ../android/app/src/main/assets/fonts/icomoon.ttf; sourceTree = "<group>"; };
 		6BCAF38F2738400D921B2E64 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/native-base/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
@@ -814,7 +814,7 @@
 		C1F7328843D748029EE98FF4 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				60C79DD12181BAB40058A61F /* icomoon.ttf */,
+				607069352181ED6900D9846C /* icomoon.ttf */,
 				3E4B3DF43C8D4188838DD28E /* Roboto-Regular.ttf */,
 				A9C73C1FA4DB48EB9F9EFEAC /* RobotoCondensed-Regular.ttf */,
 				4E1625F285B0472B8B779BFB /* Entypo.ttf */,
@@ -1372,7 +1372,7 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				E42D5A41B1C8420DA73B872F /* Roboto-Regular.ttf in Resources */,
-				60C79DFF2181BAB40058A61F /* icomoon.ttf in Resources */,
+				607069362181ED6900D9846C /* icomoon.ttf in Resources */,
 				A211C97C29A240C99923C6A9 /* RobotoCondensed-Regular.ttf in Resources */,
 				159F16EF9DB9437E9642E2F1 /* Entypo.ttf in Resources */,
 				5532774A8748438D92CB4EE1 /* EvilIcons.ttf in Resources */,

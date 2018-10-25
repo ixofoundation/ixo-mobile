@@ -80,10 +80,10 @@ export class Projects extends React.Component<Props, StateProps> {
 				alignSelf: 'center'
 			},
 			title: params.showTitle ? screenProps.t('projects:myProjects') : '',
-			headerLeft: <Icon name="menu" onPress={() => params.openDrawer()} style={{ paddingLeft: 10, color: ThemeColors.white }} />,
+			headerLeft: <CustomIcon name="menu" onPress={() => params.openDrawer()} style={{ paddingLeft: 10, color: ThemeColors.white }} size={height * 0.03} />,
 			headerRight: (
 				<View style={ContainerStyles.flexRow}>
-					<Icon name="search" style={{ paddingRight: 10, color: ThemeColors.white }} />
+					<CustomIcon name="search" style={{ paddingRight: 10, color: ThemeColors.white }} size={height * 0.03} />
 					<HeaderSync screenProps={screenProps} />
 				</View>
 			)
@@ -170,7 +170,7 @@ export class Projects extends React.Component<Props, StateProps> {
 	}
 
 	renderProgressBar = (total: number, approved: number, rejected: number) => {
-		if (rejected > (total - approved)) {
+		if (rejected > total - approved) {
 			rejected = total - approved;
 		}
 		const approvedWidth = Math.ceil((approved / total) * 100);
@@ -183,7 +183,18 @@ export class Projects extends React.Component<Props, StateProps> {
 					colors={[ProgressSuccess.colorPrimary, ProgressSuccess.colorSecondary]}
 					style={{ height: 5, width: `${approvedWidth}%`, borderRadius: 2 }}
 				/>
-				<View style={[{ backgroundColor: ThemeColors.progressRed, height: 5, width: `${rejectedWidth}%`, borderRadius: 2, borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }]} />
+				<View
+					style={[
+						{
+							backgroundColor: ThemeColors.progressRed,
+							height: 5,
+							width: `${rejectedWidth}%`,
+							borderRadius: 2,
+							borderTopLeftRadius: 0,
+							borderBottomLeftRadius: 0
+						}
+					]}
+				/>
 				<View style={[{ backgroundColor: ThemeColors.progressNotCounted, height: 5, width: `${100 - approvedWidth - rejectedWidth}%`, borderRadius: 2 }]} />
 			</View>
 		);
