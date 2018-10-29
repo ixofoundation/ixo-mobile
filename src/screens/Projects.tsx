@@ -131,7 +131,7 @@ export class Projects extends React.Component<Props, StateProps> {
 		if (imageLink && imageLink !== '') {
 			return { uri: `${serviceEndpoint}public/${imageLink}` };
 		} else {
-			return { placeholder };
+			return placeholder;
 		}
 	};
 

@@ -39,11 +39,15 @@ class Settings extends React.Component<ParentProps> {
 			},
 			headerTintColor: ThemeColors.black
 		};
-	}
+	};
 
 	resetAccount() {
 		AsyncStorage.clear();
-		this.props.navigation.navigate('OnBoarding');
+		const resetAction = StackActions.reset({
+			index: 0,
+			actions: [NavigationActions.navigate({ routeName: 'OnBoarding' })]
+		});
+		this.props.navigation.dispatch(resetAction);
 	}
 
 	render() {

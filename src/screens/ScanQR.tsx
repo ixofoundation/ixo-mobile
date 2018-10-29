@@ -24,6 +24,8 @@ import { showToast, toastType } from '../utils/toasts';
 import { ThemeColors } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
 import ScanQRStyles from '../styles/ScanQR';
+import CustomIcons from '../components/svg/CustomIcons';
+import { Exception } from 'handlebars';
 
 const keysafelogo = require('../../assets/keysafe-logo.png');
 const qr = require('../../assets/qr.png');
@@ -148,14 +150,16 @@ export class ScanQR extends React.Component<Props, State> {
 
 	_handleBarCodeRead(payload: any) {
 		if (!this.state.modalVisible) {
-			if (validator.isBase64(payload.data)) {
+			if (validator.isBase64(payload.data) && !this.projectScan) {
 				this.setState({ modalVisible: true, payload: payload.data });
-			} else if (payload.data.includes('projects')) {
+			} else if (payload.data.includes('projects') && this.projectScan) {
 				const projectDid = payload.data.substring(payload.data.length - 39, payload.data.length - 9);
 				this.setState({ modalVisible: true, payload: null, projectDid });
 				this.props.ixo.project.getProjectByProjectDid(projectDid).then((project: any) => {
 					this.setState({ projectTitle: project.data.title, serviceEndpoint: project.data.serviceEndpoint });
 				});
+			} else {
+				this.setState({ errors: true, modalVisible: true });
 			}
 		}
 	}
@@ -192,6 +196,7 @@ export class ScanQR extends React.Component<Props, State> {
 	};
 
 	handleRegisterServiceAgent = () => {
+		debugger;
 		this.setState({ loading: true });
 		try {
 			const agentData = {
@@ -210,6 +215,9 @@ export class ScanQR extends React.Component<Props, State> {
 						showToast(`${this.props.screenProps.t('scanQR:successRegistered')} ${agentData.role}`, toastType.SUCCESS);
 						this.setState({ serviceProviderAdded: true, loading: false });
 					}
+				}).catch((exception) => {
+					showToast('Network Error', toastType.DANGER);
+					this.setState({ errors: true, loading: false });
 				});
 			});
 		} catch (exception) {
@@ -258,7 +266,26 @@ export class ScanQR extends React.Component<Props, State> {
 		}
 	}
 
+	renderErrorScanned() {
+		const registerAction = StackActions.reset({ index: 0, actions: [NavigationActions.navigate({ routeName: 'Register' })] });
+		return (
+			<GenericModal
+				onPressButton={() => this.resetStateVars()}
+				onClose={() => this.resetStateVars()}
+				paragraph={this.props.screenProps.t('connectIXOComplete:unlockInformation')}
+				loading={this.state.loading}
+				buttonText={this.props.screenProps.t('scanQR:rescan')}
+				heading={this.props.screenProps.t('scanQR:scanFailed')}
+				infoText={this.props.screenProps.t('scanQR:registered')}
+				onPressInfo={() => this.props.navigation.dispatch(registerAction)}
+			/>
+		);
+	}
+
 	renderProjectScanned() {
+		if (this.state.errors) {
+			return this.renderErrorScanned();
+		}
 		if (this.state.serviceProviderAdded) {
 			return (
 				<GenericModal
@@ -294,20 +321,8 @@ export class ScanQR extends React.Component<Props, State> {
 	}
 
 	renderKeySafeScannedModal() {
-		const registerAction = StackActions.reset({ index: 0, actions: [NavigationActions.navigate({ routeName: 'Register' })] });
 		if (this.state.errors) {
-			return (
-				<GenericModal
-					onPressButton={() => this.resetStateVars()}
-					onClose={() => this.resetStateVars()}
-					paragraph={this.props.screenProps.t('connectIXOComplete:unlockInformation')}
-					loading={this.state.loading}
-					buttonText={this.props.screenProps.t('scanQR:rescan')}
-					heading={this.props.screenProps.t('scanQR:scanFailed')}
-					infoText={this.props.screenProps.t('scanQR:registered')}
-					onPressInfo={() => this.props.navigation.dispatch(registerAction)}
-				/>
-			);
+			this.renderErrorScanned();
 		}
 		return (
 			<GenericModal
@@ -327,8 +342,8 @@ export class ScanQR extends React.Component<Props, State> {
 					prefixImage: <Image resizeMode={'contain'} style={ModalStyle.inputFieldPrefixImage} source={keysafelogo} />,
 					suffixImage: (
 						<TouchableOpacity onPress={() => this.setState({ revealPassword: !this.state.revealPassword })}>
-							<View style={{ position: 'relative' }}>
-								<IconEyeOff width={width * 0.06} height={width * 0.06} />
+							<View style={{ position: 'relative', top: height * 0.01 }}>
+								<CustomIcons name="eyeoff" size={width * 0.06} style={{ color: ThemeColors.blue_lightest }} />
 							</View>
 						</TouchableOpacity>
 					)

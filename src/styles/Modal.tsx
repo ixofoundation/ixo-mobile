@@ -100,8 +100,8 @@ const styles = StyleSheet.create<Style>({
 	inputFieldPrefixImage: {
 		width: width * 0.06,
 		height: width * 0.06,
-		position: 'absolute',
-		top: width * 0.06
+		position: 'relative',
+		top: height * 0.01
 	},
 	closeIcon: {
 		color: ThemeColors.white,

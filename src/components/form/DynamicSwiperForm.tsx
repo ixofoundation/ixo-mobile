@@ -204,6 +204,21 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 		);
 	}
 
+	renderMultipleSelect(options: any, index: number) {
+		return (
+			<View key={index} style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}}>
+				{options.map((option, i) => {
+					return (
+						<TouchableOpacity style={DynamicFormStyles.multipleSelectButton} key={i}>
+							<Text style={DynamicFormStyles.multipleSelectButtonText}>{option.label}</Text>
+						</TouchableOpacity>
+					);
+				})}
+				<TouchableOpacity />
+			</View>
+		);
+	}
+
 	renderCards() {
 		return (
 			<Swiper
@@ -221,7 +236,6 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 						questionNumber: i + 1,
 						topic: changeCase.sentenceCase(field.name)
 					};
-
 					switch (field.type) {
 						case 'number':
 						case 'text':
@@ -232,6 +246,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 						case 'image':
 							return this.renderCard(this.renderEditImageField(field, i), cardDetails, i);
 						case 'select':
+							return this.renderCard(this.renderMultipleSelect(field.options, i), cardDetails, i);
 						case 'country':
 						case 'template':
 						case 'radio':
@@ -264,6 +279,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 									<Text style={DynamicFormStyles.header}>{cardDetails.topic}</Text>
 								</View>
 								<View style={{ width: '100%' }}>{input}</View>
+								{/* <View style={{ backgroundColor: 'red' }}>{input}</View> */}
 							</View>
 						</LinearGradient>
 					</KeyboardAvoidingView>
