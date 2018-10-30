@@ -102,6 +102,22 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 		this.formData = formData;
 	};
 
+	setFormStateSelect = (name: String, optionLabel: string, value: any) => {
+		const fields = name.split('.');
+		let formData: any = { ...this.formData };
+		fields.forEach((field, index) => {
+			if (index === fields.length - 1) {
+				formData[field][optionLabel] = value;
+			} else {
+				if (!formData[field]) {
+					formData[field] = {};
+				}
+				formData = formData[field];
+			}
+		});
+		this.formData = formData;
+	};
+
 	goBack() {
 		formSwiperRef.scrollBy(-1);
 		this.isLastCard();
@@ -204,15 +220,30 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 		);
 	}
 
+	handlePressMultipleSelect(options: any, label: string) {
+		const option = options.find((optionFound: any) => optionFound.label === label);
+		// TODO
+		// this.setFormStateSelect()
+	}
+
 	renderMultipleSelect(options: any, index: number) {
+		console.log('asdfasdf');
 		return (
 			<View key={index} style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}}>
 				{options.map((option, i) => {
-					return (
-						<TouchableOpacity style={DynamicFormStyles.multipleSelectButton} key={i}>
-							<Text style={DynamicFormStyles.multipleSelectButtonText}>{option.label}</Text>
-						</TouchableOpacity>
-					);
+					if ('select' in option && option.select === true) {
+						return (
+							<TouchableOpacity style={[DynamicFormStyles.multipleSelectButton]} key={i} onPress={() => this.handlePressMultipleSelect(options, option.label)}>
+								<Text style={DynamicFormStyles.multipleSelectButtonText}>{option.label}</Text>
+							</TouchableOpacity>
+						)
+					} else {
+						return (
+							<TouchableOpacity style={[DynamicFormStyles.multipleSelectButton]} key={i} onPress={() => this.handlePressMultipleSelect(options, option.label)}>
+								<Text style={DynamicFormStyles.multipleSelectButtonText}>{option.label}</Text>
+							</TouchableOpacity>
+						);
+					}
 				})}
 				<TouchableOpacity />
 			</View>

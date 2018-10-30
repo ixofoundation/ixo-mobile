@@ -14,8 +14,8 @@ import { LocalStorageKeys } from '../models/phoneStorage';
 import ConnectIXO from '../screens/ConnectIXO';
 
 const logo = require('../../assets/logo.png');
-const makeAnImpact = require('../../assets/asdf.mp4');
-const noConnection = require('../../assets/asdf2.mp4');
+const makeAnImpact = require('../../assets/ixoOnboarding1.mp4');
+const noConnection = require('../../assets/ixoOnboarding2.mp4');
 
 const { width } = Dimensions.get('window');
 declare var swiperRef: any;
@@ -37,7 +37,7 @@ export default class OnBoarding extends React.Component<ParentProps> {
 	};
 
 	componentDidMount() {
-		// AsyncStorage.clear();
+		AsyncStorage.clear();
 		AsyncStorage.getItem(LocalStorageKeys.firstLaunch, (error: any, firstLaunch: string | undefined) => {
 			if (!firstLaunch || error) {
 				this.setState({ showOnboarding: true });
@@ -75,11 +75,11 @@ export default class OnBoarding extends React.Component<ParentProps> {
 	render() {
 		if (this.state.showOnboarding) {
 			return (
-				<LinearGradient
-					start={{ x: 0, y: 0.2 }}
-					end={{ x: 0.4, y: 0.3 }}
+				<View
+				// 	start={{ x: 0, y: 0.2 }}
+					// end={{ x: 0.4, y: 0.3 }}
 					style={OnBoardingStyles.wrapper}
-					colors={[OnboardingBox.colorSecondary, OnboardingBox.colorPrimary]}
+					// colors={[OnboardingBox.colorSecondary, OnboardingBox.colorPrimary]}
 				>
 					<StatusBar barStyle='light-content' />
 					<Swiper
@@ -163,7 +163,7 @@ export default class OnBoarding extends React.Component<ParentProps> {
 						</View>
 						<ConnectIXO navigation={this.props.navigation} screenProps={this.props.screenProps} />
 					</Swiper>
-				</LinearGradient>
+				</View>
 			);
 		}
 		return <Loading />;

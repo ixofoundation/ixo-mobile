@@ -1,4 +1,5 @@
 import { Dimensions, ViewStyle, StyleSheet, ImageStyle } from 'react-native';
+import { ThemeColors } from './Colors';
 
 const { height, width } = Dimensions.get('window');
 interface Style {
@@ -13,7 +14,8 @@ interface Style {
 
 const styles = StyleSheet.create<Style>({
 	wrapper: {
-		flex: 1
+		flex: 1,
+		backgroundColor: '#003047'
 	},
 	slide: {
 		flex: 1,
