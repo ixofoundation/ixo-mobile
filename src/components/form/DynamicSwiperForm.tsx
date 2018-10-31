@@ -227,7 +227,6 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 	}
 
 	renderMultipleSelect(options: any, index: number) {
-		console.log('asdfasdf');
 		return (
 			<View key={index} style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}}>
 				{options.map((option, i) => {
