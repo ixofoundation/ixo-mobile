@@ -65,3 +65,11 @@ yarn run android_prod (android)
 * react-native-randombytes
 * react-native-splash-screen
 * react-native-video
+
+## Contributing
+
+Contributions welcome; Please submit all pull requests the against master branch. If your pull request contains JavaScript patches or features, you should include relevant unit tests. Please check the [Contributing Guidelines](contributng.md) for more details. Thanks!
+
+## License
+
+ - **MIT** : http://opensource.org/licenses/MIT
