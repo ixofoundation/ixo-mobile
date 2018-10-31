@@ -1,31 +1,22 @@
 import * as React from 'react';
 import Video from 'react-native-video';
 import { StackActions, NavigationActions } from 'react-navigation';
-import { View, StatusBar, Image, AsyncStorage, Platform, Dimensions } from 'react-native';
-import { Text, Button } from 'native-base';
+import { View, StatusBar, Image, AsyncStorage, Platform } from 'react-native';
+import { Text } from 'native-base';
 import Swiper from 'react-native-swiper';
 import Permissions from 'react-native-permissions';
-import LinearGradient from 'react-native-linear-gradient';
 import Loading from '../screens/Loading';
 import OnBoardingStyles from '../styles/OnBoarding';
-import ContainerStyles from '../styles/Containers';
-import { ThemeColors, OnboardingBox } from '../styles/Colors';
+import { ThemeColors } from '../styles/Colors';
 import { LocalStorageKeys } from '../models/phoneStorage';
 import ConnectIXO from '../screens/ConnectIXO';
 
 const logo = require('../../assets/logo.png');
+const placeholder = require('../../assets/ixo-placeholder.jpg');
 const makeAnImpact = require('../../assets/ixoOnboarding1.mp4');
 const noConnection = require('../../assets/ixoOnboarding2.mp4');
 
-const { width } = Dimensions.get('window');
 declare var swiperRef: any;
-
-const LogoView = () => (
-	<View style={ContainerStyles.flexRow}>
-		<Image resizeMode={'contain'} style={OnBoardingStyles.logo} source={logo} />
-	</View>
-);
-
 interface ParentProps {
 	navigation: any;
 	screenProps: any;
@@ -33,7 +24,9 @@ interface ParentProps {
 
 export default class OnBoarding extends React.Component<ParentProps> {
 	state = {
-		showOnboarding: false
+		showOnboarding: false,
+		swiperIndex: 0,
+		pauseVideo: true
 	};
 
 	componentDidMount() {
@@ -72,96 +65,83 @@ export default class OnBoarding extends React.Component<ParentProps> {
 		});
 	}
 
+	renderStepOne() {
+		return (
+			<View style={OnBoardingStyles.onboardingContainer}>
+				<View style={OnBoardingStyles.logoContainer}>
+					<Image resizeMode={'contain'} style={OnBoardingStyles.logo} source={logo} />
+				</View>
+				<Video resizeMode={'contain'} source={makeAnImpact} muted={true} playWhenInactive={false} playInBackground={true} style={OnBoardingStyles.videoStyle} />
+				<View>
+					<View>
+						<Text style={OnBoardingStyles.onboardingHeading}>{this.props.screenProps.t('onboarding:makeImpact')}</Text>
+					</View>
+					<View>
+						<Text style={OnBoardingStyles.onboardingParagraph}>{this.props.screenProps.t('onboarding:submitClaim')}</Text>
+					</View>
+				</View>
+			</View>
+		);
+	}
+
+	renderStepTwo() {
+		return (
+			<View style={OnBoardingStyles.onboardingContainer}>
+				<View style={OnBoardingStyles.logoContainer}>
+					<Image resizeMode={'contain'} style={OnBoardingStyles.logo} source={logo} />
+				</View>
+				<Video resizeMode={'contain'} source={noConnection} muted={true} playWhenInactive={false} playInBackground={false} style={OnBoardingStyles.videoStyle} />
+				<View>
+					<View>
+						<Text style={OnBoardingStyles.onboardingHeading}>{this.props.screenProps.t('onboarding:noConnection')}</Text>
+					</View>
+					<View>
+						<Text style={OnBoardingStyles.onboardingParagraph}>{this.props.screenProps.t('onboarding:saveClaim')}</Text>
+					</View>
+				</View>
+			</View>
+		);
+	}
+
+	renderSwiperSteps() {
+		switch (this.state.swiperIndex) {
+			case 0:
+				return [this.renderStepOne(), <View key={1} />, <View key={2} />].map((element: JSX.Element) => {
+					return element;
+				});
+			case 1:
+				return [<View key={0} />, this.renderStepTwo(), <View key={2} />].map((element: JSX.Element) => {
+					return element;
+				});
+			case 2:
+				return [<View key={0} />, <View key={1} />, <ConnectIXO key={3} navigation={this.props.navigation} screenProps={this.props.screenProps} />].map(
+					(element: JSX.Element) => {
+						return element;
+					}
+				);
+			default:
+				return null;
+		}
+	}
+
 	render() {
 		if (this.state.showOnboarding) {
 			return (
-				<View
-				// 	start={{ x: 0, y: 0.2 }}
-					// end={{ x: 0.4, y: 0.3 }}
-					style={OnBoardingStyles.wrapper}
-					// colors={[OnboardingBox.colorSecondary, OnboardingBox.colorPrimary]}
-				>
-					<StatusBar barStyle='light-content' />
+				<View style={OnBoardingStyles.wrapper}>
+					<StatusBar barStyle="light-content" />
 					<Swiper
 						ref={swiper => (swiperRef = swiper)}
+						onIndexChanged={(index: number) => this.setState({ swiperIndex: index })}
 						scrollEnabled={true}
 						activeDotColor={ThemeColors.blue_medium}
 						dotColor={ThemeColors.blue_light}
 						showsButtons={false}
+						// @ts-ignore
 						activeDotStyle={OnBoardingStyles.dotStyle}
+						// @ts-ignore
 						dotStyle={OnBoardingStyles.dotStyle}
 					>
-						<View style={{ flexDirection: 'column', justifyContent: 'center', flex: 1 }}>
-							<View
-								style={[
-									{
-										alignItems: 'center',
-										justifyContent: 'center',
-										flexDirection: 'row'
-									}
-								]}
-							>
-								<Image resizeMode={'contain'} style={OnBoardingStyles.logo} source={logo} />
-							</View>
-							<Video
-								repeat
-								source={makeAnImpact} // Can be a URL or a local file.
-								ref={ref => {
-									this.player = ref;
-								}} // Store reference
-								// onBuffer={this.onBuffer} // Callback when remote video is buffering
-								// onError={this.videoError} // Callback when video cannot be loaded
-								style={{
-									alignItems: 'center',
-									justifyContent: 'center',
-									flex: 0.5
-								}}
-							/>
-							<View>
-								<View>
-									<Text style={{ textAlign: 'center', color: ThemeColors.blue_lightest, paddingBottom: 10, fontSize: 28 }}>Make Your Impact</Text>
-								</View>
-								<View>
-									<Text style={{ textAlign: 'center', color: ThemeColors.white, paddingBottom: 10, fontSize: 18 }}>Submit claims of what you have done</Text>
-								</View>
-							</View>
-						</View>
-						<View style={{ flexDirection: 'column', justifyContent: 'center', flex: 1 }}>
-							<View
-								style={[
-									{
-										alignItems: 'center',
-										justifyContent: 'center',
-										flexDirection: 'row'
-									}
-								]}
-							>
-								<Image resizeMode={'contain'} style={OnBoardingStyles.logo} source={logo} />
-							</View>
-							<Video
-								repeat
-								source={noConnection} // Can be a URL or a local file.
-								ref={ref => {
-									this.player = ref;
-								}} // Store reference
-								// onBuffer={this.onBuffer} // Callback when remote video is buffering
-								// onError={this.videoError} // Callback when video cannot be loaded
-								style={{
-									alignItems: 'center',
-									justifyContent: 'center',
-									flex: 0.5
-								}}
-							/>
-							<View>
-								<View>
-									<Text style={{ textAlign: 'center', color: ThemeColors.blue_lightest, paddingBottom: 10, fontSize: 28 }}>No connection?</Text>
-								</View>
-								<View>
-									<Text style={{ textAlign: 'center', color: ThemeColors.white, paddingBottom: 10, fontSize: 18 }}>Save your claims and submit them later</Text>
-								</View>
-							</View>
-						</View>
-						<ConnectIXO navigation={this.props.navigation} screenProps={this.props.screenProps} />
+						{this.renderSwiperSteps()}
 					</Swiper>
 				</View>
 			);

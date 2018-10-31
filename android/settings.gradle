@@ -1,6 +1,8 @@
 rootProject.name = 'ixo'
+// include ':react-native-video'
+// project(':react-native-video').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-video/android-exoplayer')
 include ':react-native-video'
-project(':react-native-video').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-video/android-exoplayer')
+project(':react-native-video').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-video/android')
 include ':react-native-udp'
 project(':react-native-udp').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-udp/android')
 include ':react-native-tcp'
