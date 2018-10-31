@@ -1,6 +1,4 @@
 # IXO Mobile
-## Screenshots
-<img src="/screenshot1.png" height="500" /><img src="/screenshot2.png" height="500" />
 ## Setup
 ### Link native modules
 
@@ -52,6 +50,9 @@ yarn run android_prod (android)
 
 #### Build a release version
 1. Build -> Select Build Variant
+
+## Screenshots
+<img src="/screenshot1.png" height="500" /><img src="/screenshot2.png" height="500" />
 
 ## Native Libraries
 
