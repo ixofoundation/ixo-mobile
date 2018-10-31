@@ -1,3 +1,6 @@
+# IXO Mobile
+## Screenshots
+<img src="/screenshot1.png" height="500" /><img src="/screenshot2.png" height="500" />
 ## Setup
 ### Link native modules
 
