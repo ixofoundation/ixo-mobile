@@ -28,7 +28,9 @@
 		"projectInformation": "Service Providers delivers the impact to a project. They are the people on the ground submitting claims, and making a difference."
 	},
 	"scanQR": {
+		"project": "project",
 		"close": "CLOSE",
+		"submit": "SUBMIT",
 		"serviceProviderMessage": "You are now a service provider and can start submitting claims.",
 		"welcomeMessage": "Welcome to",
 		"email": "Email",
@@ -41,7 +43,14 @@
 		"successRegistered": "Successfully registered as ",
 		"serviceProviderHelp": "What is a service provider?",
 		"serviceProviderScan": "Go to the project page and scan the QR code to connect",
-		"password": "Password"
+		"password": "Password",
+		"missingField": "Missing fields",
+		"continue": "CONTINUE",
+		"youAreRegistering": "You are requesting to become a Service Provider.",
+		"serviceProviderDescription": "Service providers deliver the impact to a project. They are the people on the ground submitting claims, and making the difference.",
+		"serviceProviderQuestion": "How will you be able to benefit this project?",
+		"yourAnswer": "Your answer",
+		"projectFailedScan": "Please try again, project not scanned"
 	},
 	"login": {
 		"hi": "Hi",
@@ -110,7 +119,7 @@
 		"orderIncorrect": "Order is incorrect.",
 		"didLedgeredSuccess": "Did document was ledgered successfully.",
 		"didLedgeredError": "Unable to ledger did at this time.",
-		"missingFields": "Missing fields.",
+		"missingFields": "Missing fields",
 		"missmatchPassword": "Mismatch on password.",
 		"ledgerDid" : "Please wait while your did is being ledgered.",
 		"next": "NEXT",
