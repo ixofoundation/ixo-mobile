@@ -37,7 +37,7 @@ const DarkButton = ({
 					style={{
 						backgroundColor: 'transparent',
 						fontSize: 15,
-						color: ThemeColors.grey_light,
+						color: ThemeColors.grey,
 						paddingLeft: 10,
 						fontFamily: 'RobotoCondensed-Regular'
 					}}

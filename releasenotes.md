@@ -9,5 +9,5 @@
 ***
 ### __Android__
 - **bug/IXOQ-249** Fixed color change on "Submit new claim" button for first time users
-- **IXOQ-251** Adjust the 'selectable' area of the button
-
+- **bug/IXOQ-251** Adjust the 'selectable' area of the button
+- **bug/IXOQ-257** Adjusted the disabled button text color
