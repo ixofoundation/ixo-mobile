@@ -282,7 +282,7 @@ class Register extends React.Component<Props, StateTypes> {
 							onChangeText={(text: string) => this.setState({ confirmPassword: text })}
 						/>
 						<DarkButton propStyles={{ marginTop: 20 }} onPress={() => this.handleCreatePassword()} text={this.props.screenProps.t('register:create')} />
-						<TouchableOpacity onPress={() => this.props.navigation.navigate('Recover')}>
+						<TouchableOpacity style={{ paddingBottom: 30 }} onPress={() => this.props.navigation.navigate('Recover')}>
 							<Text style={RegisterStyles.recoverText}>{this.props.screenProps.t('register:recoverAccount')}</Text>
 						</TouchableOpacity>
 					</KeyboardAvoidingView>
