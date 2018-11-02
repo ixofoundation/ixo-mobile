@@ -1,5 +1,6 @@
 export const LocalStorageKeys = {
 	firstLaunch: 'firstLaunch',
+	firstLaunchClaims: 'firstLaunchClaims',
 	sovrinDid: 'sovrinDid',
 	mnemonic: 'mnemonic'
 };

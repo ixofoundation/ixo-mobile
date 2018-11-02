@@ -12,7 +12,6 @@ import { LocalStorageKeys } from '../models/phoneStorage';
 import ConnectIXO from '../screens/ConnectIXO';
 
 const logo = require('../../assets/logo.png');
-const placeholder = require('../../assets/ixo-placeholder.jpg');
 const makeAnImpact = require('../../assets/ixoOnboarding1.mp4');
 const noConnection = require('../../assets/ixoOnboarding2.mp4');
 
@@ -30,7 +29,9 @@ export default class OnBoarding extends React.Component<ParentProps> {
 	};
 
 	componentDidMount() {
-		AsyncStorage.clear();
+		if (__DEV__) {
+			AsyncStorage.clear();
+		}
 		AsyncStorage.getItem(LocalStorageKeys.firstLaunch, (error: any, firstLaunch: string | undefined) => {
 			if (!firstLaunch || error) {
 				this.setState({ showOnboarding: true });
