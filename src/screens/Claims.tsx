@@ -2,12 +2,13 @@ import { Container, Content, Icon, Tab, Tabs, TabHeading, Text, View } from 'nat
 import * as React from 'react';
 import moment from 'moment';
 import _ from 'underscore';
-import { Dimensions, Image, ImageBackground, StatusBar, TouchableOpacity } from 'react-native';
+import { Image, ImageBackground, StatusBar, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { IClaim, IProject, IClaimSaved } from '../models/project';
 import { IUser } from '../models/user';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { saveForm, loadSavedClaim, loadSubmittedClaim } from '../redux/claims/claims_action_creators';
+import { userFirstClaim } from '../redux/user/user_action_creators';
 import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
 import ClaimsStyles from '../styles/Claims';
 import ContainerStyles from '../styles/Containers';
@@ -38,6 +39,7 @@ interface ParentProps {
 }
 
 export interface DispatchProps {
+	onFirstClaim: () => void;
 	onFormSave: (claimForm: any, projectDID: string, pdsURL: string) => void;
 	onLoadSavedClaim: (claimId: string) => void;
 	onLoadSubmittedClaim: (claimId: string) => void;
@@ -45,6 +47,7 @@ export interface DispatchProps {
 
 export interface StateProps {
 	ixo?: any;
+	firstTimeClaim?: boolean;
 	user?: IUser;
 	project?: IProject;
 	savedProjectsClaims: IProjectsClaimsSaved[];
@@ -355,10 +358,15 @@ class Claims extends React.Component<Props, StateProps> {
 						{this.renderSubmittedClaims()}
 					</Tab>
 				</Tabs>
-				{numberOfSavedClaims === 0 ? (
+				{this.props.firstTimeClaim ? (
 					<LightButton
 						propStyles={{ backgroundColor: ThemeColors.red, borderColor: ThemeColors.red, borderRadius: 0 }}
-						onPress={() => this.props.navigation.navigate('NewClaim')}
+						onPress={() => {
+							if (this.props.firstTimeClaim) {
+								this.props.onFirstClaim();
+							}
+							this.props.navigation.navigate('NewClaim');
+						}}
 						text={this.props.screenProps.t('claims:submitButton')}
 					/>
 				) : (
@@ -371,6 +379,9 @@ class Claims extends React.Component<Props, StateProps> {
 
 function mapDispatchToProps(dispatch: any): DispatchProps {
 	return {
+		onFirstClaim: () => {
+			dispatch(userFirstClaim());
+		},
 		onFormSave: (claimForm: any, projectDid: string, pdsURL: string) => {
 			dispatch(saveForm(claimForm, projectDid, pdsURL));
 		},
@@ -387,6 +398,7 @@ function mapStateToProps(state: PublicSiteStoreState) {
 	return {
 		ixo: state.ixoStore.ixo,
 		user: state.userStore.user,
+		firstTimeClaim: state.userStore.firstClaim,
 		project: state.projectsStore.selectedProject,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
 		online: state.connectivityStore.online
