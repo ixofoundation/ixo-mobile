@@ -1,13 +1,11 @@
 import { RNCamera } from 'react-native-camera';
 import SInfo from 'react-native-sensitive-info';
-import { Icon, Text, Toast, View, Content, Spinner } from 'native-base';
+import { Icon, Text, View } from 'native-base';
 import * as React from 'react';
-import { AsyncStorage, Dimensions, Image, Modal, StatusBar, TouchableOpacity, PermissionsAndroid, Platform } from 'react-native';
+import { AsyncStorage, Dimensions, Image, Modal, StatusBar, TouchableOpacity } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { connect } from 'react-redux';
-import IconEyeOff from '../components/svg/IconEyeOff';
 import { env } from '../config';
-import LightButton from '../components/LightButton';
 import { LocalStorageKeys, SecureStorageKeys, UserStorageKeys } from '../models/phoneStorage';
 import { IMnemonic } from '../models/sovrin';
 import { IUser } from '../models/user';
@@ -25,7 +23,6 @@ import { ThemeColors } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
 import ScanQRStyles from '../styles/ScanQR';
 import CustomIcons from '../components/svg/CustomIcons';
-import { Exception } from 'handlebars';
 
 const keysafelogo = require('../../assets/keysafe-logo.png');
 const qr = require('../../assets/qr.png');
@@ -73,6 +70,11 @@ const InfoBlocksServiceProvider = ({ qrCodeText, helpText }: { qrCodeText: strin
 	</View>
 );
 
+enum AddingServiceProvider {
+	confirmProject,
+	provideDetails,
+	success
+}
 interface ParentProps {
 	navigation: any;
 	screenProps: any;
@@ -104,7 +106,7 @@ interface State {
 	projectDid: string | null;
 	serviceEndpoint: string | null;
 	userEmail: string;
-	serviceProviderAdded: boolean;
+	serviceProviderState: AddingServiceProvider;
 }
 
 export interface Props extends ParentProps, DispatchProps, StateProps {}
@@ -120,10 +122,10 @@ export class ScanQR extends React.Component<Props, State> {
 
 	static navigationOptions = ({ screenProps }: { screenProps: any }) => {
 		return {
-			headerStyle: { backgroundColor: ThemeColors.blue, borderBottomColor: ThemeColors.blue },
+			headerStyle: ScanQRStyles.headerStyle,
 			headerRight: <Icon style={{ paddingRight: 10, color: ThemeColors.white }} name="flash" />,
 			title: screenProps.t('scanQR:scan'),
-			headerTitleStyle: { color: ThemeColors.white, textAlign: 'center', alignSelf: 'center' },
+			headerTitleStyle: ScanQRStyles.headerTitleStyle,
 			headerTintColor: ThemeColors.white
 		};
 	};
@@ -141,7 +143,7 @@ export class ScanQR extends React.Component<Props, State> {
 		projectDid: null,
 		serviceEndpoint: null,
 		userEmail: '',
-		serviceProviderAdded: false
+		serviceProviderState: AddingServiceProvider.confirmProject
 	};
 
 	async componentDidMount() {
@@ -196,7 +198,10 @@ export class ScanQR extends React.Component<Props, State> {
 	};
 
 	handleRegisterServiceAgent = () => {
-		debugger;
+		if (this.state.userEmail === '') {
+			showToast(this.props.screenProps.t('scanQR:missingField'), toastType.DANGER);
+			return;
+		}
 		this.setState({ loading: true });
 		try {
 			const agentData = {
@@ -207,18 +212,21 @@ export class ScanQR extends React.Component<Props, State> {
 				projectDid: this.state.projectDid
 			};
 			getSignature(agentData).then((signature: any) => {
-				this.props.ixo.agent.createAgent(agentData, signature, this.state.serviceEndpoint).then((res: any) => {
-					if (res.error !== undefined) {
-						showToast(res.error.message, toastType.DANGER);
-						this.resetStateVars();
-					} else {
-						showToast(`${this.props.screenProps.t('scanQR:successRegistered')} ${agentData.role}`, toastType.SUCCESS);
-						this.setState({ serviceProviderAdded: true, loading: false });
-					}
-				}).catch((exception) => {
-					showToast('Network Error', toastType.DANGER);
-					this.setState({ errors: true, loading: false });
-				});
+				this.props.ixo.agent
+					.createAgent(agentData, signature, this.state.serviceEndpoint)
+					.then((res: any) => {
+						if (res.error !== undefined) {
+							showToast(res.error.message, toastType.DANGER);
+							this.resetStateVars();
+						} else {
+							showToast(`${this.props.screenProps.t('scanQR:successRegistered')} ${agentData.role}`, toastType.SUCCESS);
+							this.setState({ serviceProviderState: AddingServiceProvider.success, loading: false });
+						}
+					})
+					.catch(exception => {
+						showToast('Network Error', toastType.DANGER);
+						this.setState({ errors: true, loading: false });
+					});
 			});
 		} catch (exception) {
 			this.setState({ errors: true, loading: false });
@@ -243,7 +251,8 @@ export class ScanQR extends React.Component<Props, State> {
 			projectDid: null,
 			projectTitle: null,
 			serviceEndpoint: null,
-			loading: false
+			loading: false,
+			serviceProviderState: AddingServiceProvider.confirmProject
 		});
 	};
 
@@ -268,6 +277,19 @@ export class ScanQR extends React.Component<Props, State> {
 
 	renderErrorScanned() {
 		const registerAction = StackActions.reset({ index: 0, actions: [NavigationActions.navigate({ routeName: 'Register' })] });
+		if (this.projectScan) {
+			return (
+				<GenericModal
+					onPressButton={() => this.resetStateVars()}
+					onClose={() => this.resetStateVars()}
+					paragraph={this.props.screenProps.t('scanQR:projectFailedScan')}
+					loading={this.state.loading}
+					buttonText={this.props.screenProps.t('scanQR:rescan')}
+					heading={this.props.screenProps.t('scanQR:scanFailed')}
+					onPressInfo={() => this.props.navigation.dispatch(registerAction)}
+				/>
+			);
+		}
 		return (
 			<GenericModal
 				onPressButton={() => this.resetStateVars()}
@@ -286,43 +308,60 @@ export class ScanQR extends React.Component<Props, State> {
 		if (this.state.errors) {
 			return this.renderErrorScanned();
 		}
-		if (this.state.serviceProviderAdded) {
-			return (
-				<GenericModal
-					onPressButton={() => this.navigateToProjects()}
-					onClose={() => this.resetStateVars()}
-					paragraph={this.props.screenProps.t('scanQR:serviceProviderMessage')}
-					loading={this.state.loading}
-					headingImage={<IconServiceProviders height={height * 0.1} width={width * 0.2} />}
-					buttonText={this.props.screenProps.t('scanQR:close')}
-					heading={`${this.props.screenProps.t('scanQR:welcomeMessage')} ${this.state.projectTitle}!`}
-				/>
-			);
+
+		switch (this.state.serviceProviderState) {
+			case AddingServiceProvider.confirmProject:
+				return (
+					<GenericModal
+						headingTextStyle={{ color: ThemeColors.white }}
+						heading={`${this.state.projectTitle} ${this.props.screenProps.t('scanQR:project')}`}
+						headingImage={<IconServiceProviders height={height * 0.1} width={width * 0.2} />}
+						onPressButton={() => this.setState({ serviceProviderState: AddingServiceProvider.provideDetails })}
+						onClose={() => this.resetStateVars()}
+						paragraph={this.props.screenProps.t('scanQR:youAreRegistering')}
+						loading={this.state.loading}
+						buttonText={this.props.screenProps.t('scanQR:continue')}
+					/>
+				);
+			case AddingServiceProvider.provideDetails:
+				return (
+					<GenericModal
+						headingImage={<IconServiceProviders height={height * 0.08} width={width * 0.2} />}
+						onPressButton={() => this.handleRegisterServiceAgent()}
+						onClose={() => this.resetStateVars()}
+						paragraph={this.props.screenProps.t('scanQR:serviceProviderDescription')}
+						paragraphSecondary={this.props.screenProps.t('scanQR:serviceProviderQuestion')}
+						loading={this.state.loading}
+						buttonText={this.props.screenProps.t('scanQR:submit')}
+						inputFieldOptions={{
+							onChangeText: (userEmail: string) =>
+								this.setState({
+									// TODO
+									userEmail
+								}),
+							label: this.props.screenProps.t('scanQR:yourAnswer')
+						}}
+					/>
+				);
+			case AddingServiceProvider.success:
+				return (
+					<GenericModal
+						headingTextStyle={{ color: ThemeColors.white }}
+						onPressButton={() => this.navigateToProjects()}
+						onClose={() => this.resetStateVars()}
+						paragraph={this.props.screenProps.t('scanQR:serviceProviderMessage')}
+						loading={this.state.loading}
+						headingImage={<IconServiceProviders height={height * 0.1} width={width * 0.2} />}
+						buttonText={this.props.screenProps.t('scanQR:close')}
+						heading={`${this.props.screenProps.t('scanQR:welcomeMessage')} ${this.state.projectTitle}!`}
+					/>
+				);
 		}
-		return (
-			<GenericModal
-				onPressButton={() => this.handleRegisterServiceAgent()}
-				onClose={() => this.resetStateVars()}
-				paragraph={this.props.screenProps.t('connectIXOComplete:projectInformation')}
-				paragraphSecondary={this.state.projectTitle}
-				loading={this.state.loading}
-				buttonText={this.props.screenProps.t('connectIXOComplete:registerButtonText')}
-				heading={this.props.screenProps.t('connectIXOComplete:registerAsServiceAgent')}
-				inputFieldOptions={{
-					onChangeText: (email: string) =>
-						this.setState({
-							userEmail: email
-						}),
-					password: this.state.revealPassword,
-					label: this.props.screenProps.t('scanQR:email')
-				}}
-			/>
-		);
 	}
 
 	renderKeySafeScannedModal() {
 		if (this.state.errors) {
-			this.renderErrorScanned();
+			return this.renderErrorScanned();
 		}
 		return (
 			<GenericModal
@@ -354,7 +393,7 @@ export class ScanQR extends React.Component<Props, State> {
 
 	render() {
 		return (
-			<View style={{ flex: 1 }}>
+			<View style={this.state.modalVisible ? [ScanQRStyles.wrapper, ModalStyle.modalBackgroundOpacity] : [ScanQRStyles.wrapper]}>
 				<StatusBar barStyle="light-content" />
 				<Modal onRequestClose={() => null} animationType="slide" transparent={true} visible={this.state.modalVisible}>
 					{this.projectScan ? this.renderProjectScanned() : this.renderKeySafeScannedModal()}

@@ -19,15 +19,19 @@ interface Style {
 	inputFieldPrefixImage: ImageStyle;
 	closeIcon: TextStyle;
 	infoText: TextStyle;
+	modalBackgroundOpacity: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
+	modalBackgroundOpacity: {
+		opacity: 0.7
+	},
 	modalOuterContainer: {
 		flexDirection: 'row',
 		justifyContent: 'center',
 		marginTop: height * 0.2,
 		backgroundColor: ThemeColors.blue,
-		marginHorizontal: width * 0.05
+		marginHorizontal: width * 0.05,
 	},
 	modalInnerContainer: {
 		flexDirection: 'column',

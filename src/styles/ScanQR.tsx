@@ -4,6 +4,7 @@ import { ThemeColors } from './Colors';
 const { height, width } = Dimensions.get('window');
 
 interface Style {
+	wrapper: ViewStyle;
 	infoBlock: ViewStyle;
 	infoBlockImage: ImageStyle;
 	moreInfoText: TextStyle;
@@ -14,9 +15,23 @@ interface Style {
 	dividerContainer: ViewStyle;
 	divider: ViewStyle;
 	closeIcon: TextStyle;
+	headerTitleStyle: TextStyle;
+	headerStyle: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
+	headerStyle: {
+		backgroundColor: ThemeColors.blue,
+		borderBottomColor: ThemeColors.blue
+	},
+	headerTitleStyle: {
+		color: ThemeColors.white,
+		textAlign: 'center',
+		alignSelf: 'center'
+	},
+	wrapper: {
+		flex: 1
+	},
 	infoBlockOuterContainer: {
 		alignItems: 'flex-end',
 		flexDirection: 'column',
