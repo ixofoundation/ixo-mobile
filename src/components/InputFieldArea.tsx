@@ -22,7 +22,8 @@ const styles = StyleSheet.create<Style>({
 		height: 'auto',
 		minHeight: height * 0.07,
 		maxHeight: height * 0.2,
-		fontSize: height * 0.025
+		fontSize: height * 0.025,
+		paddingBottom: 40 // helps with virtual keyboard overlapping text
 	}
 });
 

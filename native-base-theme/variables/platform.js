@@ -222,7 +222,7 @@ export default {
   inverseSpinnerColor: "#1A191B",
 
   // Tab
-  tabDefaultBg: platform === "ios" ? ThemeColors.blue_dark : "#3F51B5",
+  tabDefaultBg: platform === "ios" ? ThemeColors.blue_dark : ThemeColors.blue_dark,
   topTabBarTextColor: platform === "ios" ? ThemeColors.white : ThemeColors.white,
   topTabBarActiveTextColor: platform === "ios" ? ThemeColors.white : ThemeColors.white,
   topTabBarBorderColor: platform === "ios" ? "#fff" : "#fff",

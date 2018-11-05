@@ -1,18 +1,21 @@
 import * as React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import { View, Icon, Text, Container } from 'native-base';
-import { Image, TouchableOpacity, AsyncStorage } from 'react-native';
+import { View, Text, Container } from 'native-base';
+import { Image, TouchableOpacity, AsyncStorage, Dimensions } from 'react-native';
 
 import ContainerStyles from '../styles/Containers';
 import SideBarStyles from '../styles/componentStyles/Sidebar';
-import { ThemeColors, ClaimsButton, SignOutBox } from '../styles/Colors';
+import { ClaimsButton, SignOutBox } from '../styles/Colors';
+import CustomIcon from '../components/svg/CustomIcons';
 import { UserStorageKeys } from '../models/phoneStorage';
 const ixoLogo = require('../../assets/logo.png');
 const helpIcon = require('../../assets/help.png');
 const settingIcon = require('../../assets/settings.png');
+const { height } = Dimensions.get('window');
 
 interface PropTypes {
 	navigation: any;
+	screenProps: any;
 }
 
 interface StateTypes {
@@ -24,7 +27,7 @@ class SideBar extends React.Component<PropTypes, StateTypes> {
 	state = {
 		name: '',
 		did: ''
-	};
+	}
 
 	async retrieveUserFromStorage() {
 		try {
@@ -43,22 +46,15 @@ class SideBar extends React.Component<PropTypes, StateTypes> {
 	render() {
 		return (
 			<Container
-				style={[
-					{
-						flex: 1,
-						alignItems: 'center',
-						justifyContent: 'center',
-						flexDirection: 'column',
-						backgroundColor: ThemeColors.blue
-					}
-				]}
+				// @ts-ignore
+				style={SideBarStyles.wrapper}
 			>
 				<LinearGradient style={SideBarStyles.userInfoBox} colors={[ClaimsButton.colorSecondary, ClaimsButton.colorPrimary]}>
 					<View style={[ContainerStyles.flexRow, { justifyContent: 'space-between', alignItems: 'center' }]}>
-						<Icon onPress={() => this.props.navigation.closeDrawer()} style={SideBarStyles.closeDrawer} name='close' />
+						<CustomIcon name="close" onPress={() => this.props.navigation.closeDrawer()} style={SideBarStyles.closeDrawer} />
 						<Image source={ixoLogo} style={SideBarStyles.ixoLogo} />
 					</View>
-					<View style={[ContainerStyles.flexRow, { justifyContent: 'flex-start', width: '100%', paddingTop: 10 }]}>
+					<View style={[ContainerStyles.flexRow, SideBarStyles.userBox]}>
 						<View style={[ContainerStyles.flexColumn, { alignItems: 'flex-start' }]}>
 							<Text style={SideBarStyles.userName}>{this.state.name}</Text>
 							<Text style={SideBarStyles.userDid}>{this.state.did}</Text>
@@ -68,16 +64,16 @@ class SideBar extends React.Component<PropTypes, StateTypes> {
 				<View style={[ContainerStyles.flexColumn, SideBarStyles.linksBox]}>
 					<TouchableOpacity onPress={() => this.props.navigation.navigate('Settings')} style={[ContainerStyles.flexRow, SideBarStyles.linkBox]}>
 						<Image source={settingIcon} style={SideBarStyles.iconLinks} />
-						<Text style={SideBarStyles.textLinks}>Settings</Text>
+						<Text style={SideBarStyles.textLinks}>{this.props.screenProps.t('sidebar:settings')}</Text>
 					</TouchableOpacity>
 					<TouchableOpacity onPress={() => this.props.navigation.navigate('Help')} style={[ContainerStyles.flexRow, SideBarStyles.linkBox]}>
 						<Image source={helpIcon} style={SideBarStyles.iconLinks} />
-						<Text style={SideBarStyles.textLinks}>Help</Text>
+						<Text style={SideBarStyles.textLinks}>{this.props.screenProps.t('sidebar:help')}</Text>
 					</TouchableOpacity>
 				</View>
 				<LinearGradient colors={[SignOutBox.colorSecondary, SignOutBox.colorPrimary]} style={[ContainerStyles.flexColumn, SideBarStyles.signOutBox]}>
 					<TouchableOpacity onPress={() => this.props.navigation.navigate('Login')}>
-						<Text style={SideBarStyles.signOut}>SIGN OUT</Text>
+						<Text style={SideBarStyles.signOut}>{this.props.screenProps.t('sidebar:signOut')}</Text>
 					</TouchableOpacity>
 				</LinearGradient>
 			</Container>

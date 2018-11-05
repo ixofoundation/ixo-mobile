@@ -1,7 +1,7 @@
 import { Dimensions, StyleSheet, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 import { ThemeColors } from '../../styles/Colors';
 
-const { height } = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
 interface Style {
 	userInfoBox: ViewStyle;
@@ -15,9 +15,18 @@ interface Style {
 	linkBox: ViewStyle;
 	ixoLogo: ImageStyle;
 	signOutBox: ViewStyle;
+	userBox: ViewStyle;
+	wrapper: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
+	wrapper: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+		flexDirection: 'column',
+		backgroundColor: ThemeColors.blue
+	},
 	userInfoBox: {
 		width: '100%',
 		flex: 0.2,
@@ -25,10 +34,15 @@ const styles = StyleSheet.create<Style>({
 	},
 	closeDrawer: {
 		color: 'white',
-		fontSize: height * 0.06
+		fontSize: height * 0.02
+	},
+	userBox: {
+		justifyContent: 'flex-start',
+		width: '100%',
+		marginTop: height * 0.1
 	},
 	userName: {
-		fontSize: height * 0.04,
+		fontSize: height * 0.03,
 		color: ThemeColors.white,
 		textAlign: 'left'
 	},
@@ -37,7 +51,8 @@ const styles = StyleSheet.create<Style>({
 		color: ThemeColors.blue_lightest
 	},
 	linksBox: {
-		padding: height * 0.05,
+		marginTop: height * 0.01,
+		paddingLeft: width * 0.09,
 		alignItems: 'flex-start',
 		justifyContent: 'flex-start',
 		width: '100%',
@@ -63,7 +78,8 @@ const styles = StyleSheet.create<Style>({
 	},
 	linkBox: {
 		justifyContent: 'flex-start',
-		flex: 0.1
+		flex: 0.1,
+		marginVertical: height * 0.01
 	},
 	signOutBox: {
 		width: '100%',

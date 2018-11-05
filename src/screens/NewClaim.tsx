@@ -12,6 +12,7 @@ import { saveClaim } from '../redux/claims/claims_action_creators';
 import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
 import { connect } from 'react-redux';
 import { getSignature } from '../utils/sovrin';
+import { showToast, toastType } from '../utils/toasts';
 
 interface ParentProps {
 	navigation: any;
@@ -30,6 +31,7 @@ export interface StateProps {
 	ixo?: any;
 	project?: IProject;
 	savedProjectsClaims: IProjectsClaimsSaved[];
+	online: boolean;
 }
 export interface Props extends ParentProps, DispatchProps, StateProps {}
 
@@ -97,7 +99,8 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		const claimPayload = Object.assign(claimData);
 		claimPayload['projectDid'] = this.projectDid;
 
-		getSignature(claimPayload)
+		if (this.props.online) {
+			getSignature(claimPayload)
 			.then((signature: any) => {
 				this.props.ixo.claim
 					.createClaim(claimPayload, signature, this.pdsURL)
@@ -110,13 +113,11 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			})
 			.catch((error: Error) => {
 				console.log(error);
-				Toast.show({
-					text: this.props.screenProps.t('claims:signingFailed'),
-					buttonText: 'OK',
-					type: 'danger',
-					position: 'top'
-				});
+				showToast('claims:signingFailed', toastType.DANGER);
 			});
+		} else {
+			showToast(this.props.screenProps.t('claims:noInternet'), toastType.WARNING);
+		}
 	}
 
 	onSaveClaim = (claimData: any) => {
@@ -219,7 +220,8 @@ function mapStateToProps(state: PublicSiteStoreState) {
 	return {
 		ixo: state.ixoStore.ixo,
 		project: state.projectsStore.selectedProject,
-		savedProjectsClaims: state.claimsStore.savedProjectsClaims
+		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
+		online: state.connectivityStore.online
 	};
 }
 

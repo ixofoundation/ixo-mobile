@@ -13,6 +13,8 @@ interface Style {
 	outerCardContainer: ViewStyle;
 	innerCardContainer: ViewStyle;
 	outerCardContainerActive: ViewStyle;
+	multipleSelectButtonText: TextStyle;
+	multipleSelectButton: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -81,6 +83,21 @@ const styles = StyleSheet.create<Style>({
 		flex: 1,
 		borderRadius: 1,
 		marginBottom: '3%'
+	},
+	multipleSelectButtonText: {
+		// fontSize: height * 0.03,
+		color: ThemeColors.white
+	},
+	multipleSelectButton: {
+		flexDirection: 'column',
+		justifyContent: 'center',
+		width: width * 0.35,
+		alignItems: 'center',
+		height: height * 0.1,
+		borderColor: ThemeColors.blue_lightest,
+		borderWidth: 1,
+		borderRadius: 2,
+		marginVertical: 10
 	}
 });
 

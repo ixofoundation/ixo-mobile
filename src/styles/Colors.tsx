@@ -13,7 +13,9 @@ const ThemeColors = {
 	grey_sync: '#e0e0e0',
 	red: '#A11C43',
 	orange: '#F89D28',
-	green: '#5AB946'
+	green: '#5AB946',
+	progressRed: '#E2223B',
+	progressNotCounted: '#033C50'
 };
 
 const ButtonDark = {
@@ -45,6 +47,11 @@ const CardContainerBox = {
 const OnboardingBox = {
 	colorPrimary: '#01364D',
 	colorSecondary: '#026381'
-}
+};
 
-export { ThemeColors, ProjectStatus, ButtonDark, ClaimsButton, SignOutBox, CardContainerBox, OnboardingBox };
+const ProgressSuccess = {
+	colorPrimary: '#016480',
+	colorSecondary: '#03d0FE'
+};
+
+export { ThemeColors, ProjectStatus, ButtonDark, ClaimsButton, SignOutBox, CardContainerBox, OnboardingBox, ProgressSuccess };

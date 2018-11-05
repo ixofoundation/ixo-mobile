@@ -14,6 +14,7 @@ interface Style {
 	flexLeft: ViewStyle;
 	header: TextStyle;
 	divider: ViewStyle;
+	recoverText: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -30,6 +31,7 @@ const styles = StyleSheet.create<Style>({
 		marginTop: 20
 	},
 	selected: {
+		backgroundColor: ThemeColors.blue_dark,
 		borderColor: ThemeColors.blue_lightest,
 		borderWidth: 1,
 		height: deviceHeight * 0.2,
@@ -44,6 +46,7 @@ const styles = StyleSheet.create<Style>({
 		padding: 10
 	},
 	selectedBox: {
+		backgroundColor: ThemeColors.blue_dark,
 		borderColor: ThemeColors.blue_lightest,
 		borderWidth: 1,
 		height: deviceHeight * 0.2,
@@ -64,6 +67,7 @@ const styles = StyleSheet.create<Style>({
 	},
 	header: {
 		color: ThemeColors.blue_lightest,
+		fontFamily: 'RobotoCondensed-Regular',
 		fontSize: 20,
 		paddingBottom: 15,
 		fontWeight: '500',
@@ -79,6 +83,13 @@ const styles = StyleSheet.create<Style>({
 		height: 1,
 		backgroundColor: ThemeColors.blue_medium,
 		marginBottom: 15
+	},
+	recoverText: {
+		marginTop: 20,
+		color: ThemeColors.blue_lightest,
+		fontSize: 12,
+		textDecorationLine: 'underline',
+		textAlign: 'center'
 	}
 });
 

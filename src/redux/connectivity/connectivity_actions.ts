@@ -1,5 +1,5 @@
 export interface Connectivity {
-	offline: boolean;
+	online: boolean;
 }
 
 // export type TOGGLE_CONNECTION = 'TOGGLE_CONNECTION';

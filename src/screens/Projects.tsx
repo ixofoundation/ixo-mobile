@@ -1,6 +1,7 @@
 import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 import { showToast, toastType } from '../utils/toasts';
+import { SDGArray } from '../models/sdg';
 import { Container, Content, Drawer, Header, Icon, Text, View, Fab } from 'native-base';
 import * as React from 'react';
 import { Dimensions, Image, ImageBackground, RefreshControl, StatusBar, TouchableOpacity, ActivityIndicator, YellowBox } from 'react-native';
@@ -14,16 +15,20 @@ import { initIxo } from '../redux/ixo/ixo_action_creators';
 import { updateProjects, loadProject } from '../redux/projects/projects_action_creators';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
-import { ProjectStatus, ThemeColors } from '../styles/Colors';
+import { ThemeColors, ProjectStatus, ClaimsButton, ProgressSuccess } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
 import ProjectsStyles from '../styles/Projects';
 import HeaderSync from '../components/HeaderSync';
+import Banner from '../components/Banner';
+import CustomIcon from '../components/svg/CustomIcons';
+
 YellowBox.ignoreWarnings(['ForwardRef']);
 
 const placeholder = require('../../assets/ixo-placeholder.jpg');
 const background = require('../../assets/background_2.png');
 const addProjects = require('../../assets/project-visual.png');
 const qr = require('../../assets/qr.png');
+
 const { width, height } = Dimensions.get('window');
 
 interface ParentProps {
@@ -40,7 +45,7 @@ export interface StateProps {
 	ixo?: any;
 	user?: IUser;
 	savedProjectsClaims?: IProjectsClaimsSaved[];
-	offline?: boolean;
+	online?: boolean;
 }
 
 export interface StateProps {
@@ -75,10 +80,10 @@ export class Projects extends React.Component<Props, StateProps> {
 				alignSelf: 'center'
 			},
 			title: params.showTitle ? screenProps.t('projects:myProjects') : '',
-			headerLeft: <Icon name="menu" onPress={() => params.openDrawer()} style={{ paddingLeft: 10, color: ThemeColors.white }} />,
+			headerLeft: <CustomIcon name="menu" onPress={() => params.openDrawer()} style={{ paddingLeft: 10, color: ThemeColors.white }} size={height * 0.03} />,
 			headerRight: (
 				<View style={ContainerStyles.flexRow}>
-					<Icon name="search" style={{ paddingRight: 10, color: ThemeColors.white }} />
+					<CustomIcon name="search" style={{ paddingRight: 10, color: ThemeColors.white }} size={height * 0.03} />
 					<HeaderSync screenProps={screenProps} />
 				</View>
 			)
@@ -126,7 +131,7 @@ export class Projects extends React.Component<Props, StateProps> {
 		if (imageLink && imageLink !== '') {
 			return { uri: `${serviceEndpoint}public/${imageLink}` };
 		} else {
-			return { placeholder };
+			return placeholder;
 		}
 	};
 
@@ -165,28 +170,43 @@ export class Projects extends React.Component<Props, StateProps> {
 	}
 
 	renderProgressBar = (total: number, approved: number, rejected: number) => {
+		if (rejected > total - approved) {
+			rejected = total - approved;
+		}
 		const approvedWidth = Math.ceil((approved / total) * 100);
 		const rejectedWidth = Math.ceil((rejected / total) * 100);
 		return (
-			<View style={[ContainerStyles.flexRow, { justifyContent: 'flex-start', backgroundColor: 'transparent', paddingVertical: 10 }]}>
+			<View style={[ContainerStyles.flexRow, ProjectsStyles.progressBarContainer]}>
 				<LinearGradient
 					start={{ x: 0, y: 0 }}
 					end={{ x: 1, y: 0 }}
-					colors={['#016480', '#03d0FE']}
+					colors={[ProgressSuccess.colorPrimary, ProgressSuccess.colorSecondary]}
 					style={{ height: 5, width: `${approvedWidth}%`, borderRadius: 2 }}
 				/>
-				<View style={[{ backgroundColor: '#E2223B', height: 5, width: `${rejectedWidth}%`, borderRadius: 2 }]} />
-				<View style={[{ backgroundColor: '#033C50', height: 5, width: `${100 - approvedWidth - rejectedWidth}%`, borderRadius: 2 }]} />
+				<View
+					style={[
+						{
+							backgroundColor: ThemeColors.progressRed,
+							height: 5,
+							width: `${rejectedWidth}%`,
+							borderRadius: 2,
+							borderTopLeftRadius: 0,
+							borderBottomLeftRadius: 0
+						}
+					]}
+				/>
+				<View style={[{ backgroundColor: ThemeColors.progressNotCounted, height: 5, width: `${100 - approvedWidth - rejectedWidth}%`, borderRadius: 2 }]} />
 			</View>
 		);
 	};
 
 	refreshProjects() {
-		if (this.props.offline) {
+		if (this.props.online) {
 			this.setState({ isRefreshing: true, projects: [] });
 			this.getProjectList();
+		} else {
+			showToast('No internet connection', toastType.WARNING);
 		}
-		showToast('No internet connection', toastType.WARNING);
 	}
 
 	renderProject() {
@@ -194,6 +214,7 @@ export class Projects extends React.Component<Props, StateProps> {
 		return (
 			<React.Fragment>
 				{this.state.projects.map((project: IProject) => {
+					console.log(project);
 					return (
 						<TouchableOpacity
 							onPress={() => {
@@ -211,7 +232,23 @@ export class Projects extends React.Component<Props, StateProps> {
 										style={ProjectsStyles.projectImage}
 									>
 										{'imageLoaded' in project ? (
-											<View style={{ height: 5, width: width * 0.06, backgroundColor: ProjectStatus.inProgress }} />
+											<View style={{ marginRight: 20 }}>
+												<View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+													<View style={{ height: 5, width: width * 0.06, backgroundColor: ProjectStatus.inProgress }} />
+												</View>
+												<View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+													{project.data.sdgs.map((SDG, SDGi) => {
+														return (
+															<CustomIcon
+																key={SDGi}
+																name={`sdg-${SDGArray[Math.floor(SDG) - 1].ico}`}
+																style={{ color: ThemeColors.white, padding: 5 }}
+																size={height * 0.03}
+															/>
+														);
+													})}
+												</View>
+											</View>
 										) : (
 											<View style={ProjectsStyles.spinnerCenterRow}>
 												<View style={ProjectsStyles.spinnerCenterColumn}>
@@ -220,7 +257,12 @@ export class Projects extends React.Component<Props, StateProps> {
 											</View>
 										)}
 									</ImageBackground>
-									<View style={[ContainerStyles.flexRow, ProjectsStyles.textBoxLeft]}>
+									<LinearGradient
+										start={{ x: 0, y: 0 }}
+										end={{ x: 1, y: 0 }}
+										colors={[ClaimsButton.colorPrimary, ClaimsButton.colorSecondary]}
+										style={[ContainerStyles.flexRow, ProjectsStyles.textBoxLeft]}
+									>
 										<View style={[ContainerStyles.flexColumn, { alignItems: 'flex-start' }]}>
 											<Text style={ProjectsStyles.projectTitle}>{project.data.title}</Text>
 											<Text style={ProjectsStyles.projectSuccessfulAmountText}>
@@ -237,7 +279,7 @@ export class Projects extends React.Component<Props, StateProps> {
 												<Text style={ProjectsStyles.projectLastClaimText}>{this.getLatestClaim(project.data.claims)}</Text>
 											</Text>
 										</View>
-									</View>
+									</LinearGradient>
 								</View>
 							</View>
 						</TouchableOpacity>
@@ -274,7 +316,7 @@ export class Projects extends React.Component<Props, StateProps> {
 			>
 				<Header noShadow style={{ borderBottomWidth: 0, backgroundColor: 'transparent' }}>
 					<View style={[ProjectsStyles.flexLeft]}>
-						<Text style={ProjectsStyles.header}>{this.props.screenProps.t('projects:myProjects')}</Text>
+						<Text style={ProjectsStyles.myProjectsHeader}>{this.props.screenProps.t('projects:myProjects')}</Text>
 					</View>
 				</Header>
 				<StatusBar backgroundColor={ThemeColors.blue_dark} barStyle="light-content" />
@@ -289,7 +331,7 @@ export class Projects extends React.Component<Props, StateProps> {
 				<Container>
 					<Header style={{ borderBottomWidth: 0, backgroundColor: 'transparent', elevation: 0 }}>
 						<View style={[ProjectsStyles.flexLeft]}>
-							<Text style={ProjectsStyles.header}>{this.props.screenProps.t('projects:myProjects')}</Text>
+							<Text style={ProjectsStyles.myProjectsHeader}>{this.props.screenProps.t('projects:myProjects')}</Text>
 						</View>
 					</Header>
 					<StatusBar backgroundColor={ThemeColors.blue_dark} barStyle="light-content" />
@@ -299,10 +341,10 @@ export class Projects extends React.Component<Props, StateProps> {
 						<View>
 							<View style={{ height: height * 0.4, flexDirection: 'row', justifyContent: 'center' }}>
 								<View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-									<Image resizeMode={'center'} source={addProjects} />
+									<Image resizeMode={'stretch'} source={addProjects} />
 								</View>
 							</View>
-							<View>
+							<View style={{ paddingHorizontal: 30 }}>
 								<View style={[ProjectsStyles.flexLeft]}>
 									<Text style={[ProjectsStyles.header, { color: ThemeColors.blue_lightest }]}>
 										{this.props.screenProps.t('projects:addFirstProject')}
@@ -323,14 +365,8 @@ export class Projects extends React.Component<Props, StateProps> {
 	}
 
 	renderConnectivity() {
-		if (this.props.offline) return null;
-		return (
-			<View style={{ height: height * 0.03, width: '100%', backgroundColor: ThemeColors.red, alignItems: 'center' }}>
-				<Text style={{ fontSize: height * 0.015, textAlign: 'center', color: ThemeColors.white, fontFamily: 'RobotoCondensed-Regular', paddingTop: 4 }}>
-					{this.props.screenProps.t('connectivity:offlineMode')}
-				</Text>
-			</View>
-		);
+		if (this.props.online) return null;
+		return <Banner text={this.props.screenProps.t('connectivity:offlineMode')} />;
 	}
 
 	render() {
@@ -340,12 +376,17 @@ export class Projects extends React.Component<Props, StateProps> {
 					// @ts-ignore
 					this.drawer = ref;
 				}}
-				content={<SideBar navigation={this.props.navigation} />}
+				content={<SideBar screenProps={this.props.screenProps} navigation={this.props.navigation} />}
 				onClose={() => this.closeDrawer()}
 			>
 				{this.renderConnectivity()}
 				{this.state.projects.length > 0 ? this.renderNoProjectsView() : this.renderProjectsView()}
-				<Fab direction='up' style={{ backgroundColor: ThemeColors.red }} position='bottomRight' onPress={() => this.props.navigation.navigate('ScanQR')}>
+				<Fab
+					direction="up"
+					style={{ backgroundColor: ThemeColors.red }}
+					position="bottomRight"
+					onPress={() => this.props.navigation.navigate('ScanQR', { projectScan: true })}
+				>
 					<Image resizeMode={'contain'} style={{ width: width * 0.08, height: width * 0.08 }} source={qr} />
 				</Fab>
 			</Drawer>
@@ -359,7 +400,7 @@ function mapStateToProps(state: PublicSiteStoreState) {
 		user: state.userStore.user,
 		projects: state.projectsStore.projects,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
-		offline: state.connectivityStore.offline
+		online: state.connectivityStore.online
 	};
 }
 

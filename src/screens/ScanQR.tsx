@@ -1,32 +1,87 @@
 import { RNCamera } from 'react-native-camera';
 import SInfo from 'react-native-sensitive-info';
-import { Icon, Text, Toast, View } from 'native-base';
+import { Icon, Text, View } from 'native-base';
 import * as React from 'react';
-import { AsyncStorage, Dimensions, Image, KeyboardAvoidingView, Modal, StatusBar, TouchableOpacity, PermissionsAndroid, Platform } from 'react-native';
+import { AsyncStorage, Dimensions, Image, Modal, StatusBar, TouchableOpacity } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { connect } from 'react-redux';
-import IconEyeOff from '../components/svg/IconEyeOff';
 import { env } from '../config';
-import LightButton from '../components/LightButton';
 import { LocalStorageKeys, SecureStorageKeys, UserStorageKeys } from '../models/phoneStorage';
 import { IMnemonic } from '../models/sovrin';
 import { IUser } from '../models/user';
 import { initIxo } from '../redux/ixo/ixo_action_creators';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { initUser } from '../redux/user/user_action_creators';
-import { ThemeColors } from '../styles/Colors';
 import ModalStyle from '../styles/Modal';
 import { Decrypt, generateSovrinDID, getSignature } from '../utils/sovrin';
 import validator from 'validator';
-import { InputField } from '../components/InputField';
+import IconServiceProviders from '../components/svg/iconServiceProviders';
+import GenericModal from '../components/GenericModal';
 import { showToast, toastType } from '../utils/toasts';
 
-const keysafelogo = require('../../assets/keysafe-logo.png');
-const { width } = Dimensions.get('window');
+import { ThemeColors } from '../styles/Colors';
+import ContainerStyles from '../styles/Containers';
+import ScanQRStyles from '../styles/ScanQR';
+import CustomIcons from '../components/svg/CustomIcons';
 
+const keysafelogo = require('../../assets/keysafe-logo.png');
+const qr = require('../../assets/qr.png');
+const { width, height } = Dimensions.get('window');
+
+const InfoBlocks = ({ keySafeText, qrCodeText, helpText }: { keySafeText: string; qrCodeText: string; helpText: string }) => (
+	<View style={ScanQRStyles.infoBlockOuterContainer}>
+		<View style={[ContainerStyles.flexRow, { alignItems: 'flex-end' }]}>
+			<View style={[ContainerStyles.flexRow, ScanQRStyles.infoBlock]}>
+				<Image resizeMode={'contain'} style={ScanQRStyles.infoBlockImage} source={keysafelogo} />
+				<Text style={ScanQRStyles.keysafeText}>{keySafeText}</Text>
+			</View>
+			<View style={[ContainerStyles.flexRow, ScanQRStyles.infoBlock]}>
+				<Image resizeMode={'contain'} style={ScanQRStyles.infoBlockImage} source={qr} />
+				<Text style={ScanQRStyles.infoText}>{qrCodeText}</Text>
+			</View>
+		</View>
+		<View style={ScanQRStyles.dividerContainer}>
+			<View style={ScanQRStyles.divider} />
+		</View>
+		<View style={[ContainerStyles.flexRow, ScanQRStyles.moreInfoTextContainer]}>
+			<TouchableOpacity onPress={() => console.log('TODO')}>
+				<Text style={ScanQRStyles.moreInfoText}>{helpText}</Text>
+			</TouchableOpacity>
+		</View>
+	</View>
+);
+
+const InfoBlocksServiceProvider = ({ qrCodeText, helpText }: { qrCodeText: string; helpText: string }) => (
+	<View style={ScanQRStyles.infoBlockOuterContainer}>
+		<View style={[ContainerStyles.flexRow, { alignItems: 'flex-end' }]}>
+			<View style={[ContainerStyles.flexRow, ScanQRStyles.infoBlock]}>
+				<Image resizeMode={'contain'} style={ScanQRStyles.infoBlockImage} source={qr} />
+				<Text style={ScanQRStyles.infoText}>{qrCodeText}</Text>
+			</View>
+		</View>
+		<View style={ScanQRStyles.dividerContainer}>
+			<View style={ScanQRStyles.divider} />
+		</View>
+		<View style={[ContainerStyles.flexRow, ScanQRStyles.moreInfoTextContainer]}>
+			<TouchableOpacity onPress={() => console.log('TODO')}>
+				<Text style={ScanQRStyles.moreInfoText}>{helpText}</Text>
+			</TouchableOpacity>
+		</View>
+	</View>
+);
+
+enum AddingServiceProvider {
+	confirmProject,
+	provideDetails,
+	success
+}
 interface ParentProps {
 	navigation: any;
 	screenProps: any;
+}
+
+interface NavigationTypes {
+	projectScan: boolean;
 }
 
 export interface DispatchProps {
@@ -50,23 +105,27 @@ interface State {
 	projectTitle: string | null;
 	projectDid: string | null;
 	serviceEndpoint: string | null;
-	cameraActive: boolean;
+	userEmail: string;
+	serviceProviderState: AddingServiceProvider;
 }
 
 export interface Props extends ParentProps, DispatchProps, StateProps {}
 export class ScanQR extends React.Component<Props, State> {
+	private projectScan: boolean = true;
 	constructor(props) {
 		super(props);
 
+		const componentProps: NavigationTypes = this.props.navigation.state.params;
+		this.projectScan = componentProps.projectScan;
 		this._handleBarCodeRead = this._handleBarCodeRead.bind(this);
 	}
 
 	static navigationOptions = ({ screenProps }: { screenProps: any }) => {
 		return {
-			headerStyle: { backgroundColor: ThemeColors.blue, borderBottomColor: ThemeColors.blue },
+			headerStyle: ScanQRStyles.headerStyle,
 			headerRight: <Icon style={{ paddingRight: 10, color: ThemeColors.white }} name="flash" />,
 			title: screenProps.t('scanQR:scan'),
-			headerTitleStyle: { color: ThemeColors.white, textAlign: 'center', alignSelf: 'center' },
+			headerTitleStyle: ScanQRStyles.headerTitleStyle,
 			headerTintColor: ThemeColors.white
 		};
 	};
@@ -83,7 +142,8 @@ export class ScanQR extends React.Component<Props, State> {
 		projectTitle: null,
 		projectDid: null,
 		serviceEndpoint: null,
-		cameraActive: true
+		userEmail: '',
+		serviceProviderState: AddingServiceProvider.confirmProject
 	};
 
 	async componentDidMount() {
@@ -91,27 +151,23 @@ export class ScanQR extends React.Component<Props, State> {
 	}
 
 	_handleBarCodeRead(payload: any) {
-		this.disableCamera();
 		if (!this.state.modalVisible) {
-			if (validator.isBase64(payload.data)) {
+			if (validator.isBase64(payload.data) && !this.projectScan) {
 				this.setState({ modalVisible: true, payload: payload.data });
-			} else if (payload.data.includes('projects')) {
+			} else if (payload.data.includes('projects') && this.projectScan) {
 				const projectDid = payload.data.substring(payload.data.length - 39, payload.data.length - 9);
 				this.setState({ modalVisible: true, payload: null, projectDid });
 				this.props.ixo.project.getProjectByProjectDid(projectDid).then((project: any) => {
 					this.setState({ projectTitle: project.data.title, serviceEndpoint: project.data.serviceEndpoint });
 				});
+			} else {
+				this.setState({ errors: true, modalVisible: true });
 			}
 		}
 	}
 
-	disableCamera() {
-		if (Platform.OS === 'android') {
-			this.setState({ cameraActive: false });
-		}
-	}
-
-	handleButtonPress = () => {
+	handleUnlockPayload = () => {
+		this.setState({ loading: true });
 		if (this.state.payload && this.state.password) {
 			try {
 				const mnemonicJson: IMnemonic = Decrypt(this.state.payload, this.state.password!);
@@ -134,37 +190,46 @@ export class ScanQR extends React.Component<Props, State> {
 				this.props.navigation.dispatch(StackActions.reset({ index: 0, actions: [NavigationActions.navigate({ routeName: 'Login' })] }));
 			} catch (exception) {
 				console.log(exception);
-				this.setState({ errors: true });
+				this.setState({ errors: true, loading: false });
 			}
-		} else if (this.state.projectDid) {
+		} else {
+			this.setState({ errors: true, loading: false });
+		}
+	};
+
+	handleRegisterServiceAgent = () => {
+		if (this.state.userEmail === '') {
+			showToast(this.props.screenProps.t('scanQR:missingField'), toastType.DANGER);
+			return;
+		}
+		this.setState({ loading: true });
+		try {
 			const agentData = {
-				email: 'nicolaas@trustlab.tech',
+				email: this.state.userEmail,
 				name: this.props.user!.name,
 				role: 'SA',
 				agentDid: this.props.user!.did,
 				projectDid: this.state.projectDid
 			};
 			getSignature(agentData).then((signature: any) => {
-				this.props.ixo.agent.createAgent(agentData, signature, this.state.serviceEndpoint).then((res: any) => {
-					if (res.error !== undefined) {
-						Toast.show({
-							text: res.error.message,
-							type: 'danger',
-							position: 'top'
-						});
-						this.navigateToProjects();
-					} else {
-						Toast.show({
-							text: `Successfully registered as ${agentData.role}`,
-							type: 'success',
-							position: 'top'
-						});
-						this.navigateToProjects();
-					}
-				});
+				this.props.ixo.agent
+					.createAgent(agentData, signature, this.state.serviceEndpoint)
+					.then((res: any) => {
+						if (res.error !== undefined) {
+							showToast(res.error.message, toastType.DANGER);
+							this.resetStateVars();
+						} else {
+							showToast(`${this.props.screenProps.t('scanQR:successRegistered')} ${agentData.role}`, toastType.SUCCESS);
+							this.setState({ serviceProviderState: AddingServiceProvider.success, loading: false });
+						}
+					})
+					.catch(exception => {
+						showToast('Network Error', toastType.DANGER);
+						this.setState({ errors: true, loading: false });
+					});
 			});
-		} else {
-			this.setState({ errors: true });
+		} catch (exception) {
+			this.setState({ errors: true, loading: false });
 		}
 	};
 
@@ -178,133 +243,171 @@ export class ScanQR extends React.Component<Props, State> {
 	}
 
 	resetStateVars = () => {
-		this.setState({ modalVisible: false, password: undefined, payload: null, errors: false, projectDid: null, projectTitle: null, serviceEndpoint: null });
+		this.setState({
+			modalVisible: false,
+			password: undefined,
+			payload: null,
+			errors: false,
+			projectDid: null,
+			projectTitle: null,
+			serviceEndpoint: null,
+			loading: false,
+			serviceProviderState: AddingServiceProvider.confirmProject
+		});
 	};
 
-	renderDescriptionText() {
-		if (this.state.projectDid !== null) {
+	renderInfoBlocks() {
+		if (this.projectScan) {
 			return (
-				<View style={ModalStyle.flexLeft}>
-					<Text style={{ color: ThemeColors.white, fontSize: 15 }}>{this.props.screenProps.t('connectIXOComplete:projectInformation')}</Text>
-				</View>
+				<InfoBlocksServiceProvider
+					helpText={this.props.screenProps.t('scanQR:serviceProviderHelp')}
+					qrCodeText={this.props.screenProps.t('scanQR:serviceProviderScan')}
+				/>
 			);
 		} else {
 			return (
-				<View style={ModalStyle.flexLeft}>
-					<Text style={{ color: ThemeColors.white, fontSize: 15 }}>{this.props.screenProps.t('connectIXOComplete:unlockInformation')}</Text>
-				</View>
+				<InfoBlocks
+					helpText={this.props.screenProps.t('scanQR:loginHelp')}
+					qrCodeText={this.props.screenProps.t('connectIXO:qrCodeInfo')}
+					keySafeText={this.props.screenProps.t('connectIXO:keySafeInfo')}
+				/>
 			);
 		}
 	}
 
-	renderPasswordField() {
-		if (this.state.projectDid === null) {
-			return (
-				<View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20, alignItems: 'center' }}>
-					<Image resizeMode={'contain'} style={{ width: width * 0.06, height: width * 0.06, position: 'absolute', top: width * 0.06 }} source={keysafelogo} />
-					<InputField
-						password={this.state.revealPassword}
-						icon={
-							<TouchableOpacity onPress={() => this.setState({ revealPassword: !this.state.revealPassword })}>
-								<View style={{ position: 'relative' }}>
-									<IconEyeOff width={width * 0.06} height={width * 0.06} />
-								</View>
-							</TouchableOpacity>
-						}
-						labelName={'Password'}
-						onChangeText={(password: string) =>
-							this.setState({
-								password
-							})
-						}
-					/>
-				</View>
-			);
-		} else {
-			return null;
-		}
-	}
-
-	renderModal() {
+	renderErrorScanned() {
 		const registerAction = StackActions.reset({ index: 0, actions: [NavigationActions.navigate({ routeName: 'Register' })] });
-		if (!this.state.errors) {
+		if (this.projectScan) {
 			return (
-				// <KeyboardAvoidingView behavior={'position'}>
-				<View style={ModalStyle.modalOuterContainer}>
-					<View style={ModalStyle.modalInnerContainer}>
-						<View style={ModalStyle.flexRight}>
-							<Icon onPress={() => this.resetStateVars()} active name="close" style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
-						</View>
-						<View style={ModalStyle.flexLeft}>
-							<Text style={{ color: ThemeColors.blue_lightest, fontSize: 29 }}>
-								{this.state.projectDid !== null
-									? this.props.screenProps.t('connectIXOComplete:registerAsServiceAgent')
-									: this.props.screenProps.t('connectIXOComplete:scanSuccessful')}
-							</Text>
-						</View>
-						<View style={ModalStyle.divider} />
-						{this.renderDescriptionText()}
-						<Text style={{ color: ThemeColors.blue_lightest, fontSize: 18 }}>{this.state.projectTitle}</Text>
-						{this.renderPasswordField()}
-						<LightButton
-							onPress={() => this.handleButtonPress()}
-							text={
-								this.state.projectDid !== null
-									? this.props.screenProps.t('connectIXOComplete:registerButtonText')
-									: this.props.screenProps.t('connectIXOComplete:unlockButtonText')
-							}
-						/>
-					</View>
-				</View>
-				// </KeyboardAvoidingView>
+				<GenericModal
+					onPressButton={() => this.resetStateVars()}
+					onClose={() => this.resetStateVars()}
+					paragraph={this.props.screenProps.t('scanQR:projectFailedScan')}
+					loading={this.state.loading}
+					buttonText={this.props.screenProps.t('scanQR:rescan')}
+					heading={this.props.screenProps.t('scanQR:scanFailed')}
+					onPressInfo={() => this.props.navigation.dispatch(registerAction)}
+				/>
 			);
 		}
 		return (
-			<View style={ModalStyle.modalOuterContainer}>
-				<View style={ModalStyle.modalInnerContainer}>
-					<View style={ModalStyle.flexRight}>
-						<Icon name="close" style={{ color: ThemeColors.white, top: 10, fontSize: 30 }} />
-					</View>
-					<View style={ModalStyle.flexLeft}>
-						<Text style={{ color: ThemeColors.blue_lightest, fontSize: 29 }}>Scan unsuccessful</Text>
-					</View>
-					<View style={ModalStyle.divider} />
-					<View style={ModalStyle.flexLeft}>
-						<Text style={{ color: ThemeColors.white, fontSize: 15 }}>There has been an error connecting to the ixo Key Safe</Text>
-					</View>
-					<LightButton onPress={() => this.resetStateVars()} text={this.props.screenProps.t('scanQR:rescan')} />
-					<TouchableOpacity onPress={() => this.props.navigation.dispatch(registerAction)}>
-						<Text style={{ color: ThemeColors.blue_lightest, fontSize: 15, textDecorationLine: 'underline', textAlign: 'center' }}>Are you registered?</Text>
-					</TouchableOpacity>
-				</View>
-			</View>
+			<GenericModal
+				onPressButton={() => this.resetStateVars()}
+				onClose={() => this.resetStateVars()}
+				paragraph={this.props.screenProps.t('connectIXOComplete:unlockInformation')}
+				loading={this.state.loading}
+				buttonText={this.props.screenProps.t('scanQR:rescan')}
+				heading={this.props.screenProps.t('scanQR:scanFailed')}
+				infoText={this.props.screenProps.t('scanQR:registered')}
+				onPressInfo={() => this.props.navigation.dispatch(registerAction)}
+			/>
+		);
+	}
+
+	renderProjectScanned() {
+		if (this.state.errors) {
+			return this.renderErrorScanned();
+		}
+
+		switch (this.state.serviceProviderState) {
+			case AddingServiceProvider.confirmProject:
+				return (
+					<GenericModal
+						headingTextStyle={{ color: ThemeColors.white }}
+						heading={`${this.state.projectTitle} ${this.props.screenProps.t('scanQR:project')}`}
+						headingImage={<IconServiceProviders height={height * 0.1} width={width * 0.2} />}
+						onPressButton={() => this.setState({ serviceProviderState: AddingServiceProvider.provideDetails })}
+						onClose={() => this.resetStateVars()}
+						paragraph={this.props.screenProps.t('scanQR:youAreRegistering')}
+						loading={this.state.loading}
+						buttonText={this.props.screenProps.t('scanQR:continue')}
+					/>
+				);
+			case AddingServiceProvider.provideDetails:
+				return (
+					<GenericModal
+						headingImage={<IconServiceProviders height={height * 0.08} width={width * 0.2} />}
+						onPressButton={() => this.handleRegisterServiceAgent()}
+						onClose={() => this.resetStateVars()}
+						paragraph={this.props.screenProps.t('scanQR:serviceProviderDescription')}
+						paragraphSecondary={this.props.screenProps.t('scanQR:serviceProviderQuestion')}
+						loading={this.state.loading}
+						buttonText={this.props.screenProps.t('scanQR:submit')}
+						inputFieldOptions={{
+							onChangeText: (userEmail: string) =>
+								this.setState({
+									// TODO
+									userEmail
+								}),
+							label: this.props.screenProps.t('scanQR:yourAnswer')
+						}}
+					/>
+				);
+			case AddingServiceProvider.success:
+				return (
+					<GenericModal
+						headingTextStyle={{ color: ThemeColors.white }}
+						onPressButton={() => this.navigateToProjects()}
+						onClose={() => this.resetStateVars()}
+						paragraph={this.props.screenProps.t('scanQR:serviceProviderMessage')}
+						loading={this.state.loading}
+						headingImage={<IconServiceProviders height={height * 0.1} width={width * 0.2} />}
+						buttonText={this.props.screenProps.t('scanQR:close')}
+						heading={`${this.props.screenProps.t('scanQR:welcomeMessage')} ${this.state.projectTitle}!`}
+					/>
+				);
+		}
+	}
+
+	renderKeySafeScannedModal() {
+		if (this.state.errors) {
+			return this.renderErrorScanned();
+		}
+		return (
+			<GenericModal
+				onPressButton={() => this.handleUnlockPayload()}
+				onClose={() => this.resetStateVars()}
+				paragraph={this.props.screenProps.t('connectIXOComplete:unlockInformation')}
+				loading={this.state.loading}
+				buttonText={this.props.screenProps.t('connectIXOComplete:unlockButtonText')}
+				heading={this.props.screenProps.t('connectIXOComplete:scanSuccessful')}
+				inputFieldOptions={{
+					onChangeText: (password: string) =>
+						this.setState({
+							password
+						}),
+					password: this.state.revealPassword,
+					label: this.props.screenProps.t('scanQR:password'),
+					prefixImage: <Image resizeMode={'contain'} style={ModalStyle.inputFieldPrefixImage} source={keysafelogo} />,
+					suffixImage: (
+						<TouchableOpacity onPress={() => this.setState({ revealPassword: !this.state.revealPassword })}>
+							<View style={{ position: 'relative', top: height * 0.01 }}>
+								<CustomIcons name="eyeoff" size={width * 0.06} style={{ color: ThemeColors.blue_lightest }} />
+							</View>
+						</TouchableOpacity>
+					)
+				}}
+			/>
 		);
 	}
 
 	render() {
 		return (
-			<View style={{ flex: 1 }}>
+			<View style={this.state.modalVisible ? [ScanQRStyles.wrapper, ModalStyle.modalBackgroundOpacity] : [ScanQRStyles.wrapper]}>
 				<StatusBar barStyle="light-content" />
-				<Modal
-					animationType="slide"
-					transparent={true}
-					visible={this.state.modalVisible}
-					onRequestClose={() => {
-						// alert('Modal has been closed.');
-					}}
-				>
-					{this.renderModal()}
+				<Modal onRequestClose={() => null} animationType="slide" transparent={true} visible={this.state.modalVisible}>
+					{this.projectScan ? this.renderProjectScanned() : this.renderKeySafeScannedModal()}
 				</Modal>
-				{this.state.cameraActive ? (
-					<RNCamera
-						style={{ flex: 1 }}
-						type={this.state.type}
-						onBarCodeRead={this._handleBarCodeRead}
-						flashMode={RNCamera.Constants.FlashMode.on}
-						permissionDialogTitle={'Permission to use camera'}
-						permissionDialogMessage={'We need your permission to use your camera phone'}
-					/>
-				) : null}
+				<RNCamera
+					style={{ flex: 1 }}
+					type={this.state.type}
+					onBarCodeRead={this._handleBarCodeRead}
+					flashMode={RNCamera.Constants.FlashMode.on}
+					permissionDialogTitle={'Permission to use camera'}
+					permissionDialogMessage={'We need your permission to use your camera phone'}
+				>
+					{this.renderInfoBlocks()}
+				</RNCamera>
 			</View>
 		);
 		// }

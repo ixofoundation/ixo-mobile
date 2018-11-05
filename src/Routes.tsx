@@ -1,4 +1,4 @@
-import { createStackNavigator, createDrawerNavigator } from 'react-navigation';
+import { createStackNavigator, createDrawerNavigator, StackNavigator } from 'react-navigation';
 
 import OnBoarding from './screens/Onboarding';
 import Login from './screens/Login';
@@ -44,26 +44,26 @@ const AppNavigator = createStackNavigator(
 	}
 );
 
-const SettingsNavigator = createStackNavigator(
-	{
-		Settings: { screen: Settings },
-		OnBoarding: {
-			screen: OnBoarding,
-			navigationOptions: {
-				header: null
-			}
-		},
-		ConnectIXO: {
-			screen: ConnectIXO,
-			navigationOptions: {
-				header: null
-			}
-		}
-	},
-	{
-		initialRouteName: 'Settings'
-	}
-);
+// const SettingsNavigator = createStackNavigator(
+// 	{
+// 		Settings: { screen: Settings },
+// 		OnBoarding: {
+// 			screen: OnBoarding,
+// 			navigationOptions: {
+// 				header: null
+// 			}
+// 		},
+// 		ConnectIXO: {
+// 			screen: ConnectIXO,
+// 			navigationOptions: {
+// 				header: null
+// 			}
+// 		}
+// 	},
+// 	{
+// 		initialRouteName: 'Settings'
+// 	}
+// );
 
 const HelpNavigator = createStackNavigator(
 	{
@@ -77,7 +77,7 @@ const HelpNavigator = createStackNavigator(
 const DrawerNavigator = createDrawerNavigator(
 	{
 		Drawer: { screen: AppNavigator },
-		Settings: { screen: SettingsNavigator },
+		// Settings: { screen: SettingsNavigator },
 		Help: { screen: HelpNavigator }
 	},
 	{
@@ -88,6 +88,7 @@ const DrawerNavigator = createDrawerNavigator(
 
 const OnBoardingNavigator = createStackNavigator(
 	{
+		Settings: { screen: Settings },
 		ConnectIXO: {
 			screen: ConnectIXO,
 			navigationOptions: {
@@ -131,8 +132,8 @@ const OnBoardingNavigator = createStackNavigator(
 			screen: Register
 		},
 		Recover: {
-			screen: Recover,
-		},
+			screen: Recover
+		}
 	},
 	{
 		initialRouteName: 'OnBoarding'

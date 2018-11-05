@@ -25,6 +25,7 @@ interface Style {
 	claimHeadingText: TextStyle;
 	tabCounterContainer: ViewStyle;
 	tabCounterText: TextStyle;
+	imageContainer: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -95,13 +96,14 @@ const styles = StyleSheet.create<Style>({
 	infoBox: {
 		color: ThemeColors.white,
 		fontSize: 18,
-		width: width * 0.6,
+		width: width * 0.8,
 		paddingVertical: 20
 	},
 	header: {
-		color: ThemeColors.white,
 		fontSize: 29,
-		paddingBottom: 20
+		paddingBottom: 20,
+		color: ThemeColors.blue_lightest,
+		fontFamily: 'RobotoCondensed-Regular'
 	},
 	claimListItemContainer: {
 		flexDirection: 'row',
@@ -145,6 +147,11 @@ const styles = StyleSheet.create<Style>({
 	tabCounterText: {
 		fontSize: 13,
 		color: ThemeColors.white
+	},
+	imageContainer: {
+		height: height * 0.4,
+		flexDirection: 'row',
+		justifyContent: 'center'
 	}
 });
 

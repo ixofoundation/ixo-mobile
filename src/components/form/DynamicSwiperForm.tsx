@@ -2,10 +2,10 @@ import * as React from 'react';
 import Swiper from 'react-native-swiper';
 import ImagePicker from 'react-native-image-picker';
 import LinearGradient from 'react-native-linear-gradient';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { FormStyles } from '../../models/form';
 import { ThemeColors, CardContainerBox } from '../../styles/Colors';
-import { View, Text, Icon } from 'native-base';
+import { View, Text, Icon, Content } from 'native-base';
 import LightButton from '../../components/LightButton';
 import changeCase from 'change-case';
 import _ from 'underscore';
@@ -78,17 +78,17 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 		if (this.props.handleSubmit) {
 			this.props.handleSubmit(this.formData);
 		}
-	}
+	};
 
 	handleSave = () => {
 		if (this.props.handleSave) {
 			this.props.handleSave(this.formData);
 		}
-	}
+	};
 
 	setFormState = (name: String, value: any) => {
 		const fields = name.split('.');
-		let formData: any = {...this.formData};
+		let formData: any = { ...this.formData };
 		fields.forEach((field, index) => {
 			if (index === fields.length - 1) {
 				formData[field] = value;
@@ -100,7 +100,23 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 			}
 		});
 		this.formData = formData;
-	}
+	};
+
+	setFormStateSelect = (name: String, optionLabel: string, value: any) => {
+		const fields = name.split('.');
+		let formData: any = { ...this.formData };
+		fields.forEach((field, index) => {
+			if (index === fields.length - 1) {
+				formData[field][optionLabel] = value;
+			} else {
+				if (!formData[field]) {
+					formData[field] = {};
+				}
+				formData = formData[field];
+			}
+		});
+		this.formData = formData;
+	};
 
 	goBack() {
 		formSwiperRef.scrollBy(-1);
@@ -115,7 +131,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 	onIndexChanged = (index: number) => {
 		this.activeScreenIndex = index;
 		this.isLastCard();
-	}
+	};
 
 	isLastCard = () => {
 		if (this.activeScreenIndex === this.props.formSchema.length) {
@@ -126,27 +142,29 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 		if (this.isLastCardActive) {
 			return this.props.onToggleLastCard(false);
 		}
-	}
+	};
 
 	updateImageList = (fieldName: string, uri: string) => {
 		const imageListArray: IImage[] = this.state.imageList;
 		imageListArray.push({ fieldName, filename: uri.replace(/^.*[\\\/]/, ''), uri });
 		this.setState({ imageList: imageListArray });
-	}
+	};
 
 	removeImageList = (fieldName: string) => {
 		const imageListArray: IImage[] = this.state.imageList;
 		const index: number | undefined = _.findIndex(imageListArray, imageList => imageList.fieldName === fieldName);
 		imageListArray.splice(index, 1);
 		this.setState({ imageList: imageListArray });
-	}
+	};
 
 	pickImage(fieldName: string) {
 		try {
-			ImagePicker.launchImageLibrary({ quality: 0.9, mediaType: 'photo' }, (response) => {
-				const base64 = `data:image/jpeg;base64,${response.data}`;
-				this.setFormState(fieldName, base64);
-				this.updateImageList(fieldName, response.uri);
+			ImagePicker.launchImageLibrary({ quality: 0.9, mediaType: 'photo' }, response => {
+				if (!response.didCancel!) {
+					const base64 = `data:image/jpeg;base64,${response.data}`;
+					this.setFormState(fieldName, base64);
+					this.updateImageList(fieldName, response.uri);
+				}
 			});
 		} catch (error) {
 			console.log(error);
@@ -155,10 +173,12 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 
 	takePhoto(fieldName: string) {
 		try {
-			ImagePicker.launchCamera({ quality: 0.9, mediaType: 'photo' }, (response) => {
-				const base64 = `data:image/jpeg;base64,${response.data}`;
-				this.setFormState(fieldName, base64);
-				this.updateImageList(fieldName, response.uri);
+			ImagePicker.launchCamera({ quality: 0.9, mediaType: 'photo' }, response => {
+				if (!response.didCancel!) {
+					const base64 = `data:image/jpeg;base64,${response.data}`;
+					this.setFormState(fieldName, base64);
+					this.updateImageList(fieldName, response.uri);
+				}
 			});
 		} catch (error) {
 			console.log(error);
@@ -167,7 +187,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 
 	onFormValueChanged = (name: String, text: string) => {
 		this.setFormState(name, text);
-	}
+	};
 
 	renderEditImageField(field: any, index: number) {
 		const imageItem: IImage | undefined = _.find(this.state.imageList, (imageItem: IImage) => imageItem.fieldName === field.name);
@@ -194,8 +214,37 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 			>
 				<Text style={{ color: ThemeColors.blue_lightest, fontSize: 15 }}>{imageItem.filename}</Text>
 				<TouchableOpacity style={{ borderRadius: 35, justifyContent: 'center', alignItems: 'center' }}>
-					<Icon onPress={() => this.removeImageList(field.name)} style={{ color: ThemeColors.white }} name='close' />
+					<Icon onPress={() => this.removeImageList(field.name)} style={{ color: ThemeColors.white }} name="close" />
 				</TouchableOpacity>
+			</View>
+		);
+	}
+
+	handlePressMultipleSelect(options: any, label: string) {
+		const option = options.find((optionFound: any) => optionFound.label === label);
+		// TODO
+		// this.setFormStateSelect()
+	}
+
+	renderMultipleSelect(options: any, index: number) {
+		return (
+			<View key={index} style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}}>
+				{options.map((option, i) => {
+					if ('select' in option && option.select === true) {
+						return (
+							<TouchableOpacity style={[DynamicFormStyles.multipleSelectButton]} key={i} onPress={() => this.handlePressMultipleSelect(options, option.label)}>
+								<Text style={DynamicFormStyles.multipleSelectButtonText}>{option.label}</Text>
+							</TouchableOpacity>
+						)
+					} else {
+						return (
+							<TouchableOpacity style={[DynamicFormStyles.multipleSelectButton]} key={i} onPress={() => this.handlePressMultipleSelect(options, option.label)}>
+								<Text style={DynamicFormStyles.multipleSelectButtonText}>{option.label}</Text>
+							</TouchableOpacity>
+						);
+					}
+				})}
+				<TouchableOpacity />
 			</View>
 		);
 	}
@@ -217,25 +266,17 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 						questionNumber: i + 1,
 						topic: changeCase.sentenceCase(field.name)
 					};
-
 					switch (field.type) {
 						case 'number':
 						case 'text':
 						case 'email':
-							return this.renderCard(
-								<InputField onChangeText={(text: string) => this.onFormValueChanged(field.name, text)} />,
-								cardDetails,
-								i
-							);
+							return this.renderCard(<InputField onChangeText={(text: string) => this.onFormValueChanged(field.name, text)} />, cardDetails, i);
 						case 'textarea':
-							return this.renderCard(
-								<InputFieldArea onChangeText={(text: string) => this.onFormValueChanged(field.name, text)} />,
-								cardDetails,
-								i
-							);
+							return this.renderCard(<InputFieldArea onChangeText={(text: string) => this.onFormValueChanged(field.name, text)} />, cardDetails, i);
 						case 'image':
 							return this.renderCard(this.renderEditImageField(field, i), cardDetails, i);
 						case 'select':
+							return this.renderCard(this.renderMultipleSelect(field.options, i), cardDetails, i);
 						case 'country':
 						case 'template':
 						case 'radio':
@@ -253,8 +294,30 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 	}
 
 	renderCard(input: JSX.Element, cardDetails: ICardDetails, index: number) {
+		if (Platform.OS === 'ios') {
+			return (
+				<Content key={index}>
+					<KeyboardAvoidingView behavior="padding" enabled={true}>
+						<LinearGradient colors={[CardContainerBox.colorPrimary, CardContainerBox.colorSecondary]} style={[DynamicFormStyles.outerCardContainerActive]}>
+							<View style={[ContainerStyles.flexColumn, DynamicFormStyles.innerCardContainer]}>
+								<View>
+									<Text style={[DynamicFormStyles.questionHeader]}>
+										{this.props.screenProps.t('claims:questions')} {cardDetails.questionNumber}/{cardDetails.totalQuestions}
+									</Text>
+								</View>
+								<View>
+									<Text style={DynamicFormStyles.header}>{cardDetails.topic}</Text>
+								</View>
+								<View style={{ width: '100%' }}>{input}</View>
+								{/* <View style={{ backgroundColor: 'red' }}>{input}</View> */}
+							</View>
+						</LinearGradient>
+					</KeyboardAvoidingView>
+				</Content>
+			);
+		}
 		return (
-			<LinearGradient key={index} colors={[CardContainerBox.colorPrimary, CardContainerBox.colorSecondary]} style={[DynamicFormStyles.outerCardContainerActive]}>
+			<LinearGradient colors={[CardContainerBox.colorPrimary, CardContainerBox.colorSecondary]} style={[DynamicFormStyles.outerCardContainerActive]}>
 				<View style={[ContainerStyles.flexColumn, DynamicFormStyles.innerCardContainer]}>
 					<View>
 						<Text style={[DynamicFormStyles.questionHeader]}>

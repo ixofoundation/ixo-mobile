@@ -38,6 +38,7 @@ interface ParentProps {
 interface IMnemonic {
 	key: number;
 	word: string;
+	selected: boolean;
 }
 
 export interface DispatchProps {
@@ -58,6 +59,7 @@ interface StateTypes {
 	selectedWords: IMnemonic[] | any[];
 	unSelectedWords: IMnemonic[] | any[];
 	errorMismatch: boolean;
+	userEnteredMnemonicCorrect: boolean;
 }
 
 export interface Props extends ParentProps, DispatchProps, StateProps {}
@@ -65,16 +67,18 @@ export interface Props extends ParentProps, DispatchProps, StateProps {}
 class Register extends React.Component<Props, StateTypes> {
 	componentDidMount() {
 		this.props.onIxoInit();
+		this.props.navigation.setParams({ onBackButton: this.onBackButton });
 	}
 
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
+		const { params = {} } = navigation.state;
 		return {
 			headerStyle: {
 				backgroundColor: ThemeColors.blue_dark,
 				borderBottomColor: ThemeColors.blue_dark,
 				elevation: 0
 			},
-			headerLeft: <Icon name="arrow-back" onPress={() => navigation.pop()} style={{ paddingLeft: 10, color: ThemeColors.white }} />,
+			headerLeft: <Icon name="arrow-back" onPress={() => params.onBackButton()} style={{ paddingLeft: 10, color: ThemeColors.white }} />,
 			headerTitleStyle: {
 				color: ThemeColors.white,
 				textAlign: 'center',
@@ -92,14 +96,27 @@ class Register extends React.Component<Props, StateTypes> {
 		mnemonic: '',
 		selectedWords: [],
 		unSelectedWords: [],
-		errorMismatch: false
+		errorMismatch: false,
+		userEnteredMnemonicCorrect: false
 	};
+
+	onBackButton = () => {
+		if (this.state.registerState === registerSteps.captureDetails) {
+			this.props.navigation.pop();
+		} else if (this.state.registerState === registerSteps.revealMnemonic) {
+			this.setState({ registerState: registerSteps.captureDetails});
+		} else if (this.state.registerState === registerSteps.reenterMnemonic) {
+			this.setState({ registerState: registerSteps.revealMnemonic});
+		} else {
+			this.props.navigation.pop();
+		}
+	}
 
 	async generateMnemonic() {
 		const mnemonic = await bip39.generateMnemonic();
 		const mnemonicArray: IMnemonic[] = [];
 		_.each(this.shuffleArray(mnemonic.split(' ')), (word, index) => {
-			mnemonicArray.push({ key: index, word });
+			mnemonicArray.push({ key: index, word, selected: false });
 		});
 		this.setState({ unSelectedWords: mnemonicArray, mnemonic });
 	}
@@ -115,20 +132,38 @@ class Register extends React.Component<Props, StateTypes> {
 
 	handleUnselectedToSelected(mnemonic: IMnemonic) {
 		const selectedWords: IMnemonic[] = this.state.selectedWords;
-		selectedWords.push(mnemonic);
+		if (!this.state.selectedWords.includes(mnemonic)) {
+			selectedWords.push(mnemonic);
+		}
+		const mnemonicWords: IMnemonic[] = [...this.state.unSelectedWords];
+		const mnemonicWord = mnemonicWords.find((e: IMnemonic) => e.key === mnemonic.key);
+		mnemonicWord.selected = true;
 		this.setState({
-			unSelectedWords: this.state.unSelectedWords.filter((e: IMnemonic) => e.key !== mnemonic.key),
+			unSelectedWords: mnemonicWords,
 			selectedWords
 		});
+
+		const mnemonicEntered: string = this.getMnemonicString(this.state.selectedWords)
+		if ((this.state.selectedWords.length === this.state.unSelectedWords.length) && mnemonicEntered !== this.state.mnemonic) {
+			this.setState({ errorMismatch: true });
+		} else if ((this.state.selectedWords.length === this.state.unSelectedWords.length) && mnemonicEntered === this.state.mnemonic) {
+			this.setState({ userEnteredMnemonicCorrect: true });
+		}
 	}
 
 	handleSelectedToUnselected(mnemonic: IMnemonic) {
-		const unSelectedWords: IMnemonic[] = this.state.unSelectedWords;
-		unSelectedWords.push(mnemonic);
+		const mnemonicWords: IMnemonic[] = [...this.state.unSelectedWords];
+		const mnemonicWord = mnemonicWords.find((e: IMnemonic) => e.key === mnemonic.key);
+		mnemonicWord.selected = false;
+
 		this.setState({
 			selectedWords: this.state.selectedWords.filter((e: IMnemonic) => e.key !== mnemonic.key),
-			unSelectedWords
+			unSelectedWords: mnemonicWords
 		});
+
+		if (this.state.errorMismatch) {
+			this.setState({ errorMismatch: false, userEnteredMnemonicCorrect: false });
+		}
 	}
 
 	getMnemonicString(mnemonicArray: IMnemonic[]) {
@@ -207,6 +242,11 @@ class Register extends React.Component<Props, StateTypes> {
 			return;
 		}
 
+		if (this.state.password.length < 8) {
+			showToast(this.props.screenProps.t('register:passwordShort'), toastType.WARNING);
+			return;
+		}
+
 		if (this.state.password === this.state.confirmPassword) {
 			this.setState({ registerState: registerSteps.revealMnemonic });
 		}
@@ -242,6 +282,9 @@ class Register extends React.Component<Props, StateTypes> {
 							onChangeText={(text: string) => this.setState({ confirmPassword: text })}
 						/>
 						<DarkButton propStyles={{ marginTop: 20 }} onPress={() => this.handleCreatePassword()} text={this.props.screenProps.t('register:create')} />
+						<TouchableOpacity style={{ paddingBottom: 30 }} onPress={() => this.props.navigation.navigate('Recover')}>
+							<Text style={RegisterStyles.recoverText}>{this.props.screenProps.t('register:recoverAccount')}</Text>
+						</TouchableOpacity>
 					</KeyboardAvoidingView>
 				);
 			case registerSteps.revealMnemonic:
@@ -261,7 +304,7 @@ class Register extends React.Component<Props, StateTypes> {
 							{this.props.screenProps.t('register:secretParagraph_2')}
 						</Text>
 
-						<TouchableOpacity onPress={() => this.generateMnemonic()} style={[RegisterStyles.selectedBox]}>
+						<TouchableOpacity disabled={(this.state.mnemonic.length > 0)} onPress={() => this.generateMnemonic()} style={[RegisterStyles.selectedBox]}>
 							{this.state.mnemonic.length <= 0 ? (
 								<View>
 									<Icon name="lock" color={ThemeColors.black} style={{ fontSize: 60, textAlign: 'center', color: ThemeColors.white }} />
@@ -275,13 +318,12 @@ class Register extends React.Component<Props, StateTypes> {
 								</View>
 							)}
 						</TouchableOpacity>
-						{this.state.mnemonic.length > 0 && (
-							<DarkButton
-								propStyles={{ marginTop: 15 }}
-								text={this.props.screenProps.t('register:next')}
-								onPress={() => this.setState({ registerState: registerSteps.reenterMnemonic })}
-							/>
-						)}
+						<DarkButton
+							disabled={(this.state.mnemonic.length <= 0)}
+							propStyles={{ marginTop: 15 }}
+							text={this.props.screenProps.t('register:next')}
+							onPress={() => this.setState({ registerState: registerSteps.reenterMnemonic })}
+						/>
 					</View>
 				);
 			case registerSteps.reenterMnemonic:
@@ -303,11 +345,7 @@ class Register extends React.Component<Props, StateTypes> {
 						)}
 						{this.renderSelected()}
 						{this.renderUnSelected()}
-						{this.state.selectedWords.length > 0 ? (
-							<DarkButton text={this.props.screenProps.t('register:confirm')} onPress={() => this.handleConfirmMnemonic()} />
-						) : (
-							<LightButton text={this.props.screenProps.t('register:confirm')} onPress={() => this.handleConfirmMnemonic()} />
-						)}
+						<DarkButton disabled={!this.state.userEnteredMnemonicCorrect} text={this.props.screenProps.t('register:confirm')} onPress={() => this.handleConfirmMnemonic()} />
 					</View>
 				);
 		}
@@ -332,15 +370,15 @@ class Register extends React.Component<Props, StateTypes> {
 	renderUnSelected() {
 		return (
 			<View style={this.state.selectedWords.length > 0 ? [RegisterStyles.unSelect] : [RegisterStyles.unSelect]}>
-				{this.state.unSelectedWords.map((mnemonic: IMnemonic) => {
+				{this.state.unSelectedWords.map((mnemonicWord: IMnemonic) => {
 					return (
-						<TouchableOpacity onPress={() => this.handleUnselectedToSelected(mnemonic)} key={mnemonic.key}>
-							{this.state.selectedWords.length > 0 ? (
+						<TouchableOpacity onPress={() => this.handleUnselectedToSelected(mnemonicWord)} key={mnemonicWord.key}>
+							{mnemonicWord.selected ? (
 								<LinearGradient style={RegisterStyles.wordBoxGradient} colors={[ButtonDark.colorPrimary, ButtonDark.colorSecondary]}>
-									<Text style={{ color: ThemeColors.white }}>{mnemonic.word}</Text>
+									<Text style={{ color: ThemeColors.white }}>{mnemonicWord.word}</Text>
 								</LinearGradient>
 							) : (
-								<Text style={RegisterStyles.wordBox}>{mnemonic.word}</Text>
+								<Text style={RegisterStyles.wordBox}>{mnemonicWord.word}</Text>
 							)}
 						</TouchableOpacity>
 					);

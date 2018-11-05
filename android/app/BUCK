@@ -45,12 +45,12 @@ android_library(
 
 android_build_config(
     name = "build_config",
-    package = "com.ixo_world_mobile",
+    package = "com.ixo",
 )
 
 android_resource(
     name = "res",
-    package = "com.ixo_world_mobile",
+    package = "com.ixo",
     res = "src/main/res",
 )
 

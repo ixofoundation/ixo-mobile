@@ -184,7 +184,7 @@ export class Login extends React.Component<Props, StateTypes> {
 			<ImageBackground source={background} style={[LoginStyles.wrapper]}>
 				<View style={[ContainerStyles.flexColumn]}>
 					<StatusBar backgroundColor={ThemeColors.blue_dark} barStyle='light-content' />
-					<KeyboardAvoidingView behavior={'position'}>
+					<KeyboardAvoidingView behavior={'position'} enabled={(Platform.OS === 'ios')}>
 						<LogoView />
 						<View style={[LoginStyles.flexLeft]}>
 							<Text style={LoginStyles.header}>

@@ -1,11 +1,14 @@
 {
+	"sidebar": {
+		"settings": "Settings",
+		"help": "Help",
+		"signOut": "SIGN OUT"
+	},
 	"onboarding": {
-		"appOnboarding": "App onboarding screens",
-		"begin": "Begin",
-		"pushNotification": "Allow push notifications for important updates",
-		"pushNotificationButton": "Allow notifications",
-		"locationLogging": "Allow Location for location logging",
-		"locationLoggingButton": "Allow location"
+		"makeImpact": "Make Your Impact",
+		"submitClaim": "Submit claims of what you have done",
+		"noConnection": "No connection?",
+		"saveClaim": "Save your claims and submit them later"
 	},
 	"connectIXO": {
 		"keySafeInfo": "Open the ixo Key Safe on your desktop",
@@ -22,11 +25,32 @@
 		"unlockInformation": "Please unlock your ixo information with your ixo Key Safe password.",
 		"unlockButtonText": "UNLOCK",
 		"registerButtonText": "REGISTER",
-		"projectInformation": "You are about to become a service agent on the following project: "
+		"projectInformation": "Service Providers delivers the impact to a project. They are the people on the ground submitting claims, and making a difference."
 	},
 	"scanQR": {
+		"project": "project",
+		"close": "CLOSE",
+		"submit": "SUBMIT",
+		"serviceProviderMessage": "You are now a service provider and can start submitting claims.",
+		"welcomeMessage": "Welcome to",
+		"email": "Email",
 		"scan": "Scan",
-		"rescan": "RE-SCAN"
+		"rescan": "RE-SCAN",
+		"loginHelp": "Need help logging in?",
+		"scanFailed": "Scan unsuccessful",
+		"errorKeySafe": "There has been an error connecting to the ixo Key Safe",
+		"registered": "Are you registered?",
+		"successRegistered": "Successfully registered as ",
+		"serviceProviderHelp": "What is a service provider?",
+		"serviceProviderScan": "Go to the project page and scan the QR code to connect",
+		"password": "Password",
+		"missingField": "Missing fields",
+		"continue": "CONTINUE",
+		"youAreRegistering": "You are requesting to become a Service Provider.",
+		"serviceProviderDescription": "Service providers deliver the impact to a project. They are the people on the ground submitting claims, and making the difference.",
+		"serviceProviderQuestion": "How will you be able to benefit this project?",
+		"yourAnswer": "Your answer",
+		"projectFailedScan": "Please try again, project not scanned"
 	},
 	"login": {
 		"hi": "Hi",
@@ -68,7 +92,8 @@
 		"submit": "SUBMIT",
 		"whatIsThis": "What is this?",
 		"failedSubmitClaim": "Failed to submit claim",
-		"claimCreated": "Claim created"
+		"claimCreated": "Claim submitted",
+		"noInternet": "No internet connection"
 	},
 	"submittedClaims": {
 		"successMessage": "Your claim has been successfully submitted",
@@ -94,10 +119,12 @@
 		"orderIncorrect": "Order is incorrect.",
 		"didLedgeredSuccess": "Did document was ledgered successfully.",
 		"didLedgeredError": "Unable to ledger did at this time.",
-		"missingFields": "Missing fields.",
+		"missingFields": "Missing fields",
 		"missmatchPassword": "Mismatch on password.",
 		"ledgerDid" : "Please wait while your did is being ledgered.",
-		"next": "NEXT"
+		"next": "NEXT",
+		"recoverAccount": "Recover from backup phrase",
+		"passwordShort": "Your password needs to be more than 8 characters"
 	},
 	"recover": {
 		"secretPhrase": "Enter backup phrase",
