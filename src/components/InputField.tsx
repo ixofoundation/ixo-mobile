@@ -30,7 +30,8 @@ export const InputField = ({
 	onChangeText,
 	icon,
 	disable = false,
-	colorPalette = InputColorTypes.Dark
+	colorPalette = InputColorTypes.Dark,
+	multiline = false
 }: {
 	password?: boolean;
 	labelName?: string;
@@ -39,10 +40,12 @@ export const InputField = ({
 	icon?: JSX.Element;
 	disable?: boolean;
 	colorPalette?: InputColorTypes;
+	multiline?: boolean;
 }) =>
 	labelName ? (
 		<View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
 			<TextField
+				multiline={multiline}
 				secureTextEntry={password}
 				label={labelName ? labelName : ''}
 				value={value ? value : undefined}

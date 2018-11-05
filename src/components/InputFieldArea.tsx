@@ -7,10 +7,10 @@ const { height } = Dimensions.get('window');
 const InputFieldArea = ({ value, onChangeText }: { onChangeText: any; value?: string }) =>
 	value ? (
 		// @ts-ignore
-		<Textarea style={styles.textArea} value={value} onChangeText={onChangeText} rowSpan={5} bordered />
+		<Textarea returnKeyType={'next'} style={styles.textArea} value={value} onChangeText={onChangeText} rowSpan={5} bordered maxLength={5} />
 	) : (
 		// @ts-ignore
-		<Textarea style={styles.textArea} value={value} onChangeText={onChangeText} rowSpan={5} bordered />
+		<Textarea returnKeyType={'next'} style={styles.textArea} value={value} onChangeText={onChangeText} rowSpan={5} bordered maxLength={5} />
 	);
 
 interface Style {

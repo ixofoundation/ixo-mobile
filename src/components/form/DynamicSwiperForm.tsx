@@ -228,17 +228,25 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 
 	renderMultipleSelect(options: any, index: number) {
 		return (
-			<View key={index} style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}}>
+			<View key={index} style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
 				{options.map((option, i) => {
 					if ('select' in option && option.select === true) {
 						return (
-							<TouchableOpacity style={[DynamicFormStyles.multipleSelectButton]} key={i} onPress={() => this.handlePressMultipleSelect(options, option.label)}>
+							<TouchableOpacity
+								style={[DynamicFormStyles.multipleSelectButton]}
+								key={i}
+								onPress={() => this.handlePressMultipleSelect(options, option.label)}
+							>
 								<Text style={DynamicFormStyles.multipleSelectButtonText}>{option.label}</Text>
 							</TouchableOpacity>
-						)
+						);
 					} else {
 						return (
-							<TouchableOpacity style={[DynamicFormStyles.multipleSelectButton]} key={i} onPress={() => this.handlePressMultipleSelect(options, option.label)}>
+							<TouchableOpacity
+								style={[DynamicFormStyles.multipleSelectButton]}
+								key={i}
+								onPress={() => this.handlePressMultipleSelect(options, option.label)}
+							>
 								<Text style={DynamicFormStyles.multipleSelectButtonText}>{option.label}</Text>
 							</TouchableOpacity>
 						);
@@ -272,7 +280,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 						case 'email':
 							return this.renderCard(<InputField onChangeText={(text: string) => this.onFormValueChanged(field.name, text)} />, cardDetails, i);
 						case 'textarea':
-							return this.renderCard(<InputFieldArea onChangeText={(text: string) => this.onFormValueChanged(field.name, text)} />, cardDetails, i);
+							return this.renderCard(<InputField onChangeText={(text: string) => this.onFormValueChanged(field.name, text)} />, cardDetails, i);
 						case 'image':
 							return this.renderCard(this.renderEditImageField(field, i), cardDetails, i);
 						case 'select':
@@ -317,19 +325,23 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 			);
 		}
 		return (
-			<LinearGradient colors={[CardContainerBox.colorPrimary, CardContainerBox.colorSecondary]} style={[DynamicFormStyles.outerCardContainerActive]}>
-				<View style={[ContainerStyles.flexColumn, DynamicFormStyles.innerCardContainer]}>
-					<View>
-						<Text style={[DynamicFormStyles.questionHeader]}>
-							{this.props.screenProps.t('claims:questions')} {cardDetails.questionNumber}/{cardDetails.totalQuestions}
-						</Text>
+			// <Content key={index}>
+			// <KeyboardAvoidingView enabled={true}>
+				<LinearGradient colors={[CardContainerBox.colorPrimary, CardContainerBox.colorSecondary]} style={[DynamicFormStyles.outerCardContainerActive]}>
+					<View style={[ContainerStyles.flexColumn, DynamicFormStyles.innerCardContainer]}>
+						<View>
+							<Text style={[DynamicFormStyles.questionHeader]}>
+								{this.props.screenProps.t('claims:questions')} {cardDetails.questionNumber}/{cardDetails.totalQuestions}
+							</Text>
+						</View>
+						<View>
+							<Text style={DynamicFormStyles.header}>{cardDetails.topic}</Text>
+						</View>
+						<View style={{ width: '100%' }}>{input}</View>
 					</View>
-					<View>
-						<Text style={DynamicFormStyles.header}>{cardDetails.topic}</Text>
-					</View>
-					<View style={{ width: '100%' }}>{input}</View>
-				</View>
-			</LinearGradient>
+				</LinearGradient>
+			// </KeyboardAvoidingView>
+			// </Content>
 		);
 	}
 

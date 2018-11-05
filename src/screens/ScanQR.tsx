@@ -257,14 +257,14 @@ export class ScanQR extends React.Component<Props, State> {
 	};
 
 	renderInfoBlocks() {
-		if (this.projectScan) {
+		if (this.projectScan && !this.state.modalVisible) {
 			return (
 				<InfoBlocksServiceProvider
 					helpText={this.props.screenProps.t('scanQR:serviceProviderHelp')}
 					qrCodeText={this.props.screenProps.t('scanQR:serviceProviderScan')}
 				/>
 			);
-		} else {
+		} else if (this.projectScan && !this.state.modalVisible) {
 			return (
 				<InfoBlocks
 					helpText={this.props.screenProps.t('scanQR:loginHelp')}
@@ -272,6 +272,8 @@ export class ScanQR extends React.Component<Props, State> {
 					keySafeText={this.props.screenProps.t('connectIXO:keySafeInfo')}
 				/>
 			);
+		} else {
+			return null;
 		}
 	}
 

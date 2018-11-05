@@ -24,7 +24,8 @@ interface Style {
 
 const styles = StyleSheet.create<Style>({
 	modalBackgroundOpacity: {
-		opacity: 0.7
+		opacity: 0.7,
+		backgroundColor: 'transparent'
 	},
 	modalOuterContainer: {
 		flexDirection: 'row',
