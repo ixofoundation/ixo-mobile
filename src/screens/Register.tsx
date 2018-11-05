@@ -52,6 +52,7 @@ export interface StateProps {
 
 interface StateTypes {
 	username: string;
+	email: string;
 	password: string;
 	confirmPassword: string;
 	registerState: registerSteps;
@@ -91,6 +92,7 @@ class Register extends React.Component<Props, StateTypes> {
 	state = {
 		username: '',
 		password: '',
+		email: '',
 		confirmPassword: '',
 		registerState: registerSteps.captureDetails,
 		mnemonic: '',
@@ -268,6 +270,11 @@ class Register extends React.Component<Props, StateTypes> {
 							value={this.state.username}
 							labelName={this.props.screenProps.t('register:yourName')}
 							onChangeText={(text: string) => this.setState({ username: text })}
+						/>
+						<InputField
+							value={this.state.email}
+							labelName={this.props.screenProps.t('register:yourEmail')}
+							onChangeText={(text: string) => this.setState({ email: text })}
 						/>
 						<InputField
 							password={true}
