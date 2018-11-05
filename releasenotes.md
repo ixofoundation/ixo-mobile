@@ -14,3 +14,8 @@
 - **bug/IXOQ-286** Register as SA: Make input fields mandatory
 - **feature/IXOQ-261** Scan project QR code: Update register screen
 - **bug/IXOQ-281** App login: Scan QR code - no incorrect password error
+
+## 2018-11-05
+***
+### __Android__
+- **bug/IXOQ-282** Remove tooltips after successful scan
