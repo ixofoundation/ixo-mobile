@@ -20,3 +20,4 @@
 ### __Android__
 - **bug/IXOQ-282** Remove tooltips after successful scan
 - **bug/IXOQ-285** Update registration page: Include email address as a field
+- **bug/IXOQ-262** Submitting a claim: Keyboard obstructs view
