@@ -30,7 +30,7 @@ export default class OnBoarding extends React.Component<ParentProps> {
 
 	componentDidMount() {
 		if (__DEV__) {
-			AsyncStorage.clear();
+			// AsyncStorage.clear();
 		}
 		AsyncStorage.getItem(LocalStorageKeys.firstLaunch, (error: any, firstLaunch: string | undefined) => {
 			if (!firstLaunch || error) {

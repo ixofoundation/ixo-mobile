@@ -174,7 +174,6 @@ export class ScanQR extends React.Component<Props, State> {
 				// @ts-ignore
 				SInfo.setItem(SecureStorageKeys.encryptedMnemonic, this.state.payload!, {});
 				// @ts-ignore
-				SInfo.setItem(SecureStorageKeys.password, this.state.password!, {});
 				AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true');
 
 				const user: IUser = {
@@ -187,7 +186,8 @@ export class ScanQR extends React.Component<Props, State> {
 				AsyncStorage.setItem(UserStorageKeys.verifyKey, user.verifyKey);
 
 				this.props.onUserInit(user);
-				this.props.navigation.dispatch(StackActions.reset({ index: 0, actions: [NavigationActions.navigate({ routeName: 'Login' })] }));
+				this.resetStateVars();
+				this.props.navigation.navigate('Login');
 			} catch (exception) {
 				console.log(exception);
 				this.setState({ errors: true, loading: false });

@@ -11,7 +11,7 @@ import changeCase from 'change-case';
 import _ from 'underscore';
 
 import InputFieldArea from '../../components/InputFieldArea';
-import { InputField } from '../../components/InputField';
+import InputField from '../../components/InputField';
 
 import DynamicFormStyles from '../../styles/componentStyles/DynamicSwiperForm';
 import ContainerStyles from '../../styles/Containers';

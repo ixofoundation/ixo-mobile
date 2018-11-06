@@ -43,6 +43,7 @@ class Settings extends React.Component<ParentProps> {
 
 	resetAccount() {
 		AsyncStorage.clear();
+		// TODO purge of redux store needs to happen here as well => persistor.purge();
 		const resetAction = StackActions.reset({
 			index: 0,
 			actions: [NavigationActions.navigate({ routeName: 'OnBoarding' })]

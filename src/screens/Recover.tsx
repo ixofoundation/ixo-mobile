@@ -13,7 +13,7 @@ import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { initUser } from '../redux/user/user_action_creators';
 import { Encrypt, generateSovrinDID } from '../utils/sovrin';
 import { showToast, toastType } from '../utils/toasts';
-import { InputField } from '../components/InputField';
+import InputField from '../components/InputField';
 import { ThemeColors } from '../styles/Colors';
 import RecoverStyles from '../styles/Recover';
 
