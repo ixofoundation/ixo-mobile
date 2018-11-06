@@ -1,14 +1,16 @@
 import { createReducer } from '../../lib/redux_utils/reducers';
-import { USER_INIT, IUserResult, USER_FIRST_CLAIM, IUserInteraction } from './user_actions';
+import { USER_INIT, IUserResult, USER_FIRST_CLAIM, IUserInteraction, USER_FIRST_LOGIN_CREATE_PASSWORD } from './user_actions';
 
 export interface IUserModelState {
 	user: any;
-	firstClaim: boolean;
+	isFirstClaim: boolean;
+	isLoginPasswordSet: boolean;
 }
 
 const initialState: IUserModelState = {
 	user: null,
-	firstClaim: true
+	isFirstClaim: true,
+	isLoginPasswordSet: false
 };
 
 export let userReducer = createReducer<IUserModelState>(initialState, [
@@ -24,7 +26,16 @@ export let userReducer = createReducer<IUserModelState>(initialState, [
 	{
 		action: USER_FIRST_CLAIM,
 		handler: (state: IUserModelState, action: IUserInteraction) => {
-			state.firstClaim = action.firstClaim
+			state.isFirstClaim = action.isFirstClaim
+			return {
+				...state
+			};
+		}
+	},
+	{
+		action: USER_FIRST_LOGIN_CREATE_PASSWORD,
+		handler: (state: IUserModelState, action: IUserInteraction) => {
+			state.isLoginPasswordSet = action.isLoginPasswordSet
 			return {
 				...state
 			};

@@ -6,7 +6,7 @@ import LightButton from './LightButton';
 
 import ModalStyle from '../styles/Modal';
 import IconServiceProviders from '../components/svg/iconServiceProviders';
-import { InputField } from './InputField';
+import InputField from './InputField';
 
 const { height, width } = Dimensions.get('window');
 
@@ -41,15 +41,15 @@ export default class CustomModal extends React.Component<Props, State> {
 	renderInputFields() {
 		if (this.props.inputFieldOptions) {
 			return (
-				<View style={ModalStyle.inputFieldBox}>
-					{this.props.inputFieldOptions.prefixImage}
+				// <View style={ModalStyle.inputFieldBox}>
 					<InputField
+						prefixIcon={this.props.inputFieldOptions.prefixImage}
 						password={this.props.inputFieldOptions.password}
 						icon={this.props.inputFieldOptions.suffixImage}
 						labelName={this.props.inputFieldOptions.label}
 						onChangeText={(text: string) => this.props.inputFieldOptions.onChangeText(text)}
 					/>
-				</View>
+				// </View>
 			);
 		}
 		return null;
