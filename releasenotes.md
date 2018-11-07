@@ -15,3 +15,11 @@
 - **feature/IXOQ-261** Scan project QR code: Update register screen
 - **bug/IXOQ-281** App login: Scan QR code - no incorrect password error
 - **bug/IXO-287** Update login screen after linking keysafe to the app
+
+## 2018-11-06
+***
+### __Android__
+- **bug/IXOQ-286** Register as SA: Make input fields mandatory
+- **feature/IXOQ-261** Scan project QR code: Update register screen
+- **bug/IXOQ-281** App login: Scan QR code - no incorrect password error
+- **bug/IXO-287** Update login screen after linking keysafe to the app
