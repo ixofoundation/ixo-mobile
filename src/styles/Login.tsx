@@ -14,9 +14,15 @@ interface Style {
 	infoBox: TextStyle;
 	forgotPassword: TextStyle;
 	fingerImage: ImageStyle;
+	globeView: ViewStyle;
+	inputIcons: TextStyle;
+	logoContainer: ViewStyle;
+	infoBoxLong: TextStyle;
+	backButton: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
+	logoContainer: { alignItems: 'flex-start', marginTop: height * 0.17 },
 	wrapper: {
 		flex: 1,
 		width: '100%',
@@ -59,6 +65,13 @@ const styles = StyleSheet.create<Style>({
 		width: width * 0.6,
 		paddingVertical: 20
 	},
+	infoBoxLong: {
+		paddingTop: 0,
+		color: ThemeColors.white,
+		fontSize: 15,
+		width: width * 0.9,
+		paddingVertical: 20
+	},
 	forgotPassword: {
 		textAlign: 'left',
 		color: ThemeColors.blue_medium,
@@ -69,6 +82,26 @@ const styles = StyleSheet.create<Style>({
 	fingerImage: {
 		width: width * 0.12,
 		height: width * 0.12
+	},
+	globeView: {
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		bottom: height * 0.2,
+		right: 0
+	},
+	inputIcons: {
+		position: 'relative',
+		top: 10,
+		paddingRight: 10,
+		fontSize: height * 0.04,
+		color: ThemeColors.blue_lightest
+	},
+	backButton: {
+		paddingLeft: height * 0.02,
+		paddingTop: height * 0.05,
+		color: ThemeColors.white,
+		fontSize: 20
 	}
 });
 

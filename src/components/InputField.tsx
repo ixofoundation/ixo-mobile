@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View } from 'react-native';
+import { View, ViewStyle } from 'react-native';
 import { TextField } from 'react-native-material-textfield';
 
 import { ThemeColors } from '../styles/Colors';
@@ -23,15 +23,7 @@ const lightPalettes = {
 	textColor: ThemeColors.grey
 };
 
-export const InputField = ({
-	password = false,
-	value,
-	labelName,
-	onChangeText,
-	icon,
-	disable = false,
-	colorPalette = InputColorTypes.Dark
-}: {
+interface ParentProps {
 	password?: boolean;
 	labelName?: string;
 	onChangeText: any;
@@ -39,36 +31,81 @@ export const InputField = ({
 	icon?: JSX.Element;
 	disable?: boolean;
 	colorPalette?: InputColorTypes;
-}) =>
-	labelName ? (
-		<View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
-			<TextField
-				secureTextEntry={password}
-				label={labelName ? labelName : ''}
-				value={value ? value : undefined}
-				onChangeText={onChangeText}
-				baseColor={(colorPalette === InputColorTypes.Dark) ? darkPalettes.baseColor : lightPalettes.baseColor}
-				errorColor={(colorPalette === InputColorTypes.Dark) ? darkPalettes.errorColor : lightPalettes.errorColor}
-				tintColor={(colorPalette === InputColorTypes.Dark) ? darkPalettes.tintColor : lightPalettes.tintColor}
-				textColor={(colorPalette === InputColorTypes.Dark) ? darkPalettes.textColor : lightPalettes.textColor}
-				containerStyle={(colorPalette === InputColorTypes.Dark) ? { flex: 0.9 } : { paddingLeft: 20, flex: 0.9 }}
-				fontSize={(colorPalette === InputColorTypes.Dark) ? 16 : 20}
-				disabledLineWidth={0}
-				disabled={disable}
-			/>
-			{icon ? icon : null}
-		</View>
-	) : (
-		<View>
-			<TextField
-				secureTextEntry={password}
-				value={value ? value : undefined}
-				onChangeText={onChangeText}
-				baseColor={ThemeColors.blue_lightest}
-				errorColor={ThemeColors.red}
-				tintColor={ThemeColors.blue_lightest}
-				textColor={ThemeColors.white}
-			/>
-			{icon ? icon : null}
-		</View>
-	);
+	prefixIcon?: JSX.Element;
+	containerStyle?: ViewStyle;
+}
+
+class InputField extends React.Component<ParentProps> {
+	render() {
+		if (this.props.labelName && !this.props.prefixIcon) {
+			return (
+				<View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
+					<TextField
+						secureTextEntry={this.props.password}
+						label={this.props.labelName ? this.props.labelName : ''}
+						value={this.props.value ? this.props.value : undefined}
+						onChangeText={this.props.onChangeText}
+						baseColor={this.props.colorPalette ? lightPalettes.baseColor : darkPalettes.baseColor}
+						errorColor={this.props.colorPalette ? lightPalettes.errorColor : darkPalettes.errorColor}
+						tintColor={this.props.colorPalette ? lightPalettes.tintColor : darkPalettes.tintColor}
+						textColor={this.props.colorPalette ? lightPalettes.textColor : darkPalettes.textColor}
+						containerStyle={this.props.colorPalette ? { paddingLeft: 20, flex: 1 } : { flex: 1 }}
+						fontSize={this.props.colorPalette ? 20 : 16}
+						disabledLineWidth={0}
+						disabled={this.props.disable}
+					/>
+					{this.props.icon ? this.props.icon : null}
+				</View>
+			);
+		} else if (this.props.labelName && this.props.prefixIcon) {
+			return (
+				<View style={[this.props.containerStyle]}>
+					<View style={[{ flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'space-between' }]}>
+						{this.props.prefixIcon ? this.props.prefixIcon : null}
+						<TextField
+							secureTextEntry={this.props.password}
+							label={this.props.labelName ? this.props.labelName : ''}
+							value={this.props.value ? this.props.value : undefined}
+							onChangeText={this.props.onChangeText}
+							baseColor={this.props.colorPalette ? lightPalettes.baseColor : darkPalettes.baseColor}
+							errorColor={this.props.colorPalette ? lightPalettes.errorColor : darkPalettes.errorColor}
+							tintColor={this.props.colorPalette ? lightPalettes.tintColor : darkPalettes.tintColor}
+							textColor={this.props.colorPalette ? lightPalettes.textColor : darkPalettes.textColor}
+							containerStyle={this.props.colorPalette ? { flex: 1 } : { flex: 0.9 }}
+							fontSize={this.props.colorPalette ? 16 : 20}
+							disabled={this.props.disable}
+							disabledLineWidth={0}
+							lineWidth={0}
+							activeLineWidth={0}
+						/>
+						{this.props.icon ? this.props.icon : null}
+					</View>
+					<View
+						style={
+							this.props.containerStyle
+								? [{ position: 'relative', top: 20, flexDirection: 'row', alignItems: 'center', height: 1, backgroundColor: ThemeColors.blue_light }]
+								: [{ position: 'relative', bottom: 9, flexDirection: 'row', alignItems: 'center', height: 1, backgroundColor: ThemeColors.blue_light }]
+						}
+					/>
+				</View>
+			);
+		} else {
+			return (
+				<View>
+					<TextField
+						secureTextEntry={this.props.password}
+						value={this.props.value ? this.props.value : undefined}
+						onChangeText={this.props.onChangeText}
+						baseColor={ThemeColors.blue_lightest}
+						errorColor={ThemeColors.red}
+						tintColor={ThemeColors.blue_lightest}
+						textColor={ThemeColors.white}
+					/>
+					{this.props.icon ? this.props.icon : null}
+				</View>
+			);
+		}
+	}
+}
+
+export default InputField;

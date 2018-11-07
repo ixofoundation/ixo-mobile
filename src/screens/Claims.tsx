@@ -398,7 +398,7 @@ function mapStateToProps(state: PublicSiteStoreState) {
 	return {
 		ixo: state.ixoStore.ixo,
 		user: state.userStore.user,
-		firstTimeClaim: state.userStore.firstClaim,
+		firstTimeClaim: state.userStore.isFirstClaim,
 		project: state.projectsStore.selectedProject,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
 		online: state.connectivityStore.online
