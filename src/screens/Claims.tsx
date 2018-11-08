@@ -118,7 +118,7 @@ class Claims extends React.Component<Props, StateProps> {
 			headerRight: (
 				<View style={ContainerStyles.flexRow}>
 					<Icon name="search" style={{ paddingRight: 10, color: ThemeColors.white }} />
-					<HeaderSync screenProps={screenProps} />
+					<HeaderSync navigation={navigation} screenProps={screenProps} />
 				</View>
 			),
 			title: projectName,

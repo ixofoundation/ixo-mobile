@@ -85,7 +85,7 @@ export class Projects extends React.Component<Props, StateProps> {
 			headerRight: (
 				<View style={ContainerStyles.flexRow}>
 					<CustomIcon name="search" style={{ paddingRight: 10, color: ThemeColors.white }} size={height * 0.03} />
-					<HeaderSync screenProps={screenProps} />
+					<HeaderSync navigation={null} screenProps={screenProps} />
 				</View>
 			)
 		};

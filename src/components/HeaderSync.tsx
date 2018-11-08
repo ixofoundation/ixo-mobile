@@ -12,11 +12,10 @@ import { userToggledModal } from '../redux/dynamics/dynamics_action_creators';
 import { removeClaim } from '../redux/claims/claims_action_creators';
 import { getSignature } from '../utils/sovrin';
 import { showToast, toastType } from '../utils/toasts';
-
-// import ModalSubmitClaims from '../components/ModalSubmitClaims';
 import GenericModal from '../components/GenericModal';
 interface ParentProps {
 	screenProps: any;
+	navigation: any | null;
 }
 export interface StateProps {
 	modalVisible?: boolean;
@@ -73,7 +72,7 @@ class HeaderSync extends React.Component<Props, StateProps> {
 	onSubmitAll = () => {
 		this.toggleSpinnerAnimation(true);
 		const projectClaims = this.props.savedProjectsClaims;
-		const promises: Promise<any>[] = [];
+		const promises = [];
 		if (projectClaims) {
 			Object.keys(projectClaims).map((key: any) => {
 				if ('claims' in projectClaims[key]) {
@@ -83,6 +82,10 @@ class HeaderSync extends React.Component<Props, StateProps> {
 			});
 			Promise.all(promises).then(() => {
 				this.toggleSpinnerAnimation(false);
+				if (this.props.navigation) {
+					this.props.navigation.navigate('SubmittedClaims', { claimSubmitted: true });
+				}
+				this.props.onToggleModal(false);
 			});
 		}
 	}
@@ -90,8 +93,8 @@ class HeaderSync extends React.Component<Props, StateProps> {
 	handleSubmitAllClaimsOfProject(projectClaims: IProjectsClaimsSaved) {
 		return new Promise((resolve, reject) => {
 			try {
-				let claims: any = projectClaims.claims;
-				let promises: Promise<any>[] = [];
+				const claims: any = projectClaims.claims;
+				const promises = [];
 				Object.keys(claims).map((key: any) => {
 					promises.push(this.handleSubmitClaim(claims[key], projectClaims, JSON.parse(projectClaims.formFile)));
 				});
@@ -108,7 +111,7 @@ class HeaderSync extends React.Component<Props, StateProps> {
 	handleSubmitClaim(claim: IClaimSaved, projectClaims: IProjectsClaimsSaved, formFile: any): Promise<any> {
 		return new Promise((resolve, reject) => {
 			try {
-				let promises: Promise<any>[] = [];
+				const promises = [];
 				formFile.fields.forEach((field: any) => {
 					if (field.type === 'image') {
 						if (claim.claimData[field.name] && claim.claimData[field.name].length > 0) {
@@ -133,7 +136,7 @@ class HeaderSync extends React.Component<Props, StateProps> {
 	}
 
 	handleUploadToPDS = (claimData: any, claimId: string, projectClaims: IProjectsClaimsSaved) => {
-		let claimPayload = Object.assign(claimData);
+		const claimPayload = Object.assign(claimData);
 		claimPayload['projectDid'] = projectClaims.projectDid;
 
 		getSignature(claimPayload)
