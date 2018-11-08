@@ -41,6 +41,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 	private projectDid: string | undefined;
 	private projectName: string = '';
 	private projectFormFile: string = '';
+	private isClaimSaved: boolean = false;
 
 	constructor(props: Props) {
 		super(props);
@@ -70,7 +71,11 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			},
 			title: projectName,
 			headerRight: (
-				<TouchableOpacity onPress={() => onSave()}>
+				<TouchableOpacity
+					onPress={() => {
+						onSave();
+					}}
+				>
 					<Text style={NewClaimStyles.headerSaveButton}>{saveText}</Text>
 				</TouchableOpacity>
 			),
@@ -81,7 +86,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			},
 			headerTintColor: ThemeColors.white
 		};
-	}
+	};
 
 	componentDidMount() {
 		this.props.navigation.setParams({
@@ -93,7 +98,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 
 	onToggleLastCard = (active: boolean) => {
 		this.setState({ isLastCard: active });
-	}
+	};
 
 	handleSubmitClaim = (claimData: any) => {
 		const claimPayload = Object.assign(claimData);
@@ -101,31 +106,32 @@ class NewClaim extends React.Component<Props, StateTypes> {
 
 		if (this.props.online) {
 			getSignature(claimPayload)
-			.then((signature: any) => {
-				this.props.ixo.claim
-					.createClaim(claimPayload, signature, this.pdsURL)
-					.then(() => {
-						this.props.navigation.navigate('SubmittedClaims', { claimSubmitted: true });
-					})
-					.catch(() => {
-						this.props.navigation.navigate('SubmittedClaims', { claimSubmitted: false });
-					});
-			})
-			.catch((error: Error) => {
-				console.log(error);
-				showToast('claims:signingFailed', toastType.DANGER);
-			});
+				.then((signature: any) => {
+					this.props.ixo.claim
+						.createClaim(claimPayload, signature, this.pdsURL)
+						.then(() => {
+							this.props.navigation.navigate('SubmittedClaims', { claimSubmitted: true });
+						})
+						.catch(() => {
+							this.props.navigation.navigate('SubmittedClaims', { claimSubmitted: false });
+						});
+				})
+				.catch((error: Error) => {
+					console.log(error);
+					showToast('claims:signingFailed', toastType.DANGER);
+				});
 		} else {
 			showToast(this.props.screenProps.t('claims:noInternet'), toastType.WARNING);
 		}
-	}
+	};
 
 	onSaveClaim = (claimData: any) => {
-		if (this.projectDid) {
-			this.props.onClaimSave(claimData, this.projectDid);
+		if (this.projectDid && !this.isClaimSaved) {
+			this.isClaimSaved = true;
 			this.props.navigation.pop();
+			this.props.onClaimSave(claimData, this.projectDid);
 		}
-	}
+	};
 
 	onFormSubmit = (formData: any) => {
 		// upload all the images and change the value to the returned hash of the image
@@ -152,7 +158,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		Promise.all(promises).then(() => {
 			this.handleSubmitClaim(formData);
 		});
-	}
+	};
 
 	renderForm() {
 		const claimParsed = JSON.parse(this.projectFormFile!);

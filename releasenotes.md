@@ -48,4 +48,5 @@
 ***
 ## No build released
 **bug/IXOQ-294** No success screen after submitting saved claims
+**bug/IXOQ-296** Tapping save twice results in 2 two saved claims
 

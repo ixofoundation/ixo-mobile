@@ -17,7 +17,7 @@ import DynamicFormStyles from '../../styles/componentStyles/DynamicSwiperForm';
 import ContainerStyles from '../../styles/Containers';
 
 interface IImage {
-	fieldName: string; // used to keep track of which image list in schema e.g. (before or after images)
+	fieldName: string;
 	uri: string;
 	filename: string;
 }
