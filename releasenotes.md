@@ -47,5 +47,5 @@
 
 ***
 ## No build released
-**bug/IXOQ-264** Submit a claim: user unable to select complete/next
+**bug/IXOQ-294** No success screen after submitting saved claims
 
