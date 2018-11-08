@@ -2,7 +2,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 import { showToast, toastType } from '../utils/toasts';
 import { SDGArray } from '../models/sdg';
-import { Container, Content, Drawer, Header, Icon, Text, View, Fab } from 'native-base';
+import { Container, Content, Drawer, Header, Text, View, Fab } from 'native-base';
 import * as React from 'react';
 import { Dimensions, Image, ImageBackground, RefreshControl, StatusBar, TouchableOpacity, ActivityIndicator, YellowBox } from 'react-native';
 import { connect } from 'react-redux';
@@ -46,6 +46,7 @@ export interface StateProps {
 	user?: IUser;
 	savedProjectsClaims?: IProjectsClaimsSaved[];
 	online?: boolean;
+	isModalVisible?: boolean;
 }
 
 export interface StateProps {
@@ -309,7 +310,7 @@ export class Projects extends React.Component<Props, StateProps> {
 	renderNoProjectsView() {
 		return (
 			<Content
-				style={{ backgroundColor: ThemeColors.blue_dark }}
+				style={this.props.isModalVisible ? { backgroundColor: ThemeColors.blue_dark, opacity: 0.6 } : { backgroundColor: ThemeColors.blue_dark }} // TODO modal stuff comes here
 				refreshControl={<RefreshControl refreshing={this.state.isRefreshing} onRefresh={() => this.refreshProjects()} />}
 				// @ts-ignore
 				onScroll={event => this._onScroll(event)}
@@ -364,14 +365,15 @@ export class Projects extends React.Component<Props, StateProps> {
 		);
 	}
 
-	renderConnectivity() {
+	renderdynamics() {
 		if (this.props.online) return null;
-		return <Banner text={this.props.screenProps.t('connectivity:offlineMode')} />;
+		return <Banner text={this.props.screenProps.t('dynamics:offlineMode')} />;
 	}
 
 	render() {
 		return (
 			<Drawer
+				// styles={{ opacity: 0.7 }}
 				ref={ref => {
 					// @ts-ignore
 					this.drawer = ref;
@@ -379,7 +381,7 @@ export class Projects extends React.Component<Props, StateProps> {
 				content={<SideBar screenProps={this.props.screenProps} navigation={this.props.navigation} />}
 				onClose={() => this.closeDrawer()}
 			>
-				{this.renderConnectivity()}
+				{this.renderdynamics()}
 				{this.state.projects.length > 0 ? this.renderNoProjectsView() : this.renderProjectsView()}
 				<Fab
 					direction="up"
@@ -400,7 +402,8 @@ function mapStateToProps(state: PublicSiteStoreState) {
 		user: state.userStore.user,
 		projects: state.projectsStore.projects,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
-		online: state.connectivityStore.online
+		online: state.dynamicsStore.online,
+		isModalVisible: state.dynamicsStore.isModalVisible
 	};
 }
 

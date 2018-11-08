@@ -221,7 +221,7 @@ function mapStateToProps(state: PublicSiteStoreState) {
 		ixo: state.ixoStore.ixo,
 		project: state.projectsStore.selectedProject,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
-		online: state.connectivityStore.online
+		online: state.dynamicsStore.online
 	};
 }
 
