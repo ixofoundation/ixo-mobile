@@ -44,3 +44,8 @@
 ### __iOS__ (build v1.0.2)
 **bug/IXOQ-293** Update login screen after user logs out of the app
 **bug/IXOQ-295** Fade out background: Submit saved claims
+
+***
+## No build released
+**bug/IXOQ-264** Submit a claim: user unable to select complete/next
+
