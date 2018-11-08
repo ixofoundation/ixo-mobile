@@ -35,6 +35,12 @@
 ### __iOS__ (build v1.0.1)
 **bug/IXOQ-288** Change App 'login' screen after user registration in the app
 
-*****
-current bug
-bug/IXOQ-293
+## 2018-11-08
+***
+### __Android__ (build v1.0.2)
+**bug/IXOQ-293** Update login screen after user logs out of the app
+**bug/IXOQ-295** Fade out background: Submit saved claims
+
+### __iOS__ (build v1.0.2)
+**bug/IXOQ-293** Update login screen after user logs out of the app
+**bug/IXOQ-295** Fade out background: Submit saved claims
