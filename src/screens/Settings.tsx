@@ -2,22 +2,9 @@ import { Container, Content, Icon } from 'native-base';
 import * as React from 'react';
 import { StatusBar, AsyncStorage } from 'react-native';
 import { ThemeColors } from '../styles/Colors';
-// import ContainersStyles from '../styles/Containers';
 import DarkButton from '../components/DarkButton';
 import { StackActions, NavigationActions } from 'react-navigation';
-
-// const SettingsLink = ({ name, route, navigation }: { name: string; route: string; navigation: any }) => (
-// 	<TouchableOpacity style={[ContainersStyles.flexRow, { justifyContent: 'space-between' }]} onPress={() => navigation.navigate(route)}>
-// 		<Text style={{ textAlign: 'left', color: ThemeColors.grey, fontSize: 19, fontWeight: '500', paddingHorizontal: 5, paddingVertical: 10 }}>{name}</Text>
-// 		<Icon name="arrow-forward" onPress={() => navigation.pop()} style={{ paddingLeft: 10, color: ThemeColors.grey }} />
-// 	</TouchableOpacity>
-// );
-
-// const LogoutLink = () => (
-// 	<TouchableOpacity>
-// 		<Text style={{ textAlign: 'left', color: ThemeColors.black, fontSize: 19, fontWeight: '500', paddingHorizontal: 5, paddingTop: 80 }}>Log out</Text>
-// 	</TouchableOpacity>
-// );
+import { purgeStore } from '../redux/store';
 
 interface ParentProps {
 	navigation: any;
@@ -43,7 +30,7 @@ class Settings extends React.Component<ParentProps> {
 
 	resetAccount() {
 		AsyncStorage.clear();
-		// TODO purge of redux store needs to happen here as well => persistor.purge();
+		purgeStore();
 		const resetAction = StackActions.reset({
 			index: 0,
 			actions: [NavigationActions.navigate({ routeName: 'OnBoarding' })]

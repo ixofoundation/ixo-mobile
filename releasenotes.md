@@ -34,3 +34,7 @@
 **bug/IXOQ-288** Change App 'login' screen after user registration in the app
 ### __iOS__ (build v1.0.1)
 **bug/IXOQ-288** Change App 'login' screen after user registration in the app
+
+*****
+current bug
+bug/IXOQ-293

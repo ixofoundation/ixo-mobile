@@ -196,6 +196,9 @@ export class Login extends React.Component<Props, StateTypes> {
 						<DarkButton text={this.props.screenProps.t('login:signIn')} onPress={() => this.signIn()} />
 					)}
 				</View>
+				<TouchableOpacity onPress={() => this.props.navigation.navigate('Recover')}>
+					<Text style={LoginStyles.recover}>{this.props.screenProps.t('login:recover')}</Text>
+				</TouchableOpacity>
 				<TouchableOpacity
 					style={[ContainerStyles.flexRow, { flex: 0.1, marginVertical: 20 }]}
 					onPress={() => (Platform.OS === 'android' ? this.showAndroidAlert() : this.scanFingerprint())}
