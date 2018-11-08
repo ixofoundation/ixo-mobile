@@ -11,7 +11,7 @@ let publicStore: Store<PublicSiteStoreState>;
 const persistConfig = {
 	key: 'root',
 	storage,
-	blacklist: ['ixoStore', 'connectivityStore']
+	blacklist: ['ixoStore', 'dynamicsStore']
 };
 
 export function createAppStore(this: any, preloadedState?: PublicSiteStoreState): any {

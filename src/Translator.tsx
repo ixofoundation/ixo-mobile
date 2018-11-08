@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { I18nextProvider, translate } from 'react-i18next';
 import OnBoardingNavigator from './Routes';
 import { PublicSiteStoreState } from './redux/public_site_reducer';
-import { toggleConnection } from './redux/connectivity/connectivity_action_creators';
+import { toggleConnection } from './redux/dynamics/dynamics_action_creators';
 import i18n from './i18n';
 
 export interface DispatchProps {
@@ -28,7 +28,7 @@ class TranslateStack extends React.Component<Props, {}> {
 
 function mapStateToProps(state: PublicSiteStoreState) {
 	return {
-		connectivity: state.connectivityStore.online
+		dynamics: state.dynamicsStore.online
 	};
 }
 

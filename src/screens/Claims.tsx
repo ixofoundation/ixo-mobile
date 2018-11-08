@@ -52,6 +52,7 @@ export interface StateProps {
 	project?: IProject;
 	savedProjectsClaims: IProjectsClaimsSaved[];
 	online?: boolean;
+	isModalVisible?: boolean;
 }
 
 export interface StateProps {
@@ -327,17 +328,17 @@ class Claims extends React.Component<Props, StateProps> {
 		);
 	}
 
-	renderConnectivity() {
+	renderdynamics() {
 		if (this.props.online) return null;
-		return <Banner text={this.props.screenProps.t('connectivity:offlineMode')} />;
+		return <Banner text={this.props.screenProps.t('dynamics:offlineMode')} />;
 	}
 
 	render() {
 		const projectClaims: IProjectsClaimsSaved = this.props.savedProjectsClaims[this.projectDid];
 		const numberOfSavedClaims: number = projectClaims && projectClaims.claims ? Object.keys(projectClaims.claims).length : 0;
 		return (
-			<Container style={{ backgroundColor: ThemeColors.blue_dark }}>
-				{this.renderConnectivity()}
+			<Container style={this.props.isModalVisible ? { backgroundColor: ThemeColors.blue_dark, opacity: 0.6 } : { backgroundColor: ThemeColors.blue_dark }}>
+				{this.renderdynamics()}
 				<StatusBar barStyle="light-content" />
 				<Tabs
 					tabBarUnderlineStyle={{ backgroundColor: ThemeColors.blue_lightest, height: 1 }}
@@ -401,7 +402,8 @@ function mapStateToProps(state: PublicSiteStoreState) {
 		firstTimeClaim: state.userStore.isFirstClaim,
 		project: state.projectsStore.selectedProject,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
-		online: state.connectivityStore.online
+		online: state.dynamicsStore.online,
+		isModalVisible: state.dynamicsStore.isModalVisible
 	};
 }
 

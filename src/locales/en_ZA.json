@@ -135,7 +135,7 @@
 		"userNotFound": "No user found",
 		"mnemonic": "Mnemonic"
 	},
-	"connectivity": {
+	"dynamics": {
 		"offlineMode": "OFFLINE MODE"
 	}
 }
