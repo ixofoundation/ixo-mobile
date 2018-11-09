@@ -45,8 +45,11 @@
 **bug/IXOQ-293** Update login screen after user logs out of the app
 **bug/IXOQ-295** Fade out background: Submit saved claims
 
+## 2018-11-08
 ***
-## No build released
+### __Android__ (build v1.0.3)
+
+### __iOS__ (build v1.0.3)
 **bug/IXOQ-294** No success screen after submitting saved claims
 **bug/IXOQ-296** Tapping save twice results in 2 two saved claims
 **bug/IXOQ-408** Keysafe & Mnemonic login: No create app password screen
