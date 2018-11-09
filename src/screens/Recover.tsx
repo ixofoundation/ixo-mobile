@@ -95,6 +95,7 @@ class Recover extends React.Component<Props, StateTypes> {
 	async handleConfirmMnemonic() {
 		try {
 			if (this.state.confirmPassword === '' || this.state.password === '' || this.state.username === '') throw 'register:missingFields';
+			if (this.state.password.length < 8) throw 'register:passwordShort';
 			if (this.state.password !== this.state.confirmPassword) throw 'register:missmatchPassword';
 			if (this.state.mnemonic === '') throw 'recover:secretPhrase';
 

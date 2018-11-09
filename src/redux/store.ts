@@ -14,13 +14,13 @@ const persistConfig = {
 	blacklist: ['ixoStore', 'dynamicsStore']
 };
 
-export function createAppStore(this: any, preloadedState?: PublicSiteStoreState, purge?: boolean): any {
+export function createAppStore(this: any, preloadedState?: PublicSiteStoreState): any {
 	const middlewares: Middleware[] = [thunk];
 	middlewares.push(logger);
 	const persistedReducer = persistReducer(persistConfig, publicSiteReducer);
 	publicStore = createStore.call(this, persistedReducer, preloadedState, applyMiddleware(...middlewares));
 	const persistor = persistStore(publicStore);
-	if (__DEV__ || purge) {
+	if (__DEV__) {
 		persistor.purge();
 	}
 

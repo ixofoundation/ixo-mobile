@@ -52,3 +52,4 @@
 **bug/IXOQ-408** Keysafe & Mnemonic login: No create app password screen
 **bug/IXOQ-409** Keysafe login: Create app password can be blank
 **bug/IXOQ-410** Keysafe login: No incorrect password error
+**bug/IXOQ-411** Mnemonic login: Password can be 1 character
