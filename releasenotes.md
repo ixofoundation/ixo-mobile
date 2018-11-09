@@ -56,3 +56,4 @@
 **bug/IXOQ-413** App registration: Create error handling if DID not successfully ledgered
 **bug/IXOQ-414** Register on app: Include email as required field
 **bug/IXOQ-415** Inactive back button
+**bug/IXOQ-417** Buggy onboarding video
