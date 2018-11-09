@@ -50,7 +50,8 @@
 		"serviceProviderDescription": "Service providers deliver the impact to a project. They are the people on the ground submitting claims, and making the difference.",
 		"serviceProviderQuestion": "How will you be able to benefit this project?",
 		"yourAnswer": "Your answer",
-		"projectFailedScan": "Please try again, project not scanned"
+		"projectFailedScan": "Please try again, project not scanned",
+		"keysafePasswordWrong": "Keysafe password incorrect"
 	},
 	"login": {
 		"hi": "Hi",

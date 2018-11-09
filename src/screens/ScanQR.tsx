@@ -195,8 +195,8 @@ export class ScanQR extends React.Component<Props, State> {
 				this.resetStateVars();
 				this.props.navigation.navigate('Login');
 			} catch (exception) {
-				console.log(exception);
-				this.setState({ errors: true, loading: false });
+				showToast(this.props.screenProps.t('scanQR:keysafePasswordWrong'), toastType.WARNING);
+				this.setState({ loading: false });
 			}
 		} else {
 			this.setState({ errors: true, loading: false });

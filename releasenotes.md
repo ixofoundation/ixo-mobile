@@ -51,3 +51,4 @@
 **bug/IXOQ-296** Tapping save twice results in 2 two saved claims
 **bug/IXOQ-408** Keysafe & Mnemonic login: No create app password screen
 **bug/IXOQ-409** Keysafe login: Create app password can be blank
+**bug/IXOQ-410** Keysafe login: No incorrect password error

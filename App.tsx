@@ -23,7 +23,6 @@ const store = createAppStore();
 
 export default class App extends React.Component<{}, State> {
 	componentDidMount() {
-		debugger;
 		if (Platform.OS === 'android') {
 			SplashScreen.hide();
 		}
