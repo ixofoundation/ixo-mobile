@@ -52,6 +52,7 @@ export interface StateProps {
 
 interface StateTypes {
 	username: string;
+	email: string;
 	password: string;
 	confirmPassword: string;
 	registerState: registerSteps;
@@ -91,6 +92,7 @@ class Register extends React.Component<Props, StateTypes> {
 
 	state = {
 		username: '',
+		email: '',
 		password: '',
 		confirmPassword: '',
 		registerState: registerSteps.captureDetails,
@@ -237,7 +239,7 @@ class Register extends React.Component<Props, StateTypes> {
 	}
 
 	handleCreatePassword() {
-		if (this.state.confirmPassword === '' || this.state.password === '' || this.state.username === '') {
+		if (this.state.confirmPassword === '' || this.state.password === '' || this.state.username === '' || this.state.email === '') {
 			showToast(this.props.screenProps.t('register:missingFields'), toastType.WARNING);
 			return;
 		}
@@ -273,6 +275,12 @@ class Register extends React.Component<Props, StateTypes> {
 							value={this.state.username}
 							labelName={this.props.screenProps.t('register:yourName')}
 							onChangeText={(text: string) => this.setState({ username: text })}
+						/>
+						<InputField
+							password={true}
+							value={this.state.email}
+							labelName={this.props.screenProps.t('register:yourEmail')}
+							onChangeText={(text: string) => this.setState({ email: text })}
 						/>
 						<InputField
 							password={true}

@@ -293,7 +293,10 @@ export class ScanQR extends React.Component<Props, State> {
 					loading={this.state.loading}
 					buttonText={this.props.screenProps.t('scanQR:rescan')}
 					heading={this.props.screenProps.t('scanQR:scanFailed')}
-					onPressInfo={() => this.props.navigation.dispatch(registerAction)}
+					onPressInfo={() => {
+						this.resetStateVars();
+						this.props.navigation.dispatch(registerAction);
+					}}
 				/>
 			);
 		}
@@ -306,7 +309,10 @@ export class ScanQR extends React.Component<Props, State> {
 				buttonText={this.props.screenProps.t('scanQR:rescan')}
 				heading={this.props.screenProps.t('scanQR:scanFailed')}
 				infoText={this.props.screenProps.t('scanQR:registered')}
-				onPressInfo={() => this.props.navigation.dispatch(registerAction)}
+				onPressInfo={() => {
+					this.resetStateVars();
+					this.props.navigation.navigate('Register');
+				}}
 			/>
 		);
 	}

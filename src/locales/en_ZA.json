@@ -110,6 +110,7 @@
 		"create": "CREATE",
 		"letsSetup": "New to ixo? Let's set up your account:",
 		"yourName": "Your Name",
+		"yourEmail": "Your Email",
 		"newPassword": "New Password",
 		"confirmPassword": "Confirm Password",
 		"secretPhrase": "Secret backup phrase",
