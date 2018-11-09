@@ -52,8 +52,8 @@ yarn run android_prod (android)
 1. Build -> Select Build Variant
 
 ## Screenshots
-<img src="gitImages/screenshot1.png" height="500" />
-<img src="gitImages/screenshot2.png" height="500" />
+<img src="gitImages/1.png" height="500" />
+<img src="gitImages/2.png" height="500" />
 
 ## Architecture
 
