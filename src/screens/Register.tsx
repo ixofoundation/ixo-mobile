@@ -60,6 +60,7 @@ interface StateTypes {
 	unSelectedWords: IMnemonic[] | any[];
 	errorMismatch: boolean;
 	userEnteredMnemonicCorrect: boolean;
+	loading: boolean;
 }
 
 export interface Props extends ParentProps, DispatchProps, StateProps {}
@@ -97,7 +98,8 @@ class Register extends React.Component<Props, StateTypes> {
 		selectedWords: [],
 		unSelectedWords: [],
 		errorMismatch: false,
-		userEnteredMnemonicCorrect: false
+		userEnteredMnemonicCorrect: false,
+		loading: false
 	};
 
 	onBackButton = () => {
@@ -175,8 +177,9 @@ class Register extends React.Component<Props, StateTypes> {
 	}
 
 	handleConfirmMnemonic() {
+		this.setState({ loading: true });
 		if (this.getMnemonicString(this.state.selectedWords) !== this.state.mnemonic) {
-			this.setState({ errorMismatch: true });
+			this.setState({ errorMismatch: true, loading: false });
 		} else {
 			const encryptedMnemonic = Encrypt(JSON.stringify({ mnemonic: this.state.mnemonic, name: this.state.username }), this.state.password); // encrypt securely on phone enlave
 			// @ts-ignore
@@ -210,8 +213,6 @@ class Register extends React.Component<Props, StateTypes> {
 	}
 
 	ledgerDidOnBlockChain(did: string, pubKey: string) {
-		showToast(this.props.screenProps.t('register:ledgerDid'), toastType.SUCCESS);
-
 		const newDidDoc = {
 			did,
 			pubKey,
@@ -226,7 +227,11 @@ class Register extends React.Component<Props, StateTypes> {
 					this.navigateToLogin();
 				} else {
 					showToast(this.props.screenProps.t('register:didLedgeredError'), toastType.DANGER);
+					this.setState({ loading: false });
 				}
+			}).catch(() => {
+				showToast(this.props.screenProps.t('register:failedToLedgerUser'), toastType.DANGER);
+				this.setState({ loading: false });
 			});
 		});
 	}
@@ -345,7 +350,7 @@ class Register extends React.Component<Props, StateTypes> {
 						)}
 						{this.renderSelected()}
 						{this.renderUnSelected()}
-						<DarkButton disabled={!this.state.userEnteredMnemonicCorrect} text={this.props.screenProps.t('register:confirm')} onPress={() => this.handleConfirmMnemonic()} />
+						<DarkButton loading={this.state.loading} disabled={!this.state.userEnteredMnemonicCorrect} text={this.props.screenProps.t('register:confirm')} onPress={() => this.handleConfirmMnemonic()} />
 					</View>
 				);
 		}
