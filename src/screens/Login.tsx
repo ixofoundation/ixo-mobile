@@ -173,7 +173,12 @@ export class Login extends React.Component<Props, StateTypes> {
 		// @ts-ignore
 		SInfo.setItem(SecureStorageKeys.password, this.state.password!, {});
 		this.props.onUserPasswordSet();
-		this.setState({ password: '' });
+		this.props.navigation.dispatch(
+			StackActions.reset({
+				index: 0,
+				actions: [NavigationActions.navigate({ routeName: 'Projects' })]
+			})
+		);
 	}
 
 	renderExistingUser() {
