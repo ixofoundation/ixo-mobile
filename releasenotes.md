@@ -58,3 +58,4 @@
 **bug/IXOQ-415** Inactive back button
 **bug/IXOQ-417** Buggy onboarding video
 **bug/IXOQ-416** Side navigation: username is cut off
+**bug/IXOQ-418** List SA successfully, select X: User not returned to My Projects screen

@@ -360,8 +360,14 @@ export class ScanQR extends React.Component<Props, State> {
 				return (
 					<GenericModal
 						headingTextStyle={{ color: ThemeColors.white }}
-						onPressButton={() => this.navigateToProjects()}
-						onClose={() => this.resetStateVars()}
+						onPressButton={() => {
+							this.props.onToggleModal(false);
+							this.navigateToProjects();
+						}}
+						onClose={() => {
+							this.resetStateVars();
+							this.navigateToProjects();
+						}}
 						paragraph={this.props.screenProps.t('scanQR:serviceProviderMessage')}
 						loading={this.state.loading}
 						headingImage={<IconServiceProviders height={height * 0.1} width={width * 0.2} />}
