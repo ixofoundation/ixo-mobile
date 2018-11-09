@@ -53,3 +53,4 @@
 **bug/IXOQ-409** Keysafe login: Create app password can be blank
 **bug/IXOQ-410** Keysafe login: No incorrect password error
 **bug/IXOQ-411** Mnemonic login: Password can be 1 character
+**bug/IXOQ-413** App registration: Create error handling if DID not successfully ledgered
