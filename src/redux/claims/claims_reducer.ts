@@ -11,10 +11,10 @@ export interface IProjectsClaimsSaved {
 	claims?: IClaimSaved[];
 }
 
-export type IClaimsModelState = {
+export interface IClaimsModelState {
 	savedProjectsClaims: IProjectsClaimsSaved[];
 	selectedSavedClaim?: IClaimSaved;
-};
+}
 
 const initialState: IClaimsModelState = {
 	savedProjectsClaims: []

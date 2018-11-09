@@ -49,4 +49,5 @@
 ## No build released
 **bug/IXOQ-294** No success screen after submitting saved claims
 **bug/IXOQ-296** Tapping save twice results in 2 two saved claims
-
+**bug/IXOQ-408** Keysafe & Mnemonic login: No create app password screen
+**bug/IXOQ-409** Keysafe login: Create app password can be blank

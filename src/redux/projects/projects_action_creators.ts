@@ -1,12 +1,12 @@
 import { createAction } from '../../lib/redux_utils/actions';
 import { IProject } from '../../models/project';
-import { Projects, Project, PROJECTS_UPDATE, PROJECT_SELECTED } from './projects_actions';
+import { Projects, Project, PROJECTS_UPDATE, PROJECT_SELECTED, PROJECTS_CLEAR_STORE, PROJECT_CLEAR_STORE } from './projects_actions';
 
 export function updateProjects(projects: IProject[]) {
 	return (dispatch: Function) => {
 		dispatch(
 			createAction<Projects>(PROJECTS_UPDATE.type, {
-				projects: projects
+				projects
 			})
 		);
 	};
@@ -17,6 +17,26 @@ export function loadProject(project: IProject) {
 		dispatch(
 			createAction<Project>(PROJECT_SELECTED.type, {
 				selectedProject: project
+			})
+		);
+	};
+}
+
+export function clearProjects() {
+	return (dispatch: Function) => {
+		dispatch(
+			createAction<Projects>(PROJECTS_CLEAR_STORE.type, {
+				projects: []
+			})
+		);
+	};
+}
+
+export function clearProject() {
+	return (dispatch: Function) => {
+		dispatch(
+			createAction<Project>(PROJECT_CLEAR_STORE.type, {
+				selectedProject: undefined
 			})
 		);
 	};

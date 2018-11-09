@@ -15,6 +15,7 @@ import LoginStyles from '../styles/Login';
 import InputField from '../components/InputField';
 import Video from 'react-native-video';
 import CustomIcon from '../components/svg/CustomIcons';
+import { showToast, toastType } from '../utils/toasts';
 
 const logo = require('../../assets/logo.png');
 const globe = require('../../assets/globe.mp4');
@@ -165,6 +166,10 @@ export class Login extends React.Component<Props, StateTypes> {
 	}
 
 	setPassword() {
+		if (this.state.password.length < 8) {
+			showToast(this.props.screenProps.t('register:passwordShort'), toastType.WARNING);
+			return;
+		}
 		// @ts-ignore
 		SInfo.setItem(SecureStorageKeys.password, this.state.password!, {});
 		this.props.onUserPasswordSet();

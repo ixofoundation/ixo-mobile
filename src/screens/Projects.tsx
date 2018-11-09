@@ -215,7 +215,6 @@ export class Projects extends React.Component<Props, StateProps> {
 		return (
 			<React.Fragment>
 				{this.state.projects.map((project: IProject) => {
-					console.log(project);
 					return (
 						<TouchableOpacity
 							onPress={() => {

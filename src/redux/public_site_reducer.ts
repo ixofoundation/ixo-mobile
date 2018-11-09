@@ -4,14 +4,14 @@ import { IIxoModelState, ixoReducer } from './ixo/ixo_reducer';
 import { IUserModelState, userReducer } from './user/user_reducer';
 import { IProjectsModelState, projectReducer } from './projects/projects_reducer';
 import { IClaimsModelState, claimsReducer } from './claims/claims_reducer';
-import { IdynamicsState, dynamicsReducer } from './dynamics/dynamics_reducer';
+import { IDynamicsState, dynamicsReducer } from './dynamics/dynamics_reducer';
 
 export interface PublicSiteStoreState {
 	ixoStore: IIxoModelState;
 	userStore: IUserModelState;
 	projectsStore: IProjectsModelState;
 	claimsStore: IClaimsModelState;
-	dynamicsStore: IdynamicsState;
+	dynamicsStore: IDynamicsState;
 }
 
 export const publicSiteReducer: Reducer<PublicSiteStoreState> = combineReducers({

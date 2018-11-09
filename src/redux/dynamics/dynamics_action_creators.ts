@@ -1,5 +1,5 @@
 import { createAction } from '../../lib/redux_utils/actions';
-import { Dynamics, TOGGLE_CONNECTION, TOGGLE_MODAL } from './dynamics_actions';
+import { Dynamics, TOGGLE_CONNECTION, TOGGLE_MODAL, DYNAMICS_CLEAR_STORE } from './dynamics_actions';
 
 export function toggleConnection(online: boolean) {
 	return (dispatch: Function) => {
@@ -17,6 +17,14 @@ export function userToggledModal(isModalVisible: boolean) {
 			createAction<Dynamics>(TOGGLE_MODAL.type, {
 				isModalVisible
 			})
+		);
+	};
+}
+
+export function clear() {
+	return (dispatch: Function) => {
+		dispatch(
+			createAction<Dynamics>(DYNAMICS_CLEAR_STORE.type, {})
 		);
 	};
 }

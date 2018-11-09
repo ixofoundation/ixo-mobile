@@ -1,10 +1,10 @@
 import { createReducer } from '../../lib/redux_utils/reducers';
-import { Dynamics, TOGGLE_CONNECTION, TOGGLE_MODAL } from './dynamics_actions';
+import { Dynamics, TOGGLE_CONNECTION, TOGGLE_MODAL, DYNAMICS_CLEAR_STORE } from './dynamics_actions';
 
-export type IDynamicsState = {
+export interface IDynamicsState {
 	online: boolean;
 	isModalVisible: boolean;
-};
+}
 
 const initialState: IDynamicsState = {
 	online: false,
@@ -25,6 +25,15 @@ export let dynamicsReducer = createReducer<IDynamicsState>(initialState, [
 		action: TOGGLE_MODAL,
 		handler: (state: IDynamicsState, action: Dynamics) => {
 			state.isModalVisible = action.isModalVisible
+			return {
+				...state
+			};
+		}
+	},
+	{
+		action: DYNAMICS_CLEAR_STORE,
+		handler: (state: IDynamicsState, action: Dynamics) => {
+			state = initialState;
 			return {
 				...state
 			};
