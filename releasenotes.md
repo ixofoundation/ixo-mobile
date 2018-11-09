@@ -57,3 +57,4 @@
 **bug/IXOQ-414** Register on app: Include email as required field
 **bug/IXOQ-415** Inactive back button
 **bug/IXOQ-417** Buggy onboarding video
+**bug/IXOQ-416** Side navigation: username is cut off
