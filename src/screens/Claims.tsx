@@ -2,7 +2,7 @@ import { Container, Content, Icon, Tab, Tabs, TabHeading, Text, View } from 'nat
 import * as React from 'react';
 import moment from 'moment';
 import _ from 'underscore';
-import { Image, ImageBackground, StatusBar, TouchableOpacity } from 'react-native';
+import { Image, ImageBackground, StatusBar, TouchableOpacity, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { IClaim, IProject, IClaimSaved } from '../models/project';
 import { IUser } from '../models/user';
@@ -20,7 +20,9 @@ import { decode as base64Decode } from 'base-64';
 import { showToast, toastType } from '../utils/toasts';
 import LightButton from '../components/LightButton';
 import Banner from '../components/Banner';
+import CustomIcon from '../components/svg/CustomIcons';
 
+const { height } = Dimensions.get('window');
 const background = require('../../assets/background_2.png');
 const addClaims = require('../../assets/savedclaims-visual.png');
 const submittedClaims = require('../../assets/submittedclaims-visual.png');
@@ -117,7 +119,7 @@ class Claims extends React.Component<Props, StateProps> {
 			},
 			headerRight: (
 				<View style={ContainerStyles.flexRow}>
-					<Icon name="search" style={{ paddingRight: 10, color: ThemeColors.white }} />
+					<CustomIcon name="search" style={{ paddingRight: 10, color: ThemeColors.white }} size={height * 0.03} />
 					<HeaderSync navigation={navigation} screenProps={screenProps} />
 				</View>
 			),
@@ -198,7 +200,7 @@ class Claims extends React.Component<Props, StateProps> {
 								claim={claim}
 								claimColor={ThemeColors.orange}
 								onViewClaim={this.onViewClaim}
-								screenProps={this.props.screenProps.t('claims:claimCreated')}
+								screenProps={this.props.screenProps.t('claims:claimSubmitted')}
 							/>
 						);
 					})}
@@ -212,7 +214,7 @@ class Claims extends React.Component<Props, StateProps> {
 								claim={claim}
 								claimColor={ThemeColors.red}
 								onViewClaim={this.onViewClaim}
-								screenProps={this.props.screenProps.t('claims:claimCreated')}
+								screenProps={this.props.screenProps.t('claims:claimSubmitted')}
 							/>
 						);
 					})}
@@ -221,7 +223,7 @@ class Claims extends React.Component<Props, StateProps> {
 						return (
 							<ClaimListItem
 								key={claim.claimId}
-								screenProps={this.props.screenProps.t('claims:claimCreated')}
+								screenProps={this.props.screenProps.t('claims:claimSubmitted')}
 								savedClaim={false}
 								impactAction={this.impactAction}
 								claim={claim}
@@ -244,7 +246,7 @@ class Claims extends React.Component<Props, StateProps> {
 							const claim: IClaimSaved = projectClaims.claims[key];
 							return (
 								<ClaimListItem
-									screenProps={this.props.screenProps.t('claims:claimCreated')}
+									screenProps={(claim.updated) ? this.props.screenProps.t('claims:claimUpdated') : this.props.screenProps.t('claims:claimCreated')}
 									key={claim.claimId}
 									savedClaim={true}
 									impactAction={this.impactAction}

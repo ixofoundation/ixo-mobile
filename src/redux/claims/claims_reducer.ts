@@ -61,6 +61,7 @@ export let claimsReducer = createReducer<IClaimsModelState>(initialState, [
 								claimData: action.claimData,
 								claimId: action.claimId,
 								date: new Date(),
+								updated: true,
 							}
 						}
 					}

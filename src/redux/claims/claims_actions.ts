@@ -3,6 +3,7 @@ export interface Claim {
 	projectDid: string;
 	claimId?: string;
 	claimFormKey?: string;
+	updated?: boolean;
 }
 
 export interface SelectedClaim {

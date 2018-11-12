@@ -126,7 +126,7 @@ export class ScanQR extends React.Component<Props, State> {
 	static navigationOptions = ({ screenProps }: { screenProps: any }) => {
 		return {
 			headerStyle: ScanQRStyles.headerStyle,
-			headerRight: <Icon style={{ paddingRight: 10, color: ThemeColors.white }} name="flash" />,
+			headerRight: <CustomIcons size={height * 0.03} style={{ paddingRight: 10, color: ThemeColors.white }} name="flash" />,
 			title: screenProps.t('scanQR:scan'),
 			headerTitleStyle: ScanQRStyles.headerTitleStyle,
 			headerTintColor: ThemeColors.white

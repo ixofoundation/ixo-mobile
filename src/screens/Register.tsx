@@ -1,4 +1,5 @@
 import LinearGradient from 'react-native-linear-gradient';
+import CustomIcon from '../components/svg/CustomIcons';
 import { Container, Icon, Text, View } from 'native-base';
 import React from 'react';
 import { AsyncStorage, Dimensions, ImageBackground, KeyboardAvoidingView, StatusBar, TouchableOpacity } from 'react-native';
@@ -21,6 +22,7 @@ import RegisterStyles from '../styles/Register';
 import { Encrypt, generateSovrinDID, getSignature } from '../utils/sovrin';
 import { showToast, toastType } from '../utils/toasts';
 
+const { height } = Dimensions.get('window');
 const bip39 = require('react-native-bip39');
 const background = require('../../assets/background_1.png');
 
@@ -320,7 +322,7 @@ class Register extends React.Component<Props, StateTypes> {
 						<TouchableOpacity disabled={(this.state.mnemonic.length > 0)} onPress={() => this.generateMnemonic()} style={[RegisterStyles.selectedBox]}>
 							{this.state.mnemonic.length <= 0 ? (
 								<View>
-									<Icon name="lock" color={ThemeColors.black} style={{ fontSize: 60, textAlign: 'center', color: ThemeColors.white }} />
+									<CustomIcon name="lock" color={ThemeColors.black} style={{ fontSize: 40, textAlign: 'center', color: ThemeColors.white }} size={height * 0.03} />
 									<Text style={{ textAlign: 'center', color: ThemeColors.white, paddingHorizontal: 10 }}>
 										{this.props.screenProps.t('register:tapReveal')}
 									</Text>

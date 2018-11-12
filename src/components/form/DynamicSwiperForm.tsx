@@ -264,7 +264,7 @@ export default class DynamicSwiperForm extends React.Component<Props, State> {
 					const cardDetails = {
 						totalQuestions: this.props.formSchema.length,
 						questionNumber: i + 1,
-						topic: changeCase.sentenceCase(field.name)
+						topic: changeCase.sentenceCase(field.label)
 					};
 					switch (field.type) {
 						case 'number':

@@ -45,11 +45,11 @@ class InputField extends React.Component<ParentProps> {
 						label={this.props.labelName ? this.props.labelName : ''}
 						value={this.props.value ? this.props.value : undefined}
 						onChangeText={this.props.onChangeText}
-						baseColor={this.props.colorPalette ? lightPalettes.baseColor : darkPalettes.baseColor}
-						errorColor={this.props.colorPalette ? lightPalettes.errorColor : darkPalettes.errorColor}
-						tintColor={this.props.colorPalette ? lightPalettes.tintColor : darkPalettes.tintColor}
-						textColor={this.props.colorPalette ? lightPalettes.textColor : darkPalettes.textColor}
-						containerStyle={this.props.colorPalette ? { paddingLeft: 20, flex: 1 } : { flex: 1 }}
+						baseColor={this.props.colorPalette || this.props.colorPalette === InputColorTypes.Light ? lightPalettes.baseColor : darkPalettes.baseColor}
+						errorColor={this.props.colorPalette || this.props.colorPalette === InputColorTypes.Light ? lightPalettes.errorColor : darkPalettes.errorColor}
+						tintColor={this.props.colorPalette || this.props.colorPalette === InputColorTypes.Light ? lightPalettes.tintColor : darkPalettes.tintColor}
+						textColor={this.props.colorPalette || this.props.colorPalette === InputColorTypes.Light ? lightPalettes.textColor : darkPalettes.textColor}
+						containerStyle={this.props.colorPalette || this.props.colorPalette === InputColorTypes.Light ? { paddingLeft: 20, flex: 1, marginRight: 20 } : { flex: 1 }}
 						fontSize={this.props.colorPalette ? 20 : 16}
 						disabledLineWidth={0}
 						disabled={this.props.disable}

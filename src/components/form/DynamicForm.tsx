@@ -3,10 +3,8 @@ import moment from 'moment';
 import { Image, TouchableOpacity, Alert } from 'react-native';
 import { FormStyles } from '../../models/form';
 import { Form, View, Label, Text, Icon } from 'native-base';
-import { InputField, InputColorTypes } from '../../components/InputField';
+import InputField, { InputColorTypes } from '../../components/InputField';
 import ImagePicker from 'react-native-image-picker';
-// @ts-ignore
-// import { connectActionSheet } from '@expo/react-native-action-sheet';
 import * as changeCase from 'change-case';
 import * as _ from 'underscore';
 
@@ -42,9 +40,6 @@ export interface Callbacks {
 }
 
 export interface Props extends ParentProps, Callbacks {}
-// @ts-ignore
-// @connectActionSheet
-// @ts-ignore
 export default class DynamicForm extends React.Component<Props, State> {
 	private formData: any = {};
 
@@ -216,7 +211,7 @@ export default class DynamicForm extends React.Component<Props, State> {
 											colorPalette={InputColorTypes.Light}
 											value={field.value}
 											labelName={changeCase.sentenceCase(field.name)}
-										/>
+										/>	
 									</View>
 								);
 							case 'textarea':

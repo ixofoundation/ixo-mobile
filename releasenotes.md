@@ -63,3 +63,9 @@
 **bug/IXOQ-416** Side navigation: username is cut off
 **bug/IXOQ-418** List SA successfully, select X: User not returned to My Projects screen
 **bug/IXOQ-412** App login: remove additional log in screen
+
+** not yet deployed
+**bug/IXOQ-419** Incorrect icons displayed
+**bug/IXOQ-423** Selecting saved claim causes app to crash
+**bug/IXOQ-420** Saved claims: update subheader
+**bug/IXOQ-424** Mobile claim form does not match claim form on web
