@@ -12,7 +12,6 @@ import { IUser } from '../models/user';
 import { initIxo } from '../redux/ixo/ixo_action_creators';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { initUser } from '../redux/user/user_action_creators';
-import { userToggledModal } from '../redux/dynamics/dynamics_action_creators';
 import ModalStyle from '../styles/Modal';
 import { Decrypt, generateSovrinDID, getSignature } from '../utils/sovrin';
 import validator from 'validator';
@@ -88,12 +87,10 @@ interface NavigationTypes {
 export interface DispatchProps {
 	onUserInit: (user: IUser) => void;
 	onIxoInit: () => void;
-	onToggleModal: (isModalVisible: boolean) => void;
 }
 export interface StateProps {
 	ixo?: any;
 	user?: IUser;
-	isModalVisible?: boolean;
 }
 
 interface State {
@@ -156,17 +153,14 @@ export class ScanQR extends React.Component<Props, State> {
 	_handleBarCodeRead(payload: any) {
 		if (!this.state.modalVisible) {
 			if (validator.isBase64(payload.data) && !this.projectScan) {
-				this.props.onToggleModal(true);
 				this.setState({ modalVisible: true, payload: payload.data });
 			} else if (payload.data.includes('projects') && this.projectScan) {
 				const projectDid = payload.data.substring(payload.data.length - 39, payload.data.length - 9);
-				this.props.onToggleModal(true);
 				this.setState({ modalVisible: true, payload: null, projectDid });
 				this.props.ixo.project.getProjectByProjectDid(projectDid).then((project: any) => {
 					this.setState({ projectTitle: project.data.title, serviceEndpoint: project.data.serviceEndpoint });
 				});
 			} else {
-				this.props.onToggleModal(true);
 				this.setState({ errors: true, modalVisible: true });
 			}
 		}
@@ -249,7 +243,6 @@ export class ScanQR extends React.Component<Props, State> {
 	}
 
 	resetStateVars = () => {
-		this.props.onToggleModal(false);
 		this.setState({
 			modalVisible: false,
 			password: undefined,
@@ -361,7 +354,6 @@ export class ScanQR extends React.Component<Props, State> {
 					<GenericModal
 						headingTextStyle={{ color: ThemeColors.white }}
 						onPressButton={() => {
-							this.props.onToggleModal(false);
 							this.navigateToProjects();
 						}}
 						onClose={() => {
@@ -391,6 +383,7 @@ export class ScanQR extends React.Component<Props, State> {
 				buttonText={this.props.screenProps.t('connectIXOComplete:unlockButtonText')}
 				heading={this.props.screenProps.t('connectIXOComplete:scanSuccessful')}
 				inputFieldOptions={{
+					underlinePositionRatio: 0.05,
 					onChangeText: (password: string) =>
 						this.setState({
 							password
@@ -399,12 +392,10 @@ export class ScanQR extends React.Component<Props, State> {
 					label: this.props.screenProps.t('scanQR:password'),
 					prefixImage: <Image resizeMode={'contain'} style={ModalStyle.inputFieldPrefixImage} source={keysafelogo} />,
 					suffixImage: (
-						<TouchableOpacity onPress={() => this.setState({ revealPassword: !this.state.revealPassword })}>
-							<View style={{ position: 'relative', top: height * 0.01 }}>
-								<CustomIcons name="eyeoff" size={width * 0.06} style={{ color: ThemeColors.blue_lightest }} />
-							</View>
-						</TouchableOpacity>
-					)
+						<CustomIcons name="eyeoff" size={width * 0.06} style={{ color: ThemeColors.blue_lightest }} />
+					),
+					onSuffixImagePress: () => this.setState({ revealPassword: !this.state.revealPassword }),
+					containerStyle: { flex: 1, marginVertical: height * 0.03 }
 				}}
 			/>
 		);
@@ -412,7 +403,7 @@ export class ScanQR extends React.Component<Props, State> {
 
 	render() {
 		return (
-			<View style={this.props.isModalVisible ? [ScanQRStyles.wrapper, ModalStyle.modalBackgroundOpacity] : [ScanQRStyles.wrapper]}>
+			<View style={[ScanQRStyles.wrapper]}>
 				<StatusBar barStyle="light-content" />
 				<Modal onRequestClose={() => null} animationType="slide" transparent={true} visible={this.state.modalVisible}>
 					{this.projectScan ? this.renderProjectScanned() : this.renderKeySafeScannedModal()}
@@ -435,8 +426,7 @@ export class ScanQR extends React.Component<Props, State> {
 function mapStateToProps(state: PublicSiteStoreState) {
 	return {
 		ixo: state.ixoStore.ixo,
-		user: state.userStore.user,
-		isModalVisible: state.dynamicsStore.isModalVisible
+		user: state.userStore.user
 	};
 }
 
@@ -447,9 +437,6 @@ function mapDispatchToProps(dispatch: any): DispatchProps {
 		},
 		onIxoInit: () => {
 			dispatch(initIxo(env.REACT_APP_BLOCKCHAIN_IP, env.REACT_APP_BLOCK_SYNC_URL));
-		},
-		onToggleModal: (isModalVisible: boolean) => {
-			dispatch(userToggledModal(isModalVisible));
 		}
 	};
 }

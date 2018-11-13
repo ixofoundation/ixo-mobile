@@ -80,8 +80,7 @@ function mapStateToProps(state: PublicSiteStoreState) {
 		firstTimeClaim: state.userStore.isFirstClaim,
 		project: state.projectsStore.selectedProject,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
-		online: state.dynamicsStore.online,
-		isModalVisible: state.dynamicsStore.isModalVisible
+		online: state.dynamicsStore.online
 	};
 }
 

@@ -190,11 +190,12 @@ export class Login extends React.Component<Props, StateTypes> {
 				<InputField
 					containerStyle={{ flex: 0.1, marginBottom: 30 }}
 					prefixIcon={<CustomIcon name="lock" style={LoginStyles.inputIcons} />}
-					icon={
+					suffixIcon={
 						<TouchableOpacity onPress={() => this.revealPassword()}>
 							<CustomIcon name="eyeoff" style={LoginStyles.inputIcons} />
 						</TouchableOpacity>
 					}
+					underlinePositionRatio={0.03}
 					labelName={this.props.screenProps.t('login:password')}
 					onChangeText={(password: string) => this.setState({ password })}
 					password={this.state.revealPassword}
@@ -239,11 +240,9 @@ export class Login extends React.Component<Props, StateTypes> {
 				<InputField
 					containerStyle={{ flex: 0.3, marginBottom: 30 }}
 					prefixIcon={<CustomIcon name="lock" style={LoginStyles.inputIcons} />}
-					icon={
-						<TouchableOpacity onPress={() => this.revealPassword()}>
-							<CustomIcon name="eyeoff" style={LoginStyles.inputIcons} />
-						</TouchableOpacity>
-					}
+					suffixIcon={<CustomIcon name="eyeoff" style={LoginStyles.inputIcons} />}
+					onSuffixImagePress={this.revealPassword}
+					underlinePositionRatio={0.03}
 					labelName={this.props.screenProps.t('login:createPassword')}
 					onChangeText={(password: string) => this.setState({ password })}
 					password={this.state.revealPassword}

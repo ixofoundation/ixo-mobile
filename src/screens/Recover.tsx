@@ -1,7 +1,7 @@
 import { Container, Icon, Text, View } from 'native-base';
 import * as React from 'react';
 import SInfo from 'react-native-sensitive-info';
-import { AsyncStorage, Dimensions, ImageBackground, StatusBar, KeyboardAvoidingView } from 'react-native';
+import { AsyncStorage, Dimensions, ImageBackground, StatusBar, KeyboardAvoidingView, TextInput } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import { env } from '../config';
@@ -16,7 +16,7 @@ import { showToast, toastType } from '../utils/toasts';
 import InputField from '../components/InputField';
 import { ThemeColors } from '../styles/Colors';
 import RecoverStyles from '../styles/Recover';
-
+import RegisterStyles from '../styles/Register';
 
 const background = require('../../assets/background_1.png');
 
@@ -139,7 +139,7 @@ class Recover extends React.Component<Props, StateTypes> {
 				<StatusBar barStyle="light-content" />
 				<ImageBackground source={background} style={[RecoverStyles.wrapper]}>
 					<KeyboardAvoidingView behavior={'position'} contentContainerStyle={[RecoverStyles.keyboardContainer]}>
-						<View style={{ height: Dimensions.get('window').height * 0.1 }} />
+						{/* <View style={{ height: Dimensions.get('window').height * 0.1 }} /> */}
 						<View>
 							<View style={[RecoverStyles.flexLeft]}>
 								<Text style={[RecoverStyles.header]}>{this.props.screenProps.t('recover:secretPhrase')}</Text>
@@ -153,11 +153,17 @@ class Recover extends React.Component<Props, StateTypes> {
 								<Text style={[RecoverStyles.paragraph, { color: ThemeColors.orange }]}>{this.props.screenProps.t('register:warning')}:</Text>
 								{this.props.screenProps.t('register:secretParagraph_2')}
 							</Text>
-							<InputField
-								value={this.state.mnemonic}
-								labelName={this.props.screenProps.t('recover:mnemonic')}
-								onChangeText={(text: string) => this.setState({ mnemonic: text })}
-							/>
+							<View style={[RegisterStyles.selectedBox]}>
+								<TextInput
+									maxLength={100}
+									multiline={true}
+									numberOfLines={5}
+									onChangeText={(text: string) => this.setState({ mnemonic: text })}
+									style={{ textAlign: 'left', color: ThemeColors.white, paddingHorizontal: 10, flex: 1 }}
+								>
+									{this.state.mnemonic}
+								</TextInput>
+							</View>
 							<InputField
 								value={this.state.username}
 								labelName={this.props.screenProps.t('register:yourName')}

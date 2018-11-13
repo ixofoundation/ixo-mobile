@@ -23,7 +23,6 @@ export interface StateProps {
 }
 export interface DispatchProps {
 	onRemoveClaim: (claimId: any, projectDid: string) => void;
-	onToggleModal: (isModalVisible: boolean) => void;
 }
 export interface StateProps {
 	savedProjectsClaims?: IProjectsClaimsSaved[];
@@ -85,7 +84,6 @@ class HeaderSync extends React.Component<Props, StateProps> {
 				if (this.props.navigation) {
 					this.props.navigation.navigate('SubmittedClaims', { claimSubmitted: true });
 				}
-				this.props.onToggleModal(false);
 			});
 		}
 	}
@@ -158,13 +156,13 @@ class HeaderSync extends React.Component<Props, StateProps> {
 	render() {
 		const numberOfSavedClaims = this.calculateTotalSavedClaims();
 		return numberOfSavedClaims === 0 ? null : (
-			<TouchableOpacity onPress={() => { this.props.onToggleModal(true); this.setState({ modalVisible: true }); }} style={[ContainerStyles.flexRow, HeaderSyncStyles.headerSync]}>
+			<TouchableOpacity onPress={() => { this.setState({ modalVisible: true }); }} style={[ContainerStyles.flexRow, HeaderSyncStyles.headerSync]}>
 				<Text style={HeaderSyncStyles.claimsAmount}>{numberOfSavedClaims}</Text>
 				<AnimatedIcon style={[HeaderSyncStyles.syncIcon, { transform: [{ rotate: this.spin }] }]} ios="ios-sync" android="md-sync" />
 				<Modal animationType="slide" transparent={true} visible={this.state.modalVisible}>
 					<GenericModal
 						onPressButton={() => this.onSubmitAll()}
-						onClose={() => { this.props.onToggleModal(false); this.setState({ modalVisible: false }); }}
+						onClose={() => { this.setState({ modalVisible: false }); }}
 						paragraph={this.props.screenProps.t('claims:submitAllDiscription')}
 						loading={false}
 						buttonText={this.props.screenProps.t('claims:submit')}
@@ -187,9 +185,6 @@ function mapDispatchToProps(dispatch: any): DispatchProps {
 	return {
 		onRemoveClaim: (claimId: any, projectDid: string) => {
 			dispatch(removeClaim(claimId, projectDid));
-		},
-		onToggleModal: (isModalVisible: boolean) => {
-			dispatch(userToggledModal(isModalVisible));
 		}
 	};
 }

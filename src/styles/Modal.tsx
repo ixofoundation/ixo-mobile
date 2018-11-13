@@ -11,7 +11,6 @@ interface Style {
 	cancelIcon: TextStyle;
 	headingText: TextStyle;
 	descriptionText: TextStyle;
-	modalInnerContainerAuto: ViewStyle;
 	forgotPassword: TextStyle;
 	flexCenter: ViewStyle;
 	projectNameInModal: TextStyle;
@@ -19,32 +18,27 @@ interface Style {
 	inputFieldPrefixImage: ImageStyle;
 	closeIcon: TextStyle;
 	infoText: TextStyle;
-	modalBackgroundOpacity: ViewStyle;
+	overlayContainer: ViewStyle;
+	modalWrapper: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
-	modalBackgroundOpacity: {
-		opacity: 0.7,
-		backgroundColor: ThemeColors.blue_dark
+	modalWrapper: {
+		backgroundColor: ThemeColors.modalBackground,
+		paddingHorizontal: height * 0.03
 	},
 	modalOuterContainer: {
 		flexDirection: 'row',
 		justifyContent: 'center',
 		marginTop: height * 0.2,
-		backgroundColor: ThemeColors.blue,
 		marginHorizontal: width * 0.05,
+		zIndex: 5,
+		height
 	},
 	modalInnerContainer: {
 		flexDirection: 'column',
 		justifyContent: 'flex-start',
-		width: width * 0.8,
-		paddingBottom: 20
-	},
-	modalInnerContainerAuto: {
-		flexDirection: 'column',
-		justifyContent: 'flex-start',
-		width: width * 0.8,
-		height: 'auto',
+		width: width * 0.9,
 		paddingBottom: 20
 	},
 	flexRight: {
@@ -74,7 +68,7 @@ const styles = StyleSheet.create<Style>({
 		fontSize: 29,
 		fontFamily: 'RobotoCondensed-Regular',
 		paddingBottom: 10,
-		paddingRight: width * 0.05
+		paddingRight: width * 0.1
 	},
 	descriptionText: {
 		color: ThemeColors.white,
@@ -119,6 +113,14 @@ const styles = StyleSheet.create<Style>({
 		fontSize: 15,
 		textDecorationLine: 'underline',
 		textAlign: 'center'
+	},
+	overlayContainer: {
+		position: 'absolute',
+		width,
+		height,
+		backgroundColor: ThemeColors.black,
+		zIndex: 4,
+		opacity: 0.6
 	}
 });
 

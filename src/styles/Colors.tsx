@@ -15,7 +15,8 @@ const ThemeColors = {
 	orange: '#F89D28',
 	green: '#5AB946',
 	progressRed: '#E2223B',
-	progressNotCounted: '#033C50'
+	progressNotCounted: '#033C50',
+	modalBackground: '#012639'
 };
 
 const ButtonDark = {

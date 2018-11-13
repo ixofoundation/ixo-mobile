@@ -103,7 +103,7 @@
 	},
 	"submittedClaims": {
 		"successMessage": "Your claim has been successfully submitted",
-		"successDetailedMessage": "Your claim has been successfully submitted and is awaiting evaluation. Please check back soon.",
+		"successDetailedMessage": "Your claim is awaiting evaluation. Please check back soon.",
 		"rejectMessage": "There has been an error submitting your claim",
 		"rejectDetailedMessage": "Your claim has been saved. Please try again later."
 	},

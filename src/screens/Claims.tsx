@@ -1,4 +1,4 @@
-import { Container, Content, Icon, Tab, Tabs, TabHeading, Text, View } from 'native-base';
+import { Container, Content, Tab, Tabs, TabHeading, Text, View } from 'native-base';
 import * as React from 'react';
 import moment from 'moment';
 import _ from 'underscore';
@@ -20,15 +20,15 @@ import { decode as base64Decode } from 'base-64';
 import { showToast, toastType } from '../utils/toasts';
 import LightButton from '../components/LightButton';
 import Banner from '../components/Banner';
-import CustomIcon from '../components/svg/CustomIcons';
 
-const { height } = Dimensions.get('window');
 const background = require('../../assets/background_2.png');
 const addClaims = require('../../assets/savedclaims-visual.png');
 const submittedClaims = require('../../assets/submittedclaims-visual.png');
 const approvedIcon = require('../../assets/icon-approved.png');
 const rejectedIcon = require('../../assets/icon-rejected.png');
 const pendingIcon = require('../../assets/icon-pending.png');
+
+const { width, height } = Dimensions.get('window');
 
 enum ClaimStatus {
 	Pending = '0',
@@ -54,7 +54,6 @@ export interface StateProps {
 	project?: IProject;
 	savedProjectsClaims: IProjectsClaimsSaved[];
 	online?: boolean;
-	isModalVisible?: boolean;
 }
 
 export interface StateProps {
@@ -119,11 +118,11 @@ class Claims extends React.Component<Props, StateProps> {
 			},
 			headerRight: (
 				<View style={ContainerStyles.flexRow}>
-					<CustomIcon name="search" style={{ paddingRight: 10, color: ThemeColors.white }} size={height * 0.03} />
+					{/* <CustomIcon name="search" style={{ paddingRight: 10, color: ThemeColors.white }} size={height * 0.03} /> */}
 					<HeaderSync navigation={navigation} screenProps={screenProps} />
 				</View>
 			),
-			title: projectName,
+			title: (projectName.length > 18) ? `${projectName.substring(0, 14)}...` : projectName,
 			headerTitleStyle: {
 				color: ThemeColors.white,
 				textAlign: 'center',
@@ -330,7 +329,7 @@ class Claims extends React.Component<Props, StateProps> {
 		);
 	}
 
-	renderdynamics() {
+	renderConnectivity() {
 		if (this.props.online) return null;
 		return <Banner text={this.props.screenProps.t('dynamics:offlineMode')} />;
 	}
@@ -339,8 +338,8 @@ class Claims extends React.Component<Props, StateProps> {
 		const projectClaims: IProjectsClaimsSaved = this.props.savedProjectsClaims[this.projectDid];
 		const numberOfSavedClaims: number = projectClaims && projectClaims.claims ? Object.keys(projectClaims.claims).length : 0;
 		return (
-			<Container style={this.props.isModalVisible ? { backgroundColor: ThemeColors.blue_dark, opacity: 0.6 } : { backgroundColor: ThemeColors.blue_dark }}>
-				{this.renderdynamics()}
+			<Container>
+				{this.renderConnectivity()}
 				<StatusBar barStyle="light-content" />
 				<Tabs
 					tabBarUnderlineStyle={{ backgroundColor: ThemeColors.blue_lightest, height: 1 }}
@@ -404,8 +403,7 @@ function mapStateToProps(state: PublicSiteStoreState) {
 		firstTimeClaim: state.userStore.isFirstClaim,
 		project: state.projectsStore.selectedProject,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
-		online: state.dynamicsStore.online,
-		isModalVisible: state.dynamicsStore.isModalVisible
+		online: state.dynamicsStore.online
 	};
 }
 

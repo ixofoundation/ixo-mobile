@@ -46,7 +46,6 @@ export interface StateProps {
 	user?: IUser;
 	savedProjectsClaims?: IProjectsClaimsSaved[];
 	online?: boolean;
-	isModalVisible?: boolean;
 }
 
 export interface StateProps {
@@ -84,7 +83,7 @@ export class Projects extends React.Component<Props, StateProps> {
 			headerLeft: <CustomIcon name="menu" onPress={() => params.openDrawer()} style={{ paddingLeft: 10, color: ThemeColors.white }} size={height * 0.03} />,
 			headerRight: (
 				<View style={ContainerStyles.flexRow}>
-					<CustomIcon name="search" style={{ paddingRight: 10, color: ThemeColors.white }} size={height * 0.03} />
+					{/* <CustomIcon name="search" style={{ paddingRight: 10, color: ThemeColors.white }} size={height * 0.03} /> */}
 					<HeaderSync navigation={null} screenProps={screenProps} />
 				</View>
 			)
@@ -309,7 +308,7 @@ export class Projects extends React.Component<Props, StateProps> {
 	renderNoProjectsView() {
 		return (
 			<Content
-				style={this.props.isModalVisible ? { backgroundColor: ThemeColors.blue_dark, opacity: 0.6 } : { backgroundColor: ThemeColors.blue_dark }} // TODO modal stuff comes here
+				style={{ backgroundColor: ThemeColors.blue_dark }} // TODO modal stuff comes here
 				refreshControl={<RefreshControl refreshing={this.state.isRefreshing} onRefresh={() => this.refreshProjects()} />}
 				// @ts-ignore
 				onScroll={event => this._onScroll(event)}
@@ -401,8 +400,7 @@ function mapStateToProps(state: PublicSiteStoreState) {
 		user: state.userStore.user,
 		projects: state.projectsStore.projects,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
-		online: state.dynamicsStore.online,
-		isModalVisible: state.dynamicsStore.isModalVisible
+		online: state.dynamicsStore.online
 	};
 }
 
