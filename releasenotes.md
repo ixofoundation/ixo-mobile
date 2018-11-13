@@ -74,7 +74,21 @@
 **bug/IXOQ-420** Saved claims: update subheader
 **bug/IXOQ-424** Mobile claim form does not match claim form on web
 
-** not submitted yet
+## 2018-11-13
+***
+### __Android__ (build v1.0.5)
+**bug/IXOQ-425** Update submit a claim - success screen
+**bug/IXOQ-428** Reduce line spacing: Claims submitted screen
+**bug/IXOQ-431** Remove Magnifying Glass/search function
+**bug/IXOQ-427** Reduce proj title text size in header to fit in screen
+**bug/IXOQ-421** Mnemonic login: allow user to scroll through entered mnemonic
+**bug/IXOQ-295** Fade out background: Submit saved claims
+**bug/IXOQ-281** App login: Scan QR code - no incorrect password error
+**bug/IXOQ-288** Change App 'login' screen after user registration in the app
+**bug/IXOQ-414** Register on app: Include email as required field
+**bug/IXOQ-410** Keysafe login: No incorrect password error
+
+### __iOS__ (build v1.0.5)
 **bug/IXOQ-425** Update submit a claim - success screen
 **bug/IXOQ-428** Reduce line spacing: Claims submitted screen
 **bug/IXOQ-431** Remove Magnifying Glass/search function
