@@ -16,7 +16,7 @@ interface InputFieldOptions {
 	label: string;
 	password?: boolean;
 	onChangeText: Function;
-	containerStyle: ViewStyle;
+	containerStyle?: ViewStyle;
 	onSuffixImagePress?: Function;
 	underlinePositionRatio?: number;
 }
@@ -41,27 +41,27 @@ interface State {}
 export interface Props extends ParentProps {}
 
 export default class CustomModal extends React.Component<Props, State> {
-	renderInputFields() {
-		if (this.props.inputFieldOptions) {
+	renderHeadingImage() {
+		if (this.props.headingImage) {
+			return <View style={[ModalStyle.flexCenter]}>{this.props.headingImage}</View>;
+		}
+		return null;
+	}
+
+	renderHeadingText() {
+		if (this.props.heading) {
 			return (
-				<InputField
-					onSuffixImagePress={this.props.inputFieldOptions.onSuffixImagePress}
-					containerStyle={this.props.inputFieldOptions.containerStyle}
-					prefixIcon={this.props.inputFieldOptions.prefixImage}
-					password={this.props.inputFieldOptions.password}
-					suffixIcon={this.props.inputFieldOptions.suffixImage}
-					labelName={this.props.inputFieldOptions.label}
-					onChangeText={(text: string) => this.props.inputFieldOptions.onChangeText(text)}
-					underlinePositionRatio={this.props.inputFieldOptions.underlinePositionRatio}
-				/>
+				<View style={ModalStyle.flexLeft}>
+					<Text style={[ModalStyle.headingText, this.props.headingTextStyle]}>{this.props.heading}</Text>
+				</View>
 			);
 		}
 		return null;
 	}
 
-	renderHeadingImage() {
-		if (this.props.headingImage) {
-			return <View style={[ModalStyle.flexCenter]}>{this.props.headingImage}</View>;
+	renderDivider() {
+		if (this.props.heading) {
+			return <View style={ModalStyle.divider} />;
 		}
 		return null;
 	}
@@ -85,20 +85,20 @@ export default class CustomModal extends React.Component<Props, State> {
 		return null;
 	}
 
-	renderHeadingText() {
-		if (this.props.heading) {
+	renderInputFields() {
+		if (this.props.inputFieldOptions) {
 			return (
-				<View style={ModalStyle.flexLeft}>
-					<Text style={[ModalStyle.headingText, this.props.headingTextStyle]}>{this.props.heading}</Text>
-				</View>
+				<InputField
+					onSuffixImagePress={this.props.inputFieldOptions.onSuffixImagePress}
+					containerStyle={this.props.inputFieldOptions.containerStyle}
+					prefixIcon={this.props.inputFieldOptions.prefixImage}
+					password={this.props.inputFieldOptions.password}
+					suffixIcon={this.props.inputFieldOptions.suffixImage}
+					labelName={this.props.inputFieldOptions.label}
+					onChangeText={(text: string) => this.props.inputFieldOptions.onChangeText(text)}
+					underlinePositionRatio={this.props.inputFieldOptions.underlinePositionRatio}
+				/>
 			);
-		}
-		return null;
-	}
-
-	renderDivider() {
-		if (this.props.heading) {
-			return <View style={ModalStyle.divider} />;
 		}
 		return null;
 	}

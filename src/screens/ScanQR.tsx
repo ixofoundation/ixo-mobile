@@ -167,6 +167,10 @@ export class ScanQR extends React.Component<Props, State> {
 	}
 
 	handleUnlockPayload = () => {
+		if (!this.state.password || this.state.password === '') {
+			showToast(this.props.screenProps.t('scanQR:missingField'), toastType.DANGER);
+			return;
+		}
 		this.setState({ loading: true });
 		if (this.state.payload && this.state.password) {
 			try {

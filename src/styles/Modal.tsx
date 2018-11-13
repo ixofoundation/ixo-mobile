@@ -108,7 +108,7 @@ const styles = StyleSheet.create<Style>({
 		fontSize: 30
 	},
 	infoText: {
-		marginTop: 10,
+		marginVertical: 10,
 		color: ThemeColors.blue_lightest,
 		fontSize: 15,
 		textDecorationLine: 'underline',

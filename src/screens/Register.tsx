@@ -10,7 +10,6 @@ import _ from 'underscore';
 import { env } from '../config';
 import DarkButton from '../components/DarkButton';
 import InputField from '../components/InputField';
-import LightButton from '../components/LightButton';
 import { LocalStorageKeys, UserStorageKeys } from '../models/phoneStorage';
 import { IUser } from '../models/user';
 import { SecureStorageKeys } from '../models/phoneStorage';
@@ -279,7 +278,6 @@ class Register extends React.Component<Props, StateTypes> {
 							onChangeText={(text: string) => this.setState({ username: text })}
 						/>
 						<InputField
-							password={true}
 							value={this.state.email}
 							labelName={this.props.screenProps.t('register:yourEmail')}
 							onChangeText={(text: string) => this.setState({ email: text })}

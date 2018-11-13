@@ -232,11 +232,11 @@ export class Login extends React.Component<Props, StateTypes> {
 					<View style={LoginStyles.divider} />
 				</View>
 				<View style={LoginStyles.flexLeft}>
-					<Text style={LoginStyles.infoBox}>{this.props.screenProps.t('login:attention')} </Text>
+					<Text style={LoginStyles.infoBoxLong}>{this.props.screenProps.t('login:secure')} </Text>
 				</View>
-				<View style={LoginStyles.flexLeft}>
+				{/* <View style={LoginStyles.flexLeft}>
 					<Text style={[LoginStyles.infoBoxLong]}>{this.props.screenProps.t('login:secure')} </Text>
-				</View>
+				</View> */}
 				<InputField
 					containerStyle={{ flex: 0.3, marginBottom: 30 }}
 					prefixIcon={<CustomIcon name="lock" style={LoginStyles.inputIcons} />}
