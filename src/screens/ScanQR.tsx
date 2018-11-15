@@ -123,7 +123,7 @@ export class ScanQR extends React.Component<Props, State> {
 	static navigationOptions = ({ screenProps }: { screenProps: any }) => {
 		return {
 			headerStyle: ScanQRStyles.headerStyle,
-			headerRight: <Icon style={{ paddingRight: 10, color: ThemeColors.white }} name="flash" />,
+			headerRight: <CustomIcons size={height * 0.03} style={{ paddingRight: 10, color: ThemeColors.white }} name="flash" />,
 			title: screenProps.t('scanQR:scan'),
 			headerTitleStyle: ScanQRStyles.headerTitleStyle,
 			headerTintColor: ThemeColors.white
@@ -167,6 +167,10 @@ export class ScanQR extends React.Component<Props, State> {
 	}
 
 	handleUnlockPayload = () => {
+		if (!this.state.password || this.state.password === '') {
+			showToast(this.props.screenProps.t('scanQR:missingField'), toastType.DANGER);
+			return;
+		}
 		this.setState({ loading: true });
 		if (this.state.payload && this.state.password) {
 			try {
@@ -174,7 +178,6 @@ export class ScanQR extends React.Component<Props, State> {
 				// @ts-ignore
 				SInfo.setItem(SecureStorageKeys.encryptedMnemonic, this.state.payload!, {});
 				// @ts-ignore
-				SInfo.setItem(SecureStorageKeys.password, this.state.password!, {});
 				AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true');
 
 				const user: IUser = {
@@ -187,10 +190,11 @@ export class ScanQR extends React.Component<Props, State> {
 				AsyncStorage.setItem(UserStorageKeys.verifyKey, user.verifyKey);
 
 				this.props.onUserInit(user);
-				this.props.navigation.dispatch(StackActions.reset({ index: 0, actions: [NavigationActions.navigate({ routeName: 'Login' })] }));
+				this.resetStateVars();
+				this.props.navigation.navigate('Login');
 			} catch (exception) {
-				console.log(exception);
-				this.setState({ errors: true, loading: false });
+				showToast(this.props.screenProps.t('scanQR:keysafePasswordWrong'), toastType.WARNING);
+				this.setState({ loading: false });
 			}
 		} else {
 			this.setState({ errors: true, loading: false });
@@ -286,7 +290,10 @@ export class ScanQR extends React.Component<Props, State> {
 					loading={this.state.loading}
 					buttonText={this.props.screenProps.t('scanQR:rescan')}
 					heading={this.props.screenProps.t('scanQR:scanFailed')}
-					onPressInfo={() => this.props.navigation.dispatch(registerAction)}
+					onPressInfo={() => {
+						this.resetStateVars();
+						this.props.navigation.dispatch(registerAction);
+					}}
 				/>
 			);
 		}
@@ -299,7 +306,10 @@ export class ScanQR extends React.Component<Props, State> {
 				buttonText={this.props.screenProps.t('scanQR:rescan')}
 				heading={this.props.screenProps.t('scanQR:scanFailed')}
 				infoText={this.props.screenProps.t('scanQR:registered')}
-				onPressInfo={() => this.props.navigation.dispatch(registerAction)}
+				onPressInfo={() => {
+					this.resetStateVars();
+					this.props.navigation.navigate('Register');
+				}}
 			/>
 		);
 	}
@@ -347,8 +357,13 @@ export class ScanQR extends React.Component<Props, State> {
 				return (
 					<GenericModal
 						headingTextStyle={{ color: ThemeColors.white }}
-						onPressButton={() => this.navigateToProjects()}
-						onClose={() => this.resetStateVars()}
+						onPressButton={() => {
+							this.navigateToProjects();
+						}}
+						onClose={() => {
+							this.resetStateVars();
+							this.navigateToProjects();
+						}}
 						paragraph={this.props.screenProps.t('scanQR:serviceProviderMessage')}
 						loading={this.state.loading}
 						headingImage={<IconServiceProviders height={height * 0.1} width={width * 0.2} />}
@@ -372,6 +387,7 @@ export class ScanQR extends React.Component<Props, State> {
 				buttonText={this.props.screenProps.t('connectIXOComplete:unlockButtonText')}
 				heading={this.props.screenProps.t('connectIXOComplete:scanSuccessful')}
 				inputFieldOptions={{
+					underlinePositionRatio: 0.05,
 					onChangeText: (password: string) =>
 						this.setState({
 							password
@@ -380,12 +396,10 @@ export class ScanQR extends React.Component<Props, State> {
 					label: this.props.screenProps.t('scanQR:password'),
 					prefixImage: <Image resizeMode={'contain'} style={ModalStyle.inputFieldPrefixImage} source={keysafelogo} />,
 					suffixImage: (
-						<TouchableOpacity onPress={() => this.setState({ revealPassword: !this.state.revealPassword })}>
-							<View style={{ position: 'relative', top: height * 0.01 }}>
-								<CustomIcons name="eyeoff" size={width * 0.06} style={{ color: ThemeColors.blue_lightest }} />
-							</View>
-						</TouchableOpacity>
-					)
+						<CustomIcons name="eyeoff" size={width * 0.06} style={{ color: ThemeColors.blue_lightest }} />
+					),
+					onSuffixImagePress: () => this.setState({ revealPassword: !this.state.revealPassword }),
+					containerStyle: { flex: 1, marginVertical: height * 0.03 }
 				}}
 			/>
 		);
@@ -393,7 +407,7 @@ export class ScanQR extends React.Component<Props, State> {
 
 	render() {
 		return (
-			<View style={this.state.modalVisible ? [ScanQRStyles.wrapper, ModalStyle.modalBackgroundOpacity] : [ScanQRStyles.wrapper]}>
+			<View style={[ScanQRStyles.wrapper]}>
 				<StatusBar barStyle="light-content" />
 				<Modal onRequestClose={() => null} animationType="slide" transparent={true} visible={this.state.modalVisible}>
 					{this.projectScan ? this.renderProjectScanned() : this.renderKeySafeScannedModal()}
@@ -410,7 +424,6 @@ export class ScanQR extends React.Component<Props, State> {
 				</RNCamera>
 			</View>
 		);
-		// }
 	}
 }
 

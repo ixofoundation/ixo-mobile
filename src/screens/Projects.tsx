@@ -2,7 +2,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 import { showToast, toastType } from '../utils/toasts';
 import { SDGArray } from '../models/sdg';
-import { Container, Content, Drawer, Header, Icon, Text, View, Fab } from 'native-base';
+import { Container, Content, Drawer, Header, Text, View, Fab } from 'native-base';
 import * as React from 'react';
 import { Dimensions, Image, ImageBackground, RefreshControl, StatusBar, TouchableOpacity, ActivityIndicator, YellowBox } from 'react-native';
 import { connect } from 'react-redux';
@@ -83,8 +83,8 @@ export class Projects extends React.Component<Props, StateProps> {
 			headerLeft: <CustomIcon name="menu" onPress={() => params.openDrawer()} style={{ paddingLeft: 10, color: ThemeColors.white }} size={height * 0.03} />,
 			headerRight: (
 				<View style={ContainerStyles.flexRow}>
-					<CustomIcon name="search" style={{ paddingRight: 10, color: ThemeColors.white }} size={height * 0.03} />
-					<HeaderSync screenProps={screenProps} />
+					{/* <CustomIcon name="search" style={{ paddingRight: 10, color: ThemeColors.white }} size={height * 0.03} /> */}
+					<HeaderSync navigation={null} screenProps={screenProps} />
 				</View>
 			)
 		};
@@ -214,7 +214,6 @@ export class Projects extends React.Component<Props, StateProps> {
 		return (
 			<React.Fragment>
 				{this.state.projects.map((project: IProject) => {
-					console.log(project);
 					return (
 						<TouchableOpacity
 							onPress={() => {
@@ -309,7 +308,7 @@ export class Projects extends React.Component<Props, StateProps> {
 	renderNoProjectsView() {
 		return (
 			<Content
-				style={{ backgroundColor: ThemeColors.blue_dark }}
+				style={{ backgroundColor: ThemeColors.blue_dark }} // TODO modal stuff comes here
 				refreshControl={<RefreshControl refreshing={this.state.isRefreshing} onRefresh={() => this.refreshProjects()} />}
 				// @ts-ignore
 				onScroll={event => this._onScroll(event)}
@@ -364,14 +363,15 @@ export class Projects extends React.Component<Props, StateProps> {
 		);
 	}
 
-	renderConnectivity() {
+	renderdynamics() {
 		if (this.props.online) return null;
-		return <Banner text={this.props.screenProps.t('connectivity:offlineMode')} />;
+		return <Banner text={this.props.screenProps.t('dynamics:offlineMode')} />;
 	}
 
 	render() {
 		return (
 			<Drawer
+				// styles={{ opacity: 0.7 }}
 				ref={ref => {
 					// @ts-ignore
 					this.drawer = ref;
@@ -379,7 +379,7 @@ export class Projects extends React.Component<Props, StateProps> {
 				content={<SideBar screenProps={this.props.screenProps} navigation={this.props.navigation} />}
 				onClose={() => this.closeDrawer()}
 			>
-				{this.renderConnectivity()}
+				{this.renderdynamics()}
 				{this.state.projects.length > 0 ? this.renderNoProjectsView() : this.renderProjectsView()}
 				<Fab
 					direction="up"
@@ -400,7 +400,7 @@ function mapStateToProps(state: PublicSiteStoreState) {
 		user: state.userStore.user,
 		projects: state.projectsStore.projects,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
-		online: state.connectivityStore.online
+		online: state.dynamicsStore.online
 	};
 }
 

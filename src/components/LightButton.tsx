@@ -4,17 +4,19 @@ import { Text, View } from 'native-base';
 
 import { ThemeColors } from '../styles/Colors';
 
-const LightButton = ({ onPress, text = '?', propStyles = {} }: { onPress: any; text: string; propStyles?: any }) => (
+const defaultTextStyle = {
+	backgroundColor: 'transparent',
+	fontSize: 15,
+	color: ThemeColors.white,
+	fontWeight: '400',
+	fontFamily: 'RobotoCondensed-Regular'
+};
+
+const LightButton = ({ onPress, text = '?', propStyles = {}, textStyles = {} }: { onPress: any; text: string; propStyles?: any; textStyles?: any }) => (
 	<TouchableOpacity onPress={onPress} style={{ width: '100%' }}>
 		<View style={[styles.buttonStyle, propStyles]}>
 			<Text
-				style={{
-					backgroundColor: 'transparent',
-					fontSize: 15,
-					color: ThemeColors.white,
-					fontWeight: '400',
-					fontFamily: 'RobotoCondensed-Regular'
-				}}
+				style={(textStyles) ? [defaultTextStyle, textStyles] : [defaultTextStyle]}
 			>
 				{text}
 			</Text>

@@ -131,12 +131,12 @@ const styles = StyleSheet.create<Style>({
 	claimHeadingContainer: {
 		flexDirection: 'row',
 		flex: 1,
-		alignItems: 'center'
+		alignItems: 'center',
+		marginTop: height * 0.04,
 	},
 	claimHeadingText: {
 		fontFamily: 'RobotoCondensed-Regular',
 		color: ThemeColors.white,
-		marginVertical: height * 0.04,
 		paddingLeft: 10
 	},
 	tabCounterContainer: {

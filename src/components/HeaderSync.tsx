@@ -8,13 +8,14 @@ import HeaderSyncStyles from '../styles/componentStyles/HeaderSync';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
 import { IClaimSaved } from '../models/project';
+import { toggleClaimsSubmitted } from '../redux/dynamics/dynamics_action_creators';
 import { removeClaim } from '../redux/claims/claims_action_creators';
 import { getSignature } from '../utils/sovrin';
 import { showToast, toastType } from '../utils/toasts';
-
-import ModalSubmitClaims from '../components/ModalSubmitClaims';
+import GenericModal from '../components/GenericModal';
 interface ParentProps {
 	screenProps: any;
+	navigation: any | null;
 }
 export interface StateProps {
 	modalVisible?: boolean;
@@ -22,6 +23,7 @@ export interface StateProps {
 }
 export interface DispatchProps {
 	onRemoveClaim: (claimId: any, projectDid: string) => void;
+	onClaimsSubmitted: (claimSubmitted: boolean) => void;
 }
 export interface StateProps {
 	savedProjectsClaims?: IProjectsClaimsSaved[];
@@ -70,7 +72,7 @@ class HeaderSync extends React.Component<Props, StateProps> {
 	onSubmitAll = () => {
 		this.toggleSpinnerAnimation(true);
 		const projectClaims = this.props.savedProjectsClaims;
-		const promises: Promise<any>[] = [];
+		const promises = [];
 		if (projectClaims) {
 			Object.keys(projectClaims).map((key: any) => {
 				if ('claims' in projectClaims[key]) {
@@ -80,6 +82,7 @@ class HeaderSync extends React.Component<Props, StateProps> {
 			});
 			Promise.all(promises).then(() => {
 				this.toggleSpinnerAnimation(false);
+				this.props.onClaimsSubmitted(true);
 			});
 		}
 	}
@@ -87,8 +90,8 @@ class HeaderSync extends React.Component<Props, StateProps> {
 	handleSubmitAllClaimsOfProject(projectClaims: IProjectsClaimsSaved) {
 		return new Promise((resolve, reject) => {
 			try {
-				let claims: any = projectClaims.claims;
-				let promises: Promise<any>[] = [];
+				const claims: any = projectClaims.claims;
+				const promises = [];
 				Object.keys(claims).map((key: any) => {
 					promises.push(this.handleSubmitClaim(claims[key], projectClaims, JSON.parse(projectClaims.formFile)));
 				});
@@ -105,7 +108,7 @@ class HeaderSync extends React.Component<Props, StateProps> {
 	handleSubmitClaim(claim: IClaimSaved, projectClaims: IProjectsClaimsSaved, formFile: any): Promise<any> {
 		return new Promise((resolve, reject) => {
 			try {
-				let promises: Promise<any>[] = [];
+				const promises = [];
 				formFile.fields.forEach((field: any) => {
 					if (field.type === 'image') {
 						if (claim.claimData[field.name] && claim.claimData[field.name].length > 0) {
@@ -130,7 +133,7 @@ class HeaderSync extends React.Component<Props, StateProps> {
 	}
 
 	handleUploadToPDS = (claimData: any, claimId: string, projectClaims: IProjectsClaimsSaved) => {
-		let claimPayload = Object.assign(claimData);
+		const claimPayload = Object.assign(claimData);
 		claimPayload['projectDid'] = projectClaims.projectDid;
 
 		getSignature(claimPayload)
@@ -152,11 +155,18 @@ class HeaderSync extends React.Component<Props, StateProps> {
 	render() {
 		const numberOfSavedClaims = this.calculateTotalSavedClaims();
 		return numberOfSavedClaims === 0 ? null : (
-			<TouchableOpacity onPress={() => this.setState({ modalVisible: true })} style={[ContainerStyles.flexRow, HeaderSyncStyles.headerSync]}>
+			<TouchableOpacity onPress={() => { this.setState({ modalVisible: true }); }} style={[ContainerStyles.flexRow, HeaderSyncStyles.headerSync]}>
 				<Text style={HeaderSyncStyles.claimsAmount}>{numberOfSavedClaims}</Text>
 				<AnimatedIcon style={[HeaderSyncStyles.syncIcon, { transform: [{ rotate: this.spin }] }]} ios="ios-sync" android="md-sync" />
 				<Modal animationType="slide" transparent={true} visible={this.state.modalVisible}>
-					<ModalSubmitClaims onSubmit={() => this.onSubmitAll()} onClose={() => this.setState({ modalVisible: false })} screenProps={this.props.screenProps} />
+					<GenericModal
+						onPressButton={() => this.onSubmitAll()}
+						onClose={() => { this.setState({ modalVisible: false }); }}
+						paragraph={this.props.screenProps.t('claims:submitAllDiscription')}
+						loading={false}
+						buttonText={this.props.screenProps.t('claims:submit')}
+						heading={this.props.screenProps.t('claims:submitAllClaims')}
+					/>
 				</Modal>
 			</TouchableOpacity>
 		);
@@ -174,6 +184,9 @@ function mapDispatchToProps(dispatch: any): DispatchProps {
 	return {
 		onRemoveClaim: (claimId: any, projectDid: string) => {
 			dispatch(removeClaim(claimId, projectDid));
+		},
+		onClaimsSubmitted: (claimSubmitted: boolean) => {
+			dispatch(toggleClaimsSubmitted(claimSubmitted));
 		}
 	};
 }

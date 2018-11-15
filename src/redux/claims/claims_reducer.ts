@@ -11,10 +11,10 @@ export interface IProjectsClaimsSaved {
 	claims?: IClaimSaved[];
 }
 
-export type IClaimsModelState = {
+export interface IClaimsModelState {
 	savedProjectsClaims: IProjectsClaimsSaved[];
 	selectedSavedClaim?: IClaimSaved;
-};
+}
 
 const initialState: IClaimsModelState = {
 	savedProjectsClaims: []
@@ -61,6 +61,7 @@ export let claimsReducer = createReducer<IClaimsModelState>(initialState, [
 								claimData: action.claimData,
 								claimId: action.claimId,
 								date: new Date(),
+								updated: true,
 							}
 						}
 					}

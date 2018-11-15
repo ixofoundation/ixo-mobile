@@ -12,6 +12,7 @@ interface Style {
 	backNavigatorButton: TextStyle;
 	claimNavigatorButton: TextStyle;
 	nextNavigatorButton: TextStyle;
+	actionButtonWrapper: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -63,6 +64,12 @@ const styles = StyleSheet.create<Style>({
 		color: ThemeColors.blue_light,
 		paddingRight: 10,
 		fontFamily: 'RobotoCondensed-Regular'
+	},
+	actionButtonWrapper: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		paddingHorizontal: 10,
+		alignItems: 'center'
 	}
 });
 

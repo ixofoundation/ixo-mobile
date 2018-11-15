@@ -30,7 +30,10 @@ const styles = StyleSheet.create<Style>({
 	selectedBox: {
 		borderColor: ThemeColors.blue_lightest,
 		borderWidth: 1,
-		justifyContent: 'center'
+		justifyContent: 'flex-start',
+		flexDirection: 'column',
+		alignItems: 'flex-start',
+		alignContent: 'flex-start',
 	},
 	header: {
 		color: ThemeColors.blue_lightest,

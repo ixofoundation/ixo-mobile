@@ -37,11 +37,12 @@ const styles = StyleSheet.create<Style>({
 		fontSize: height * 0.02
 	},
 	userBox: {
+		paddingTop: height * 0.01,
 		justifyContent: 'flex-start',
-		width: '100%',
-		marginTop: height * 0.1
+		width: '100%'
 	},
 	userName: {
+		marginBottom: height * 0.01,
 		fontSize: height * 0.03,
 		color: ThemeColors.white,
 		textAlign: 'left'

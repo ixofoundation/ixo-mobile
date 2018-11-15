@@ -30,7 +30,7 @@ export default class OnBoarding extends React.Component<ParentProps> {
 
 	componentDidMount() {
 		if (__DEV__) {
-			AsyncStorage.clear();
+			// AsyncStorage.clear();
 		}
 		AsyncStorage.getItem(LocalStorageKeys.firstLaunch, (error: any, firstLaunch: string | undefined) => {
 			if (!firstLaunch || error) {
@@ -115,7 +115,7 @@ export default class OnBoarding extends React.Component<ParentProps> {
 					return element;
 				});
 			case 2:
-				return [<View key={0} />, <View key={1} />, <ConnectIXO key={3} navigation={this.props.navigation} screenProps={this.props.screenProps} />].map(
+				return [<View key={0} />, <View key={1} />, <ConnectIXO key={2} navigation={this.props.navigation} screenProps={this.props.screenProps} />].map(
 					(element: JSX.Element) => {
 						return element;
 					}
@@ -131,6 +131,7 @@ export default class OnBoarding extends React.Component<ParentProps> {
 				<View style={OnBoardingStyles.wrapper}>
 					<StatusBar barStyle="light-content" />
 					<Swiper
+						loop={false}
 						ref={swiper => (swiperRef = swiper)}
 						onIndexChanged={(index: number) => this.setState({ swiperIndex: index })}
 						scrollEnabled={true}

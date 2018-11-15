@@ -1,44 +1,25 @@
 import { Toast, Text } from 'native-base';
 import SInfo from 'react-native-sensitive-info';
 import * as React from 'react';
-import {
-	AsyncStorage,
-	Dimensions,
-	Image,
-	ImageBackground,
-	KeyboardAvoidingView,
-	Platform,
-	StatusBar,
-	TouchableOpacity,
-	View,
-	Alert,
-	ActivityIndicator
-} from 'react-native';
+import { AsyncStorage, Image, KeyboardAvoidingView, Platform, StatusBar, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { connect } from 'react-redux';
-import IconEyeOff from '../components/svg/IconEyeOff';
 import DarkButton from '../components/DarkButton';
 import { SecureStorageKeys, UserStorageKeys } from '../models/phoneStorage';
 import { IUser } from '../models/user';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
-import { initUser } from '../redux/user/user_action_creators';
+import { initUser, userSetPassword } from '../redux/user/user_action_creators';
 import { ThemeColors } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
 import LoginStyles from '../styles/Login';
-import { InputField } from '../components/InputField';
+import InputField from '../components/InputField';
+import Video from 'react-native-video';
+import CustomIcon from '../components/svg/CustomIcons';
+import { showToast, toastType } from '../utils/toasts';
 
-const { width } = Dimensions.get('window');
 const logo = require('../../assets/logo.png');
-const background = require('../../assets/background_1.png');
+const globe = require('../../assets/globe.mp4');
 const IconFingerprint = require('../../assets/iconFingerprint.png');
-
-const LogoView = () => (
-	<View style={ContainerStyles.flexColumn}>
-		<View style={ContainerStyles.flexRow}>
-			<Image resizeMode={'contain'} style={LoginStyles.logo} source={logo} />
-		</View>
-	</View>
-);
 
 interface ParentProps {
 	navigation: any;
@@ -52,13 +33,17 @@ interface StateTypes {
 	password: string;
 	loading: boolean;
 	userName: string;
+	existingUser: boolean;
 }
+
 export interface DispatchProps {
 	onUserInit: (user: IUser) => void;
+	onUserPasswordSet: () => void;
 }
 
 export interface StateProps {
 	user?: IUser;
+	isPasswordSet: boolean;
 }
 
 export interface Props extends ParentProps, StateProps, DispatchProps {}
@@ -70,7 +55,8 @@ export class Login extends React.Component<Props, StateTypes> {
 		compatible: false,
 		fingerprints: false,
 		loading: false,
-		userName: ''
+		userName: '',
+		existingUser: false
 	};
 
 	componentDidMount() {
@@ -179,44 +165,112 @@ export class Login extends React.Component<Props, StateTypes> {
 			});
 	}
 
+	setPassword() {
+		if (this.state.password.length < 8) {
+			showToast(this.props.screenProps.t('register:passwordShort'), toastType.WARNING);
+			return;
+		}
+		// @ts-ignore
+		SInfo.setItem(SecureStorageKeys.password, this.state.password!, {});
+		this.props.onUserPasswordSet();
+		this.props.navigation.dispatch(
+			StackActions.reset({
+				index: 0,
+				actions: [NavigationActions.navigate({ routeName: 'Projects' })]
+			})
+		);
+	}
+
+	renderExistingUser() {
+		return (
+			<KeyboardAvoidingView behavior={'position'} enabled={Platform.OS === 'ios'}>
+				<View style={[ContainerStyles.flexRow, LoginStyles.logoContainer]}>
+					<Image resizeMode={'contain'} style={LoginStyles.logo} source={logo} />
+				</View>
+				<InputField
+					containerStyle={{ flex: 0.1, marginBottom: 30 }}
+					prefixIcon={<CustomIcon name="lock" style={LoginStyles.inputIcons} />}
+					suffixIcon={
+						<TouchableOpacity onPress={() => this.revealPassword()}>
+							<CustomIcon name="eyeoff" style={LoginStyles.inputIcons} />
+						</TouchableOpacity>
+					}
+					underlinePositionRatio={0.03}
+					labelName={this.props.screenProps.t('login:password')}
+					onChangeText={(password: string) => this.setState({ password })}
+					password={this.state.revealPassword}
+				/>
+				<View style={[{ flex: 0.2 }]}>
+					{this.state.loading ? (
+						<ActivityIndicator color={ThemeColors.blue_medium} />
+					) : (
+						<DarkButton text={this.props.screenProps.t('login:signIn')} onPress={() => this.signIn()} />
+					)}
+				</View>
+				<TouchableOpacity onPress={() => this.props.navigation.navigate('Recover')}>
+					<Text style={LoginStyles.recover}>{this.props.screenProps.t('login:recover')}</Text>
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={[ContainerStyles.flexRow, { flex: 0.1, marginVertical: 20 }]}
+					onPress={() => (Platform.OS === 'android' ? this.showAndroidAlert() : this.scanFingerprint())}
+				>
+					<Image resizeMode={'contain'} style={LoginStyles.fingerImage} source={IconFingerprint} />
+				</TouchableOpacity>
+			</KeyboardAvoidingView>
+		);
+	}
+
+	renderNewUser() {
+		return (
+			<KeyboardAvoidingView behavior={'position'} enabled={Platform.OS === 'ios'} style={{ flex: 1, justifyContent: 'flex-end' }}>
+				<View style={[LoginStyles.flexLeft]}>
+					<Text style={LoginStyles.header}>
+						{this.props.screenProps.t('login:hi')} {this.state.userName}
+					</Text>
+				</View>
+				<View style={{ width: '100%' }}>
+					<View style={LoginStyles.divider} />
+				</View>
+				<View style={LoginStyles.flexLeft}>
+					<Text style={LoginStyles.infoBoxLong}>{this.props.screenProps.t('login:secure')} </Text>
+				</View>
+				{/* <View style={LoginStyles.flexLeft}>
+					<Text style={[LoginStyles.infoBoxLong]}>{this.props.screenProps.t('login:secure')} </Text>
+				</View> */}
+				<InputField
+					containerStyle={{ flex: 0.3, marginBottom: 30 }}
+					prefixIcon={<CustomIcon name="lock" style={LoginStyles.inputIcons} />}
+					suffixIcon={<CustomIcon name="eyeoff" style={LoginStyles.inputIcons} />}
+					onSuffixImagePress={this.revealPassword}
+					underlinePositionRatio={0.03}
+					labelName={this.props.screenProps.t('login:createPassword')}
+					onChangeText={(password: string) => this.setState({ password })}
+					password={this.state.revealPassword}
+				/>
+
+				{this.state.loading ? (
+					<ActivityIndicator color={ThemeColors.blue_medium} />
+				) : (
+					<DarkButton text={this.props.screenProps.t('login:signIn')} onPress={() => this.setPassword()} />
+				)}
+			</KeyboardAvoidingView>
+		);
+	}
+
 	render() {
 		return (
-			<ImageBackground source={background} style={[LoginStyles.wrapper]}>
+			<View style={[LoginStyles.wrapper, { backgroundColor: '#0c2938' }]}>
+				<Video source={globe} rate={1.0} volume={1.0} muted={false} resizeMode={'cover'} repeat style={LoginStyles.globeView} />
 				<View style={[ContainerStyles.flexColumn]}>
-					<StatusBar backgroundColor={ThemeColors.blue_dark} barStyle='light-content' />
-					<KeyboardAvoidingView behavior={'position'} enabled={(Platform.OS === 'ios')}>
-						<LogoView />
-						<View style={[LoginStyles.flexLeft]}>
-							<Text style={LoginStyles.header}>
-								{this.props.screenProps.t('login:hi')} {this.state.userName}
-							</Text>
-						</View>
-						<View style={{ width: '100%' }}>
-							<View style={LoginStyles.divider} />
-						</View>
-						<View style={LoginStyles.flexLeft}>
-							<Text style={LoginStyles.infoBox}>{this.props.screenProps.t('login:attention')} </Text>
-						</View>
-						<InputField
-							icon={<TouchableOpacity style={{ position: 'relative', top: 10 }} onPress={() => this.revealPassword()}><IconEyeOff width={width * 0.06} height={width * 0.06} /></TouchableOpacity>}
-							labelName={this.props.screenProps.t('login:password')}
-							onChangeText={(password: string) => this.setState({ password })}
-							password={this.state.revealPassword}
-						/>
-						{this.state.loading ? (
-							<ActivityIndicator color={ThemeColors.blue_medium} />
-						) : (
-							<DarkButton text={this.props.screenProps.t('login:signIn')} onPress={() => this.signIn()} />
-						)}
-						<TouchableOpacity
-							style={[ContainerStyles.flexRow, { flex: 0.2, paddingBottom: 20 }]}
-							onPress={() => (Platform.OS === 'android' ? this.showAndroidAlert() : this.scanFingerprint())}
-						>
-							<Image resizeMode={'contain'} style={LoginStyles.fingerImage} source={IconFingerprint} />
+					<StatusBar backgroundColor={ThemeColors.blue_dark} barStyle="light-content" />
+					{!this.props.isPasswordSet ? (
+						<TouchableOpacity onPress={() => this.props.navigation.pop()} style={[LoginStyles.flexLeft, { alignContent: 'flex-start' }]}>
+							<CustomIcon style={LoginStyles.backButton} name="back" />
 						</TouchableOpacity>
-					</KeyboardAvoidingView>
+					) : null}
+					{this.props.isPasswordSet ? this.renderExistingUser() : this.renderNewUser()}
 				</View>
-			</ImageBackground>
+			</View>
 		);
 	}
 }
@@ -225,13 +279,17 @@ function mapDispatchToProps(dispatch: any): DispatchProps {
 	return {
 		onUserInit: (user: IUser) => {
 			dispatch(initUser(user));
+		},
+		onUserPasswordSet: () => {
+			dispatch(userSetPassword());
 		}
 	};
 }
 
 function mapStateToProps(state: PublicSiteStoreState) {
 	return {
-		user: state.userStore.user
+		user: state.userStore.user,
+		isPasswordSet: state.userStore.isLoginPasswordSet
 	};
 }
 

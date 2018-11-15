@@ -1,7 +1,7 @@
 import { Dimensions, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { ThemeColors } from '../styles/Colors';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 interface Style {
 	backgroundImage: ViewStyle;
 	header: TextStyle;
@@ -9,6 +9,9 @@ interface Style {
 	divider: ViewStyle;
 	infoBox: TextStyle;
 	colorBox: ViewStyle;
+	wrapper: ViewStyle;
+	textWrapper: ViewStyle;
+	iconWrapper: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -47,6 +50,24 @@ const styles = StyleSheet.create<Style>({
 		paddingRight: 5,
 		borderTopRightRadius: 3,
 		borderBottomRightRadius: 3
+	},
+	wrapper: {
+		flexDirection: 'column',
+		justifyContent: 'center',
+		flex: 1
+	},
+	textWrapper: {
+		flex: 0.8,
+		paddingLeft: 10
+	},
+	iconWrapper: {
+		justifyContent: 'flex-end',
+		flexDirection: 'row',
+		borderTopRightRadius: 3,
+		borderBottomRightRadius: 3,
+		paddingVertical: height * 0.03,
+		paddingRight: width * 0.02,
+		alignItems: 'center'
 	}
 });
 
