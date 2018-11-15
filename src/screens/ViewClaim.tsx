@@ -9,7 +9,6 @@ import { IClaim, IClaimSaved, IProject } from '../models/project';
 import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { ThemeColors } from '../styles/Colors';
-import ViewClaimsStyles from '../styles/ViewClaim';
 import { updateClaim, removeClaim } from '../redux/claims/claims_action_creators';
 import { getSignature } from '../utils/sovrin';
 import DoubleButton from '../components/DoubleButton';
@@ -192,6 +191,11 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 			});
 	}
 
+	handleRemoveClaim = () => {
+		this.props.onRemoveClaim(this.claimId, this.projectDid)
+		this.props.navigation.pop();
+	}
+
 	handleFetchClaimImages = (mergedFormFile: any, claim: any) => {
 		const { fields = [] } = JSON.parse(mergedFormFile);
 		const promises: any = [];
@@ -207,7 +211,7 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 			}
 		});
 		Promise.all(promises);
-	};
+	}
 
 	renderForm() {
 		const claimParsed = JSON.parse(this.state.fetchedFile!);
@@ -217,6 +221,7 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 					ref={dynamicForm}
 					handleSave={data => this.onSaveClaim(data)}
 					handleSubmit={data => this.handleSubmitClaim(data)}
+					handleRemove={() => this.handleRemoveClaim()}
 					claimDate={this.claimDate}
 					editMode={this.editable}
 					screenProps={this.props.screenProps}

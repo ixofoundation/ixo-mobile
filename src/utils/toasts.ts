@@ -6,10 +6,10 @@ export enum toastType {
 	DANGER = 'danger'
 }
 
-export function showToast(toastText: string, toastType: toastType) {
+export function showToast(toastText: string, type: toastType) {
 	return Toast.show({
 		text: toastText,
-		type: toastType,
+		type,
 		position: 'top'
 	});
 }

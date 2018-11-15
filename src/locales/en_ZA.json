@@ -52,6 +52,7 @@
 		"yourAnswer": "Your answer",
 		"projectFailedScan": "Please try again, project not scanned",
 		"keysafePasswordWrong": "Keysafe password incorrect"
+
 	},
 	"login": {
 		"hi": "Hi",
@@ -100,7 +101,11 @@
 		"claimSubmitted": "Claim submitted",
 		"claimUpdated": "Claim updated",
 		"noInternet": "No internet connection",
-		"claimsSubmitted": "Your claims has been successfully submitted"
+		"claimsSubmitted": "Your claims has been successfully submitted",
+		"sureToDelete": "Are you sure you want to delete this claim?",
+		"cantBeUndone": "This cannot be undone",
+		"no": "No",
+		"yesDelete": "Yes, delete"
 	},
 	"submittedClaims": {
 		"successMessage": "Your claim has been successfully submitted",

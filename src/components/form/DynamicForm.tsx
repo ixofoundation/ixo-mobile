@@ -7,6 +7,7 @@ import InputField, { InputColorTypes } from '../../components/InputField';
 import ImagePicker from 'react-native-image-picker';
 import * as changeCase from 'change-case';
 import * as _ from 'underscore';
+import LightButton from '../../components/LightButton';
 
 const placeholder = require('../../../assets/ixo-placeholder.jpg');
 
@@ -26,6 +27,7 @@ export interface ParentProps {
 	screenProps: any;
 	editMode: boolean;
 	claimDate: Date;
+	handleRemove: Function;
 }
 
 export interface State {
@@ -211,7 +213,7 @@ export default class DynamicForm extends React.Component<Props, State> {
 											colorPalette={InputColorTypes.Light}
 											value={field.value}
 											labelName={changeCase.sentenceCase(field.name)}
-										/>	
+										/>
 									</View>
 								);
 							case 'textarea':
@@ -258,6 +260,18 @@ export default class DynamicForm extends React.Component<Props, State> {
 						}
 					})}
 				</View>
+				{this.props.editMode ? (
+					<LightButton
+						textStyles={{ color: ThemeColors.black }}
+						propStyles={DynamicFormStyles.deleteButton}
+						text={'DELETE CLAIM'}
+						onPress={() =>
+							Alert.alert(this.props.screenProps.t('claims:sureToDelete'), this.props.screenProps.t('claims:cantBeUndone'), [{ text: this.props.screenProps.t('claims:no') }, { text: this.props.screenProps.t('claims:yesDelete'), onPress: () => this.props.handleRemove() }], {
+								cancelable: true
+							})
+						}
+					/>
+				) : null}
 			</Form>
 		);
 	}
