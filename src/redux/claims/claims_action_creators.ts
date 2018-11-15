@@ -1,5 +1,5 @@
 import { createAction } from '../../lib/redux_utils/actions';
-import { Claim, SelectedClaim, ClaimForm, CLAIM_ADD, CLAIM_REMOVE, CLAIM_FILEFORM_SAVE, CLAIM_UPDATE, CLAIM_SELECTED, CLAIM_CLEAR_STORE, CLAIM_SELECTED_CLEAR_STORE, CLAIM_FILEFORM_CLEAR_STORE } from './claims_actions';
+import { Claim, SelectedClaim, ClaimForm, CLAIM_ADD, CLAIM_REMOVE, CLAIM_FILEFORM_SAVE, CLAIM_UPDATE, CLAIM_SELECTED, CLAIM_CLEAR_STORE, CLAIM_SELECTED_CLEAR_STORE, CLAIM_FILEFORM_CLEAR_STORE, CLAIM_SELECTED_SET_DATA } from './claims_actions';
 
 export function saveClaim(claimData: string, projectDid: string) {
 	return (dispatch: Function) => {

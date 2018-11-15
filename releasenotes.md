@@ -99,3 +99,8 @@
 **bug/IXOQ-288** Change App 'login' screen after user registration in the app
 **bug/IXOQ-414** Register on app: Include email as required field
 **bug/IXOQ-410** Keysafe login: No incorrect password error
+
+** not yet released
+**bug/IXOQ-421** Mnemonic login: allow user to scroll through entered mnemonic
+**bug/IXOQ-430** Update claim individually submitted screen
+**bug/IXOQ-432** Submit a claim: last field does not indicate SUBMIT

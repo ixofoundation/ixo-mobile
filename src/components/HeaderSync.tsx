@@ -8,7 +8,7 @@ import HeaderSyncStyles from '../styles/componentStyles/HeaderSync';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
 import { IClaimSaved } from '../models/project';
-import { userToggledModal } from '../redux/dynamics/dynamics_action_creators';
+import { toggleClaimsSubmitted } from '../redux/dynamics/dynamics_action_creators';
 import { removeClaim } from '../redux/claims/claims_action_creators';
 import { getSignature } from '../utils/sovrin';
 import { showToast, toastType } from '../utils/toasts';
@@ -23,6 +23,7 @@ export interface StateProps {
 }
 export interface DispatchProps {
 	onRemoveClaim: (claimId: any, projectDid: string) => void;
+	onClaimsSubmitted: (claimSubmitted: boolean) => void;
 }
 export interface StateProps {
 	savedProjectsClaims?: IProjectsClaimsSaved[];
@@ -81,9 +82,7 @@ class HeaderSync extends React.Component<Props, StateProps> {
 			});
 			Promise.all(promises).then(() => {
 				this.toggleSpinnerAnimation(false);
-				if (this.props.navigation) {
-					this.props.navigation.navigate('SubmittedClaims', { claimSubmitted: true });
-				}
+				this.props.onClaimsSubmitted(true);
 			});
 		}
 	}
@@ -185,6 +184,9 @@ function mapDispatchToProps(dispatch: any): DispatchProps {
 	return {
 		onRemoveClaim: (claimId: any, projectDid: string) => {
 			dispatch(removeClaim(claimId, projectDid));
+		},
+		onClaimsSubmitted: (claimSubmitted: boolean) => {
+			dispatch(toggleClaimsSubmitted(claimSubmitted));
 		}
 	};
 }

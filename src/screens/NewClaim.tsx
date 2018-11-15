@@ -9,6 +9,7 @@ import DynamicSwiperForm from '../components/form/DynamicSwiperForm';
 import { FormStyles } from '../models/form';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { saveClaim } from '../redux/claims/claims_action_creators';
+import { dynamicSetFormCardIndex } from '../redux/dynamics/dynamics_action_creators';
 import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
 import { connect } from 'react-redux';
 import { getSignature } from '../utils/sovrin';
@@ -20,10 +21,11 @@ interface ParentProps {
 }
 
 interface StateTypes {
-	isLastCard: boolean;
+	claimData: string;
 }
 
 export interface DispatchProps {
+	onSetFormCardIndex: (index: number) => void;
 	onClaimSave: (claim: string, projectDID: string) => void;
 }
 
@@ -32,23 +34,22 @@ export interface StateProps {
 	project?: IProject;
 	savedProjectsClaims: IProjectsClaimsSaved[];
 	online: boolean;
+	dynamicFormIndex: number;
 }
 export interface Props extends ParentProps, DispatchProps, StateProps {}
-
-declare var dynamicForm: any;
 class NewClaim extends React.Component<Props, StateTypes> {
 	private pdsURL: string = '';
 	private projectDid: string | undefined;
 	private projectName: string = '';
 	private projectFormFile: string = '';
+	private formLength: number = 0;
 	private isClaimSaved: boolean = false;
 
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			isLastCard: false
+			claimData: ''
 		};
-		dynamicForm = React.createRef();
 
 		if (props.project) {
 			this.pdsURL = props.project.data.serviceEndpoint;
@@ -92,12 +93,20 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		this.props.navigation.setParams({
 			projectName: this.projectName,
 			saveText: this.props.screenProps.t('claims:saveClaim'),
-			onSave: () => dynamicForm.current.handleSave()
+			onSave: () => this.handleSaveClaim()
 		});
 	}
 
-	onToggleLastCard = (active: boolean) => {
-		this.setState({ isLastCard: active });
+	handleUserFilledClaim = (userFilledData: string) => {
+		this.setState({ claimData: userFilledData });
+	};
+
+	handleSaveClaim = () => {
+		if (this.projectDid && !this.isClaimSaved) {
+			this.isClaimSaved = true;
+			this.props.navigation.pop();
+			this.props.onClaimSave(this.state.claimData, this.projectDid);
+		}
 	};
 
 	handleSubmitClaim = (claimData: any) => {
@@ -125,16 +134,9 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		}
 	};
 
-	onSaveClaim = (claimData: any) => {
-		if (this.projectDid && !this.isClaimSaved) {
-			this.isClaimSaved = true;
-			this.props.navigation.pop();
-			this.props.onClaimSave(claimData, this.projectDid);
-		}
-	};
-
-	onFormSubmit = (formData: any) => {
+	onFormSubmit = () => {
 		// upload all the images and change the value to the returned hash of the image
+		const formData = this.state.claimData;
 		const formDef = JSON.parse(this.projectFormFile);
 		const promises: Promise<any>[] = [];
 		formDef.fields.forEach((field: any) => {
@@ -162,21 +164,59 @@ class NewClaim extends React.Component<Props, StateTypes> {
 
 	renderForm() {
 		const claimParsed = JSON.parse(this.projectFormFile!);
+		this.formLength = claimParsed.fields.length;
 		if (this.projectFormFile) {
 			return (
 				<DynamicSwiperForm
-					ref={dynamicForm}
 					screenProps={this.props.screenProps}
 					formSchema={claimParsed.fields}
+					handleUserFilledClaim={this.handleUserFilledClaim}
 					formStyle={FormStyles.standard}
-					handleSubmit={this.onFormSubmit}
-					handleSave={this.onSaveClaim}
-					onToggleLastCard={this.onToggleLastCard}
+					navigation={this.props.navigation}
 				/>
 			);
 		} else {
 			return <ActivityIndicator color={ThemeColors.white} />;
 		}
+	}
+
+	buildButton(isLeftButton: boolean): JSX.Element {
+		const button: JSX.Element[] = [];
+
+		if (isLeftButton) {
+			if (this.props.dynamicFormIndex !== 0) {
+						button.push(<Icon style={{ color: ThemeColors.blue_light, fontSize: 23 }} name="arrow-back" />);
+						button.push(<Text style={NewClaimStyles.backNavigatorButton}>{this.props.screenProps.t('claims:back')}</Text>);
+			}
+		} else {
+			if (this.props.dynamicFormIndex < this.formLength - 1) {
+				button.push(<Text style={NewClaimStyles.nextNavigatorButton}>{this.props.screenProps.t('claims:next')}</Text>);
+				button.push(<Icon style={{ color: ThemeColors.white, fontSize: 23 }} name="arrow-forward" />);
+			}
+			if (this.props.dynamicFormIndex === this.formLength - 1) {
+				button.push(<Text style={NewClaimStyles.nextNavigatorButton}>{this.props.screenProps.t('claims:submitClaim')}</Text>);
+			}
+		}
+		return (
+			<TouchableOpacity onPress={() => this.getActionFunction(isLeftButton)} style={NewClaimStyles.actionButtonWrapper}>
+				{button.map(element => {
+					return element;
+				})}
+			</TouchableOpacity>
+		);
+	}
+
+	getActionFunction = (isLeftButton: boolean) => {
+		if (this.props.dynamicFormIndex < this.formLength - 1 && !isLeftButton) { // next button
+			return this.props.onSetFormCardIndex(this.props.dynamicFormIndex + 1);
+		}
+		if (this.props.dynamicFormIndex !== 0 && isLeftButton) { // back button
+			return this.props.onSetFormCardIndex(this.props.dynamicFormIndex - 1);
+		}
+		if (this.props.dynamicFormIndex === this.formLength - 1) { // submit button
+			this.onFormSubmit();
+		}
+		return null;
 	}
 
 	render() {
@@ -185,29 +225,8 @@ class NewClaim extends React.Component<Props, StateTypes> {
 				<StatusBar barStyle="light-content" />
 				{this.renderForm()}
 				<View style={NewClaimStyles.navigatorContainer}>
-					<TouchableOpacity
-						onPress={() => dynamicForm.current.goBack()}
-						style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}
-					>
-						<Icon style={{ color: ThemeColors.blue_light, fontSize: 23 }} name="arrow-back" />
-						<Text style={NewClaimStyles.backNavigatorButton}>{this.props.screenProps.t('claims:back')}</Text>
-					</TouchableOpacity>
-					{this.state.isLastCard ? (
-						<TouchableOpacity
-							onPress={() => dynamicForm.current.handleSubmit()}
-							style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}
-						>
-							<Text style={NewClaimStyles.claimNavigatorButton}>{this.props.screenProps.t('claims:submitClaim')}</Text>
-						</TouchableOpacity>
-					) : (
-						<TouchableOpacity
-							onPress={() => dynamicForm.current.goNext()}
-							style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, alignItems: 'center' }}
-						>
-							<Text style={NewClaimStyles.nextNavigatorButton}>{this.props.screenProps.t('claims:next')}</Text>
-							<Icon style={{ color: ThemeColors.white, fontSize: 23 }} name="arrow-forward" />
-						</TouchableOpacity>
-					)}
+					{this.buildButton(true)}
+					{this.buildButton(false)}
 				</View>
 			</Container>
 		);
@@ -216,6 +235,9 @@ class NewClaim extends React.Component<Props, StateTypes> {
 
 function mapDispatchToProps(dispatch: any): DispatchProps {
 	return {
+		onSetFormCardIndex: (formCardIndex: number) => {
+			dispatch(dynamicSetFormCardIndex(formCardIndex));
+		},
 		onClaimSave: (claim: string, projectDID: string) => {
 			dispatch(saveClaim(claim, projectDID));
 		}
@@ -227,7 +249,8 @@ function mapStateToProps(state: PublicSiteStoreState) {
 		ixo: state.ixoStore.ixo,
 		project: state.projectsStore.selectedProject,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
-		online: state.dynamicsStore.online
+		online: state.dynamicsStore.online,
+		dynamicFormIndex: state.dynamicsStore.dynamicFormIndex
 	};
 }
 

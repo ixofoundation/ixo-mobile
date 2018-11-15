@@ -14,6 +14,8 @@ const ThemeColors = {
 	red: '#A11C43',
 	orange: '#F89D28',
 	green: '#5AB946',
+	success_green: '#3F7E44',
+	failed_red: '#A11C43',
 	progressRed: '#E2223B',
 	progressNotCounted: '#033C50',
 	modalBackground: '#012639'

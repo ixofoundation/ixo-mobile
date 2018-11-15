@@ -8,27 +8,32 @@ import { IClaim, IProject, IClaimSaved } from '../models/project';
 import { IUser } from '../models/user';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { saveForm, loadSavedClaim, loadSubmittedClaim } from '../redux/claims/claims_action_creators';
+import { toggleClaimsSubmitted } from '../redux/dynamics/dynamics_action_creators';
 import { userFirstClaim } from '../redux/user/user_action_creators';
 import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
+import LinearGradient from 'react-native-linear-gradient';
+import { decode as base64Decode } from 'base-64';
+
 import ClaimsStyles from '../styles/Claims';
 import ContainerStyles from '../styles/Containers';
+import SubmittedClaimsStyles from '../styles/SubmittedClaims';
 import { ThemeColors, ClaimsButton } from '../styles/Colors';
 import DarkButton from '../components/DarkButton';
 import HeaderSync from '../components/HeaderSync';
-import LinearGradient from 'react-native-linear-gradient';
-import { decode as base64Decode } from 'base-64';
 import { showToast, toastType } from '../utils/toasts';
 import LightButton from '../components/LightButton';
 import Banner from '../components/Banner';
+import CustomIcons from '../components/svg/CustomIcons';
 
 const background = require('../../assets/background_2.png');
+const backgroundSuccess = require('../../assets/background_1.png');
 const addClaims = require('../../assets/savedclaims-visual.png');
 const submittedClaims = require('../../assets/submittedclaims-visual.png');
 const approvedIcon = require('../../assets/icon-approved.png');
 const rejectedIcon = require('../../assets/icon-rejected.png');
 const pendingIcon = require('../../assets/icon-pending.png');
 
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 enum ClaimStatus {
 	Pending = '0',
@@ -45,6 +50,7 @@ export interface DispatchProps {
 	onFormSave: (claimForm: any, projectDID: string, pdsURL: string) => void;
 	onLoadSavedClaim: (claimId: string) => void;
 	onLoadSubmittedClaim: (claimId: string) => void;
+	onClaimsSubmitted: (claimsSubmitted: boolean) => void;
 }
 
 export interface StateProps {
@@ -54,6 +60,7 @@ export interface StateProps {
 	project?: IProject;
 	savedProjectsClaims: IProjectsClaimsSaved[];
 	online?: boolean;
+	isClaimsSubmitted?: boolean;
 }
 
 export interface StateProps {
@@ -122,7 +129,7 @@ class Claims extends React.Component<Props, StateProps> {
 					<HeaderSync navigation={navigation} screenProps={screenProps} />
 				</View>
 			),
-			title: (projectName.length > 18) ? `${projectName.substring(0, 14)}...` : projectName,
+			title: projectName.length > 18 ? `${projectName.substring(0, 14)}...` : projectName,
 			headerTitleStyle: {
 				color: ThemeColors.white,
 				textAlign: 'center',
@@ -146,6 +153,7 @@ class Claims extends React.Component<Props, StateProps> {
 	}
 
 	componentDidMount() {
+		this.props.onClaimsSubmitted(false);
 		this.fetchFormFile(this.claimForm, this.pdsURL);
 		this.props.navigation.setParams({
 			projectName: this.projectName
@@ -245,7 +253,7 @@ class Claims extends React.Component<Props, StateProps> {
 							const claim: IClaimSaved = projectClaims.claims[key];
 							return (
 								<ClaimListItem
-									screenProps={(claim.updated) ? this.props.screenProps.t('claims:claimUpdated') : this.props.screenProps.t('claims:claimCreated')}
+									screenProps={claim.updated ? this.props.screenProps.t('claims:claimUpdated') : this.props.screenProps.t('claims:claimCreated')}
 									key={claim.claimId}
 									savedClaim={true}
 									impactAction={this.impactAction}
@@ -329,6 +337,29 @@ class Claims extends React.Component<Props, StateProps> {
 		);
 	}
 
+	renderAllSavedClaimsSubmitted() {
+		return (
+			<ImageBackground source={backgroundSuccess} style={ClaimsStyles.backgroundImage}>
+				<View style={SubmittedClaimsStyles.wrapper}>
+					<View style={{ flexDirection: 'row' }}>
+						<View style={{ flex: 0.2 }}>
+							<View style={[SubmittedClaimsStyles.iconWrapper, { backgroundColor: ThemeColors.success_green }]}>
+								<CustomIcons style={{ color: ThemeColors.white }} name="approved" size={height * 0.05} />
+							</View>
+						</View>
+						<View style={SubmittedClaimsStyles.textWrapper}>
+							<View style={[SubmittedClaimsStyles.flexLeft]}>
+								<Text style={[SubmittedClaimsStyles.header, { color: ThemeColors.white }]}>
+									{this.props.screenProps.t('submittedClaims:successMessage')}
+								</Text>
+							</View>
+						</View>
+					</View>
+				</View>
+			</ImageBackground>
+		);
+	}
+
 	renderConnectivity() {
 		if (this.props.online) return null;
 		return <Banner text={this.props.screenProps.t('dynamics:offlineMode')} />;
@@ -350,7 +381,7 @@ class Claims extends React.Component<Props, StateProps> {
 						tabStyle={{ backgroundColor: ThemeColors.blue_dark }}
 						heading={this.renderSavedTab(numberOfSavedClaims)}
 					>
-						{this.renderSavedClaims(projectClaims)}
+						{(this.props.isClaimsSubmitted) ? this.renderAllSavedClaimsSubmitted() : this.renderSavedClaims(projectClaims)}
 					</Tab>
 					<Tab
 						activeTabStyle={{ backgroundColor: ThemeColors.blue_dark }}
@@ -392,6 +423,9 @@ function mapDispatchToProps(dispatch: any): DispatchProps {
 		},
 		onLoadSubmittedClaim: (claimId: string) => {
 			dispatch(loadSubmittedClaim(claimId));
+		},
+		onClaimsSubmitted: (claimsSubmitted: boolean) => {
+			dispatch(toggleClaimsSubmitted(claimsSubmitted));
 		}
 	};
 }
@@ -403,7 +437,8 @@ function mapStateToProps(state: PublicSiteStoreState) {
 		firstTimeClaim: state.userStore.isFirstClaim,
 		project: state.projectsStore.selectedProject,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
-		online: state.dynamicsStore.online
+		online: state.dynamicsStore.online,
+		isClaimsSubmitted: state.dynamicsStore.claimsSubmitted
 	};
 }
 

@@ -1,4 +1,4 @@
-import { Container, Icon, Text, View } from 'native-base';
+import { Container, Icon, Text, View, Content } from 'native-base';
 import * as React from 'react';
 import SInfo from 'react-native-sensitive-info';
 import { AsyncStorage, Dimensions, ImageBackground, StatusBar, KeyboardAvoidingView, TextInput } from 'react-native';
@@ -138,52 +138,53 @@ class Recover extends React.Component<Props, StateTypes> {
 			<Container>
 				<StatusBar barStyle="light-content" />
 				<ImageBackground source={background} style={[RecoverStyles.wrapper]}>
-					<KeyboardAvoidingView behavior={'position'} contentContainerStyle={[RecoverStyles.keyboardContainer]}>
-						{/* <View style={{ height: Dimensions.get('window').height * 0.1 }} /> */}
-						<View>
-							<View style={[RecoverStyles.flexLeft]}>
-								<Text style={[RecoverStyles.header]}>{this.props.screenProps.t('recover:secretPhrase')}</Text>
-							</View>
-							<View style={{ width: '100%' }}>
-								<View style={RecoverStyles.divider} />
-							</View>
+					<Content>
+						<KeyboardAvoidingView behavior={'padding'} contentContainerStyle={[RecoverStyles.keyboardContainer]}>
+							<View>
+								<View style={[RecoverStyles.flexLeft]}>
+									<Text style={[RecoverStyles.header]}>{this.props.screenProps.t('recover:secretPhrase')}</Text>
+								</View>
+								<View style={{ width: '100%' }}>
+									<View style={RecoverStyles.divider} />
+								</View>
 
-							<Text style={RecoverStyles.paragraph}>{this.props.screenProps.t('recover:secretParagraph_1')}</Text>
-							<Text style={RecoverStyles.paragraph}>
-								<Text style={[RecoverStyles.paragraph, { color: ThemeColors.orange }]}>{this.props.screenProps.t('register:warning')}:</Text>
-								{this.props.screenProps.t('register:secretParagraph_2')}
-							</Text>
-							<View style={[RegisterStyles.selectedBox]}>
-								<TextInput
-									maxLength={100}
-									multiline={true}
-									numberOfLines={5}
-									onChangeText={(text: string) => this.setState({ mnemonic: text })}
-									style={{ textAlign: 'left', color: ThemeColors.white, paddingHorizontal: 10, flex: 1 }}
-								>
-									{this.state.mnemonic}
-								</TextInput>
+								<Text style={RecoverStyles.paragraph}>{this.props.screenProps.t('recover:secretParagraph_1')}</Text>
+								<Text style={RecoverStyles.paragraph}>
+									<Text style={[RecoverStyles.paragraph, { color: ThemeColors.orange }]}>{this.props.screenProps.t('register:warning')}:</Text>
+									{this.props.screenProps.t('register:secretParagraph_2')}
+								</Text>
+								<View style={[RegisterStyles.selectedBox]}>
+									<TextInput
+										maxLength={100}
+										multiline={true}
+										numberOfLines={5}
+										onChangeText={(text: string) => this.setState({ mnemonic: text })}
+										style={{ textAlign: 'left', color: ThemeColors.white, paddingHorizontal: 10, flex: 1 }}
+									>
+										{this.state.mnemonic}
+									</TextInput>
+								</View>
+								<InputField
+									value={this.state.username}
+									labelName={this.props.screenProps.t('register:yourName')}
+									onChangeText={(text: string) => this.setState({ username: text })}
+								/>
+								<InputField
+									password={true}
+									value={this.state.password}
+									labelName={this.props.screenProps.t('register:newPassword')}
+									onChangeText={(text: string) => this.setState({ password: text })}
+								/>
+								<InputField
+									password={true}
+									value={this.state.confirmPassword}
+									labelName={this.props.screenProps.t('register:confirmPassword')}
+									onChangeText={(text: string) => this.setState({ confirmPassword: text })}
+								/>
+								<DarkButton onPress={() => this.handleConfirmMnemonic()} propStyles={{ marginTop: 15 }} text={this.props.screenProps.t('recover:next')} />
 							</View>
-							<InputField
-								value={this.state.username}
-								labelName={this.props.screenProps.t('register:yourName')}
-								onChangeText={(text: string) => this.setState({ username: text })}
-							/>
-							<InputField
-								password={true}
-								value={this.state.password}
-								labelName={this.props.screenProps.t('register:newPassword')}
-								onChangeText={(text: string) => this.setState({ password: text })}
-							/>
-							<InputField
-								password={true}
-								value={this.state.confirmPassword}
-								labelName={this.props.screenProps.t('register:confirmPassword')}
-								onChangeText={(text: string) => this.setState({ confirmPassword: text })}
-							/>
-							<DarkButton onPress={() => this.handleConfirmMnemonic()} propStyles={{ marginTop: 15 }} text={this.props.screenProps.t('recover:next')} />
-						</View>
-					</KeyboardAvoidingView>
+						</KeyboardAvoidingView>
+					</Content>
 				</ImageBackground>
 			</Container>
 		);

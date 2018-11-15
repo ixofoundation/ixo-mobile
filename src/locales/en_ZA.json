@@ -99,7 +99,8 @@
 		"claimCreated": "Claim created",
 		"claimSubmitted": "Claim submitted",
 		"claimUpdated": "Claim updated",
-		"noInternet": "No internet connection"
+		"noInternet": "No internet connection",
+		"claimsSubmitted": "Your claims has been successfully submitted"
 	},
 	"submittedClaims": {
 		"successMessage": "Your claim has been successfully submitted",

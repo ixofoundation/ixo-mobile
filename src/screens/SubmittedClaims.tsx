@@ -2,14 +2,14 @@
 
 import { Container, Icon, Text, View } from 'native-base';
 import * as React from 'react';
-import { ImageBackground, StatusBar } from 'react-native';
+import { ImageBackground, StatusBar, Dimensions } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
-import IconReject from '../components/svg/IconReject';
-import IconSuccess from '../components/svg/IconSuccess';
+import CustomIcons from '../components/svg/CustomIcons';
 import { ThemeColors } from '../styles/Colors';
 import SubmittedClaimsStyles from '../styles/SubmittedClaims';
 
 const background = require('../../assets/background_2.png');
+const { height } = Dimensions.get('window');
 
 interface ParentProps {
 	navigation: any;
@@ -34,7 +34,7 @@ export default class SubmittedClaims extends React.Component<ParentProps> {
 			},
 			headerLeft: <Icon name="arrow-back" onPress={() => navigation.dispatch(resetAction)} style={{ paddingLeft: 10, color: ThemeColors.white }} />
 		};
-	}
+	};
 
 	state = {
 		claimSubmitted: true
@@ -49,16 +49,14 @@ export default class SubmittedClaims extends React.Component<ParentProps> {
 
 	renderSuccess() {
 		return (
-			<View style={{ flexDirection: 'column', justifyContent: 'center', flex: 1 }}>
+			<View style={SubmittedClaimsStyles.wrapper}>
 				<View style={{ flexDirection: 'row' }}>
 					<View style={{ flex: 0.2 }}>
-						<View style={[SubmittedClaimsStyles.colorBox, { backgroundColor: '#3F7E44' }]}>
-							<View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
-								<IconSuccess width={50} height={50} />
-							</View>
+						<View style={[SubmittedClaimsStyles.iconWrapper, { backgroundColor: ThemeColors.success_green }]}>
+							<CustomIcons style={{ color: ThemeColors.white }} name="success" size={height * 0.05} />
 						</View>
 					</View>
-					<View style={{ flex: 0.8, paddingLeft: 10 }}>
+					<View style={SubmittedClaimsStyles.textWrapper}>
 						<View style={[SubmittedClaimsStyles.flexLeft]}>
 							<Text style={[SubmittedClaimsStyles.header, { color: ThemeColors.white }]}>{this.props.screenProps.t('submittedClaims:successMessage')}</Text>
 						</View>
@@ -76,16 +74,14 @@ export default class SubmittedClaims extends React.Component<ParentProps> {
 
 	renderReject() {
 		return (
-			<View style={{ flexDirection: 'column', justifyContent: 'center', flex: 1 }}>
+			<View style={SubmittedClaimsStyles.wrapper}>
 				<View style={{ flexDirection: 'row' }}>
 					<View style={{ flex: 0.2 }}>
-						<View style={[SubmittedClaimsStyles.colorBox, { backgroundColor: '#A11C43' }]}>
-							<View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
-								<IconReject width={50} height={50} />
-							</View>
+						<View style={[SubmittedClaimsStyles.iconWrapper, { backgroundColor: ThemeColors.failed_red }]}>
+							<CustomIcons style={{ color: ThemeColors.white }} name="rejected" size={height * 0.05} />
 						</View>
 					</View>
-					<View style={{ flex: 0.8, paddingLeft: 10 }}>
+					<View style={SubmittedClaimsStyles.textWrapper}>
 						<View style={[SubmittedClaimsStyles.flexLeft]}>
 							<Text style={[SubmittedClaimsStyles.header, { color: ThemeColors.white }]}>{this.props.screenProps.t('submittedClaims:rejectMessage')}</Text>
 						</View>
