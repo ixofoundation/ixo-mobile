@@ -104,3 +104,5 @@
 **bug/IXOQ-421** Mnemonic login: allow user to scroll through entered mnemonic
 **bug/IXOQ-430** Update claim individually submitted screen
 **bug/IXOQ-432** Submit a claim: last field does not indicate SUBMIT
+**bug/IXOQ-437** Disable next if claim only has 1 requirement
+**feature/IXOQ-88** As a user, I want to be able to delete a saved claim.

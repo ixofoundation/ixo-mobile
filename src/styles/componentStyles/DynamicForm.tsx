@@ -13,6 +13,7 @@ interface Style {
 	removePhotoIcon: TextStyle;
 	textArea: ViewStyle;
 	imageType: ViewStyle;
+	deleteButton: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -84,6 +85,10 @@ const styles = StyleSheet.create<Style>({
 		paddingVertical: 10,
 		borderTopColor: ThemeColors.grey,
 		borderTopWidth: 1
+	},
+	deleteButton: {
+		marginTop: 20,
+		marginBottom: 20
 	}
 });
 
