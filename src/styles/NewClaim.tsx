@@ -13,6 +13,7 @@ interface Style {
 	claimNavigatorButton: TextStyle;
 	nextNavigatorButton: TextStyle;
 	actionButtonWrapper: ViewStyle;
+	locationIcon: TextStyle;
 }
 
 const styles = StyleSheet.create<Style>({
@@ -70,6 +71,9 @@ const styles = StyleSheet.create<Style>({
 		justifyContent: 'space-between',
 		paddingHorizontal: 10,
 		alignItems: 'center'
+	},
+	locationIcon: {
+		color: ThemeColors.blue_lightest
 	}
 });
 

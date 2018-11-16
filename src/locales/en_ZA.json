@@ -105,7 +105,11 @@
 		"sureToDelete": "Are you sure you want to delete this claim?",
 		"cantBeUndone": "This cannot be undone",
 		"no": "No",
-		"yesDelete": "Yes, delete"
+		"yesDelete": "Yes, delete",
+		"locationNeeded": "Location permissions needed",
+		"claimRejection": "Claims that do not have GPS locations might be rejected.",
+		"updateSettings": "To allow location please go to General - Settings and allow ixo location permissions",
+		"Ok": "OK"
 	},
 	"submittedClaims": {
 		"successMessage": "Your claim has been successfully submitted",

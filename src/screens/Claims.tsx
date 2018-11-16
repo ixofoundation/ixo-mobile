@@ -46,7 +46,6 @@ interface ParentProps {
 }
 
 export interface DispatchProps {
-	onFirstClaim: () => void;
 	onFormSave: (claimForm: any, projectDID: string, pdsURL: string) => void;
 	onLoadSavedClaim: (claimId: string) => void;
 	onLoadSubmittedClaim: (claimId: string) => void;
@@ -395,9 +394,6 @@ class Claims extends React.Component<Props, StateProps> {
 					<LightButton
 						propStyles={{ backgroundColor: ThemeColors.red, borderColor: ThemeColors.red, borderRadius: 0 }}
 						onPress={() => {
-							if (this.props.firstTimeClaim) {
-								this.props.onFirstClaim();
-							}
 							this.props.navigation.navigate('NewClaim');
 						}}
 						text={this.props.screenProps.t('claims:submitButton')}
@@ -412,9 +408,6 @@ class Claims extends React.Component<Props, StateProps> {
 
 function mapDispatchToProps(dispatch: any): DispatchProps {
 	return {
-		onFirstClaim: () => {
-			dispatch(userFirstClaim());
-		},
 		onFormSave: (claimForm: any, projectDid: string, pdsURL: string) => {
 			dispatch(saveForm(claimForm, projectDid, pdsURL));
 		},

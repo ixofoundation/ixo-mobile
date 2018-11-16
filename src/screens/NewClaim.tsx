@@ -1,6 +1,9 @@
 import * as React from 'react';
+import CustomIcons from '../components/svg/CustomIcons';
 import _ from 'underscore';
-import { StatusBar, TouchableOpacity, ActivityIndicator } from 'react-native';
+import Permissions from 'react-native-permissions';
+import { StatusBar, TouchableOpacity, ActivityIndicator, Geolocation, Modal, Dimensions } from 'react-native';
+import GenericModal from '../components/GenericModal';
 import { Container, View, Toast, Text, Icon } from 'native-base';
 import { ThemeColors } from '../styles/Colors';
 import { IProject } from '../models/project';
@@ -14,6 +17,14 @@ import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
 import { connect } from 'react-redux';
 import { getSignature } from '../utils/sovrin';
 import { showToast, toastType } from '../utils/toasts';
+import { userFirstClaim } from '../redux/user/user_action_creators';
+
+const { height } = Dimensions.get('window');
+
+interface GeoLocation {
+	latitude: number;
+	longitude: number;
+}
 
 interface ParentProps {
 	navigation: any;
@@ -22,11 +33,13 @@ interface ParentProps {
 
 interface StateTypes {
 	claimData: string;
+	modalVisible: boolean;
 }
 
 export interface DispatchProps {
 	onSetFormCardIndex: (index: number) => void;
 	onClaimSave: (claim: string, projectDID: string) => void;
+	onFirstClaim: () => void;
 }
 
 export interface StateProps {
@@ -35,6 +48,7 @@ export interface StateProps {
 	savedProjectsClaims: IProjectsClaimsSaved[];
 	online: boolean;
 	dynamicFormIndex: number;
+	firstTimeClaim?: boolean;
 }
 export interface Props extends ParentProps, DispatchProps, StateProps {}
 class NewClaim extends React.Component<Props, StateTypes> {
@@ -44,11 +58,13 @@ class NewClaim extends React.Component<Props, StateTypes> {
 	private projectFormFile: string = '';
 	private formLength: number = 0;
 	private isClaimSaved: boolean = false;
+	private location?: GeoLocation | undefined;
 
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			claimData: ''
+			claimData: '',
+			modalVisible: false
 		};
 
 		if (props.project) {
@@ -95,6 +111,17 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			saveText: this.props.screenProps.t('claims:saveClaim'),
 			onSave: () => this.handleSaveClaim()
 		});
+
+		if (this.props.firstTimeClaim) {
+			Permissions.request('location').then(response => {
+				if (response === 'authorized') {
+					this.getLocation();
+				}
+			});
+			this.props.onFirstClaim();
+		} else {
+			this.getLocation();
+		}
 	}
 
 	handleUserFilledClaim = (userFilledData: string) => {
@@ -110,15 +137,32 @@ class NewClaim extends React.Component<Props, StateTypes> {
 	};
 
 	getLocation() {
-		
+		Permissions.check('location').then(response => {
+			if (response === 'undetermined' || response === 'denied') {
+				this.setState({ modalVisible: true });
+				return;
+			}
+			if (response === 'authorized') {
+				navigator.geolocation.getCurrentPosition(
+					location => {
+						this.location = { latitude: location.coords.latitude!, longitude: location.coords.longitude };
+					},
+					error => {
+						showToast('Failed to retrieve location', toastType.DANGER);
+					},
+					{ enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+				);
+			}
+		});
 	}
 
 	handleSubmitClaim = (claimData: any) => {
 		const claimPayload = Object.assign(claimData);
 		claimPayload['projectDid'] = this.projectDid;
 
-		const getLocation = await getLocation();
-		claimPayload['_claimLocation'] = 
+		if (this.location) {
+			claimPayload['_claimLocation'] = this.location;
+		}
 
 		if (this.props.online) {
 			getSignature(claimPayload)
@@ -192,8 +236,8 @@ class NewClaim extends React.Component<Props, StateTypes> {
 
 		if (isLeftButton) {
 			if (this.props.dynamicFormIndex !== 0) {
-						button.push(<Icon style={{ color: ThemeColors.blue_light, fontSize: 23 }} name="arrow-back" />);
-						button.push(<Text style={NewClaimStyles.backNavigatorButton}>{this.props.screenProps.t('claims:back')}</Text>);
+				button.push(<Icon style={{ color: ThemeColors.blue_light, fontSize: 23 }} name="arrow-back" />);
+				button.push(<Text style={NewClaimStyles.backNavigatorButton}>{this.props.screenProps.t('claims:back')}</Text>);
 			}
 		} else {
 			if (this.props.dynamicFormIndex < this.formLength - 1) {
@@ -214,17 +258,20 @@ class NewClaim extends React.Component<Props, StateTypes> {
 	}
 
 	getActionFunction = (isLeftButton: boolean) => {
-		if (this.props.dynamicFormIndex < this.formLength - 1 && !isLeftButton) { // next button
+		if (this.props.dynamicFormIndex < this.formLength - 1 && !isLeftButton) {
+			// next button
 			return this.props.onSetFormCardIndex(this.props.dynamicFormIndex + 1);
 		}
-		if (this.props.dynamicFormIndex !== 0 && isLeftButton) { // back button
+		if (this.props.dynamicFormIndex !== 0 && isLeftButton) {
+			// back button
 			return this.props.onSetFormCardIndex(this.props.dynamicFormIndex - 1);
 		}
-		if (this.props.dynamicFormIndex === this.formLength - 1) { // submit button
+		if (this.props.dynamicFormIndex === this.formLength - 1) {
+			// submit button
 			this.onFormSubmit();
 		}
 		return null;
-	}
+	};
 
 	render() {
 		return (
@@ -235,6 +282,18 @@ class NewClaim extends React.Component<Props, StateTypes> {
 					{this.buildButton(true)}
 					{this.buildButton(false)}
 				</View>
+				<Modal animationType="slide" transparent={true} visible={this.state.modalVisible}>
+					<GenericModal
+						headingImage={<CustomIcons name={'location'} size={height * 0.04} style={NewClaimStyles.locationIcon} />}
+						onPressButton={() => this.setState({ modalVisible: false })}
+						onClose={() => this.setState({ modalVisible: false })}
+						paragraph={this.props.screenProps.t('claims:claimRejection')}
+						paragraphSecondary={this.props.screenProps.t('claims:updateSettings')}
+						loading={false}
+						buttonText={this.props.screenProps.t('claims:Ok')}
+						heading={this.props.screenProps.t('claims:locationNeeded')}
+					/>
+				</Modal>
 			</Container>
 		);
 	}
@@ -247,6 +306,9 @@ function mapDispatchToProps(dispatch: any): DispatchProps {
 		},
 		onClaimSave: (claim: string, projectDID: string) => {
 			dispatch(saveClaim(claim, projectDID));
+		},
+		onFirstClaim: () => {
+			dispatch(userFirstClaim());
 		}
 	};
 }
@@ -257,7 +319,8 @@ function mapStateToProps(state: PublicSiteStoreState) {
 		project: state.projectsStore.selectedProject,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
 		online: state.dynamicsStore.online,
-		dynamicFormIndex: state.dynamicsStore.dynamicFormIndex
+		dynamicFormIndex: state.dynamicsStore.dynamicFormIndex,
+		firstTimeClaim: state.userStore.isFirstClaim
 	};
 }
 
