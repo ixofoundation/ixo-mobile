@@ -109,9 +109,16 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		}
 	};
 
+	getLocation() {
+		
+	}
+
 	handleSubmitClaim = (claimData: any) => {
 		const claimPayload = Object.assign(claimData);
 		claimPayload['projectDid'] = this.projectDid;
+
+		const getLocation = await getLocation();
+		claimPayload['_claimLocation'] = 
 
 		if (this.props.online) {
 			getSignature(claimPayload)
