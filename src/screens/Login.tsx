@@ -263,11 +263,11 @@ export class Login extends React.Component<Props, StateTypes> {
 				<Video source={globe} rate={1.0} volume={1.0} muted={false} resizeMode={'cover'} repeat style={LoginStyles.globeView} />
 				<View style={[ContainerStyles.flexColumn]}>
 					<StatusBar backgroundColor={ThemeColors.blue_dark} barStyle="light-content" />
-					{!this.props.isPasswordSet ? (
-						<TouchableOpacity onPress={() => this.props.navigation.pop()} style={[LoginStyles.flexLeft, { alignContent: 'flex-start' }]}>
+					{/* {!this.props.isPasswordSet ? (
+						<TouchableOpacity onPress={() => { this.props.navigation.pop(); console.log('asdfasdf'); }} style={[LoginStyles.flexLeft, { alignContent: 'flex-start' }]}>
 							<CustomIcon style={LoginStyles.backButton} name="back" />
 						</TouchableOpacity>
-					) : null}
+					) : null} */}
 					{this.props.isPasswordSet ? this.renderExistingUser() : this.renderNewUser()}
 				</View>
 			</View>

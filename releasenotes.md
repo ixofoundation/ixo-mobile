@@ -106,3 +106,5 @@
 **bug/IXOQ-432** Submit a claim: last field does not indicate SUBMIT
 **bug/IXOQ-437** Disable next if claim only has 1 requirement
 **feature/IXOQ-88** As a user, I want to be able to delete a saved claim.
+**bug/IXOQ-433** Select rescan results in black (camera) screen
+**bug/IXOQ-434** Remove/activate back button on login screen
