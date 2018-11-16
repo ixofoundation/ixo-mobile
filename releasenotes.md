@@ -100,7 +100,7 @@
 - **bug/IXOQ-414** Register on app: Include email as required field
 - **bug/IXOQ-410** Keysafe login: No incorrect password error
 
-## 2018-11-13
+## 2018-11-16
 ***
 ### __Android__ (build v1.0.6)
 - **bug/IXOQ-421** Mnemonic login: allow user to scroll through entered mnemonic
@@ -119,3 +119,6 @@
 - **feature/IXOQ-88** As a user, I want to be able to delete a saved claim.
 - **bug/IXOQ-433** Select rescan results in black (camera) screen
 - **bug/IXOQ-434** Remove/activate back button on login screen
+
+** not yet released
+**feature/IXOQ-???** Geolocation added
