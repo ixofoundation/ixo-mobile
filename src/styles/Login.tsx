@@ -64,7 +64,8 @@ const styles = StyleSheet.create<Style>({
 		color: ThemeColors.white,
 		fontSize: 15,
 		width: width * 0.6,
-		paddingVertical: 20
+		paddingTop: 20,
+		paddingBottom: 0
 	},
 	infoBoxLong: {
 		color: ThemeColors.white,

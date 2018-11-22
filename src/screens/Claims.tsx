@@ -372,6 +372,7 @@ class Claims extends React.Component<Props, StateProps> {
 				{this.renderConnectivity()}
 				<StatusBar barStyle="light-content" />
 				<Tabs
+					style={{ backgroundColor: ThemeColors.blue_dark }}
 					tabBarUnderlineStyle={{ backgroundColor: ThemeColors.blue_lightest, height: 1 }}
 					tabContainerStyle={{ borderBottomColor: ThemeColors.blue, elevation: 0, borderBottomWidth: 1 }}
 				>

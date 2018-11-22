@@ -124,6 +124,10 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		}
 	}
 
+	componentWillUnmount() {
+		this.props.onSetFormCardIndex(0);
+	}
+
 	handleUserFilledClaim = (userFilledData: string) => {
 		this.setState({ claimData: userFilledData });
 	};

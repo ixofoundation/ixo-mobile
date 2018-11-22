@@ -84,7 +84,9 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 	}
 
 	componentDidUpdate() {
-		formSwiperRef.scrollBy(this.props.dynamicFormIndex - formSwiperRef.state.index);
+		if ((this.props.dynamicFormIndex - formSwiperRef.state.index) !== 0) {
+			formSwiperRef.scrollBy(this.props.dynamicFormIndex - formSwiperRef.state.index);
+		}
 	}
 
 	setFormState = (name: String, value: any) => {

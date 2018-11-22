@@ -54,8 +54,12 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 	private editable: boolean = true;
 	private claimDate: Date;
 
-	static navigationOptions = () => {
+	static navigationOptions = ({ navigation }: { navigation: any; }) => {
+		const {
+			state: { params: { impactActionTitle = 'Loading...' } = {} }
+		} = navigation;
 		return {
+			title: impactActionTitle,
 			headerStyle: {
 				backgroundColor: ThemeColors.blue_dark,
 				borderBottomColor: ThemeColors.blue_dark,
@@ -108,6 +112,10 @@ class ViewClaim extends React.Component<Props, StateTypes> {
 			this.claimFormKey = this.props.selectedProject.data.templates.claim.form;
 			this.loadSubmittedClaim();
 		}
+
+		this.props.navigation.setParams({
+			impactActionTitle: (`${this.props.selectedProject.data.impactAction} ${this.props.selectedSavedClaim.claimId}`).substring(0, 25)
+		});
 	}
 
 	loadSubmittedClaim() {

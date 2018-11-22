@@ -120,5 +120,25 @@
 - **bug/IXOQ-433** Select rescan results in black (camera) screen
 - **bug/IXOQ-434** Remove/activate back button on login screen
 
-** not yet released
-**feature/IXOQ-???** Geolocation added
+## 2018-11-22
+***
+### __Android__ (build v1.0.7)
+**feature/IXOQ-209** Geolocation on new claims captured
+**bug/IXOQ-445** Enter key phrase: Change (enter) button on keyboard
+**bug/IXOQ-441** Selecting add a new claim causes app to crash
+**bug/IXOQ-442** Incorrect error message for unsuccessful login scan
+**bug/IXOQ-447** Periodically next/submit a claim buttons are not correctly displayed
+**bug/IXOQ-439** White screen when swiping between Saved &  submitted claims
+**bug/IXOQ-443** Include claim title in saved claim screen
+**bug/IXOQ-444** Wrap SDG's if they are greater than screen width
+**bug/IXOQ-446** Update login after user has linked keysafe or mnemonic
+
+### __iOS__ (build v1.0.7)
+**feature/IXOQ-209** Geolocation on new claims captured
+**bug/IXOQ-441** Selecting add a new claim causes app to crash
+**bug/IXOQ-442** Incorrect error message for unsuccessful login scan
+**bug/IXOQ-447** Periodically next/submit a claim buttons are not correctly displayed
+**bug/IXOQ-439** White screen when swiping between Saved &  submitted claims
+**bug/IXOQ-443** Include claim title in saved claim screen
+**bug/IXOQ-444** Wrap SDG's if they are greater than screen width
+**bug/IXOQ-446** Update login after user has linked keysafe or mnemonic
