@@ -167,7 +167,6 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		if (this.location) {
 			claimPayload['_claimLocation'] = this.location;
 		}
-
 		if (this.props.online) {
 			getSignature(claimPayload)
 				.then((signature: any) => {

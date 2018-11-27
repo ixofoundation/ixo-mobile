@@ -46,7 +46,7 @@
     "events": "^1.1.1",
     "https-browserify": "0.0.1",
     "i18next": "^11.6.0",
-    "ixo-module": "^1.4.65",
+    "ixo-module": "2.0.3",
     "lint": "^1.1.2",
     "moment": "^2.22.2",
     "native-base": "^2.8.0",
