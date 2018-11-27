@@ -263,8 +263,8 @@ export default class DynamicForm extends React.Component<Props, State> {
 				{this.props.editMode ? (
 					<LightButton
 						textStyles={{ color: ThemeColors.black }}
-						propStyles={DynamicFormStyles.deleteButton}
-						text={'DELETE CLAIM'}
+						propStyles={[DynamicFormStyles.deleteButton, { marginBottom: 90 }]}
+						text={this.props.screenProps.t('claims:deleteClaim')}
 						onPress={() =>
 							Alert.alert(this.props.screenProps.t('claims:sureToDelete'), this.props.screenProps.t('claims:cantBeUndone'), [{ text: this.props.screenProps.t('claims:no') }, { text: this.props.screenProps.t('claims:yesDelete'), onPress: () => this.props.handleRemove() }], {
 								cancelable: true

@@ -22,7 +22,7 @@
 		"scanSuccessful": "Scan Successful!",
 		"registerAsServiceAgent": "Register As Service Agent?",
 		"privacyImportance": "Your privacy is of utmost importance.",
-		"unlockInformation": "Please unlock your ixo information with your ixo Key Safe password.",
+		"unlockInformation": "There has been an error connecting to the ixo Key Safe.",
 		"unlockButtonText": "UNLOCK",
 		"registerButtonText": "REGISTER",
 		"projectInformation": "Service Providers delivers the impact to a project. They are the people on the ground submitting claims, and making a difference."
@@ -105,7 +105,12 @@
 		"sureToDelete": "Are you sure you want to delete this claim?",
 		"cantBeUndone": "This cannot be undone",
 		"no": "No",
-		"yesDelete": "Yes, delete"
+		"yesDelete": "Yes, delete",
+		"locationNeeded": "Location permissions needed",
+		"claimRejection": "Claims that do not have GPS locations might be rejected.",
+		"updateSettings": "To allow location please go to General - Settings and allow ixo location permissions",
+		"Ok": "OK",
+		"deleteClaim": "DELETE CLAIM"
 	},
 	"submittedClaims": {
 		"successMessage": "Your claim has been successfully submitted",

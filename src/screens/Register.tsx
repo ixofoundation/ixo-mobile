@@ -235,7 +235,7 @@ class Register extends React.Component<Props, StateTypes> {
 						this.setState({ loading: false });
 					}
 				})
-				.catch(() => {
+				.catch((error) => {
 					showToast(this.props.screenProps.t('register:failedToLedgerUser'), toastType.DANGER);
 					this.setState({ loading: false });
 				});

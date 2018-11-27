@@ -1,14 +1,11 @@
 import React from 'react';
-import { Dimensions, TouchableOpacity, TextStyle, ViewStyle } from 'react-native';
+import { TouchableOpacity, TextStyle, ViewStyle } from 'react-native';
 import { Content, View, Icon, Spinner, Text } from 'native-base';
 import { ThemeColors } from '../styles/Colors';
 import LightButton from './LightButton';
 
 import ModalStyle from '../styles/Modal';
-import IconServiceProviders from '../components/svg/iconServiceProviders';
 import InputField from './InputField';
-
-const { height, width } = Dimensions.get('window');
 
 interface InputFieldOptions {
 	prefixImage?: JSX.Element;

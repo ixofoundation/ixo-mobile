@@ -1,6 +1,6 @@
 import { RNCamera } from 'react-native-camera';
 import SInfo from 'react-native-sensitive-info';
-import { Icon, Text, View } from 'native-base';
+import { Text, View } from 'native-base';
 import * as React from 'react';
 import { AsyncStorage, Dimensions, Image, Modal, StatusBar, TouchableOpacity } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';

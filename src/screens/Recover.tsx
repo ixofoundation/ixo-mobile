@@ -1,7 +1,7 @@
 import { Container, Icon, Text, View, Content } from 'native-base';
 import * as React from 'react';
 import SInfo from 'react-native-sensitive-info';
-import { AsyncStorage, Dimensions, ImageBackground, StatusBar, KeyboardAvoidingView, TextInput } from 'react-native';
+import { AsyncStorage, ImageBackground, StatusBar, KeyboardAvoidingView, TextInput, Dimensions } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import { env } from '../config';
@@ -18,6 +18,7 @@ import { ThemeColors } from '../styles/Colors';
 import RecoverStyles from '../styles/Recover';
 import RegisterStyles from '../styles/Register';
 
+const { width } = Dimensions.get('window');
 const background = require('../../assets/background_1.png');
 
 interface ParentProps {
@@ -155,11 +156,12 @@ class Recover extends React.Component<Props, StateTypes> {
 								</Text>
 								<View style={[RegisterStyles.selectedBox]}>
 									<TextInput
+										blurOnSubmit={true}
 										maxLength={100}
 										multiline={true}
 										numberOfLines={5}
 										onChangeText={(text: string) => this.setState({ mnemonic: text })}
-										style={{ textAlign: 'left', color: ThemeColors.white, paddingHorizontal: 10, flex: 1 }}
+										style={{ textAlign: 'left', color: ThemeColors.white, paddingHorizontal: 10, flex: 1, alignItems: 'flex-start' }}
 									>
 										{this.state.mnemonic}
 									</TextInput>

@@ -31,15 +31,14 @@ export function getSignature(payload: object): Promise<any> {
 						const mnemonicJson: IMnemonic = Decrypt(encryptedMnemonic, password);
 						const sovrinDid: ISovrinDid = generateSovrinDID(mnemonicJson.mnemonic);
 						const payloadSig = sovrin.signMessage(JSON.stringify(payload), sovrinDid.secret.signKey, sovrinDid.verifyKey);
-						let signature: ISignature = {
+						const signature: ISignature = {
 							type: 'ed25519-sha-256',
 							created: new Date(),
 							creator: `did:sov:${sovrinDid.did}`,
 							publicKey: sovrinDid.encryptionPublicKey,
 							signatureValue: new Buffer(payloadSig)
 								.slice(0, 64)
-								.toString('hex')
-								.toUpperCase()
+								.toString('base64')
 						};
 
 						if (!verifyDocumentSignature(payloadSig, sovrinDid.verifyKey)) {
@@ -60,8 +59,8 @@ export function Encrypt(data: string, password: string) {
 }
 
 export function Decrypt(cipherText: any, password: string) {
-	let bytes = CryptoJS.AES.decrypt(cipherText, password);
-	let contentsHex = bytes.toString(CryptoJS.enc.Utf8);
+	const bytes = CryptoJS.AES.decrypt(cipherText, password);
+	const contentsHex = bytes.toString(CryptoJS.enc.Utf8);
 	const payloadJson = Buffer.from(contentsHex, 'hex').toString('utf8');
 	return JSON.parse(payloadJson);
 }

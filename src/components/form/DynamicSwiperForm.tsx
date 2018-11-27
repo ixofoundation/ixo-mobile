@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Swiper from 'react-native-swiper';
+import Permissions from 'react-native-permissions';
 import ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
@@ -12,6 +13,7 @@ import changeCase from 'change-case';
 import _ from 'underscore';
 import { PublicSiteStoreState } from '../../redux/public_site_reducer';
 import { dynamicSetFormCardIndex } from '../../redux/dynamics/dynamics_action_creators';
+import { showToast, toastType } from '../../utils/toasts';
 
 import InputFieldArea from '../../components/InputFieldArea';
 import InputField from '../../components/InputField';
@@ -82,7 +84,9 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 	}
 
 	componentDidUpdate() {
-		formSwiperRef.scrollBy(this.props.dynamicFormIndex - formSwiperRef.state.index);
+		if ((this.props.dynamicFormIndex - formSwiperRef.state.index) !== 0) {
+			formSwiperRef.scrollBy(this.props.dynamicFormIndex - formSwiperRef.state.index);
+		}
 	}
 
 	setFormState = (name: String, value: any) => {
@@ -137,32 +141,50 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 		this.setState({ imageList: imageListArray });
 	};
 
+	getPermissionForImage(fieldName: string) {
+		Permissions.check('photo').then(response => {
+			if (response === 'denied') {
+				showToast('Permissions denied', toastType.WARNING);
+				return;
+			}
+			if (response === 'undetermined') {
+				this.pickImage(fieldName);
+			}
+			this.pickImage(fieldName);
+		});
+	}
+
+	getPermissionForCamera(fieldName: string) {
+		Permissions.check('camera').then(response => {
+			if (response === 'denied') {
+				showToast('Permissions denied', toastType.WARNING);
+				return;
+			}
+			if (response === 'undetermined') {
+				this.takePhoto(fieldName);
+			}
+			this.takePhoto(fieldName);
+		});
+	}
+
 	pickImage(fieldName: string) {
-		try {
-			ImagePicker.launchImageLibrary({ quality: 0.9, mediaType: 'photo' }, response => {
-				if (!response.didCancel!) {
-					const base64 = `data:image/jpeg;base64,${response.data}`;
-					this.setFormState(fieldName, base64);
-					this.updateImageList(fieldName, response.uri);
-				}
-			});
-		} catch (error) {
-			console.log(error);
-		}
+		ImagePicker.launchImageLibrary({ quality: 0.9, mediaType: 'photo' }, response => {
+			if (!response.didCancel! && response.uri !== undefined) {
+				const base64 = `data:image/jpeg;base64,${response.data}`;
+				this.setFormState(fieldName, base64);
+				this.updateImageList(fieldName, response.uri);
+			}
+		});
 	}
 
 	takePhoto(fieldName: string) {
-		try {
-			ImagePicker.launchCamera({ quality: 0.9, mediaType: 'photo' }, response => {
-				if (!response.didCancel!) {
-					const base64 = `data:image/jpeg;base64,${response.data}`;
-					this.setFormState(fieldName, base64);
-					this.updateImageList(fieldName, response.uri);
-				}
-			});
-		} catch (error) {
-			console.log(error);
-		}
+		ImagePicker.launchCamera({ quality: 0.9, mediaType: 'photo' }, response => {
+			if (!response.didCancel! && response.uri !== undefined) {
+				const base64 = `data:image/jpeg;base64,${response.data}`;
+				this.setFormState(fieldName, base64);
+				this.updateImageList(fieldName, response.uri);
+			}
+		});
 	}
 
 	onFormValueChanged = (name: String, text: string) => {
@@ -174,8 +196,12 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 		if (_.isEmpty(this.state.imageList) || imageItem === undefined) {
 			return (
 				<View key={index}>
-					<LightButton propStyles={{ marginBottom: 10, alignItems: 'flex-start' }} text={'CHOOSE PHOTO'} onPress={() => this.pickImage(field.name)} />
-					<LightButton propStyles={{ alignItems: 'flex-start' }} text={'TAKE PHOTO'} onPress={() => this.takePhoto(field.name)} />
+					<LightButton
+						propStyles={{ marginBottom: 10, alignItems: 'flex-start' }}
+						text={'CHOOSE PHOTO'}
+						onPress={() => this.getPermissionForImage(field.name)}
+					/>
+					<LightButton propStyles={{ alignItems: 'flex-start' }} text={'TAKE PHOTO'} onPress={() => this.getPermissionForCamera(field.name)} />
 				</View>
 			);
 		}
@@ -208,17 +234,25 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 
 	renderMultipleSelect(options: any, index: number) {
 		return (
-			<View key={index} style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}}>
+			<View key={index} style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
 				{options.map((option, i) => {
 					if ('select' in option && option.select === true) {
 						return (
-							<TouchableOpacity style={[DynamicFormStyles.multipleSelectButton]} key={i} onPress={() => this.handlePressMultipleSelect(options, option.label)}>
+							<TouchableOpacity
+								style={[DynamicFormStyles.multipleSelectButton]}
+								key={i}
+								onPress={() => this.handlePressMultipleSelect(options, option.label)}
+							>
 								<Text style={DynamicFormStyles.multipleSelectButtonText}>{option.label}</Text>
 							</TouchableOpacity>
-						)
+						);
 					} else {
 						return (
-							<TouchableOpacity style={[DynamicFormStyles.multipleSelectButton]} key={i} onPress={() => this.handlePressMultipleSelect(options, option.label)}>
+							<TouchableOpacity
+								style={[DynamicFormStyles.multipleSelectButton]}
+								key={i}
+								onPress={() => this.handlePressMultipleSelect(options, option.label)}
+							>
 								<Text style={DynamicFormStyles.multipleSelectButtonText}>{option.label}</Text>
 							</TouchableOpacity>
 						);

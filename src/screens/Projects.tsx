@@ -235,7 +235,7 @@ export class Projects extends React.Component<Props, StateProps> {
 												<View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
 													<View style={{ height: 5, width: width * 0.06, backgroundColor: ProjectStatus.inProgress }} />
 												</View>
-												<View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+												<View style={{ flexDirection: 'row', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
 													{project.data.sdgs.map((SDG, SDGi) => {
 														return (
 															<CustomIcon
