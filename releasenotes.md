@@ -123,22 +123,27 @@
 ## 2018-11-22
 ***
 ### __Android__ (build v1.0.7)
-**feature/IXOQ-209** Geolocation on new claims captured
-**bug/IXOQ-445** Enter key phrase: Change (enter) button on keyboard
-**bug/IXOQ-441** Selecting add a new claim causes app to crash
-**bug/IXOQ-442** Incorrect error message for unsuccessful login scan
-**bug/IXOQ-447** Periodically next/submit a claim buttons are not correctly displayed
-**bug/IXOQ-439** White screen when swiping between Saved &  submitted claims
-**bug/IXOQ-443** Include claim title in saved claim screen
-**bug/IXOQ-444** Wrap SDG's if they are greater than screen width
-**bug/IXOQ-446** Update login after user has linked keysafe or mnemonic
+- **feature/IXOQ-209** Geolocation on new claims captured
+- **bug/IXOQ-445** Enter key phrase: Change (enter) button on keyboard
+- **bug/IXOQ-441** Selecting add a new claim causes app to crash
+- **bug/IXOQ-442** Incorrect error message for unsuccessful login scan
+- **bug/IXOQ-447** Periodically next/submit a claim buttons are not correctly displayed
+- **bug/IXOQ-439** White screen when swiping between Saved &  submitted claims
+- **bug/IXOQ-443** Include claim title in saved claim screen
+- **bug/IXOQ-444** Wrap SDG's if they are greater than screen width
+- **bug/IXOQ-446** Update login after user has linked keysafe or mnemonic
 
 ### __iOS__ (build v1.0.7)
-**feature/IXOQ-209** Geolocation on new claims captured
-**bug/IXOQ-441** Selecting add a new claim causes app to crash
-**bug/IXOQ-442** Incorrect error message for unsuccessful login scan
-**bug/IXOQ-447** Periodically next/submit a claim buttons are not correctly displayed
-**bug/IXOQ-439** White screen when swiping between Saved &  submitted claims
-**bug/IXOQ-443** Include claim title in saved claim screen
-**bug/IXOQ-444** Wrap SDG's if they are greater than screen width
-**bug/IXOQ-446** Update login after user has linked keysafe or mnemonic
+- **feature/IXOQ-209** Geolocation on new claims captured
+- **bug/IXOQ-441** Selecting add a new claim causes app to crash
+- **bug/IXOQ-442** Incorrect error message for unsuccessful login scan
+- **bug/IXOQ-447** Periodically next/submit a claim buttons are not correctly displayed
+- **bug/IXOQ-439** White screen when swiping between Saved &  submitted claims
+- **bug/IXOQ-443** Include claim title in saved claim screen
+- **bug/IXOQ-444** Wrap SDG's if they are greater than screen width
+- **bug/IXOQ-446** Update login after user has linked keysafe or mnemonic
+
+## __NOT YET RELEASED ##
+
+- **feature/upgraded_blockchain_hex** The signatures is now updated to use base64 instead of hex encoding
+- **IXO module version update** Upgrade to ixo-module v2.0.3
