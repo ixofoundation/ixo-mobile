@@ -16,6 +16,7 @@ interface InputFieldOptions {
 	containerStyle?: ViewStyle;
 	onSuffixImagePress?: Function;
 	underlinePositionRatio?: number;
+	error?: string;
 }
 
 interface ParentProps {
@@ -86,6 +87,7 @@ export default class CustomModal extends React.Component<Props, State> {
 		if (this.props.inputFieldOptions) {
 			return (
 				<InputField
+					error={this.props.inputFieldOptions.error}
 					onSuffixImagePress={this.props.inputFieldOptions.onSuffixImagePress}
 					containerStyle={this.props.inputFieldOptions.containerStyle}
 					prefixIcon={this.props.inputFieldOptions.prefixImage}

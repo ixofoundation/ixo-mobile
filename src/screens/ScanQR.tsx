@@ -107,6 +107,8 @@ interface State {
 	serviceEndpoint: string | null;
 	userEmail: string;
 	serviceProviderState: AddingServiceProvider;
+	keysafePasswordError: string;
+	serviceProviderFieldError: string;
 }
 
 export interface Props extends ParentProps, DispatchProps, StateProps {}
@@ -143,7 +145,9 @@ export class ScanQR extends React.Component<Props, State> {
 		projectDid: null,
 		serviceEndpoint: null,
 		userEmail: '',
-		serviceProviderState: AddingServiceProvider.confirmProject
+		serviceProviderState: AddingServiceProvider.confirmProject,
+		keysafePasswordError: '',
+		serviceProviderFieldError: ''
 	};
 
 	async componentDidMount() {
@@ -168,7 +172,7 @@ export class ScanQR extends React.Component<Props, State> {
 
 	handleUnlockPayload = () => {
 		if (!this.state.password || this.state.password === '') {
-			showToast(this.props.screenProps.t('scanQR:missingField'), toastType.DANGER);
+			this.setState({ keysafePasswordError: this.props.screenProps.t('scanQR:missingField') })
 			return;
 		}
 		this.setState({ loading: true });
@@ -193,8 +197,7 @@ export class ScanQR extends React.Component<Props, State> {
 				this.resetStateVars();
 				this.props.navigation.navigate('Login');
 			} catch (exception) {
-				showToast(this.props.screenProps.t('scanQR:keysafePasswordWrong'), toastType.WARNING);
-				this.setState({ loading: false });
+				this.setState({ loading: false, keysafePasswordError: this.props.screenProps.t('scanQR:keysafePasswordWrong') });
 			}
 		} else {
 			this.setState({ errors: true, loading: false });
@@ -203,7 +206,7 @@ export class ScanQR extends React.Component<Props, State> {
 
 	handleRegisterServiceAgent = () => {
 		if (this.state.userEmail === '') {
-			showToast(this.props.screenProps.t('scanQR:missingField'), toastType.DANGER);
+			this.setState({ loading: false, serviceProviderFieldError: this.props.screenProps.t('scanQR:missingField') });
 			return;
 		}
 		this.setState({ loading: true });
@@ -344,6 +347,7 @@ export class ScanQR extends React.Component<Props, State> {
 						loading={this.state.loading}
 						buttonText={this.props.screenProps.t('scanQR:submit')}
 						inputFieldOptions={{
+							error: this.state.serviceProviderFieldError,
 							onChangeText: (userEmail: string) =>
 								this.setState({
 									// TODO
@@ -387,7 +391,8 @@ export class ScanQR extends React.Component<Props, State> {
 				buttonText={this.props.screenProps.t('connectIXOComplete:unlockButtonText')}
 				heading={this.props.screenProps.t('connectIXOComplete:scanSuccessful')}
 				inputFieldOptions={{
-					underlinePositionRatio: 0.05,
+					error: this.state.keysafePasswordError,
+					underlinePositionRatio: 0.038,
 					onChangeText: (password: string) =>
 						this.setState({
 							password

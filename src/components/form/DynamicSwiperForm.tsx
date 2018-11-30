@@ -4,7 +4,7 @@ import Permissions from 'react-native-permissions';
 import ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
-import { TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { TouchableOpacity, KeyboardAvoidingView, Platform, Dimensions } from 'react-native';
 import { FormStyles } from '../../models/form';
 import { ThemeColors, CardContainerBox } from '../../styles/Colors';
 import { View, Text, Icon, Content } from 'native-base';
@@ -21,6 +21,8 @@ import InputField from '../../components/InputField';
 import DynamicFormStyles from '../../styles/componentStyles/DynamicSwiperForm';
 import ContainerStyles from '../../styles/Containers';
 import { IProject } from '../../models/project';
+
+const { height } = Dimensions.get('window');
 
 interface IImage {
 	fieldName: string;
@@ -272,7 +274,7 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 				activeDotColor={ThemeColors.blue_white}
 				dotColor={ThemeColors.blue_light}
 				showsButtons={false}
-				paginationStyle={{ paddingBottom: 50 }}
+				paginationStyle={{ paddingBottom: height * 0.1 }}
 				onIndexChanged={(index: number) => this.onIndexChanged(index)}
 			>
 				{this.props.formSchema.map((field: any, i: any) => {

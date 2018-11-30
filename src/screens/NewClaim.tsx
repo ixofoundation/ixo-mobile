@@ -2,8 +2,9 @@ import * as React from 'react';
 import CustomIcons from '../components/svg/CustomIcons';
 import _ from 'underscore';
 import Permissions from 'react-native-permissions';
-import { StatusBar, TouchableOpacity, ActivityIndicator, Geolocation, Modal, Dimensions } from 'react-native';
+import { StatusBar, TouchableOpacity, ActivityIndicator, Modal, Dimensions } from 'react-native';
 import GenericModal from '../components/GenericModal';
+import LoadingModal from '../components/LoadingModal';
 import { Container, View, Toast, Text, Icon } from 'native-base';
 import { ThemeColors } from '../styles/Colors';
 import { IProject } from '../models/project';
@@ -18,6 +19,7 @@ import { connect } from 'react-redux';
 import { getSignature } from '../utils/sovrin';
 import { showToast, toastType } from '../utils/toasts';
 import { userFirstClaim } from '../redux/user/user_action_creators';
+import { setProjectUserCapability } from '../redux/projects/projects_action_creators';
 
 const { height } = Dimensions.get('window');
 
@@ -34,12 +36,14 @@ interface ParentProps {
 interface StateTypes {
 	claimData: string;
 	modalVisible: boolean;
+	modalLoading: boolean;
 }
 
 export interface DispatchProps {
 	onSetFormCardIndex: (index: number) => void;
 	onClaimSave: (claim: string, projectDID: string) => void;
 	onFirstClaim: () => void;
+	onSetUserCapabilities: (projectDid: string, hasCapability: boolean) => void;
 }
 
 export interface StateProps {
@@ -64,7 +68,8 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		super(props);
 		this.state = {
 			claimData: '',
-			modalVisible: false
+			modalVisible: false,
+			modalLoading: false
 		};
 
 		if (props.project) {
@@ -142,7 +147,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 
 	getLocation() {
 		Permissions.check('location').then(response => {
-			if (response === 'undetermined' || response === 'denied') {
+			if (response === 'undetermined' || response === 'denied' || response === 'restricted') {
 				this.setState({ modalVisible: true });
 				return;
 			}
@@ -153,6 +158,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 					},
 					error => {
 						showToast('Failed to retrieve location', toastType.DANGER);
+						this.setState({ modalVisible: true });
 					},
 					{ enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
 				);
@@ -172,8 +178,21 @@ class NewClaim extends React.Component<Props, StateTypes> {
 				.then((signature: any) => {
 					this.props.ixo.claim
 						.createClaim(claimPayload, signature, this.pdsURL)
-						.then(() => {
-							this.props.navigation.navigate('SubmittedClaims', { claimSubmitted: true });
+						.then(response => {
+							// TODO add specific code check
+							if ('error' in response) {
+								// Set capability to false
+								this.props.onSetUserCapabilities(this.projectDid, false);
+								showToast(this.props.screenProps.t('claims:noCapabilitiesFound'), toastType.DANGER);
+								// Save user entered claim
+								this.handleSaveClaim();
+								showToast(this.props.screenProps.t('claims:claimSavedLocally'), toastType.DANGER);
+								this.props.navigation.pop();
+							} else {
+								this.props.onSetUserCapabilities(this.projectDid, true);
+								this.setState({ modalLoading: false });
+								this.props.navigation.navigate('SubmittedClaims', { claimSubmitted: true });
+							}
 						})
 						.catch(() => {
 							this.props.navigation.navigate('SubmittedClaims', { claimSubmitted: false });
@@ -190,6 +209,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 
 	onFormSubmit = () => {
 		// upload all the images and change the value to the returned hash of the image
+		this.setState({ modalLoading: true });
 		const formData = this.state.claimData;
 		const formDef = JSON.parse(this.projectFormFile);
 		const promises: Promise<any>[] = [];
@@ -297,6 +317,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 						heading={this.props.screenProps.t('claims:locationNeeded')}
 					/>
 				</Modal>
+				<LoadingModal isModalVisible={this.state.modalLoading} />
 			</Container>
 		);
 	}
@@ -312,6 +333,9 @@ function mapDispatchToProps(dispatch: any): DispatchProps {
 		},
 		onFirstClaim: () => {
 			dispatch(userFirstClaim());
+		},
+		onSetUserCapabilities: (projectDid: string, hasCapability: boolean) => {
+			dispatch(setProjectUserCapability(projectDid, hasCapability));
 		}
 	};
 }

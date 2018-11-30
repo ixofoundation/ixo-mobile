@@ -66,13 +66,13 @@ const styles = StyleSheet.create<Style>({
 	},
 	outerCardContainerActive: {
 		position: 'absolute',
-		height: height - 160,
+		height: height * 0.7,
 		top: 30,
 		alignSelf: 'center',
 		width: '85%',
 		flex: 1,
-		borderRadius: 1,
-		marginBottom: '3%'
+		borderRadius: 1
+		// marginBottom: '3%'
 	},
 	outerCardContainer: {
 		width: '110%',

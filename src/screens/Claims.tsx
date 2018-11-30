@@ -280,13 +280,21 @@ class Claims extends React.Component<Props, StateProps> {
 						</View>
 						<View>
 							<View style={[ClaimsStyles.flexLeft]}>
-								<Text style={[ClaimsStyles.header]}>{this.props.screenProps.t('claims:noSubmissions')}</Text>
+								<Text style={[ClaimsStyles.header]}>
+									{this.props.project.userHasCapability
+										? this.props.screenProps.t('claims:noSubmissions')
+										: this.props.screenProps.t('claims:applicationPendingApproval')}
+								</Text>
 							</View>
 							<View style={{ width: '100%' }}>
 								<View style={ClaimsStyles.divider} />
 							</View>
 							<View style={ClaimsStyles.flexLeft}>
-								<Text style={ClaimsStyles.infoBox}>{this.props.screenProps.t('claims:savedSubmissionsInfo')}</Text>
+								<Text style={ClaimsStyles.infoBox}>
+									{this.props.project.userHasCapability
+										? this.props.screenProps.t('claims:savedSubmissionsInfo')
+										: this.props.screenProps.t('claims:pleaseCheckBackSoon')}
+								</Text>
 							</View>
 						</View>
 					</View>
@@ -349,7 +357,7 @@ class Claims extends React.Component<Props, StateProps> {
 						<View style={SubmittedClaimsStyles.textWrapper}>
 							<View style={[SubmittedClaimsStyles.flexLeft]}>
 								<Text style={[SubmittedClaimsStyles.header, { color: ThemeColors.white }]}>
-									{this.props.screenProps.t('submittedClaims:successMessage')}
+									{this.props.screenProps.t('submittedClaims:successMessageMultiple')}
 								</Text>
 							</View>
 						</View>
@@ -381,7 +389,7 @@ class Claims extends React.Component<Props, StateProps> {
 						tabStyle={{ backgroundColor: ThemeColors.blue_dark }}
 						heading={this.renderSavedTab(numberOfSavedClaims)}
 					>
-						{(this.props.isClaimsSubmitted) ? this.renderAllSavedClaimsSubmitted() : this.renderSavedClaims(projectClaims)}
+						{this.props.isClaimsSubmitted ? this.renderAllSavedClaimsSubmitted() : this.renderSavedClaims(projectClaims)}
 					</Tab>
 					<Tab
 						activeTabStyle={{ backgroundColor: ThemeColors.blue_dark }}

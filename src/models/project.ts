@@ -4,6 +4,7 @@ export interface IProject {
 	pubKey: string;
 	senderDid: string;
 	txHash: string;
+	userHasCapability?: boolean;
 }
 interface IData {
 	title: string;

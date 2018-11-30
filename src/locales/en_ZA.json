@@ -22,7 +22,7 @@
 		"scanSuccessful": "Scan Successful!",
 		"registerAsServiceAgent": "Register As Service Agent?",
 		"privacyImportance": "Your privacy is of utmost importance.",
-		"unlockInformation": "There has been an error connecting to the ixo Key Safe.",
+		"unlockInformation": "Unlock your existing ixo profile with your ixo Key Safe password.",
 		"unlockButtonText": "UNLOCK",
 		"registerButtonText": "REGISTER",
 		"projectInformation": "Service Providers delivers the impact to a project. They are the people on the ground submitting claims, and making a difference."
@@ -110,9 +110,14 @@
 		"claimRejection": "Claims that do not have GPS locations might be rejected.",
 		"updateSettings": "To allow location please go to General - Settings and allow ixo location permissions",
 		"Ok": "OK",
-		"deleteClaim": "DELETE CLAIM"
+		"deleteClaim": "DELETE CLAIM",
+		"noCapabilitiesFound": "No Capabilities found",
+		"claimSavedLocally": "Claim saved",
+		"applicationPendingApproval": "Your application is still pending approval",
+		"pleaseCheckBackSoon": "Please check back soon to submit your first claim."
 	},
 	"submittedClaims": {
+		"successMessageMultiple": "Your claims has been successfully submitted",
 		"successMessage": "Your claim has been successfully submitted",
 		"successDetailedMessage": "Your claim is awaiting evaluation. Please check back soon.",
 		"rejectMessage": "There has been an error submitting your claim",

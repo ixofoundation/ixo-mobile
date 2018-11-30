@@ -4,7 +4,7 @@ import { TextField } from 'react-native-material-textfield';
 
 import { ThemeColors } from '../styles/Colors';
 
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 export enum InputColorTypes {
 	Light,
@@ -13,14 +13,14 @@ export enum InputColorTypes {
 
 const darkPalettes = {
 	baseColor: ThemeColors.blue_lightest,
-	errorColor: ThemeColors.red,
+	errorColor: ThemeColors.progressRed,
 	tintColor: ThemeColors.blue_lightest,
 	textColor: ThemeColors.white
 };
 
 const lightPalettes = {
 	baseColor: ThemeColors.black,
-	errorColor: ThemeColors.red,
+	errorColor: ThemeColors.progressRed,
 	tintColor: ThemeColors.grey,
 	textColor: ThemeColors.grey
 };
@@ -37,6 +37,7 @@ interface ParentProps {
 	containerStyle?: ViewStyle;
 	onSuffixImagePress?: Function;
 	underlinePositionRatio?: number;
+	error?: string;
 }
 
 class InputField extends React.Component<ParentProps> {
@@ -45,6 +46,7 @@ class InputField extends React.Component<ParentProps> {
 			return (
 				<View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
 					<TextField
+						error={this.props.error}
 						secureTextEntry={this.props.password}
 						label={this.props.labelName ? this.props.labelName : ''}
 						value={this.props.value ? this.props.value : undefined}
@@ -69,6 +71,7 @@ class InputField extends React.Component<ParentProps> {
 					<View style={[{ flexDirection: 'row', alignContent: 'center', flex: 1, alignItems: 'center', justifyContent: 'space-between' }]}>
 						{this.props.prefixIcon ? this.props.prefixIcon : null}
 						<TextField
+							error={this.props.error}
 							secureTextEntry={this.props.password}
 							label={this.props.labelName ? this.props.labelName : ''}
 							value={this.props.value ? this.props.value : undefined}
@@ -107,6 +110,7 @@ class InputField extends React.Component<ParentProps> {
 			return (
 				<View>
 					<TextField
+						error={this.props.error}
 						secureTextEntry={this.props.password}
 						value={this.props.value ? this.props.value : undefined}
 						onChangeText={this.props.onChangeText}
