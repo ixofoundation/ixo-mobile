@@ -1,6 +1,6 @@
 let env = {
-	REACT_APP_BLOCKCHAIN_IP: 'http://blockchain_uat.ixo.world',
-	REACT_APP_BLOCK_SYNC_URL: 'https://exploreruat.ixo.world'
+	REACT_APP_BLOCKCHAIN_IP: 'http://blockchainmobile.ixo.world',
+	REACT_APP_BLOCK_SYNC_URL: 'https://explorermobile.ixo.world'
 }
 
 const dev_env = {

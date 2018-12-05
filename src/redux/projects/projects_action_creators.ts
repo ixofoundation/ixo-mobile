@@ -1,6 +1,6 @@
 import { createAction } from '../../lib/redux_utils/actions';
 import { IProject } from '../../models/project';
-import { Projects, Project, UserProjectInteraction, PROJECTS_UPDATE, PROJECT_SELECTED, PROJECTS_CLEAR_STORE, PROJECT_CLEAR_STORE, PROJECT_SELECTED_NO_CAPABILITY } from './projects_actions';
+import { Projects, Project, UserProjectInteraction, ProjectLocalOnlyData, PROJECTS_UPDATE, PROJECT_SELECTED, PROJECTS_CLEAR_STORE, PROJECT_CLEAR_STORE, PROJECT_SELECTED_NO_CAPABILITY, PROJECT_SET_PROJECT_IMAGE } from './projects_actions';
 
 export function updateProjects(projects: IProject[]) {
 	return (dispatch: Function) => {
@@ -51,4 +51,11 @@ export function setProjectUserCapability(projectDid: string, hasCapability: bool
 			})
 		);
 	};
+}
+
+export function setProjectLocalImage(projectDid: string, projectLocalImageUri: string) {
+	return createAction<ProjectLocalOnlyData>(PROJECT_SET_PROJECT_IMAGE.type, {
+		projectDid,
+		projectLocalImageUri
+	});
 }

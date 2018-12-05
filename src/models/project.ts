@@ -5,6 +5,7 @@ export interface IProject {
 	senderDid: string;
 	txHash: string;
 	userHasCapability?: boolean;
+	projectLocalImageUri?: string;
 }
 interface IData {
 	title: string;

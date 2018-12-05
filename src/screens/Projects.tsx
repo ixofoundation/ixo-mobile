@@ -1,10 +1,11 @@
 import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 import { showToast, toastType } from '../utils/toasts';
+import { setLocalProjectImage, getLocalProjectImage } from '../utils/localCache';
 import { SDGArray } from '../models/sdg';
 import { Container, Content, Drawer, Header, Text, View, Fab } from 'native-base';
 import * as React from 'react';
-import { Dimensions, Image, ImageBackground, RefreshControl, StatusBar, TouchableOpacity, ActivityIndicator, YellowBox } from 'react-native';
+import { Dimensions, Image, ImageBackground, RefreshControl, StatusBar, TouchableOpacity, ActivityIndicator, YellowBox, ImageStore, ImageEditor } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'underscore';
 import { env } from '../config';
@@ -12,7 +13,7 @@ import SideBar from '../components/SideBar';
 import { IClaim, IProject } from '../models/project';
 import { IUser } from '../models/user';
 import { initIxo } from '../redux/ixo/ixo_action_creators';
-import { updateProjects, loadProject } from '../redux/projects/projects_action_creators';
+import { updateProjects, loadProject, setProjectLocalImage } from '../redux/projects/projects_action_creators';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
 import { ThemeColors, ProjectStatus, ClaimsButton, ProgressSuccess } from '../styles/Colors';
@@ -52,7 +53,6 @@ export interface StateProps {
 	projects: IProject[];
 	isRefreshing: boolean;
 	isDrawerOpen: boolean;
-	isConnected: boolean;
 }
 
 export interface Props extends ParentProps, DispatchProps, StateProps {}
@@ -62,8 +62,7 @@ export class Projects extends React.Component<Props, StateProps> {
 	state = {
 		projects: [],
 		isRefreshing: false,
-		isDrawerOpen: false,
-		isConnected: true
+		isDrawerOpen: false
 	};
 
 	static navigationOptions = ({ navigation, screenProps }: { navigation: any; screenProps: any }) => {
@@ -103,6 +102,9 @@ export class Projects extends React.Component<Props, StateProps> {
 		if (this.props.ixo !== prevProps.ixo) {
 			this.getProjectList();
 		}
+		if (this.props.online !== prevProps.online) {
+			this.getProjectList();
+		}
 	}
 
 	openDrawer = () => {
@@ -127,16 +129,21 @@ export class Projects extends React.Component<Props, StateProps> {
 		}
 	}
 
-	fetchImage = (serviceEndpoint: string, imageLink: string) => {
-		if (imageLink && imageLink !== '') {
-			return { uri: `${serviceEndpoint}public/${imageLink}` };
+	fetchImage = (serviceEndpoint: string, imageLink: string, projectDid: string) => {
+		if (this.props.online) { // only fetch new images when online
+			if (imageLink && imageLink !== '') {
+				setLocalProjectImage(projectDid, `${serviceEndpoint}public/${imageLink}`);
+				return { uri: `${serviceEndpoint}public/${imageLink}` };
+			} else {
+				return placeholder;
+			}
 		} else {
-			return placeholder;
+			return { uri: getLocalProjectImage(projectDid) }
 		}
-	};
+	}
 
 	getProjectList() {
-		if (this.state.isConnected) {
+		if (this.props.online) {
 			if (this.props.ixo) {
 				this.props.ixo.project.listProjects().then((projectList: any) => {
 					const myProjects = this.getMyProjects(projectList);
@@ -227,7 +234,7 @@ export class Projects extends React.Component<Props, StateProps> {
 								<View style={[ContainerStyles.flexColumn]}>
 									<ImageBackground
 										onLoad={() => this.updateImageLoadingStatus(project)}
-										source={this.fetchImage(project.data.serviceEndpoint, project.data.imageLink)}
+										source={this.fetchImage(project.data.serviceEndpoint, project.data.imageLink, project.projectDid)}
 										style={ProjectsStyles.projectImage}
 									>
 										{'imageLoaded' in project ? (
@@ -363,7 +370,7 @@ export class Projects extends React.Component<Props, StateProps> {
 		);
 	}
 
-	renderdynamics() {
+	renderConnectivity() {
 		if (this.props.online) return null;
 		return <Banner text={this.props.screenProps.t('dynamics:offlineMode')} />;
 	}
@@ -371,7 +378,6 @@ export class Projects extends React.Component<Props, StateProps> {
 	render() {
 		return (
 			<Drawer
-				// styles={{ opacity: 0.7 }}
 				ref={ref => {
 					// @ts-ignore
 					this.drawer = ref;
@@ -379,7 +385,7 @@ export class Projects extends React.Component<Props, StateProps> {
 				content={<SideBar screenProps={this.props.screenProps} navigation={this.props.navigation} />}
 				onClose={() => this.closeDrawer()}
 			>
-				{this.renderdynamics()}
+				{this.renderConnectivity()}
 				{this.state.projects.length > 0 ? this.renderNoProjectsView() : this.renderProjectsView()}
 				<Fab
 					direction="up"

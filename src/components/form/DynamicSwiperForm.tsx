@@ -4,7 +4,7 @@ import Permissions from 'react-native-permissions';
 import ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
-import { TouchableOpacity, KeyboardAvoidingView, Platform, Dimensions } from 'react-native';
+import { TouchableOpacity, KeyboardAvoidingView, Platform, Dimensions, ScrollView } from 'react-native';
 import { FormStyles } from '../../models/form';
 import { ThemeColors, CardContainerBox } from '../../styles/Colors';
 import { View, Text, Icon, Content } from 'native-base';
@@ -86,7 +86,7 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 	}
 
 	componentDidUpdate() {
-		if ((this.props.dynamicFormIndex - formSwiperRef.state.index) !== 0) {
+		if (this.props.dynamicFormIndex - formSwiperRef.state.index !== 0) {
 			formSwiperRef.scrollBy(this.props.dynamicFormIndex - formSwiperRef.state.index);
 		}
 	}
@@ -317,15 +317,17 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 					<KeyboardAvoidingView behavior="padding" enabled={true}>
 						<LinearGradient colors={[CardContainerBox.colorPrimary, CardContainerBox.colorSecondary]} style={[DynamicFormStyles.outerCardContainerActive]}>
 							<View style={[ContainerStyles.flexColumn, DynamicFormStyles.innerCardContainer]}>
-								<View>
-									<Text style={[DynamicFormStyles.questionHeader]}>
-										{this.props.screenProps.t('claims:questions')} {cardDetails.questionNumber}/{cardDetails.totalQuestions}
-									</Text>
-								</View>
-								<View>
-									<Text style={DynamicFormStyles.header}>{cardDetails.topic}</Text>
-								</View>
-								<View style={{ width: '100%' }}>{input}</View>
+								<Content>
+									<View>
+										<Text style={[DynamicFormStyles.questionHeader]}>
+											{this.props.screenProps.t('claims:questions')} {cardDetails.questionNumber}/{cardDetails.totalQuestions}
+										</Text>
+									</View>
+									<View>
+										<Text style={DynamicFormStyles.header}>{cardDetails.topic}</Text>
+									</View>
+									<View style={{ width: '100%' }}>{input}</View>
+								</Content>
 							</View>
 						</LinearGradient>
 					</KeyboardAvoidingView>
@@ -334,17 +336,19 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 		}
 		return (
 			<LinearGradient colors={[CardContainerBox.colorPrimary, CardContainerBox.colorSecondary]} style={[DynamicFormStyles.outerCardContainerActive]}>
-				<View style={[ContainerStyles.flexColumn, DynamicFormStyles.innerCardContainer]}>
-					<View>
-						<Text style={[DynamicFormStyles.questionHeader]}>
-							{this.props.screenProps.t('claims:questions')} {cardDetails.questionNumber}/{cardDetails.totalQuestions}
-						</Text>
+				<Content key={index}>
+					<View style={[ContainerStyles.flexColumn, DynamicFormStyles.innerCardContainer]}>
+						<View>
+							<Text style={[DynamicFormStyles.questionHeader]}>
+								{this.props.screenProps.t('claims:questions')} {cardDetails.questionNumber}/{cardDetails.totalQuestions}
+							</Text>
+						</View>
+						<View>
+							<Text style={DynamicFormStyles.header}>{cardDetails.topic}</Text>
+						</View>
+						<View style={{ width: '100%' }}>{input}</View>
 					</View>
-					<View>
-						<Text style={DynamicFormStyles.header}>{cardDetails.topic}</Text>
-					</View>
-					<View style={{ width: '100%' }}>{input}</View>
-				</View>
+				</Content>
 			</LinearGradient>
 		);
 	}
