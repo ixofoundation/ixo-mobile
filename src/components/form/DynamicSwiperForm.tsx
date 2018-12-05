@@ -4,7 +4,7 @@ import Permissions from 'react-native-permissions';
 import ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
-import { TouchableOpacity, KeyboardAvoidingView, Platform, Dimensions, ScrollView } from 'react-native';
+import { TouchableOpacity, KeyboardAvoidingView, Dimensions } from 'react-native';
 import { FormStyles } from '../../models/form';
 import { ThemeColors, CardContainerBox } from '../../styles/Colors';
 import { View, Text, Icon, Content } from 'native-base';
@@ -21,6 +21,7 @@ import InputField from '../../components/InputField';
 import DynamicFormStyles from '../../styles/componentStyles/DynamicSwiperForm';
 import ContainerStyles from '../../styles/Containers';
 import { IProject } from '../../models/project';
+import KeyboardUtil from '../../utils/keyboard';
 
 const { height } = Dimensions.get('window');
 
@@ -55,6 +56,7 @@ interface State {
 	submitStatus: string;
 	hasCameraPermission: boolean;
 	imageList: IImage[] | any[];
+	keyboardVisible: boolean;
 }
 
 interface DispatchProps {
@@ -66,11 +68,13 @@ declare var formSwiperRef: any;
 export interface Props extends ParentProps, StateProps, DispatchProps {}
 class DynamicSwiperForm extends React.Component<Props, State> {
 	private formData: any = {};
+	private keyboardUtil: KeyboardUtil;
 
 	state = {
 		submitStatus: '',
 		hasCameraPermission: false,
-		imageList: []
+		imageList: [],
+		keyboardVisible: false
 	};
 
 	async componentWillMount() {
@@ -89,6 +93,17 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 		if (this.props.dynamicFormIndex - formSwiperRef.state.index !== 0) {
 			formSwiperRef.scrollBy(this.props.dynamicFormIndex - formSwiperRef.state.index);
 		}
+	}
+
+	componentDidMount() {
+		this.keyboardUtil = new KeyboardUtil(
+			() => {
+				this.setState({ keyboardVisible: true });
+			},
+			() => {
+				this.setState({ keyboardVisible: false });
+			}
+		);
 	}
 
 	setFormState = (name: String, value: any) => {
@@ -199,11 +214,11 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 			return (
 				<View key={index}>
 					<LightButton
-						propStyles={{ marginBottom: 10, alignItems: 'flex-start' }}
+						propStyles={{ marginBottom: 10, alignItems: 'flex-start', width: '100%' }}
 						text={'CHOOSE PHOTO'}
 						onPress={() => this.getPermissionForImage(field.name)}
 					/>
-					<LightButton propStyles={{ alignItems: 'flex-start' }} text={'TAKE PHOTO'} onPress={() => this.getPermissionForCamera(field.name)} />
+					<LightButton propStyles={{ alignItems: 'flex-start', width: '100%' }} text={'TAKE PHOTO'} onPress={() => this.getPermissionForCamera(field.name)} />
 				</View>
 			);
 		}
@@ -230,8 +245,6 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 
 	handlePressMultipleSelect(options: any, label: string) {
 		const option = options.find((optionFound: any) => optionFound.label === label);
-		// TODO
-		// this.setFormStateSelect()
 	}
 
 	renderMultipleSelect(options: any, index: number) {
@@ -274,6 +287,7 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 				activeDotColor={ThemeColors.blue_white}
 				dotColor={ThemeColors.blue_light}
 				showsButtons={false}
+				showsPagination={!this.state.keyboardVisible}
 				paginationStyle={{ paddingBottom: height * 0.1 }}
 				onIndexChanged={(index: number) => this.onIndexChanged(index)}
 			>
@@ -311,13 +325,12 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 	}
 
 	renderCard(input: JSX.Element, cardDetails: ICardDetails, index: number) {
-		if (Platform.OS === 'ios') {
 			return (
 				<Content key={index}>
-					<KeyboardAvoidingView behavior="padding" enabled={true}>
+					<KeyboardAvoidingView behavior="position" enabled={true}>
 						<LinearGradient colors={[CardContainerBox.colorPrimary, CardContainerBox.colorSecondary]} style={[DynamicFormStyles.outerCardContainerActive]}>
 							<View style={[ContainerStyles.flexColumn, DynamicFormStyles.innerCardContainer]}>
-								<Content>
+								<Content style={{ width: '100%' }}>
 									<View>
 										<Text style={[DynamicFormStyles.questionHeader]}>
 											{this.props.screenProps.t('claims:questions')} {cardDetails.questionNumber}/{cardDetails.totalQuestions}
@@ -333,28 +346,10 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 					</KeyboardAvoidingView>
 				</Content>
 			);
-		}
-		return (
-			<LinearGradient colors={[CardContainerBox.colorPrimary, CardContainerBox.colorSecondary]} style={[DynamicFormStyles.outerCardContainerActive]}>
-				<Content key={index}>
-					<View style={[ContainerStyles.flexColumn, DynamicFormStyles.innerCardContainer]}>
-						<View>
-							<Text style={[DynamicFormStyles.questionHeader]}>
-								{this.props.screenProps.t('claims:questions')} {cardDetails.questionNumber}/{cardDetails.totalQuestions}
-							</Text>
-						</View>
-						<View>
-							<Text style={DynamicFormStyles.header}>{cardDetails.topic}</Text>
-						</View>
-						<View style={{ width: '100%' }}>{input}</View>
-					</View>
-				</Content>
-			</LinearGradient>
-		);
 	}
 
 	render() {
-		return this.renderCards();
+		return this.renderCards()
 	}
 }
 

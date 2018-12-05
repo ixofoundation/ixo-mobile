@@ -10,7 +10,7 @@ const dev_env = {
 }
 
 if (__DEV__) {
-	env = dev_env;
+	// env = dev_env;
 }
 
 export { env };

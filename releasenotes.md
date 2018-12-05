@@ -164,3 +164,11 @@
 - **bug/IXOQ-442 Incorrect error message for unsuccessful login scan
 - **bug/IXOQ-448 Update success_submit multiple claims_saved screen
 - Added loader on claim
+
+## 2018-12-05
+***
+### __Android__ (build v1.1.3)
+- **bug/IXOQ-264 Submit a claim: user unable to select complete/next
+
+### __iOS__ (build v1.1.3)
+- **bug/IXOQ-442 Incorrect error message for unsuccessful login scan

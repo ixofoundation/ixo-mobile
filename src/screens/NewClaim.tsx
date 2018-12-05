@@ -2,7 +2,7 @@ import * as React from 'react';
 import CustomIcons from '../components/svg/CustomIcons';
 import _ from 'underscore';
 import Permissions from 'react-native-permissions';
-import { StatusBar, TouchableOpacity, ActivityIndicator, Modal, Dimensions } from 'react-native';
+import { StatusBar, TouchableOpacity, ActivityIndicator, Modal, Dimensions, Keyboard } from 'react-native';
 import GenericModal from '../components/GenericModal';
 import LoadingModal from '../components/LoadingModal';
 import { Container, View, Toast, Text, Icon } from 'native-base';
@@ -20,6 +20,7 @@ import { getSignature } from '../utils/sovrin';
 import { showToast, toastType } from '../utils/toasts';
 import { userFirstClaim } from '../redux/user/user_action_creators';
 import { setProjectUserCapability } from '../redux/projects/projects_action_creators';
+import KeyboardUtil from '../utils/keyboard';
 
 const { height } = Dimensions.get('window');
 
@@ -37,6 +38,7 @@ interface StateTypes {
 	claimData: string;
 	modalVisible: boolean;
 	modalLoading: boolean;
+	keyboardVisible: boolean;
 }
 
 export interface DispatchProps {
@@ -63,13 +65,15 @@ class NewClaim extends React.Component<Props, StateTypes> {
 	private formLength: number = 0;
 	private isClaimSaved: boolean = false;
 	private location?: GeoLocation | undefined;
+	private keyboardUtil: KeyboardUtil;
 
 	constructor(props: Props) {
 		super(props);
 		this.state = {
 			claimData: '',
 			modalVisible: false,
-			modalLoading: false
+			modalLoading: false,
+			keyboardVisible: false
 		};
 
 		if (props.project) {
@@ -127,10 +131,19 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		} else {
 			this.getLocation();
 		}
+		this.keyboardUtil = new KeyboardUtil(
+			() => {
+				this.setState({ keyboardVisible: true });
+			},
+			() => {
+				this.setState({ keyboardVisible: false });
+			}
+		);
 	}
 
 	componentWillUnmount() {
 		this.props.onSetFormCardIndex(0);
+		this.keyboardUtil.setKeyboardListeners(false);
 	}
 
 	handleUserFilledClaim = (userFilledData: string) => {
@@ -301,10 +314,10 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
 				<StatusBar barStyle="light-content" />
 				{this.renderForm()}
-				<View style={NewClaimStyles.navigatorContainer}>
+				{(this.state.keyboardVisible) ? null : <View style={NewClaimStyles.navigatorContainer}>
 					{this.buildButton(true)}
 					{this.buildButton(false)}
-				</View>
+				</View>}
 				<Modal animationType="slide" transparent={true} visible={this.state.modalVisible}>
 					<GenericModal
 						headingImage={<CustomIcons name={'location'} size={height * 0.04} style={NewClaimStyles.locationIcon} />}

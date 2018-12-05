@@ -304,7 +304,7 @@ export class ScanQR extends React.Component<Props, State> {
 			<GenericModal
 				onPressButton={() => this.resetStateVars()}
 				onClose={() => this.resetStateVars()}
-				paragraph={this.props.screenProps.t('connectIXOComplete:unlockInformation')}
+				paragraph={this.props.screenProps.t('scanQR:errorKeySafe')}
 				loading={this.state.loading}
 				buttonText={this.props.screenProps.t('scanQR:rescan')}
 				heading={this.props.screenProps.t('scanQR:scanFailed')}
