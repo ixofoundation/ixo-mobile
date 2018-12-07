@@ -172,3 +172,12 @@
 
 ### __iOS__ (build v1.1.3)
 - **bug/IXOQ-442 Incorrect error message for unsuccessful login scan
+
+## 2018-12-06
+***
+### __Android__ (build v1.1.4)
+- **bug/IXOQ-441 Selecting add a new claim causes app to crash
+- **bug/IXOQ-448 Update success_submit multiple claims_saved screen
+
+### __iOS__ (build v1.1.4)
+- **bug/IXOQ-448 Update success_submit multiple claims_saved screen

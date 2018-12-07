@@ -23,8 +23,4 @@ export default class KeyboardUtil {
 			this.keyboardDidHideListener.remove();
 		}
 	}
-
-	// getKeyboardListeners() {
-	// 	return { keyboardDidShowListener: this.keyboardDidShowListener, keyboardDidHideListener: this.keyboardDidHideListener };
-	// }
 }

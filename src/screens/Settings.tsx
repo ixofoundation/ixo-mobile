@@ -39,7 +39,7 @@ class Settings extends React.Component<Props> {
 	};
 
 	resetAccount() {
-		AsyncStorage.clear();
+		// AsyncStorage.clear();
 		this.props.onClearAll();
 		const resetAction = StackActions.reset({
 			index: 0,

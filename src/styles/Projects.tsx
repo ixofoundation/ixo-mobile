@@ -23,9 +23,25 @@ interface Style {
 	fabIcon: ViewStyle;
 	myProjectsHeader: TextStyle;
 	progressBarContainer: ViewStyle;
+	projectStatusContainer: ViewStyle;
+	statusBlock: ViewStyle;
+	projectSDGContainer: ViewStyle;
 }
 
 const styles = StyleSheet.create<Style>({
+	projectSDGContainer: {
+		flexDirection: 'row',
+		justifyContent: 'flex-end',
+		flexWrap: 'wrap'
+	},
+	projectStatusContainer: {
+		flexDirection: 'row',
+		justifyContent: 'flex-end'
+	},
+	statusBlock: {
+		height: 5,
+		width: width * 0.06
+	},
 	drawerOpen: {
 		opacity: 0.4,
 		backgroundColor: ThemeColors.black
@@ -129,7 +145,9 @@ const styles = StyleSheet.create<Style>({
 		backgroundColor: ThemeColors.red
 	},
 	progressBarContainer: {
-		justifyContent: 'flex-start', backgroundColor: 'transparent', paddingVertical: 10
+		justifyContent: 'flex-start',
+		backgroundColor: 'transparent',
+		paddingVertical: 10
 	}
 });
 

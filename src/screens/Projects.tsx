@@ -2,6 +2,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 import { showToast, toastType } from '../utils/toasts';
 import { setLocalProjectImage, getLocalProjectImage } from '../utils/localCache';
+import IxoHelper from '../utils/ixoHelper';
 import { SDGArray } from '../models/sdg';
 import { Container, Content, Drawer, Header, Text, View, Fab } from 'native-base';
 import * as React from 'react';
@@ -10,10 +11,10 @@ import { connect } from 'react-redux';
 import _ from 'underscore';
 import { env } from '../config';
 import SideBar from '../components/SideBar';
-import { IClaim, IProject } from '../models/project';
+import { IClaim, IProject, IProjectSaved } from '../models/project';
 import { IUser } from '../models/user';
 import { initIxo } from '../redux/ixo/ixo_action_creators';
-import { updateProjects, loadProject, setProjectLocalImage } from '../redux/projects/projects_action_creators';
+import { updateProjects, loadProject } from '../redux/projects/projects_action_creators';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { IProjectsClaimsSaved } from '../redux/claims/claims_reducer';
 import { ThemeColors, ProjectStatus, ClaimsButton, ProgressSuccess } from '../styles/Colors';
@@ -47,10 +48,11 @@ export interface StateProps {
 	user?: IUser;
 	savedProjectsClaims?: IProjectsClaimsSaved[];
 	online?: boolean;
+	projects?: IProject[];
+	projectsLocalStates?: IProjectSaved[];
 }
 
 export interface StateProps {
-	projects: IProject[];
 	isRefreshing: boolean;
 	isDrawerOpen: boolean;
 }
@@ -58,9 +60,9 @@ export interface StateProps {
 export interface Props extends ParentProps, DispatchProps, StateProps {}
 export class Projects extends React.Component<Props, StateProps> {
 	headerTitleShown: boolean = false;
+	ixoHelper: IxoHelper = new IxoHelper();
 
 	state = {
-		projects: [],
 		isRefreshing: false,
 		isDrawerOpen: false
 	};
@@ -99,11 +101,8 @@ export class Projects extends React.Component<Props, StateProps> {
 	}
 
 	componentDidUpdate(prevProps: Props) {
-		if (this.props.ixo !== prevProps.ixo) {
-			this.getProjectList();
-		}
-		if (this.props.online !== prevProps.online) {
-			this.getProjectList();
+		if (this.props.ixo !== prevProps.ixo || this.props.online !== prevProps.online) {
+			this.ixoHelper.updateMyProjects();
 		}
 	}
 
@@ -129,52 +128,19 @@ export class Projects extends React.Component<Props, StateProps> {
 		}
 	}
 
-	fetchImage = (serviceEndpoint: string, imageLink: string, projectDid: string) => {
-		if (this.props.online) { // only fetch new images when online
-			if (imageLink && imageLink !== '') {
-				setLocalProjectImage(projectDid, `${serviceEndpoint}public/${imageLink}`);
-				return { uri: `${serviceEndpoint}public/${imageLink}` };
+	fetchImage = (project: IProject, localProjectState: IProjectSaved) => {
+		if (this.props.online && !localProjectState) {
+			// only fetch new images when online
+			if (project.data.imageLink && project.data.imageLink !== '') {
+				setLocalProjectImage(project.projectDid, `${project.data.serviceEndpoint}public/${project.data.imageLink}`);
+				return { uri: `${project.data.serviceEndpoint}public/${project.data.imageLink}` };
 			} else {
 				return placeholder;
 			}
 		} else {
-			return { uri: getLocalProjectImage(projectDid) }
+			return { uri: getLocalProjectImage(project.projectDid) };
 		}
-	}
-
-	getProjectList() {
-		if (this.props.online) {
-			if (this.props.ixo) {
-				this.props.ixo.project.listProjects().then((projectList: any) => {
-					const myProjects = this.getMyProjects(projectList);
-					this.setState({ projects: myProjects, isRefreshing: false });
-				});
-			} else {
-				this.setState({ isRefreshing: false });
-			}
-		} else {
-			this.setState({ projects: this.props.projects, isRefreshing: false });
-		}
-	}
-
-	getMyProjects(projectList: any): IProject[] {
-		if (this.props.user !== null) {
-			const myProjects = projectList.filter((projects: any) => {
-				return projects.data.agents.some((agent: any) => agent.did === this.props.user!.did && agent.role === 'SA');
-			});
-			this.props.onProjectsUpdate(myProjects);
-			return myProjects;
-		} else {
-			return [];
-		}
-	}
-
-	updateImageLoadingStatus(project: IProject) {
-		const projects = this.state.projects;
-		const projectFound = _.find(projects, { projectDid: project.projectDid });
-		Object.assign(projectFound, { imageLoaded: true });
-		this.setState({ projects });
-	}
+	};
 
 	renderProgressBar = (total: number, approved: number, rejected: number) => {
 		if (rejected > total - approved) {
@@ -207,20 +173,44 @@ export class Projects extends React.Component<Props, StateProps> {
 		);
 	};
 
-	refreshProjects() {
-		if (this.props.online) {
-			this.setState({ isRefreshing: true, projects: [] });
-			this.getProjectList();
-		} else {
-			showToast('No internet connection', toastType.WARNING);
-		}
+	renderProjectImage(project: IProject) {
+		const localProjectState = this.props.projectsLocalStates.find((projectLocal: IProjectSaved) => projectLocal.projectDid === project.projectDid);
+		return (
+			<ImageBackground source={this.fetchImage(project, localProjectState)} style={ProjectsStyles.projectImage}>
+				{localProjectState ? (
+					<View style={{ marginRight: 20 }}>
+						<View style={ProjectsStyles.projectStatusContainer}>
+							<View style={[ProjectsStyles.statusBlock, { backgroundColor: ProjectStatus.inProgress }]} />
+						</View>
+						<View style={ProjectsStyles.projectSDGContainer}>
+							{project.data.sdgs.map((SDG, SDGi) => {
+								return (
+									<CustomIcon
+										key={SDGi}
+										name={`sdg-${SDGArray[Math.floor(SDG) - 1].ico}`}
+										style={{ color: ThemeColors.white, padding: 5 }}
+										size={height * 0.03}
+									/>
+								);
+							})}
+						</View>
+					</View>
+				) : (
+					<View style={ProjectsStyles.spinnerCenterRow}>
+						<View style={ProjectsStyles.spinnerCenterColumn}>
+							<ActivityIndicator color={ThemeColors.white} />
+						</View>
+					</View>
+				)}
+			</ImageBackground>
+		);
 	}
 
 	renderProject() {
 		// will become a mapping
 		return (
 			<React.Fragment>
-				{this.state.projects.map((project: IProject) => {
+				{this.props.projects.map((project: IProject) => {
 					return (
 						<TouchableOpacity
 							onPress={() => {
@@ -232,37 +222,7 @@ export class Projects extends React.Component<Props, StateProps> {
 						>
 							<View style={ContainerStyles.flexRow}>
 								<View style={[ContainerStyles.flexColumn]}>
-									<ImageBackground
-										onLoad={() => this.updateImageLoadingStatus(project)}
-										source={this.fetchImage(project.data.serviceEndpoint, project.data.imageLink, project.projectDid)}
-										style={ProjectsStyles.projectImage}
-									>
-										{'imageLoaded' in project ? (
-											<View style={{ marginRight: 20 }}>
-												<View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-													<View style={{ height: 5, width: width * 0.06, backgroundColor: ProjectStatus.inProgress }} />
-												</View>
-												<View style={{ flexDirection: 'row', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-													{project.data.sdgs.map((SDG, SDGi) => {
-														return (
-															<CustomIcon
-																key={SDGi}
-																name={`sdg-${SDGArray[Math.floor(SDG) - 1].ico}`}
-																style={{ color: ThemeColors.white, padding: 5 }}
-																size={height * 0.03}
-															/>
-														);
-													})}
-												</View>
-											</View>
-										) : (
-											<View style={ProjectsStyles.spinnerCenterRow}>
-												<View style={ProjectsStyles.spinnerCenterColumn}>
-													<ActivityIndicator color={ThemeColors.white} />
-												</View>
-											</View>
-										)}
-									</ImageBackground>
+									{this.renderProjectImage(project)}
 									<LinearGradient
 										start={{ x: 0, y: 0 }}
 										end={{ x: 1, y: 0 }}
@@ -315,8 +275,8 @@ export class Projects extends React.Component<Props, StateProps> {
 	renderNoProjectsView() {
 		return (
 			<Content
-				style={{ backgroundColor: ThemeColors.blue_dark }} // TODO modal stuff comes here
-				refreshControl={<RefreshControl refreshing={this.state.isRefreshing} onRefresh={() => this.refreshProjects()} />}
+				style={{ backgroundColor: ThemeColors.blue_dark }}
+				refreshControl={<RefreshControl refreshing={this.state.isRefreshing} onRefresh={() => this.ixoHelper.updateMyProjects()} />}
 				// @ts-ignore
 				onScroll={event => this._onScroll(event)}
 			>
@@ -386,7 +346,7 @@ export class Projects extends React.Component<Props, StateProps> {
 				onClose={() => this.closeDrawer()}
 			>
 				{this.renderConnectivity()}
-				{this.state.projects.length > 0 ? this.renderNoProjectsView() : this.renderProjectsView()}
+				{this.props.projects.length > 0 ? this.renderNoProjectsView() : this.renderProjectsView()}
 				<Fab
 					direction="up"
 					style={{ backgroundColor: ThemeColors.red }}
@@ -405,6 +365,7 @@ function mapStateToProps(state: PublicSiteStoreState) {
 		ixo: state.ixoStore.ixo,
 		user: state.userStore.user,
 		projects: state.projectsStore.projects,
+		projectsLocalStates: state.projectsStore.projectsLocalStates,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
 		online: state.dynamicsStore.online
 	};

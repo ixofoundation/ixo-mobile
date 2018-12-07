@@ -250,9 +250,9 @@ class NewClaim extends React.Component<Props, StateTypes> {
 	};
 
 	renderForm() {
-		const claimParsed = JSON.parse(this.projectFormFile!);
-		this.formLength = claimParsed.fields.length;
 		if (this.projectFormFile) {
+			const claimParsed = JSON.parse(this.projectFormFile);
+			this.formLength = claimParsed.fields.length;
 			return (
 				<DynamicSwiperForm
 					screenProps={this.props.screenProps}

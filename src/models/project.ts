@@ -4,8 +4,6 @@ export interface IProject {
 	pubKey: string;
 	senderDid: string;
 	txHash: string;
-	userHasCapability?: boolean;
-	projectLocalImageUri?: string;
 }
 interface IData {
 	title: string;
@@ -70,6 +68,13 @@ export interface IClaimSaved {
 	date?: Date;
 	updated?: boolean;
 }
+
+export interface IProjectSaved {
+	userHasCapabilities?: boolean;
+	projectLocalImageUri?: string;
+	projectDid: string;
+}
+
 interface ILocation {
 	long: string;
 	lat: string;
