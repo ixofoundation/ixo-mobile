@@ -143,7 +143,41 @@
 - **bug/IXOQ-444** Wrap SDG's if they are greater than screen width
 - **bug/IXOQ-446** Update login after user has linked keysafe or mnemonic
 
-## __NOT YET RELEASED ##
-
+## 2018-11-29
+***
+### __Android__ (build v1.1.0)
 - **feature/upgraded_blockchain_hex** The signatures is now updated to use base64 instead of hex encoding
 - **IXO module version update** Upgrade to ixo-module v2.0.3
+
+### __iOS__ (build v1.1.0)
+- **feature/upgraded_blockchain_hex** The signatures is now updated to use base64 instead of hex encoding
+- **IXO module version update** Upgrade to ixo-module v2.0.3
+
+## 2018-11-30
+***
+### __Android__ (build v1.1.1)
+- **bug/IXOQ-442 Incorrect error message for unsuccessful login scan
+- **bug/IXOQ-448 Update success_submit multiple claims_saved screen
+- Added loader on claim
+
+### __iOS__ (build v1.1.1)
+- **bug/IXOQ-442 Incorrect error message for unsuccessful login scan
+- **bug/IXOQ-448 Update success_submit multiple claims_saved screen
+- Added loader on claim
+
+## 2018-12-05
+***
+### __Android__ (build v1.1.3)
+- **bug/IXOQ-264 Submit a claim: user unable to select complete/next
+
+### __iOS__ (build v1.1.3)
+- **bug/IXOQ-442 Incorrect error message for unsuccessful login scan
+
+## 2018-12-06
+***
+### __Android__ (build v1.1.4)
+- **bug/IXOQ-441 Selecting add a new claim causes app to crash
+- **bug/IXOQ-448 Update success_submit multiple claims_saved screen
+
+### __iOS__ (build v1.1.4)
+- **bug/IXOQ-448 Update success_submit multiple claims_saved screen

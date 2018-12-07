@@ -2,10 +2,9 @@ import { Text } from 'native-base';
 import { StackActions, NavigationActions } from 'react-navigation';
 import * as React from 'react';
 import Video from 'react-native-video';
-import { Dimensions, Image, ImageBackground, StatusBar, View, TouchableOpacity } from 'react-native';
+import { Image, StatusBar, View, TouchableOpacity, Platform } from 'react-native';
 import DarkButton from '../components/DarkButton';
 import LightButton from '../components/LightButton';
-import { ThemeColors } from '../styles/Colors';
 import ConnectIXOStyles from '../styles/ConnectIXO';
 import ContainerStyles from '../styles/Containers';
 
@@ -20,7 +19,7 @@ interface ParentProps {
 export default class ConnectIXO extends React.Component<ParentProps, {}> {
 	handleOnScanNavigate() {
 		const resetAction = StackActions.reset({
-			index: 1, // it means change state to C which can goBack to previousView A
+			index: 1,
 			actions: [NavigationActions.navigate({ routeName: 'ConnectIXO' }), NavigationActions.navigate({ routeName: 'ScanQR', params: { projectScan: false }})]
 		});
 		this.props.navigation.dispatch(resetAction);
@@ -47,7 +46,7 @@ export default class ConnectIXO extends React.Component<ParentProps, {}> {
 							text={this.props.screenProps.t('connectIXO:registerButton')}
 							onPress={() => this.props.navigation.navigate('Register')}
 						/>
-						<DarkButton text={this.props.screenProps.t('connectIXO:scanButton')} onPress={() => this.handleOnScanNavigate()} />
+						{Platform.OS === 'android' ? <DarkButton text={this.props.screenProps.t('connectIXO:scanButton')} onPress={() => this.handleOnScanNavigate()} /> : null}
 						<TouchableOpacity onPress={() => this.props.navigation.navigate('Recover')}>
 							<Text style={ConnectIXOStyles.recover}>{this.props.screenProps.t('connectIXO:recover')}</Text>
 						</TouchableOpacity>

@@ -61,31 +61,26 @@ const styles = StyleSheet.create<Style>({
 	innerCardContainer: {
 		alignItems: 'flex-start',
 		justifyContent: 'flex-start',
-		paddingTop: height * 0.2,
+		paddingTop: height * 0.13,
 		paddingHorizontal: width * 0.05
 	},
 	outerCardContainerActive: {
-		position: 'absolute',
-		height: height - 160,
-		top: 30,
+		marginTop: '10%',
+		height: height * 0.7,
 		alignSelf: 'center',
 		width: '85%',
 		flex: 1,
-		borderRadius: 1,
-		marginBottom: '3%'
+		borderRadius: 1
 	},
 	outerCardContainer: {
 		width: '110%',
-		position: 'absolute',
 		height: height - 160,
-		top: 30,
 		alignSelf: 'center',
 		flex: 1,
 		borderRadius: 1,
 		marginBottom: '3%'
 	},
 	multipleSelectButtonText: {
-		// fontSize: height * 0.03,
 		color: ThemeColors.white
 	},
 	multipleSelectButton: {

@@ -49,7 +49,7 @@ const styles = StyleSheet.create<Style>({
 		backgroundColor: ThemeColors.blue_dark,
 		borderColor: ThemeColors.blue_lightest,
 		borderWidth: 1,
-		height: deviceHeight * 0.2,
+		height: deviceHeight * 0.13,
 		justifyContent: 'center'
 	},
 	wordBox: {

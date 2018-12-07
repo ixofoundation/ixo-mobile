@@ -130,13 +130,23 @@ export default class DynamicForm extends React.Component<Props, State> {
 		if (this.props.handleSave) {
 			this.props.handleSave(this.formData);
 		}
-	};
+	}
 
 	handleSubmit = () => {
 		if (this.props.handleSubmit) {
 			this.props.handleSubmit(this.formData);
 		}
-	};
+	}
+
+	handleUploadMedia = () => {
+		if (this.props.editMode) {
+			Alert.alert('Upload Media', '', [
+				{ text: 'Select from Camera Roll', onPress: () => this.pickImage(name) },
+				{ text: 'Take photo', onPress: () => this.takePhoto(name) },
+				{ text: 'Cancel', style: 'cancel' }
+			])
+		}
+	}
 
 	renderPreview(fieldName: string) {
 		const imageObj: IImage | undefined = _.find(this.state.imageList, (imageList: IImage) => imageList.fieldName === fieldName);
@@ -152,16 +162,10 @@ export default class DynamicForm extends React.Component<Props, State> {
 				<TouchableOpacity
 					key={key}
 					style={DynamicFormStyles.addImageContainer}
-					onPress={() =>
-						Alert.alert('Upload Media', '', [
-							{ text: 'Select from Camera Roll', onPress: () => this.pickImage(name) },
-							{ text: 'Take photo', onPress: () => this.takePhoto(name) },
-							{ text: 'Cancel', style: 'cancel' }
-						])
-					}
+					onPress={() => this.handleUploadMedia()}
 				>
-					<Icon name={'add'} style={{ color: ThemeColors.blue_lightest, fontSize: 50 }} />
-				</TouchableOpacity>
+					{(this.props.editMode) ? <Icon name={'add'} style={{ color: ThemeColors.blue_lightest, fontSize: 50 }} /> : null}
+				</ TouchableOpacity>
 			);
 		}
 		return (

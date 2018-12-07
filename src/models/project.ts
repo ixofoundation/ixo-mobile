@@ -68,6 +68,13 @@ export interface IClaimSaved {
 	date?: Date;
 	updated?: boolean;
 }
+
+export interface IProjectSaved {
+	userHasCapabilities?: boolean;
+	projectLocalImageUri?: string;
+	projectDid: string;
+}
+
 interface ILocation {
 	long: string;
 	lat: string;

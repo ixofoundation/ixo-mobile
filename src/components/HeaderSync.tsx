@@ -19,6 +19,7 @@ interface ParentProps {
 }
 export interface StateProps {
 	modalVisible?: boolean;
+	isSubmitInProgress?: boolean;
 	claimsAmount?: number;
 }
 export interface DispatchProps {
@@ -42,7 +43,8 @@ class HeaderSync extends React.Component<Props, StateProps> {
 
 	state = {
 		modalVisible: false,
-		claimsAmount: 0
+		claimsAmount: 0,
+		isSubmitInProgress: false
 	};
 
 	toggleSpinnerAnimation = (start: boolean) => {
@@ -70,6 +72,7 @@ class HeaderSync extends React.Component<Props, StateProps> {
 	}
 
 	onSubmitAll = () => {
+		this.setState({ isSubmitInProgress: true });
 		this.toggleSpinnerAnimation(true);
 		const projectClaims = this.props.savedProjectsClaims;
 		const promises = [];
@@ -82,6 +85,7 @@ class HeaderSync extends React.Component<Props, StateProps> {
 			});
 			Promise.all(promises).then(() => {
 				this.toggleSpinnerAnimation(false);
+				this.setState({ isSubmitInProgress: false });
 				this.props.onClaimsSubmitted(true);
 			});
 		}
@@ -163,7 +167,7 @@ class HeaderSync extends React.Component<Props, StateProps> {
 						onPressButton={() => this.onSubmitAll()}
 						onClose={() => { this.setState({ modalVisible: false }); }}
 						paragraph={this.props.screenProps.t('claims:submitAllDiscription')}
-						loading={false}
+						loading={this.state.isSubmitInProgress}
 						buttonText={this.props.screenProps.t('claims:submit')}
 						heading={this.props.screenProps.t('claims:submitAllClaims')}
 					/>

@@ -39,7 +39,7 @@ class Settings extends React.Component<Props> {
 	};
 
 	resetAccount() {
-		AsyncStorage.clear();
+		// AsyncStorage.clear();
 		this.props.onClearAll();
 		const resetAction = StackActions.reset({
 			index: 0,
@@ -53,7 +53,7 @@ class Settings extends React.Component<Props> {
 			<Container style={{ backgroundColor: ThemeColors.white }}>
 				<StatusBar barStyle="dark-content" />
 				<Content contentContainerStyle={{ backgroundColor: ThemeColors.white, padding: 20 }}>
-					<DarkButton text="Reset Account" onPress={() => this.resetAccount()} />
+					{(__DEV__) ? <DarkButton text="Reset Account" onPress={() => this.resetAccount()} /> : null}
 				</Content>
 			</Container>
 		);
