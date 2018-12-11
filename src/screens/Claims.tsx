@@ -4,7 +4,7 @@ import moment from 'moment';
 import _ from 'underscore';
 import { Image, ImageBackground, StatusBar, TouchableOpacity, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
-import { IClaim, IProject, IClaimSaved } from '../models/project';
+import { IClaim, IProject, IClaimSaved, IProjectSaved } from '../models/project';
 import { IUser } from '../models/user';
 import { PublicSiteStoreState } from '../redux/public_site_reducer';
 import { saveForm, loadSavedClaim, loadSubmittedClaim } from '../redux/claims/claims_action_creators';
@@ -57,6 +57,7 @@ export interface StateProps {
 	firstTimeClaim?: boolean;
 	user?: IUser;
 	project?: IProject;
+	projectsLocalStates?: IProjectSaved[];
 	savedProjectsClaims: IProjectsClaimsSaved[];
 	online?: boolean;
 	isClaimsSubmitted?: boolean;
@@ -269,6 +270,9 @@ class Claims extends React.Component<Props, StateProps> {
 	}
 
 	renderNoSubmittedClaims() {
+		let hasCapabilities = true;
+		const localProjectState = this.props.projectsLocalStates.find((projectLocal: IProjectSaved) => projectLocal.projectDid === this.projectDid);
+		hasCapabilities = (localProjectState && localProjectState.userHasCapabilities) ? true : false ;
 		return (
 			<ImageBackground source={background} style={ClaimsStyles.backgroundImage}>
 				<Container style={{ paddingHorizontal: 30 }}>
@@ -281,7 +285,7 @@ class Claims extends React.Component<Props, StateProps> {
 						<View>
 							<View style={[ClaimsStyles.flexLeft]}>
 								<Text style={[ClaimsStyles.header]}>
-									{this.props.project.userHasCapability
+									{hasCapabilities
 										? this.props.screenProps.t('claims:noSubmissions')
 										: this.props.screenProps.t('claims:applicationPendingApproval')}
 								</Text>
@@ -291,7 +295,7 @@ class Claims extends React.Component<Props, StateProps> {
 							</View>
 							<View style={ClaimsStyles.flexLeft}>
 								<Text style={ClaimsStyles.infoBox}>
-									{this.props.project.userHasCapability
+									{hasCapabilities
 										? this.props.screenProps.t('claims:savedSubmissionsInfo')
 										: this.props.screenProps.t('claims:pleaseCheckBackSoon')}
 								</Text>
@@ -438,6 +442,7 @@ function mapStateToProps(state: PublicSiteStoreState) {
 		user: state.userStore.user,
 		firstTimeClaim: state.userStore.isFirstClaim,
 		project: state.projectsStore.selectedProject,
+		projectsLocalStates: state.projectsStore.projectsLocalStates,
 		savedProjectsClaims: state.claimsStore.savedProjectsClaims,
 		online: state.dynamicsStore.online,
 		isClaimsSubmitted: state.dynamicsStore.claimsSubmitted
