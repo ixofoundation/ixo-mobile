@@ -123,7 +123,7 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 		});
 		this.formData = formData;
 		this.props.handleUserFilledClaim(formData);
-	}
+	};
 
 	setFormStateSelect = (name: String, optionLabel: string, value: any) => {
 		const fields = name.split('.');
@@ -139,26 +139,26 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 			}
 		});
 		this.formData = formData;
-	}
+	};
 
 	onIndexChanged = (index: number) => {
 		if (index !== this.props.dynamicFormIndex) {
 			this.props.onSetFormCardIndex(index);
 		}
-	}
+	};
 
 	updateImageList = (fieldName: string, uri: string) => {
 		const imageListArray: IImage[] = this.state.imageList;
 		imageListArray.push({ fieldName, filename: uri.replace(/^.*[\\\/]/, ''), uri });
 		this.setState({ imageList: imageListArray });
-	}
+	};
 
 	removeImageList = (fieldName: string) => {
 		const imageListArray: IImage[] = this.state.imageList;
 		const index: number | undefined = _.findIndex(imageListArray, imageList => imageList.fieldName === fieldName);
 		imageListArray.splice(index, 1);
 		this.setState({ imageList: imageListArray });
-	}
+	};
 
 	getPermissionForImage(fieldName: string) {
 		Permissions.check('photo').then(response => {
@@ -208,7 +208,7 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 
 	onFormValueChanged = (name: String, text: string) => {
 		this.setFormState(name, text);
-	}
+	};
 
 	renderEditImageField(field: any, index: number) {
 		const imageItem: IImage | undefined = _.find(this.state.imageList, (imageItem: IImage) => imageItem.fieldName === field.name);
@@ -250,7 +250,7 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 			<View key={index} style={{ flexDirection: 'row', justifyContent: 'center' }}>
 				<Picker
 					selectedValue={this.state.dropDownValues[index]}
-					onValueChange={(itemValue) => {
+					onValueChange={itemValue => {
 						const temp = [...this.state.dropDownValues];
 						temp[index] = itemValue;
 						this.setState({ dropDownValues: temp });
@@ -260,7 +260,7 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 					itemStyle={{ color: ThemeColors.white }}
 				>
 					{field.options.map((option, i) => {
-						return <Picker.Item key={i} label={option.label} value={option.label} />;
+						return <Picker.Item color={ThemeColors.blue_dark} key={i} label={option.label} value={option.label} />;
 					})}
 				</Picker>
 			</View>
