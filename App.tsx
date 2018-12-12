@@ -13,6 +13,7 @@ import Loading from './src/screens/Loading';
 import getTheme from './native-base-theme/components/index';
 // @ts-ignore
 import { Platform } from 'react-native';
+import Sockets from './src/utils/sockets';
 // YellowBox.ignoreWarnings(['Class RCTCxxModule']);
 
 interface State {
@@ -22,6 +23,7 @@ interface State {
 const store = createAppStore();
 
 export default class App extends React.Component<{}, State> {
+	private sockets: Sockets = new Sockets();
 	componentDidMount() {
 		if (Platform.OS === 'android') {
 			SplashScreen.hide();
