@@ -456,7 +456,7 @@
 		56C6A1F3430B4601BBBB31DA /* libReactNativeFingerprintScanner.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeFingerprintScanner.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		607069352181ED6900D9846C /* icomoon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = icomoon.ttf; path = ../assets/fonts/icomoon.ttf; sourceTree = "<group>"; };
-		609001FC21C0FE7400A2896D /* ixo-uat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ixo-uat.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		609001FC21C0FE7400A2896D /* ixo_uat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ixo_uat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		609001FD21C0FE7500A2896D /* ixo copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ixo copy-Info.plist"; path = "/Users/mullerfourie/Documents/Repositories/ixo-world-mobile/ios/ixo copy-Info.plist"; sourceTree = "<absolute>"; };
 		6090025621C1200800A2896D /* RNDeviceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RNDeviceInfo.h; path = ixo/RNDeviceInfo.h; sourceTree = "<group>"; };
 		6090028421C1203B00A2896D /* RNDeviceInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RNDeviceInfo.m; path = ixo/RNDeviceInfo.m; sourceTree = "<group>"; };
@@ -821,7 +821,7 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* ixo.app */,
-				609001FC21C0FE7400A2896D /* ixo-uat.app */,
+				609001FC21C0FE7400A2896D /* ixo_uat.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -886,9 +886,9 @@
 			productReference = 13B07F961A680F5B00A75B9A /* ixo.app */;
 			productType = "com.apple.product-type.application";
 		};
-		609001C521C0FE7400A2896D /* ixo-uat */ = {
+		609001C521C0FE7400A2896D /* ixo_uat */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 609001F921C0FE7400A2896D /* Build configuration list for PBXNativeTarget "ixo-uat" */;
+			buildConfigurationList = 609001F921C0FE7400A2896D /* Build configuration list for PBXNativeTarget "ixo_uat" */;
 			buildPhases = (
 				609001C621C0FE7400A2896D /* [CP] Check Pods Manifest.lock */,
 				609001C721C0FE7400A2896D /* Sources */,
@@ -901,9 +901,9 @@
 			);
 			dependencies = (
 			);
-			name = "ixo-uat";
+			name = ixo_uat;
 			productName = "Hello World";
-			productReference = 609001FC21C0FE7400A2896D /* ixo-uat.app */;
+			productReference = 609001FC21C0FE7400A2896D /* ixo_uat.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1017,7 +1017,7 @@
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* ixo */,
-				609001C521C0FE7400A2896D /* ixo-uat */,
+				609001C521C0FE7400A2896D /* ixo_uat */,
 			);
 		};
 /* End PBXProject section */
@@ -1839,7 +1839,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		609001F921C0FE7400A2896D /* Build configuration list for PBXNativeTarget "ixo-uat" */ = {
+		609001F921C0FE7400A2896D /* Build configuration list for PBXNativeTarget "ixo_uat" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				609001FA21C0FE7400A2896D /* Debug */,

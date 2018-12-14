@@ -20,6 +20,7 @@ const IXO_DEV = {
 };
 
 let env = {};
+
 if (DeviceInfo.getBuildConfig() === BuildEnvironments.ixo) {
 	env = (Platform.OS === 'android') ? IXO_PROD_ANDROID : IXO_PROD_APPLE;
 } else if (DeviceInfo.getBuildConfig() === BuildEnvironments.ixouat) {

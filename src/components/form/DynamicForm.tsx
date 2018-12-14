@@ -2,12 +2,13 @@ import * as React from 'react';
 import moment from 'moment';
 import { Image, TouchableOpacity, Alert } from 'react-native';
 import { FormStyles } from '../../models/form';
-import { Form, View, Label, Text, Icon } from 'native-base';
+import { Form, View, Label, Text, Icon, Spinner } from 'native-base';
 import InputField, { InputColorTypes } from '../../components/InputField';
 import ImagePicker from 'react-native-image-picker';
 import * as changeCase from 'change-case';
 import * as _ from 'underscore';
 import LightButton from '../../components/LightButton';
+import ImageViewerModal from '../ImageViewerModal';
 
 const placeholder = require('../../../assets/ixo-placeholder.jpg');
 
@@ -34,6 +35,8 @@ export interface State {
 	submitStatus: string;
 	refresh: boolean;
 	imageList: IImage[];
+	isImageModalVisible: boolean;
+	imageViewerUri: string;
 }
 
 export interface Callbacks {
@@ -48,7 +51,9 @@ export default class DynamicForm extends React.Component<Props, State> {
 	state = {
 		submitStatus: '',
 		refresh: false,
-		imageList: []
+		imageList: [],
+		isImageModalVisible: false,
+		imageViewerUri: ''
 	};
 
 	async componentWillMount() {
@@ -130,13 +135,13 @@ export default class DynamicForm extends React.Component<Props, State> {
 		if (this.props.handleSave) {
 			this.props.handleSave(this.formData);
 		}
-	}
+	};
 
 	handleSubmit = () => {
 		if (this.props.handleSubmit) {
 			this.props.handleSubmit(this.formData);
 		}
-	}
+	};
 
 	handleUploadMedia = () => {
 		if (this.props.editMode) {
@@ -144,7 +149,27 @@ export default class DynamicForm extends React.Component<Props, State> {
 				{ text: 'Select from Camera Roll', onPress: () => this.pickImage(name) },
 				{ text: 'Take photo', onPress: () => this.takePhoto(name) },
 				{ text: 'Cancel', style: 'cancel' }
-			])
+			]);
+		}
+	};
+
+	handleLoadingImage(uri: string): JSX.Element {
+		if (uri.length > 30) {
+			return (
+				<TouchableOpacity
+					onPress={() => {
+						this.setState({ isImageModalVisible: true, imageViewerUri: uri });
+					}}
+				>
+					<Image resizeMode={'contain'} style={DynamicFormStyles.imageContainer} source={uri === '' ? placeholder : { uri }} />
+				</TouchableOpacity>
+			);
+		} else {
+			return (
+				<View style={DynamicFormStyles.addImageContainer}>
+					<Spinner size={'small'} color={ThemeColors.blue} />
+				</View>
+			);
 		}
 	}
 
@@ -159,13 +184,9 @@ export default class DynamicForm extends React.Component<Props, State> {
 	renderImage(uri: string, name: string, key: string) {
 		if (uri === '') {
 			return (
-				<TouchableOpacity
-					key={key}
-					style={DynamicFormStyles.addImageContainer}
-					onPress={() => this.handleUploadMedia()}
-				>
-					{(this.props.editMode) ? <Icon name={'add'} style={{ color: ThemeColors.blue_lightest, fontSize: 50 }} /> : null}
-				</ TouchableOpacity>
+				<TouchableOpacity key={key} style={DynamicFormStyles.addImageContainer} onPress={() => this.handleUploadMedia()}>
+					{this.props.editMode ? <Icon name={'add'} style={{ color: ThemeColors.blue_lightest, fontSize: 50 }} /> : null}
+				</TouchableOpacity>
 			);
 		}
 		return (
@@ -182,8 +203,9 @@ export default class DynamicForm extends React.Component<Props, State> {
 						<Icon name={'close'} style={DynamicFormStyles.removePhotoIcon} />
 					</TouchableOpacity>
 				)}
-
-				<Image resizeMode={'contain'} style={DynamicFormStyles.imageContainer} source={uri === '' ? placeholder : { uri }} />
+				{this.props.editMode ? (
+					<Image resizeMode={'contain'} style={DynamicFormStyles.imageContainer} source={uri === '' ? placeholder : { uri }} />
+				) : (this.handleLoadingImage(uri))}
 			</View>
 		);
 	}
@@ -270,12 +292,25 @@ export default class DynamicForm extends React.Component<Props, State> {
 						propStyles={[DynamicFormStyles.deleteButton, { marginBottom: 90 }]}
 						text={this.props.screenProps.t('claims:deleteClaim')}
 						onPress={() =>
-							Alert.alert(this.props.screenProps.t('claims:sureToDelete'), this.props.screenProps.t('claims:cantBeUndone'), [{ text: this.props.screenProps.t('claims:no') }, { text: this.props.screenProps.t('claims:yesDelete'), onPress: () => this.props.handleRemove() }], {
-								cancelable: true
-							})
+							Alert.alert(
+								this.props.screenProps.t('claims:sureToDelete'),
+								this.props.screenProps.t('claims:cantBeUndone'),
+								[
+									{ text: this.props.screenProps.t('claims:no') },
+									{ text: this.props.screenProps.t('claims:yesDelete'), onPress: () => this.props.handleRemove() }
+								],
+								{
+									cancelable: true
+								}
+							)
 						}
 					/>
 				) : null}
+				<ImageViewerModal
+					onClose={() => this.setState({ isImageModalVisible: false })}
+					isModalVisible={this.state.isImageModalVisible}
+					uri={this.state.imageViewerUri}
+				/>
 			</Form>
 		);
 	}

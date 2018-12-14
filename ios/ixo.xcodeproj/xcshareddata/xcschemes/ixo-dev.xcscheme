@@ -29,8 +29,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "609001C521C0FE7400A2896D"
-               BuildableName = "ixo-uat.app"
-               BlueprintName = "ixo-uat"
+               BuildableName = "ixo_uat.app"
+               BlueprintName = "ixo_uat"
                ReferencedContainer = "container:ixo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -47,8 +47,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "609001C521C0FE7400A2896D"
-            BuildableName = "ixo-uat.app"
-            BlueprintName = "ixo-uat"
+            BuildableName = "ixo_uat.app"
+            BlueprintName = "ixo_uat"
             ReferencedContainer = "container:ixo.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -70,8 +70,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "609001C521C0FE7400A2896D"
-            BuildableName = "ixo-uat.app"
-            BlueprintName = "ixo-uat"
+            BuildableName = "ixo_uat.app"
+            BlueprintName = "ixo_uat"
             ReferencedContainer = "container:ixo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -89,8 +89,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "609001C521C0FE7400A2896D"
-            BuildableName = "ixo-uat.app"
-            BlueprintName = "ixo-uat"
+            BuildableName = "ixo_uat.app"
+            BlueprintName = "ixo_uat"
             ReferencedContainer = "container:ixo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
