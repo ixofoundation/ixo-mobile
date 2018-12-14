@@ -114,4 +114,6 @@
   <com.android.tools.pixelprobe/>
   <androidx.textclassifier/>
   <androidx.remotecallback/>
+  <com.android.tools.chunkio/>
+  <com.android.tools.fakeadbserver/>
 </metadata>

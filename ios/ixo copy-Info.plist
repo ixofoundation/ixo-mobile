@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>ixo</string>
+	<string>ixo-uat</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -46,7 +46,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>IXO would like camera access to take photo's of claims and scan barcodes</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
 	<key>NSMotionUsageDescription</key>
 	<string>IXO would like to access motion to allow suggestions by means of phone motion</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

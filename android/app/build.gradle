@@ -94,15 +94,22 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'secret'
+            keyPassword 'secret'
+            storeFile file('/Users/mullerfourie/Desktop/apkkey')
+            storePassword 'secret'
+        }
+    }
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
-
     defaultConfig {
         applicationId "com.ixo"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 7
-        versionName "1.1.5"
+        versionCode 8
+        versionName "1.1.6"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -119,6 +126,24 @@ android {
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.config
+        }
+    }
+    flavorDimensions "default"
+    productFlavors {
+        ixo_uat {
+            applicationId "com.ixo.uat"
+            versionCode 8
+            versionName "1.1.6"
+            buildConfigField "String", "BUILD_VARIANT", "\"ixo_uat\""
+            signingConfig signingConfigs.config
+        }
+        ixo_prod {
+            applicationId "com.ixo"
+            versionCode 8
+            versionName "1.1.6"
+            buildConfigField "String", "BUILD_VARIANT", "\"ixo_prod\""
+            signingConfig signingConfigs.config
         }
     }
     // applicationVariants are e.g. debug, release
@@ -126,7 +151,7 @@ android {
         variant.outputs.each { output ->
             // For each separate APK per architecture, set a unique version code as described here:
             // http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits
-            def versionCodes = ["armeabi-v7a":1, "x86":2]
+            def versionCodes = ["armeabi-v7a": 1, "x86": 2]
             def abi = output.getFilter(OutputFile.ABI)
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
@@ -149,9 +174,10 @@ dependencies {
     compile project(':react-native-image-picker')
     compile project(':react-native-fingerprint-scanner')
     compile project(':react-native-camera')
-    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
-    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation 'com.facebook.react:react-native:+'
+    // From node_modules
     compile project(':react-native-vector-icons')
 }
 
