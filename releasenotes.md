@@ -181,3 +181,13 @@
 
 ### __iOS__ (build v1.1.4)
 - **bug/IXOQ-448 Update success_submit multiple claims_saved screen
+
+## 2018-12-14
+***
+### __Android__ (build v1.1.6)
+- Gradle update
+- **bug Android crash fix
+- **feature Updated picker on option form
+
+### __iOS__ (build v1.1.6)
+- **feature Updated picker on option form
