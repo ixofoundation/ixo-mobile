@@ -32,7 +32,7 @@ const DarkButton = ({
 						styles.buttonStyle,
 						propStyles,
 						{
-							borderColor: ThemeColors.blue_lightest,
+							borderColor: ThemeColors.grey,
 							borderWidth: 1
 						}
 					]}

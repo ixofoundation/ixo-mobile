@@ -156,38 +156,48 @@
 ## 2018-11-30
 ***
 ### __Android__ (build v1.1.1)
-- **bug/IXOQ-442 Incorrect error message for unsuccessful login scan
-- **bug/IXOQ-448 Update success_submit multiple claims_saved screen
+- **bug/IXOQ-442** Incorrect error message for unsuccessful login scan
+- **bug/IXOQ-448** Update success_submit multiple claims_saved screen
 - Added loader on claim
 
 ### __iOS__ (build v1.1.1)
-- **bug/IXOQ-442 Incorrect error message for unsuccessful login scan
-- **bug/IXOQ-448 Update success_submit multiple claims_saved screen
+- **bug/IXOQ-442** Incorrect error message for unsuccessful login scan
+- **bug/IXOQ-448** Update success_submit multiple claims_saved screen
 - Added loader on claim
 
 ## 2018-12-05
 ***
 ### __Android__ (build v1.1.3)
-- **bug/IXOQ-264 Submit a claim: user unable to select complete/next
+- **bug/IXOQ-264** Submit a claim: user unable to select complete/next
 
 ### __iOS__ (build v1.1.3)
-- **bug/IXOQ-442 Incorrect error message for unsuccessful login scan
+- **bug/IXOQ-442** Incorrect error message for unsuccessful login scan
 
 ## 2018-12-06
 ***
 ### __Android__ (build v1.1.4)
-- **bug/IXOQ-441 Selecting add a new claim causes app to crash
-- **bug/IXOQ-448 Update success_submit multiple claims_saved screen
+- **bug/IXOQ-441** Selecting add a new claim causes app to crash
+- **bug/IXOQ-448** Update success_submit multiple claims_saved screen
 
 ### __iOS__ (build v1.1.4)
 - **bug/IXOQ-448 Update success_submit multiple claims_saved screen
 
-## 2018-12-14
+## 2018-12-13
 ***
 ### __Android__ (build v1.1.6)
 - Gradle update
-- **bug Android crash fix
-- **feature Updated picker on option form
+- **bug** Android crash fix
+- **feature** Updated picker on option form
 
 ### __iOS__ (build v1.1.6)
-- **feature Updated picker on option form
+- **feature** Updated picker on option form
+
+## 2018-12-18
+***
+### __Android__ (build v1.1.7)
+- **feature** View image in view claims
+
+### __iOS__ (build v1.1.8)
+- **feature** View image in view claims
+- **bug** Grey out entire button
+- **bug** Disable Settings

@@ -1,7 +1,7 @@
 import { NativeModules, Platform } from 'react-native';
 
 export enum BuildEnvironments {
-	ixo = 'ixo_prod',
+	ixo = 'ixo',
 	ixouat = 'ixo_uat'
 }
 

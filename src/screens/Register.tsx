@@ -223,27 +223,29 @@ class Register extends React.Component<Props, StateTypes> {
 		};
 		const payload = { didDoc: newDidDoc };
 
-		getSignature(payload).then((signature: any) => {
-			this.props.ixo.user
-				.registerUserDid(payload, signature)
-				.then((response: any) => {
-					if (response.code === 0) {
-						showToast(this.props.screenProps.t('register:didLedgeredSuccess'), toastType.SUCCESS);
-						this.navigateToLogin();
-					} else {
-						showToast(this.props.screenProps.t('register:didLedgeredError'), toastType.DANGER);
+		getSignature(payload)
+			.then((signature: any) => {
+				this.props.ixo.user
+					.registerUserDid(payload, signature)
+					.then((response: any) => {
+						if (response.code === 0) {
+							showToast(this.props.screenProps.t('register:didLedgeredSuccess'), toastType.SUCCESS);
+							this.navigateToLogin();
+						} else {
+							showToast(this.props.screenProps.t('register:didLedgeredError'), toastType.DANGER);
+							this.setState({ loading: false });
+						}
+						console.log('Error', response);
+					})
+					.catch(error => {
+						console.log('Error', error);
+						showToast(this.props.screenProps.t('register:failedToLedgerUser'), toastType.DANGER);
 						this.setState({ loading: false });
-					}
-					console.log("Error", response);
-				})
-				.catch((error) => {
-					console.log("Error", error);
-					showToast(this.props.screenProps.t('register:failedToLedgerUser'), toastType.DANGER);
-					this.setState({ loading: false });
-				});
-		}).catch((error) => {
-			console.log("Error", error);
-		});
+					});
+			})
+			.catch(error => {
+				console.log('Error', error);
+			});
 	}
 
 	handleCreatePassword() {
@@ -332,7 +334,7 @@ class Register extends React.Component<Props, StateTypes> {
 									<CustomIcon
 										name="lock"
 										color={ThemeColors.black}
-										style={{ fontSize: 40, textAlign: 'center', color: ThemeColors.white }}
+										style={{ fontSize: 30, textAlign: 'center', color: ThemeColors.white }}
 										size={height * 0.03}
 									/>
 									<Text style={{ textAlign: 'center', color: ThemeColors.white, paddingHorizontal: 10 }}>
@@ -402,19 +404,23 @@ class Register extends React.Component<Props, StateTypes> {
 	renderUnSelected() {
 		return (
 			<View style={this.state.selectedWords.length > 0 ? [RegisterStyles.unSelect] : [RegisterStyles.unSelect]}>
-				{this.state.unSelectedWords.map((mnemonicWord: IMnemonic) => {
-					return (
-						<TouchableOpacity onPress={() => this.handleUnselectedToSelected(mnemonicWord)} key={mnemonicWord.key}>
-							{mnemonicWord.selected ? (
-								<LinearGradient style={RegisterStyles.wordBoxGradient} colors={[ButtonDark.colorPrimary, ButtonDark.colorSecondary]}>
-									<Text style={{ color: ThemeColors.white }}>{mnemonicWord.word}</Text>
-								</LinearGradient>
-							) : (
-								<Text style={RegisterStyles.wordBox}>{mnemonicWord.word}</Text>
-							)}
-						</TouchableOpacity>
-					);
-				})}
+				<Content>
+					<View style={this.state.selectedWords.length > 0 ? [RegisterStyles.unSelect] : [RegisterStyles.unSelect]}>
+						{this.state.unSelectedWords.map((mnemonicWord: IMnemonic) => {
+							return (
+								<TouchableOpacity onPress={() => this.handleUnselectedToSelected(mnemonicWord)} key={mnemonicWord.key}>
+									{mnemonicWord.selected ? (
+										<LinearGradient style={RegisterStyles.wordBoxGradient} colors={[ButtonDark.colorPrimary, ButtonDark.colorSecondary]}>
+											<Text style={{ color: ThemeColors.white }}>{mnemonicWord.word}</Text>
+										</LinearGradient>
+									) : (
+										<Text style={RegisterStyles.wordBox}>{mnemonicWord.word}</Text>
+									)}
+								</TouchableOpacity>
+							);
+						})}
+					</View>
+				</Content>
 			</View>
 		);
 	}
@@ -424,7 +430,7 @@ class Register extends React.Component<Props, StateTypes> {
 			<Container>
 				<StatusBar barStyle="light-content" />
 				<ImageBackground source={background} style={[RegisterStyles.wrapper]}>
-					<View style={{ height: Dimensions.get('window').height * 0.1 }} />
+					{/* <View style={{ height: Dimensions.get('window').height * 0.1 }} /> */}
 					{this.renderStep(this.state.registerState)}
 				</ImageBackground>
 			</Container>

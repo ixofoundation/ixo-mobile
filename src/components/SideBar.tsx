@@ -62,6 +62,14 @@ class SideBar extends React.Component<PropTypes, StateTypes> {
 					</View>
 				</LinearGradient>
 				<View style={[ContainerStyles.flexColumn, SideBarStyles.linksBox]}>
+					{/* <TouchableOpacity style={[ContainerStyles.flexRow, SideBarStyles.linkBox]}>
+						<Image source={settingIcon} style={SideBarStyles.iconLinks} />
+						<Text style={SideBarStyles.textLinks}>{this.props.screenProps.t('sidebar:settings')}</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={[ContainerStyles.flexRow, SideBarStyles.linkBox]}>
+						<Image source={helpIcon} style={SideBarStyles.iconLinks} />
+						<Text style={SideBarStyles.textLinks}>{this.props.screenProps.t('sidebar:help')}</Text>
+					</TouchableOpacity> */}
 					<TouchableOpacity onPress={() => this.props.navigation.navigate('Settings')} style={[ContainerStyles.flexRow, SideBarStyles.linkBox]}>
 						<Image source={settingIcon} style={SideBarStyles.iconLinks} />
 						<Text style={SideBarStyles.textLinks}>{this.props.screenProps.t('sidebar:settings')}</Text>

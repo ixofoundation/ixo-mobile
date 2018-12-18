@@ -19,7 +19,7 @@ const IXO_DEV = {
 	REACT_APP_BLOCK_SYNC_URL: 'http://192.168.1.253:8080'
 };
 
-let env = {};
+let env: any = {};
 
 if (DeviceInfo.getBuildConfig() === BuildEnvironments.ixo) {
 	env = (Platform.OS === 'android') ? IXO_PROD_ANDROID : IXO_PROD_APPLE;
