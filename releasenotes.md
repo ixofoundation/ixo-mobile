@@ -180,7 +180,7 @@
 - **bug/IXOQ-448** Update success_submit multiple claims_saved screen
 
 ### __iOS__ (build v1.1.4)
-- **bug/IXOQ-448 Update success_submit multiple claims_saved screen
+- **bug/IXOQ-448** Update success_submit multiple claims_saved screen
 
 ## 2018-12-13
 ***
