@@ -67,7 +67,6 @@ const styles = StyleSheet.create<Style>({
 	},
 	header: {
 		color: ThemeColors.blue_lightest,
-		fontFamily: 'RobotoCondensed-Regular',
 		fontSize: 20,
 		paddingBottom: 15,
 		fontWeight: '500',

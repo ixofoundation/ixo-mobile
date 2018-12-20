@@ -54,6 +54,7 @@
         "jsx-alignment": true,
         "jsx-no-bind": true,
         "jsx-no-lambda": false,
-        "no-unused-variable": true
+        "no-unused-variable": true,
+        "prefer-object-spread": false
     }
 }

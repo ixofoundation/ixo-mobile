@@ -186,17 +186,10 @@ class Claims extends React.Component<Props, StateProps> {
 			});
 	};
 
-	renderSubmittedClaims() {
-		if (_.isEmpty(this.claimsList)) {
-			return this.renderNoSubmittedClaims();
-		}
-		const groups = _.groupBy(this.claimsList, 'status');
-		const pending = groups[ClaimStatus.Pending] || [];
-		const approved = groups[ClaimStatus.Approved] || [];
-		const rejected = groups[ClaimStatus.Rejected] || [];
-		return (
-			<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
-				<Content>
+	renderPending(pending: IClaim[]) {
+		if (pending.length !== 0) {
+			return (
+				<React.Fragment>
 					<ClaimListItemHeading text={this.props.screenProps.t('claims:claimPending')} icon={pendingIcon} />
 					{pending.map((claim: IClaim) => {
 						return (
@@ -211,6 +204,15 @@ class Claims extends React.Component<Props, StateProps> {
 							/>
 						);
 					})}
+				</React.Fragment>
+			);
+		}
+	}
+
+	renderRejected(rejected: IClaim[]) {
+		if (rejected.length !== 0) {
+			return (
+				<React.Fragment>
 					<ClaimListItemHeading text={this.props.screenProps.t('claims:claimRejected')} icon={rejectedIcon} />
 					{rejected.map((claim: IClaim) => {
 						return (
@@ -225,6 +227,15 @@ class Claims extends React.Component<Props, StateProps> {
 							/>
 						);
 					})}
+				</React.Fragment>
+			);
+		}
+	}
+
+	renderApproved(approved: IClaim[]) {
+		if (approved.length !== 0) {
+			return (
+				<React.Fragment>
 					<ClaimListItemHeading text={this.props.screenProps.t('claims:claimApproved')} icon={approvedIcon} />
 					{approved.map((claim: IClaim) => {
 						return (
@@ -239,6 +250,25 @@ class Claims extends React.Component<Props, StateProps> {
 							/>
 						);
 					})}
+				</React.Fragment>
+			);
+		}
+	}
+
+	renderSubmittedClaims() {
+		if (_.isEmpty(this.claimsList)) {
+			return this.renderNoSubmittedClaims();
+		}
+		const groups = _.groupBy(this.claimsList, 'status');
+		const pending = groups[ClaimStatus.Pending] || [];
+		const approved = groups[ClaimStatus.Approved] || [];
+		const rejected = groups[ClaimStatus.Rejected] || [];
+		return (
+			<Container style={{ backgroundColor: ThemeColors.blue_dark, flex: 1, paddingHorizontal: '3%' }}>
+				<Content>
+					{this.renderPending(pending)}
+					{this.renderRejected(rejected)}
+					{this.renderApproved(approved)}
 				</Content>
 			</Container>
 		);
@@ -272,7 +302,7 @@ class Claims extends React.Component<Props, StateProps> {
 	renderNoSubmittedClaims() {
 		let hasCapabilities = true;
 		const localProjectState = this.props.projectsLocalStates.find((projectLocal: IProjectSaved) => projectLocal.projectDid === this.projectDid);
-		hasCapabilities = (localProjectState && localProjectState.userHasCapabilities) ? true : false ;
+		hasCapabilities = localProjectState && localProjectState.userHasCapabilities ? true : false;
 		return (
 			<ImageBackground source={background} style={ClaimsStyles.backgroundImage}>
 				<Container style={{ paddingHorizontal: 30 }}>
@@ -285,9 +315,7 @@ class Claims extends React.Component<Props, StateProps> {
 						<View>
 							<View style={[ClaimsStyles.flexLeft]}>
 								<Text style={[ClaimsStyles.header]}>
-									{hasCapabilities
-										? this.props.screenProps.t('claims:noSubmissions')
-										: this.props.screenProps.t('claims:applicationPendingApproval')}
+									{hasCapabilities ? this.props.screenProps.t('claims:noSubmissions') : this.props.screenProps.t('claims:applicationPendingApproval')}
 								</Text>
 							</View>
 							<View style={{ width: '100%' }}>
@@ -295,9 +323,7 @@ class Claims extends React.Component<Props, StateProps> {
 							</View>
 							<View style={ClaimsStyles.flexLeft}>
 								<Text style={ClaimsStyles.infoBox}>
-									{hasCapabilities
-										? this.props.screenProps.t('claims:savedSubmissionsInfo')
-										: this.props.screenProps.t('claims:pleaseCheckBackSoon')}
+									{hasCapabilities ? this.props.screenProps.t('claims:savedSubmissionsInfo') : this.props.screenProps.t('claims:pleaseCheckBackSoon')}
 								</Text>
 							</View>
 						</View>
@@ -343,7 +369,7 @@ class Claims extends React.Component<Props, StateProps> {
 				<View style={ClaimsStyles.tabCounterContainer}>
 					<Text style={ClaimsStyles.tabCounterText}>{numberOfSavedClaims}</Text>
 				</View>
-				<Text>{this.props.screenProps.t('claims:saved')}</Text>
+				<Text style={{ fontFamily: 'RobotoCondensed-Regular' }}>{this.props.screenProps.t('claims:saved')}</Text>
 			</TabHeading>
 		);
 	}
@@ -389,6 +415,7 @@ class Claims extends React.Component<Props, StateProps> {
 					tabContainerStyle={{ borderBottomColor: ThemeColors.blue, elevation: 0, borderBottomWidth: 1 }}
 				>
 					<Tab
+						textStyle={{ fontFamily: 'RobotoCondensed-Regular' }}
 						activeTabStyle={{ backgroundColor: ThemeColors.blue_dark }}
 						tabStyle={{ backgroundColor: ThemeColors.blue_dark }}
 						heading={this.renderSavedTab(numberOfSavedClaims)}
@@ -396,6 +423,7 @@ class Claims extends React.Component<Props, StateProps> {
 						{this.props.isClaimsSubmitted ? this.renderAllSavedClaimsSubmitted() : this.renderSavedClaims(projectClaims)}
 					</Tab>
 					<Tab
+						textStyle={{ fontFamily: 'RobotoCondensed-Regular' }}
 						activeTabStyle={{ backgroundColor: ThemeColors.blue_dark }}
 						tabStyle={{ backgroundColor: ThemeColors.blue_dark }}
 						heading={this.props.screenProps.t('claims:submitted')}

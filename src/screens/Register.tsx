@@ -20,6 +20,7 @@ import { ButtonDark, ThemeColors } from '../styles/Colors';
 import RegisterStyles from '../styles/Register';
 import { Encrypt, generateSovrinDID, getSignature } from '../utils/sovrin';
 import { showToast, toastType } from '../utils/toasts';
+import { ValidationHelper, ValidationModelTypes, IRegisterValidationModel } from '../utils/validationHelper';
 
 const { height } = Dimensions.get('window');
 const bip39 = require('react-native-bip39');
@@ -52,10 +53,7 @@ export interface StateProps {
 }
 
 interface StateTypes {
-	username: string;
-	email: string;
-	password: string;
-	confirmPassword: string;
+	userInputs: IRegisterValidationModel;
 	registerState: registerSteps;
 	mnemonic: string;
 	selectedWords: IMnemonic[] | any[];
@@ -63,16 +61,13 @@ interface StateTypes {
 	errorMismatch: boolean;
 	userEnteredMnemonicCorrect: boolean;
 	loading: boolean;
+	registerValidationErrors: IRegisterValidationModel;
 }
 
 export interface Props extends ParentProps, DispatchProps, StateProps {}
 
 class Register extends React.Component<Props, StateTypes> {
-	componentDidMount() {
-		this.props.onIxoInit();
-		this.props.navigation.setParams({ onBackButton: this.onBackButton });
-	}
-
+	private validator: ValidationHelper = new ValidationHelper(ValidationModelTypes.Register);
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
 		const { params = {} } = navigation.state;
 		return {
@@ -92,18 +87,21 @@ class Register extends React.Component<Props, StateTypes> {
 	};
 
 	state = {
-		username: '',
-		email: '',
-		password: '',
-		confirmPassword: '',
 		registerState: registerSteps.captureDetails,
 		mnemonic: '',
 		selectedWords: [],
 		unSelectedWords: [],
 		errorMismatch: false,
 		userEnteredMnemonicCorrect: false,
-		loading: false
+		loading: false,
+		userInputs: this.validator.GetRegisterModel(),
+		registerValidationErrors: this.validator.GetRegisterModel()
 	};
+
+	componentDidMount() {
+		this.props.onIxoInit();
+		this.props.navigation.setParams({ onBackButton: this.onBackButton });
+	}
 
 	onBackButton = () => {
 		if (this.state.registerState === registerSteps.captureDetails) {
@@ -184,7 +182,7 @@ class Register extends React.Component<Props, StateTypes> {
 		if (this.getMnemonicString(this.state.selectedWords) !== this.state.mnemonic) {
 			this.setState({ errorMismatch: true, loading: false });
 		} else {
-			const encryptedMnemonic = Encrypt(JSON.stringify({ mnemonic: this.state.mnemonic, name: this.state.username }), this.state.password); // encrypt securely on phone enlave
+			const encryptedMnemonic = Encrypt(JSON.stringify({ mnemonic: this.state.mnemonic, name: this.state.userInputs.username }), this.state.userInputs.password); // encrypt securely on phone enlave
 			// @ts-ignore
 			SInfo.setItem(SecureStorageKeys.encryptedMnemonic, encryptedMnemonic.toString(), {});
 			// @ts-ignore
@@ -193,7 +191,7 @@ class Register extends React.Component<Props, StateTypes> {
 
 			const user: IUser = {
 				did: 'did:sov:' + generateSovrinDID(this.state.mnemonic).did,
-				name: this.state.username,
+				name: this.state.userInputs.username,
 				verifyKey: generateSovrinDID(this.state.mnemonic).verifyKey
 			};
 
@@ -248,24 +246,19 @@ class Register extends React.Component<Props, StateTypes> {
 			});
 	}
 
+	handleTextChange() {
+		const errorModel = this.validator.ValidateFields(this.state.userInputs);
+		const updatedErrorModel = errorModel.errorModel as IRegisterValidationModel;
+		this.setState({ registerValidationErrors: updatedErrorModel });
+	}
+
 	handleCreatePassword() {
-		if (this.state.confirmPassword === '' || this.state.password === '' || this.state.username === '' || this.state.email === '') {
-			showToast(this.props.screenProps.t('register:missingFields'), toastType.WARNING);
-			return;
-		}
-
-		if (this.state.password !== this.state.confirmPassword) {
-			showToast(this.props.screenProps.t('register:missmatchPassword'), toastType.WARNING);
-			return;
-		}
-
-		if (this.state.password.length < 8) {
-			showToast(this.props.screenProps.t('register:passwordShort'), toastType.WARNING);
-			return;
-		}
-
-		if (this.state.password === this.state.confirmPassword) {
-			this.setState({ registerState: registerSteps.revealMnemonic });
+		const errorModel = this.validator.ValidateFields(this.state.userInputs);
+		const updatedErrorModel = errorModel.errorModel as IRegisterValidationModel;
+		if (errorModel.errorsFound) {
+			this.setState({ registerValidationErrors: updatedErrorModel });
+		} else {
+			this.setState({ registerState: registerSteps.revealMnemonic, registerValidationErrors: updatedErrorModel });
 		}
 	}
 
@@ -283,26 +276,42 @@ class Register extends React.Component<Props, StateTypes> {
 							</View>
 							<Text style={{ textAlign: 'left', color: ThemeColors.white, paddingBottom: 10 }}>{this.props.screenProps.t('register:letsSetup')}</Text>
 							<InputField
-								value={this.state.username}
+								error={this.state.registerValidationErrors.username}
+								value={this.state.userInputs.username}
 								labelName={this.props.screenProps.t('register:yourName')}
-								onChangeText={(text: string) => this.setState({ username: text })}
+								onChangeText={(text: string) => {
+									this.setState({ userInputs: { ...this.state.userInputs, username: text } });
+									this.handleTextChange();
+								}}
 							/>
 							<InputField
-								value={this.state.email}
+								error={this.state.registerValidationErrors.email}
+								value={this.state.userInputs.email}
 								labelName={this.props.screenProps.t('register:yourEmail')}
-								onChangeText={(text: string) => this.setState({ email: text })}
+								onChangeText={(text: string) => {
+									this.setState({ userInputs: { ...this.state.userInputs, email: text } });
+									this.handleTextChange();
+								}}
 							/>
 							<InputField
+								error={this.state.registerValidationErrors.password}
 								password={true}
-								value={this.state.password}
+								value={this.state.userInputs.password}
 								labelName={this.props.screenProps.t('register:newPassword')}
-								onChangeText={(text: string) => this.setState({ password: text })}
+								onChangeText={(text: string) => {
+									this.setState({ userInputs: { ...this.state.userInputs, password: text } });
+									this.handleTextChange();
+								}}
 							/>
 							<InputField
+								error={this.state.registerValidationErrors.confirmPassword}
 								password={true}
-								value={this.state.confirmPassword}
+								value={this.state.userInputs.confirmPassword}
 								labelName={this.props.screenProps.t('register:confirmPassword')}
-								onChangeText={(text: string) => this.setState({ confirmPassword: text })}
+								onChangeText={(text: string) => {
+									this.setState({ userInputs: { ...this.state.userInputs, confirmPassword: text } });
+									this.handleTextChange();
+								}}
 							/>
 							<DarkButton propStyles={{ marginTop: 20 }} onPress={() => this.handleCreatePassword()} text={this.props.screenProps.t('register:create')} />
 							<TouchableOpacity style={{ paddingBottom: 30 }} onPress={() => this.props.navigation.navigate('Recover')}>

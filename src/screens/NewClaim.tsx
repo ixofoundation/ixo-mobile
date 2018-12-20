@@ -148,7 +148,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 
 	handleUserFilledClaim = (userFilledData: string) => {
 		this.setState({ claimData: userFilledData });
-	};
+	}
 
 	handleSaveClaim = () => {
 		if (this.projectDid && !this.isClaimSaved) {
@@ -156,7 +156,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			this.props.navigation.pop();
 			this.props.onClaimSave(this.state.claimData, this.projectDid);
 		}
-	};
+	}
 
 	getLocation() {
 		Permissions.check('location').then(response => {
@@ -218,7 +218,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		} else {
 			showToast(this.props.screenProps.t('claims:noInternet'), toastType.WARNING);
 		}
-	};
+	}
 
 	onFormSubmit = () => {
 		// upload all the images and change the value to the returned hash of the image
@@ -247,7 +247,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		Promise.all(promises).then(() => {
 			this.handleSubmitClaim(formData);
 		});
-	};
+	}
 
 	renderForm() {
 		if (this.projectFormFile) {
@@ -307,7 +307,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 			this.onFormSubmit();
 		}
 		return null;
-	};
+	}
 
 	render() {
 		return (

@@ -29,6 +29,7 @@ interface ParentProps {
 	password?: boolean;
 	labelName?: string;
 	onChangeText: any;
+	onPress?: any;
 	value?: string;
 	suffixIcon?: JSX.Element;
 	disable?: boolean;
@@ -46,6 +47,7 @@ class InputField extends React.Component<ParentProps> {
 			return (
 				<View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
 					<TextField
+						onPress={this.props.onPress}
 						error={this.props.error}
 						secureTextEntry={this.props.password}
 						label={this.props.labelName ? this.props.labelName : ''}
@@ -71,6 +73,7 @@ class InputField extends React.Component<ParentProps> {
 					<View style={[{ flexDirection: 'row', alignContent: 'center', flex: 1, alignItems: 'center', justifyContent: 'space-between' }]}>
 						{this.props.prefixIcon ? this.props.prefixIcon : null}
 						<TextField
+							onPress={this.props.onPress}
 							error={this.props.error}
 							secureTextEntry={this.props.password}
 							label={this.props.labelName ? this.props.labelName : ''}
@@ -81,7 +84,7 @@ class InputField extends React.Component<ParentProps> {
 							tintColor={this.props.colorPalette ? lightPalettes.tintColor : darkPalettes.tintColor}
 							textColor={this.props.colorPalette ? lightPalettes.textColor : darkPalettes.textColor}
 							containerStyle={this.props.colorPalette ? { flex: 1, paddingBottom: 40 } : { flex: 0.9 }}
-							fontSize={this.props.colorPalette ? 16 : 20}
+							fontSize={this.props.colorPalette ? height * 0.019 : height * 0.025}
 							disabled={this.props.disable}
 							disabledLineWidth={0}
 							lineWidth={0}
@@ -110,6 +113,7 @@ class InputField extends React.Component<ParentProps> {
 			return (
 				<View>
 					<TextField
+						onPress={this.props.onPress}
 						error={this.props.error}
 						secureTextEntry={this.props.password}
 						value={this.props.value ? this.props.value : undefined}

@@ -18,10 +18,12 @@ import validator from 'validator';
 import IconServiceProviders from '../components/svg/iconServiceProviders';
 import GenericModal from '../components/GenericModal';
 import { showToast, toastType } from '../utils/toasts';
+import Permissions from 'react-native-permissions';
 
 import { ThemeColors } from '../styles/Colors';
 import ContainerStyles from '../styles/Containers';
 import ScanQRStyles from '../styles/ScanQR';
+import NewClaimStyles from '../styles/NewClaim';
 import CustomIcons from '../components/svg/CustomIcons';
 
 const keysafelogo = require('../../assets/keysafe-logo.png');
@@ -98,6 +100,7 @@ interface State {
 	qrFound: boolean;
 	loading: boolean;
 	modalVisible: boolean;
+	modalPermissionsVisible: boolean;
 	password: string | undefined;
 	revealPassword: boolean;
 	payload: IMnemonic | null;
@@ -137,6 +140,7 @@ export class ScanQR extends React.Component<Props, State> {
 		qrFound: false,
 		loading: false,
 		modalVisible: false,
+		modalPermissionsVisible: false,
 		password: undefined,
 		revealPassword: true,
 		payload: null,
@@ -150,8 +154,13 @@ export class ScanQR extends React.Component<Props, State> {
 		serviceProviderFieldError: ''
 	};
 
-	async componentDidMount() {
+	componentDidMount() {
 		this.props.onIxoInit();
+		Permissions.request('camera').then((response) => {
+			if (response === 'denied') {
+				this.setState({ modalPermissionsVisible: true });
+			}
+		});
 	}
 
 	_handleBarCodeRead(payload: any) {
@@ -416,6 +425,18 @@ export class ScanQR extends React.Component<Props, State> {
 				<StatusBar barStyle="light-content" />
 				<Modal onRequestClose={() => null} animationType="slide" transparent={true} visible={this.state.modalVisible}>
 					{this.projectScan ? this.renderProjectScanned() : this.renderKeySafeScannedModal()}
+				</Modal>
+				<Modal animationType="slide" transparent={true} visible={this.state.modalPermissionsVisible}>
+					<GenericModal
+						headingImage={<CustomIcons name={'instagram'} size={height * 0.04} style={NewClaimStyles.locationIcon} />}
+						onPressButton={() => this.setState({ modalPermissionsVisible: false })}
+						onClose={() => this.setState({ modalPermissionsVisible: false })}
+						paragraph={this.props.screenProps.t('scanQR:cameraNeededFor')}
+						paragraphSecondary={this.props.screenProps.t('scanQR:updateSettings')}
+						loading={false}
+						buttonText={this.props.screenProps.t('claims:Ok')}
+						heading={this.props.screenProps.t('scanQR:cameraNeeded')}
+					/>
 				</Modal>
 				<RNCamera
 					style={{ flex: 1 }}

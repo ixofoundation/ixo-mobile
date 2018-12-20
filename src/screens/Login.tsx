@@ -192,7 +192,7 @@ export class Login extends React.Component<Props, StateTypes> {
 					prefixIcon={<CustomIcon name="lock" style={LoginStyles.inputIcons} />}
 					suffixIcon={
 						<TouchableOpacity onPress={() => this.revealPassword()}>
-							<CustomIcon name="eyeoff" style={LoginStyles.inputIcons} />
+							<CustomIcon name={(this.state.revealPassword) ? "eye" : "eyeoff"} style={LoginStyles.inputIcons} />
 						</TouchableOpacity>
 					}
 					underlinePositionRatio={0.03}
@@ -243,7 +243,7 @@ export class Login extends React.Component<Props, StateTypes> {
 				<InputField
 					containerStyle={{ flex: 0.3, marginBottom: 30 }}
 					prefixIcon={<CustomIcon name="lock" style={LoginStyles.inputIcons} />}
-					suffixIcon={<CustomIcon name="eyeoff" style={LoginStyles.inputIcons} />}
+					suffixIcon={<CustomIcon name={this.state.revealPassword ? "eye" : "eyeoff"} style={LoginStyles.inputIcons} />}
 					onSuffixImagePress={this.revealPassword}
 					underlinePositionRatio={0.03}
 					labelName={this.props.screenProps.t('login:createPassword')}

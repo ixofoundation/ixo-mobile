@@ -7,6 +7,7 @@ interface Style {
 	button: ViewStyle;
 	wrapper: ViewStyle;
 	selectedBox: ViewStyle;
+	selectedError: ViewStyle;
 	flexLeft: ViewStyle;
 	header: TextStyle;
 	divider: ViewStyle;
@@ -27,13 +28,19 @@ const styles = StyleSheet.create<Style>({
 		justifyContent: 'center',
 		marginTop: 20
 	},
+	selectedError: {
+		backgroundColor: ThemeColors.blue_dark,
+		borderColor: ThemeColors.progressRed,
+		borderWidth: 1,
+		height: height * 0.13,
+		justifyContent: 'center'
+	},
 	selectedBox: {
+		backgroundColor: ThemeColors.blue_dark,
 		borderColor: ThemeColors.blue_lightest,
 		borderWidth: 1,
-		justifyContent: 'flex-start',
-		flexDirection: 'column',
-		alignItems: 'flex-start',
-		alignContent: 'flex-start',
+		height: height * 0.13,
+		justifyContent: 'center'
 	},
 	header: {
 		color: ThemeColors.blue_lightest,

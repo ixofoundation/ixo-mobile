@@ -16,7 +16,7 @@ import { showToast, toastType } from '../utils/toasts';
 import InputField from '../components/InputField';
 import { ThemeColors } from '../styles/Colors';
 import RecoverStyles from '../styles/Recover';
-import RegisterStyles from '../styles/Register';
+import { ValidationHelper, ValidationModelTypes, IRecoverValidationModel } from '../utils/validationHelper';
 
 const { width } = Dimensions.get('window');
 const background = require('../../assets/background_1.png');
@@ -36,20 +36,15 @@ export interface StateProps {
 }
 
 interface StateTypes {
-	username: string;
-	password: string;
-	confirmPassword: string;
-	mnemonic: string;
+	userInputs: IRecoverValidationModel;
 	errorMismatch: boolean;
+	recoverValidationErrors: IRecoverValidationModel;
 }
 
 export interface Props extends ParentProps, DispatchProps, StateProps {}
 
 class Recover extends React.Component<Props, StateTypes> {
-	componentDidMount() {
-		this.props.onIxoInit();
-	}
-
+	private validator: ValidationHelper = new ValidationHelper(ValidationModelTypes.Recover);
 	static navigationOptions = ({ navigation }: { navigation: any }) => {
 		return {
 			headerStyle: {
@@ -68,12 +63,14 @@ class Recover extends React.Component<Props, StateTypes> {
 	};
 
 	state = {
-		username: '',
-		password: '',
-		confirmPassword: '',
-		mnemonic: '',
-		errorMismatch: false
+		userInputs: this.validator.GetRecoverModel(),
+		errorMismatch: false,
+		recoverValidationErrors: this.validator.GetRecoverModel()
 	};
+
+	componentDidMount() {
+		this.props.onIxoInit();
+	}
 
 	isLedgered(did: string) {
 		return new Promise((resolve, reject) => {
@@ -93,35 +90,46 @@ class Recover extends React.Component<Props, StateTypes> {
 		});
 	}
 
-	async handleConfirmMnemonic() {
-		try {
-			if (this.state.confirmPassword === '' || this.state.password === '' || this.state.username === '') throw 'register:missingFields';
-			if (this.state.password.length < 8) throw 'register:passwordShort';
-			if (this.state.password !== this.state.confirmPassword) throw 'register:missmatchPassword';
-			if (this.state.mnemonic === '') throw 'recover:secretPhrase';
+	handleTextChange() {
+		const errorModel = this.validator.ValidateFields(this.state.userInputs);
+		const updatedErrorModel = errorModel.errorModel as IRecoverValidationModel;
+		this.setState({ recoverValidationErrors: updatedErrorModel });
+	}
 
-			const sovrin = generateSovrinDID(this.state.mnemonic);
-			const ledgered = await this.isLedgered('did:sov:' + sovrin.did);
-			if (ledgered) {
-				const encryptedMnemonic = Encrypt(JSON.stringify({ mnemonic: this.state.mnemonic, name: this.state.username }), this.state.password); // encrypt securely on phone enlave
-				// @ts-ignore
-				SInfo.setItem(SecureStorageKeys.encryptedMnemonic, encryptedMnemonic.toString(), {});
-				// @ts-ignore
-				SInfo.setItem(SecureStorageKeys.password, this.state.password, {});
-				AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true'); // stop first time onboarding
-				const user: IUser = {
-					did: 'did:sov:' + sovrin.did,
-					name: this.state.username,
-					verifyKey: sovrin.verifyKey
-				};
-				AsyncStorage.setItem(UserStorageKeys.name, user.name);
-				AsyncStorage.setItem(UserStorageKeys.did, user.did);
-				AsyncStorage.setItem(UserStorageKeys.verifyKey, user.verifyKey);
-				this.props.onUserInit(user);
-				this.navigateToLogin();
+	async handleConfirmMnemonic() {
+		const errorModel = this.validator.ValidateFields(this.state.userInputs);
+		const updatedErrorModel = errorModel.errorModel as IRecoverValidationModel;
+		if (errorModel.errorsFound) {
+			this.setState({ recoverValidationErrors: updatedErrorModel });
+		} else {
+			try {
+				this.handleConfirmMnemonic();
+				const sovrin = generateSovrinDID(this.state.userInputs.mnemonic);
+				const ledgered = await this.isLedgered('did:sov:' + sovrin.did);
+				if (ledgered) {
+					const encryptedMnemonic = Encrypt(
+						JSON.stringify({ mnemonic: this.state.userInputs.mnemonic, name: this.state.userInputs.username }),
+						this.state.userInputs.password
+					); // encrypt securely on phone enlave
+					// @ts-ignore
+					SInfo.setItem(SecureStorageKeys.encryptedMnemonic, encryptedMnemonic.toString(), {});
+					// @ts-ignore
+					SInfo.setItem(SecureStorageKeys.password, this.state.password, {});
+					AsyncStorage.setItem(LocalStorageKeys.firstLaunch, 'true'); // stop first time onboarding
+					const user: IUser = {
+						did: 'did:sov:' + sovrin.did,
+						name: this.state.userInputs.username,
+						verifyKey: sovrin.verifyKey
+					};
+					AsyncStorage.setItem(UserStorageKeys.name, user.name);
+					AsyncStorage.setItem(UserStorageKeys.did, user.did);
+					AsyncStorage.setItem(UserStorageKeys.verifyKey, user.verifyKey);
+					this.props.onUserInit(user);
+					this.navigateToLogin();
+				}
+			} catch (exception) {
+				showToast('Failed recovering account', toastType.WARNING);
 			}
-		} catch (exception) {
-			showToast(this.props.screenProps.t(exception), toastType.WARNING);
 		}
 	}
 
@@ -154,34 +162,50 @@ class Recover extends React.Component<Props, StateTypes> {
 									<Text style={[RecoverStyles.paragraph, { color: ThemeColors.orange }]}>{this.props.screenProps.t('register:warning')}:</Text>
 									{this.props.screenProps.t('register:secretParagraph_2')}
 								</Text>
-								<View style={[RegisterStyles.selectedBox]}>
+								<View style={(this.state.recoverValidationErrors.mnemonic === '' ? RecoverStyles.selectedBox : RecoverStyles.selectedError)}>
 									<TextInput
 										blurOnSubmit={true}
 										maxLength={100}
 										multiline={true}
 										numberOfLines={5}
-										onChangeText={(text: string) => this.setState({ mnemonic: text })}
+										onChangeText={(text: string) => {
+											this.setState({ userInputs: { ...this.state.userInputs, mnemonic: text } });
+											this.handleTextChange();
+										}}
 										style={{ textAlign: 'left', color: ThemeColors.white, paddingHorizontal: 10, flex: 1, alignItems: 'flex-start' }}
 									>
-										{this.state.mnemonic}
+										{this.state.userInputs.mnemonic}
 									</TextInput>
 								</View>
+								<Text style={{ color: ThemeColors.progressRed, fontSize: 12 }}>{this.state.recoverValidationErrors.mnemonic}</Text>
 								<InputField
-									value={this.state.username}
+									error={this.state.recoverValidationErrors.username}
+									value={this.state.userInputs.username}
 									labelName={this.props.screenProps.t('register:yourName')}
-									onChangeText={(text: string) => this.setState({ username: text })}
+									onChangeText={(text: string) => {
+										this.setState({ userInputs: { ...this.state.userInputs, username: text } });
+										this.handleTextChange();
+									}}
 								/>
 								<InputField
+									error={this.state.recoverValidationErrors.password}
 									password={true}
-									value={this.state.password}
+									value={this.state.userInputs.password}
 									labelName={this.props.screenProps.t('register:newPassword')}
-									onChangeText={(text: string) => this.setState({ password: text })}
+									onChangeText={(text: string) => {
+										this.setState({ userInputs: { ...this.state.userInputs, password: text } });
+										this.handleTextChange();
+									}}
 								/>
 								<InputField
+									error={this.state.recoverValidationErrors.confirmPassword}
 									password={true}
-									value={this.state.confirmPassword}
+									value={this.state.userInputs.confirmPassword}
 									labelName={this.props.screenProps.t('register:confirmPassword')}
-									onChangeText={(text: string) => this.setState({ confirmPassword: text })}
+									onChangeText={(text: string) => {
+										this.setState({ userInputs: { ...this.state.userInputs, confirmPassword: text } });
+										this.handleTextChange();
+									}}
 								/>
 								<DarkButton onPress={() => this.handleConfirmMnemonic()} propStyles={{ marginTop: 15 }} text={this.props.screenProps.t('recover:next')} />
 							</View>

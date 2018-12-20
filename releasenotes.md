@@ -201,3 +201,13 @@
 - **feature** View image in view claims
 - **bug** Grey out entire button
 - **bug** Disable Settings
+
+## 2018-12-18
+***
+### __Android__ (build ???)
+- **feature** Rejected Camera app permissions pop up
+- **bugs** Create app password screen updates
+
+### __iOS__ (build v1.1.9)
+- **feature** Rejected Camera app permissions pop up
+- **bugs** Create app password screen updates

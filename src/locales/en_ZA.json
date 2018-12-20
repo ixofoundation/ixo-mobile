@@ -51,8 +51,10 @@
 		"serviceProviderQuestion": "How will you be able to benefit this project?",
 		"yourAnswer": "Your answer",
 		"projectFailedScan": "Please try again, project not scanned",
-		"keysafePasswordWrong": "Keysafe password incorrect"
-
+		"keysafePasswordWrong": "Keysafe password incorrect",
+		"cameraNeeded": "Camera permissions needed",
+		"cameraNeededFor": "To become a service provider and take claim photos needs camera permissions",
+		"updateSettings": "To allow camera please go to General - Settings and allow ixo camera permissions"
 	},
 	"login": {
 		"hi": "Hi",
