@@ -2,9 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:../android/app/src/main/assets/fonts/icomoon.ttf">
-   </FileRef>
-   <FileRef
       location = "group:ixo.xcodeproj">
    </FileRef>
    <FileRef

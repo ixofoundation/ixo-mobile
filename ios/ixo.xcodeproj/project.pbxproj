@@ -29,7 +29,8 @@
 		3EF421D33A2A43FAB832D9EA /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EB4966A00EC24D71ADA2F877 /* FontAwesome5_Solid.ttf */; };
 		4B14B8B971BB4FF58828ADDB /* libRNOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0426CA70FE754C31B5FC0F22 /* libRNOS.a */; };
 		5532774A8748438D92CB4EE1 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2E8028D465234B5D85DB9635 /* EvilIcons.ttf */; };
-		607069362181ED6900D9846C /* icomoon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 607069352181ED6900D9846C /* icomoon.ttf */; };
+		607C63B821EC76640082D882 /* icomoon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 607C638A21EC76640082D882 /* icomoon.ttf */; };
+		607C63B921EC76D10082D882 /* icomoon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 607C638A21EC76640082D882 /* icomoon.ttf */; };
 		609001C821C0FE7400A2896D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		609001C921C0FE7400A2896D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		609001CB21C0FE7400A2896D /* libRNSensitiveInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6096BA92217785BA00C63D83 /* libRNSensitiveInfo.a */; };
@@ -55,7 +56,6 @@
 		609001E021C0FE7400A2896D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		609001E121C0FE7400A2896D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		609001E221C0FE7400A2896D /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3E4B3DF43C8D4188838DD28E /* Roboto-Regular.ttf */; };
-		609001E321C0FE7400A2896D /* icomoon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 607069352181ED6900D9846C /* icomoon.ttf */; };
 		609001E421C0FE7400A2896D /* RobotoCondensed-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A9C73C1FA4DB48EB9F9EFEAC /* RobotoCondensed-Regular.ttf */; };
 		609001E521C0FE7400A2896D /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4E1625F285B0472B8B779BFB /* Entypo.ttf */; };
 		609001E621C0FE7400A2896D /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2E8028D465234B5D85DB9635 /* EvilIcons.ttf */; };
@@ -455,7 +455,7 @@
 		5262C552FF5F4757A412A338 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/native-base/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		56C6A1F3430B4601BBBB31DA /* libReactNativeFingerprintScanner.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeFingerprintScanner.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
-		607069352181ED6900D9846C /* icomoon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = icomoon.ttf; path = ../assets/fonts/icomoon.ttf; sourceTree = "<group>"; };
+		607C638A21EC76640082D882 /* icomoon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = icomoon.ttf; path = ../assets/fonts/icomoon.ttf; sourceTree = "<group>"; };
 		609001FC21C0FE7400A2896D /* ixo_uat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ixo_uat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		609001FD21C0FE7500A2896D /* ixo copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ixo copy-Info.plist"; path = "/Users/mullerfourie/Documents/Repositories/ixo-world-mobile/ios/ixo copy-Info.plist"; sourceTree = "<absolute>"; };
 		6090025621C1200800A2896D /* RNDeviceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RNDeviceInfo.h; path = ixo/RNDeviceInfo.h; sourceTree = "<group>"; };
@@ -838,7 +838,7 @@
 		C1F7328843D748029EE98FF4 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				607069352181ED6900D9846C /* icomoon.ttf */,
+				607C638A21EC76640082D882 /* icomoon.ttf */,
 				3E4B3DF43C8D4188838DD28E /* Roboto-Regular.ttf */,
 				A9C73C1FA4DB48EB9F9EFEAC /* RobotoCondensed-Regular.ttf */,
 				4E1625F285B0472B8B779BFB /* Entypo.ttf */,
@@ -1348,7 +1348,6 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				E42D5A41B1C8420DA73B872F /* Roboto-Regular.ttf in Resources */,
-				607069362181ED6900D9846C /* icomoon.ttf in Resources */,
 				A211C97C29A240C99923C6A9 /* RobotoCondensed-Regular.ttf in Resources */,
 				159F16EF9DB9437E9642E2F1 /* Entypo.ttf in Resources */,
 				5532774A8748438D92CB4EE1 /* EvilIcons.ttf in Resources */,
@@ -1363,6 +1362,7 @@
 				8BEA1392B1A640A09774616A /* Roboto.ttf in Resources */,
 				EE74D4C72EFB42C5B1788E8F /* rubicon-icon-font.ttf in Resources */,
 				1CB64129518547DABF432E53 /* SimpleLineIcons.ttf in Resources */,
+				607C63B821EC76640082D882 /* icomoon.ttf in Resources */,
 				66CD4C7C0BE8406F9641BF9E /* Zocial.ttf in Resources */,
 				8CBCB2E09B004D408A43140D /* AntDesign.ttf in Resources */,
 				C8B95C90B3A440F886DFF285 /* FontAwesome5_Brands.ttf in Resources */,
@@ -1375,10 +1375,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				607C63B921EC76D10082D882 /* icomoon.ttf in Resources */,
 				609001E021C0FE7400A2896D /* Images.xcassets in Resources */,
 				609001E121C0FE7400A2896D /* LaunchScreen.xib in Resources */,
 				609001E221C0FE7400A2896D /* Roboto-Regular.ttf in Resources */,
-				609001E321C0FE7400A2896D /* icomoon.ttf in Resources */,
 				609001E421C0FE7400A2896D /* RobotoCondensed-Regular.ttf in Resources */,
 				609001E521C0FE7400A2896D /* Entypo.ttf in Resources */,
 				609001E621C0FE7400A2896D /* EvilIcons.ttf in Resources */,
