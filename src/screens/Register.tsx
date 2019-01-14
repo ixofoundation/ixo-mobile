@@ -341,7 +341,7 @@ class Register extends React.Component<Props, StateTypes> {
 							{this.state.mnemonic.length <= 0 ? (
 								<View>
 									<CustomIcon
-										name="lock"
+										name="key"
 										color={ThemeColors.black}
 										style={{ fontSize: 30, textAlign: 'center', color: ThemeColors.white }}
 										size={height * 0.03}

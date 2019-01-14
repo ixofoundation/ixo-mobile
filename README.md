@@ -49,7 +49,14 @@ yarn run android_prod (android)
 3. Build the project to emulator / android device
 
 #### Build a release version
+
+##### android
 1. Build -> Select Build Variant
+depending on build required select ixo_prodRelease/ixo_uatRelease
+
+##### iOS
+Select scheme (uat or prod)
+1. Product -> Scheme
 
 ## Screenshots
 <img src="gitImages/1.png" height="500" />
@@ -59,6 +66,14 @@ yarn run android_prod (android)
 
 ### Login security
 <img src="gitImages/loginFlowDiagram.png" height="500" />
+
+### Updating fonts (icomoon)
+#### iOS
+
+1.) copy new iconmoon.tff file to assets directory and then add file to build phases (copy bundle resources)
+2.) update selection.json file with new updated version
+
+#### android
 
 ## Native Libraries
 

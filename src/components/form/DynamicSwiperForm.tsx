@@ -277,7 +277,7 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 				dotColor={ThemeColors.blue_light}
 				showsButtons={false}
 				showsPagination={!this.state.keyboardVisible}
-				paginationStyle={{ paddingBottom: height * 0.1 }}
+				paginationStyle={{ paddingBottom: height * 0.05 }}
 				onIndexChanged={(index: number) => this.onIndexChanged(index)}
 			>
 				{this.props.formSchema.map((field: any, i: any) => {

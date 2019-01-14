@@ -77,15 +77,12 @@ class Recover extends React.Component<Props, StateTypes> {
 			this.props.ixo.user
 				.getDidDoc(did)
 				.then((response: any) => {
+					// debugger;
 					const { error = false } = response;
 					if (error) {
 						return reject('recover:userNotFound');
 					}
 					return resolve(true);
-				})
-				.catch(error => {
-					console.log(error);
-					showToast('Error occured', toastType.DANGER);
 				});
 		});
 	}
@@ -103,7 +100,6 @@ class Recover extends React.Component<Props, StateTypes> {
 			this.setState({ recoverValidationErrors: updatedErrorModel });
 		} else {
 			try {
-				this.handleConfirmMnemonic();
 				const sovrin = generateSovrinDID(this.state.userInputs.mnemonic);
 				const ledgered = await this.isLedgered('did:sov:' + sovrin.did);
 				if (ledgered) {
@@ -121,6 +117,7 @@ class Recover extends React.Component<Props, StateTypes> {
 						name: this.state.userInputs.username,
 						verifyKey: sovrin.verifyKey
 					};
+					// debugger;
 					AsyncStorage.setItem(UserStorageKeys.name, user.name);
 					AsyncStorage.setItem(UserStorageKeys.did, user.did);
 					AsyncStorage.setItem(UserStorageKeys.verifyKey, user.verifyKey);
@@ -170,7 +167,6 @@ class Recover extends React.Component<Props, StateTypes> {
 										numberOfLines={5}
 										onChangeText={(text: string) => {
 											this.setState({ userInputs: { ...this.state.userInputs, mnemonic: text } });
-											this.handleTextChange();
 										}}
 										style={{ textAlign: 'left', color: ThemeColors.white, paddingHorizontal: 10, flex: 1, alignItems: 'flex-start' }}
 									>
@@ -184,7 +180,6 @@ class Recover extends React.Component<Props, StateTypes> {
 									labelName={this.props.screenProps.t('register:yourName')}
 									onChangeText={(text: string) => {
 										this.setState({ userInputs: { ...this.state.userInputs, username: text } });
-										this.handleTextChange();
 									}}
 								/>
 								<InputField
@@ -194,7 +189,6 @@ class Recover extends React.Component<Props, StateTypes> {
 									labelName={this.props.screenProps.t('register:newPassword')}
 									onChangeText={(text: string) => {
 										this.setState({ userInputs: { ...this.state.userInputs, password: text } });
-										this.handleTextChange();
 									}}
 								/>
 								<InputField
@@ -204,7 +198,6 @@ class Recover extends React.Component<Props, StateTypes> {
 									labelName={this.props.screenProps.t('register:confirmPassword')}
 									onChangeText={(text: string) => {
 										this.setState({ userInputs: { ...this.state.userInputs, confirmPassword: text } });
-										this.handleTextChange();
 									}}
 								/>
 								<DarkButton onPress={() => this.handleConfirmMnemonic()} propStyles={{ marginTop: 15 }} text={this.props.screenProps.t('recover:next')} />

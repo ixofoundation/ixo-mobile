@@ -202,12 +202,36 @@
 - **bug** Grey out entire button
 - **bug** Disable Settings
 
-## 2018-12-18
 ***
-### __Android__ (build ???)
+(2018-01-14)
+## **UAT** 
+### __Android__ (build 1.1.7)
 - **feature** Rejected Camera app permissions pop up
 - **bugs** Create app password screen updates
+- **bugs** Claim form: smaller devices, step dots overlap buttons
+- **bugs** Claims submitted screen should not show states without claims
+- **bugs** Grey out entire button (including border) in Register screen prior to selecting
+- **bugs** Disable settings
+- **bugs** Disable help
+- **bugs** Fixed crush on submitting claim
+- **bugs** Confirm backup phrase view fix: smaller devices
 
-### __iOS__ (build v1.1.9)
+### __iOS__ (build v1.1.7)
 - **feature** Rejected Camera app permissions pop up
 - **bugs** Create app password screen updates
+- **bugs** Claim form: smaller devices, step dots overlap buttons
+- **bugs** Update Validation errors on iOS
+- **bugs** Claims submitted screen should not show states without claims
+- **bugs** Grey out entire button (including border) prior to selecting to reveal phrase pixelated lock icon
+- **bugs** Disable settings
+- **bugs** Disable help
+- **bugs** Fixed crush on submitting claim
+- **bugs** Confirm backup phrase view fix: smaller devices
+
+## **PRODUCTION** 
+### __Android__
+none
+### __iOS__
+none
+
+***
