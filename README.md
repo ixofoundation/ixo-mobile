@@ -58,6 +58,25 @@ depending on build required select ixo_prodRelease/ixo_uatRelease
 Select scheme (uat or prod)
 1. Product -> Scheme
 
+##### Code-push
+(make sure you have codepusha appcenter cli)
+
+*Creating a new deployment environment*
+```sh
+appcenter codepush deployment add -a <ownerName>/<appName> <deploymentName>
+```
+
+*List apps*
+```sh
+code-push app list
+```
+
+*List deployment keys*
+```sh
+code-push deployment ls ixo-iOS -k
+```
+
+
 ## Screenshots
 <img src="gitImages/1.png" height="500" />
 <img src="gitImages/2.png" height="500" />
