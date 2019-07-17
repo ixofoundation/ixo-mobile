@@ -43,6 +43,7 @@
 		"successRegistered": "Successfully registered as ",
 		"serviceProviderHelp": "What is a service provider?",
 		"serviceProviderScan": "Go to the project page and scan the QR code to connect",
+		"claimScan": "Scan QR code to get the claim data",
 		"password": "Password",
 		"missingField": "Missing fields",
 		"continue": "CONTINUE",

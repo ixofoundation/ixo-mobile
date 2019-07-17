@@ -23,6 +23,7 @@ import ProjectsStyles from '../styles/Projects';
 import HeaderSync from '../components/HeaderSync';
 import Banner from '../components/Banner';
 import CustomIcon from '../components/svg/CustomIcons';
+import { ScanType } from './ScanQR';
 
 YellowBox.ignoreWarnings(['ForwardRef']);
 
@@ -351,7 +352,7 @@ export class Projects extends React.Component<Props, StateProps> {
 					direction="up"
 					style={{ backgroundColor: ThemeColors.red }}
 					position="bottomRight"
-					onPress={() => this.props.navigation.navigate('ScanQR', { projectScan: true })}
+					onPress={() => this.props.navigation.navigate('ScanQR', { scanType: ScanType.project })}
 				>
 					<Image resizeMode={'contain'} style={{ width: width * 0.08, height: width * 0.08 }} source={qr} />
 				</Fab>

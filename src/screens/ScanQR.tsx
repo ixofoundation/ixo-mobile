@@ -80,8 +80,14 @@ interface ParentProps {
 	screenProps: any;
 }
 
-interface NavigationTypes {
-	projectScan: boolean;
+export enum ScanType {
+	project,
+	claim,
+	keysafe
+}
+
+export interface NavigationTypes {
+	scanType: ScanType;
 }
 
 export interface DispatchProps {
@@ -113,12 +119,12 @@ interface State {
 
 export interface Props extends ParentProps, DispatchProps, StateProps {}
 export class ScanQR extends React.Component<Props, State> {
-	private projectScan: boolean = true;
+	private scanType: ScanType;
 	constructor(props) {
 		super(props);
 
 		const componentProps: NavigationTypes = this.props.navigation.state.params;
-		this.projectScan = componentProps.projectScan;
+		this.scanType = componentProps.scanType;
 		this._handleBarCodeRead = this._handleBarCodeRead.bind(this);
 	}
 
@@ -156,14 +162,16 @@ export class ScanQR extends React.Component<Props, State> {
 
 	_handleBarCodeRead(payload: any) {
 		if (!this.state.modalVisible) {
-			if (validator.isBase64(payload.data) && !this.projectScan) {
+			if (validator.isBase64(payload.data) && this.scanType === ScanType.keysafe) {
 				this.setState({ modalVisible: true, payload: payload.data });
-			} else if (payload.data.includes('projects') && this.projectScan) {
+			} else if (payload.data.includes('projects') && this.scanType === ScanType.project) {
 				const projectDid = payload.data.substring(payload.data.length - 39, payload.data.length - 9);
 				this.setState({ modalVisible: true, payload: null, projectDid });
 				this.props.ixo.project.getProjectByProjectDid(projectDid).then((project: any) => {
 					this.setState({ projectTitle: project.data.title, serviceEndpoint: project.data.serviceEndpoint });
 				});
+			} else if (this.scanType === ScanType.claim) {
+				this.setState({ modalVisible: true, payload: payload.data });
 			} else {
 				this.setState({ errors: true, modalVisible: true });
 			}
@@ -264,27 +272,38 @@ export class ScanQR extends React.Component<Props, State> {
 	};
 
 	renderInfoBlocks() {
-		if (this.projectScan) {
-			return (
-				<InfoBlocksServiceProvider
-					helpText={this.props.screenProps.t('scanQR:serviceProviderHelp')}
-					qrCodeText={this.props.screenProps.t('scanQR:serviceProviderScan')}
-				/>
-			);
-		} else {
-			return (
-				<InfoBlocks
-					helpText={this.props.screenProps.t('scanQR:loginHelp')}
-					qrCodeText={this.props.screenProps.t('connectIXO:qrCodeInfo')}
-					keySafeText={this.props.screenProps.t('connectIXO:keySafeInfo')}
-				/>
-			);
+		switch (this.scanType) {
+			case ScanType.project : {
+				return (
+					<InfoBlocksServiceProvider
+						helpText={this.props.screenProps.t('scanQR:serviceProviderHelp')}
+						qrCodeText={this.props.screenProps.t('scanQR:serviceProviderScan')}
+					/>
+				);
+			}
+			case ScanType.keysafe : {
+				return (
+					<InfoBlocks
+						helpText={this.props.screenProps.t('scanQR:loginHelp')}
+						qrCodeText={this.props.screenProps.t('connectIXO:qrCodeInfo')}
+						keySafeText={this.props.screenProps.t('connectIXO:keySafeInfo')}
+					/>
+				);
+			}
+			case ScanType.claim: {
+				return (
+					<InfoBlocksServiceProvider
+							helpText={this.props.screenProps.t('scanQR:serviceProviderHelp')}
+							qrCodeText={this.props.screenProps.t('scanQR:claimScan')}
+					/>
+				);
+			}
 		}
 	}
 
 	renderErrorScanned() {
 		const registerAction = StackActions.reset({ index: 0, actions: [NavigationActions.navigate({ routeName: 'Register' })] });
-		if (this.projectScan) {
+		if (this.scanType === ScanType.project) {
 			return (
 				<GenericModal
 					onPressButton={() => this.resetStateVars()}
@@ -415,7 +434,7 @@ export class ScanQR extends React.Component<Props, State> {
 			<View style={[ScanQRStyles.wrapper]}>
 				<StatusBar barStyle="light-content" />
 				<Modal onRequestClose={() => null} animationType="slide" transparent={true} visible={this.state.modalVisible}>
-					{this.projectScan ? this.renderProjectScanned() : this.renderKeySafeScannedModal()}
+					{this.scanType === ScanType.project ? this.renderProjectScanned() : this.renderKeySafeScannedModal()}
 				</Modal>
 				<RNCamera
 					style={{ flex: 1 }}

@@ -4,7 +4,7 @@ import Permissions from 'react-native-permissions';
 import ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
-import { TouchableOpacity, KeyboardAvoidingView, Dimensions, Picker } from 'react-native';
+import { TouchableOpacity, KeyboardAvoidingView, Dimensions, Picker, Button } from 'react-native';
 import { FormStyles } from '../../models/form';
 import { ThemeColors, CardContainerBox } from '../../styles/Colors';
 import { View, Text, Icon, Content } from 'native-base';
@@ -22,6 +22,7 @@ import DynamicFormStyles from '../../styles/componentStyles/DynamicSwiperForm';
 import ContainerStyles from '../../styles/Containers';
 import { IProject } from '../../models/project';
 import KeyboardUtil from '../../utils/keyboard';
+import { ScanType } from '../../screens/ScanQR';
 
 const { height } = Dimensions.get('window');
 
@@ -267,6 +268,18 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 		);
 	}
 
+	renderQrScan(field: any, index: number){
+		return (
+			<View key={index} style={{ flexDirection: 'row', justifyContent: 'center' }}>
+				<LightButton
+						propStyles={{ marginBottom: 10, alignItems: 'center', width: '100%' }}
+						text={'SCAN QR'}
+						onPress={() => this.props.navigation.navigate('ScanQR', { scanType: ScanType.claim })}
+					/>
+			</View>
+		);
+	}
+
 	renderCards() {
 		return (
 			<Swiper
@@ -300,6 +313,8 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 						case 'country':
 						case 'template':
 						case 'radio':
+						case 'qrcode':
+							return this.renderCard(this.renderQrScan(field, i), cardDetails, i);
 						default:
 							const temp = (
 								<View>

@@ -7,6 +7,7 @@ import DarkButton from '../components/DarkButton';
 import LightButton from '../components/LightButton';
 import ConnectIXOStyles from '../styles/ConnectIXO';
 import ContainerStyles from '../styles/Containers';
+import { ScanType } from './ScanQR';
 
 const logo = require('../../assets/logo.png');
 const globe = require('../../assets/globe.mp4');
@@ -20,7 +21,7 @@ export default class ConnectIXO extends React.Component<ParentProps, {}> {
 	handleOnScanNavigate() {
 		const resetAction = StackActions.reset({
 			index: 1,
-			actions: [NavigationActions.navigate({ routeName: 'ConnectIXO' }), NavigationActions.navigate({ routeName: 'ScanQR', params: { projectScan: false }})]
+			actions: [NavigationActions.navigate({ routeName: 'ConnectIXO' }), NavigationActions.navigate({ routeName: 'ScanQR', params: { scanType: ScanType.keysafe }})]
 		});
 		this.props.navigation.dispatch(resetAction);
 	}
