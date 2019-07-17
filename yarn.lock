@@ -5522,9 +5522,10 @@ react-native-easy-grid@0.2.0:
   dependencies:
     lodash "^4.11.1"
 
-react-native-fingerprint-scanner@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/react-native-fingerprint-scanner/-/react-native-fingerprint-scanner-2.5.0.tgz#259c497911d90250409f8ebfe55a66c6b1bc6798"
+react-native-fingerprint-scanner@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/react-native-fingerprint-scanner/-/react-native-fingerprint-scanner-2.6.1.tgz#ebc931ca1a79925076fe625d14842451aaf6791e"
+  integrity sha512-S3MohzwNqtsikDfIn5X1ji9tSpfJ/JHFG/ecXr9uZ6dgO+qvFexPx07+doGKwSi8tg/zg2HhTL62FCh8FTpOFQ==
 
 react-native-http@tradle/react-native-http#834492d:
   version "1.0.0"

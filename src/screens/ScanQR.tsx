@@ -429,12 +429,43 @@ export class ScanQR extends React.Component<Props, State> {
 		);
 	}
 
+	renderClaimScannedModal() {
+		if (this.state.errors) {
+			return this.renderErrorScanned();
+		}
+		return (
+			<GenericModal
+				onPressButton={() => this.props.navigation.pop()}
+				onClose={() => this.resetStateVars()}
+				paragraph={this.state.payload}
+				loading={this.state.loading}
+				buttonText={this.props.screenProps.t('scanQR:confirm')}
+				heading={this.props.screenProps.t('scanQR:claimScanned')}
+			/>
+		);
+	}
+
+	renderScanType() {
+		switch (this.scanType) {
+			case ScanType.project : {
+				return this.renderProjectScanned();
+			}
+			case ScanType.keysafe : {
+				return this.renderKeySafeScannedModal();
+			}
+			case ScanType.claim: {
+				return this.renderClaimScannedModal();
+			}
+		}
+	}
+
 	render() {
 		return (
 			<View style={[ScanQRStyles.wrapper]}>
 				<StatusBar barStyle="light-content" />
 				<Modal onRequestClose={() => null} animationType="slide" transparent={true} visible={this.state.modalVisible}>
-					{this.scanType === ScanType.project ? this.renderProjectScanned() : this.renderKeySafeScannedModal()}
+					{this.renderScanType()}
+					{/* {this.scanType === ScanType.project ? this.renderProjectScanned() : this.renderKeySafeScannedModal()} */}
 				</Modal>
 				<RNCamera
 					style={{ flex: 1 }}
