@@ -231,6 +231,17 @@ export default class DynamicForm extends React.Component<Props, State> {
 										labelName={changeCase.sentenceCase(field.name)}
 									/>
 								);
+							case 'qrcode':
+									return (
+										<InputField
+											key={i}
+											disable={!this.props.editMode}
+											onChangeText={text => this.setFormState(field.name, text)}
+											colorPalette={InputColorTypes.Light}
+											value={field.value}
+											labelName={field.name}
+										/>
+									);
 							case 'image':
 								return null;
 							case 'select':
