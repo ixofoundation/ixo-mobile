@@ -234,11 +234,12 @@ export default class DynamicForm extends React.Component<Props, State> {
 							case 'qrcode':
 									return (
 										<InputField
+											multiline={true}
 											key={i}
 											disable={!this.props.editMode}
 											onChangeText={text => this.setFormState(field.name, text)}
 											colorPalette={InputColorTypes.Light}
-											value={field.value}
+											value={"testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?"}
 											labelName={field.name}
 										/>
 									);

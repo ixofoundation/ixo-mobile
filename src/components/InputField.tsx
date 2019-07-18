@@ -38,6 +38,7 @@ interface ParentProps {
 	onSuffixImagePress?: Function;
 	underlinePositionRatio?: number;
 	error?: string;
+	multiline?: boolean;
 }
 
 class InputField extends React.Component<ParentProps> {
@@ -46,6 +47,7 @@ class InputField extends React.Component<ParentProps> {
 			return (
 				<View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
 					<TextField
+						multiline={this.props.multiline ? this.props.multiline: false}
 						error={this.props.error}
 						secureTextEntry={this.props.password}
 						label={this.props.labelName ? this.props.labelName : ''}
