@@ -59,6 +59,7 @@ interface State {
 	imageList: IImage[] | any[];
 	keyboardVisible: boolean;
 	dropDownValues: number[];
+	qrClaimReceived: boolean;
 }
 
 interface DispatchProps {
@@ -77,7 +78,8 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 		hasCameraPermission: false,
 		imageList: [],
 		keyboardVisible: false,
-		dropDownValues: []
+		dropDownValues: [],
+		qrClaimReceived: false
 	};
 
 	async componentWillMount() {
@@ -271,11 +273,37 @@ class DynamicSwiperForm extends React.Component<Props, State> {
 	renderQrScan(field: any, index: number){
 		return (
 			<View key={index} style={{ flexDirection: 'row', justifyContent: 'center' }}>
+				{(!this.state.qrClaimReceived) ? 
 				<LightButton
+				propStyles={{ marginBottom: 10, alignItems: 'center', width: '100%' }}
+				text={'SCAN QR'}
+				onPress={() =>
+					this.props.navigation.navigate('ScanQR',
+					{ scanType: ScanType.claim, onScannedCallback:
+						(payload) =>  { this.setFormState(field.name, payload); this.setState({ qrClaimReceived: true })} })}
+				/> :
+				<View
+					key={index}
+					style={{
+						flexDirection: 'column',
+						alignItems: 'flex-start',
+						width: '100%',
+						paddingHorizontal: '3%',
+						justifyContent: 'space-between'
+					}}
+				>
+					<Text style={{ color: ThemeColors.blue_lightest, fontSize: 15 }}>CONFIRMED</Text>
+					<LightButton
 						propStyles={{ marginBottom: 10, alignItems: 'center', width: '100%' }}
-						text={'SCAN QR'}
-						onPress={() => this.props.navigation.navigate('ScanQR', { scanType: ScanType.claim })}
-					/>
+						text={'RE-SCAN QR'}
+						onPress={() =>
+							this.props.navigation.navigate('ScanQR',
+							{ scanType: ScanType.claim, onScannedCallback:
+								(payload) =>  { this.setFormState(field.name, payload); this.setState({ qrClaimReceived: true })} })}
+					/> 
+				</View>
+				}
+				
 			</View>
 		);
 	}

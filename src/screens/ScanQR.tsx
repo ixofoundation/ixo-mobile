@@ -88,6 +88,7 @@ export enum ScanType {
 
 export interface NavigationTypes {
 	scanType: ScanType;
+	onScannedCallback?: Function;
 }
 
 export interface DispatchProps {
@@ -430,12 +431,13 @@ export class ScanQR extends React.Component<Props, State> {
 	}
 
 	renderClaimScannedModal() {
+		
 		if (this.state.errors) {
 			return this.renderErrorScanned();
 		}
 		return (
 			<GenericModal
-				onPressButton={() => this.props.navigation.pop()}
+				onPressButton={() => {this.props.navigation.state.params.onScannedCallback(this.state.payload); this.props.navigation.pop();}}
 				onClose={() => this.resetStateVars()}
 				paragraph={this.state.payload}
 				loading={this.state.loading}
@@ -465,7 +467,6 @@ export class ScanQR extends React.Component<Props, State> {
 				<StatusBar barStyle="light-content" />
 				<Modal onRequestClose={() => null} animationType="slide" transparent={true} visible={this.state.modalVisible}>
 					{this.renderScanType()}
-					{/* {this.scanType === ScanType.project ? this.renderProjectScanned() : this.renderKeySafeScannedModal()} */}
 				</Modal>
 				<RNCamera
 					style={{ flex: 1 }}

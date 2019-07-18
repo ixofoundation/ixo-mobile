@@ -247,7 +247,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		});
 		Promise.all(promises).then(() => {
 			console.log(formData);
-			const asdf = formData;
+			// const asdf = formData;
 			// this.handleSubmitClaim(formData);
 		});
 	};
