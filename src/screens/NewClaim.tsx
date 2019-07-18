@@ -184,7 +184,6 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		claimPayload['projectDid'] = this.projectDid;
 
 		if (this.location) {
-			console.log(claimPayload);
 			claimPayload['_claimLocation'] = this.location;
 		}
 		if (this.props.online) {
@@ -247,8 +246,7 @@ class NewClaim extends React.Component<Props, StateTypes> {
 		});
 		Promise.all(promises).then(() => {
 			console.log(formData);
-			const asdf = formData;
-			// this.handleSubmitClaim(formData);
+			this.handleSubmitClaim(formData);
 		});
 	};
 
