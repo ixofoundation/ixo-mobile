@@ -239,7 +239,7 @@ export default class DynamicForm extends React.Component<Props, State> {
 											disable={!this.props.editMode}
 											onChangeText={text => this.setFormState(field.name, text)}
 											colorPalette={InputColorTypes.Light}
-											value={"testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?tes ting?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?testing?"}
+											value={field.value}
 											labelName={field.name}
 										/>
 									);
