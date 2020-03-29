@@ -1,4 +1,4 @@
-# IXO Mobile
+# ixo-Mobile
 ## Setup
 ### Link native modules
 
