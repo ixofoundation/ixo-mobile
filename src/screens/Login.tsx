@@ -1,297 +1,242 @@
-import { Toast, Text } from 'native-base';
-import SInfo from 'react-native-sensitive-info';
-import * as React from 'react';
-import { AsyncStorage, Image, KeyboardAvoidingView, Platform, StatusBar, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native';
-import { NavigationActions, StackActions } from 'react-navigation';
-import { connect } from 'react-redux';
-import DarkButton from '../components/DarkButton';
-import { SecureStorageKeys, UserStorageKeys } from '../models/phoneStorage';
-import { IUser } from '../models/user';
-import { PublicSiteStoreState } from '../redux/public_site_reducer';
-import { initUser, userSetPassword } from '../redux/user/user_action_creators';
-import { ThemeColors } from '../styles/Colors';
-import ContainerStyles from '../styles/Containers';
-import LoginStyles from '../styles/Login';
-import InputField from '../components/InputField';
+import React, { useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  StatusBar,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { Text, Toast } from 'native-base';
 import Video from 'react-native-video';
-import CustomIcon from '../components/svg/CustomIcons';
+import { useNavigation } from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/core';
+import { useTranslation } from 'react-i18next';
+import SInfo from 'react-native-sensitive-info';
+import { SecureStorageKeys } from '../models/phoneStorage';
 import { showToast, toastType } from '../utils/toasts';
 
-const logo = require('../../assets/logo.png');
-const globe = require('../../assets/globe.mp4');
-const IconFingerprint = require('../../assets/iconFingerprint.png');
+import { userSetPassword } from '../redux/user/actions';
 
-interface ParentProps {
-	navigation: any;
-	screenProps: any;
-}
+import CustomIcon from '../components/svg/CustomIcons';
+import InputField from '../components/InputField';
+import DarkButton from '../components/DarkButton';
 
-interface StateTypes {
-	revealPassword: boolean;
-	compatible: boolean;
-	fingerprints: boolean;
-	password: string;
-	loading: boolean;
-	userName: string;
-	existingUser: boolean;
-}
+// styles
+import LoginStyles from '../styles/Login';
+import { ThemeColors } from '../styles/Colors';
+import ContainerStyles from '../styles/Containers';
 
-export interface DispatchProps {
-	onUserInit: (user: IUser) => void;
-	onUserPasswordSet: () => void;
-}
+// assets
+import logo from '../../assets/logo.png';
+import globe from '../../assets/globe.mp4';
+import IconFingerprint from '../../assets/iconFingerprint.png';
 
-export interface StateProps {
-	user?: IUser;
-	isPasswordSet: boolean;
-}
+const Login = () => {
+  const { t } = useTranslation();
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const userStore = useSelector((state) => state.userStore);
 
-export interface Props extends ParentProps, StateProps, DispatchProps {}
+  const [password, setPassword] = useState('');
+  const [revealPassword, setRevealPassword] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [userName, setUserName] = useState('');
 
-export class Login extends React.Component<Props, StateTypes> {
-	state = {
-		password: '',
-		revealPassword: true,
-		compatible: false,
-		fingerprints: false,
-		loading: false,
-		userName: '',
-		existingUser: false
-	};
+  const scanFingerprint = async () => {};
 
-	componentDidMount() {
-		if (this.props.user === null) {
-			this.retrieveUserFromStorage();
-		} else {
-			this.setState({ userName: this.props.user!.name });
-		}
-	}
+  const showAndroidAlert = () => {
+    Alert.alert(
+      'Fingerprint Scan',
+      'Place your finger over the touch sensor and press scan.',
+      [
+        {
+          text: 'Scan',
+          onPress: () => {
+            scanFingerprint();
+          },
+        },
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel'),
+          style: 'cancel',
+        },
+      ],
+    );
+  };
 
-	async retrieveUserFromStorage() {
-		try {
-			const name = await AsyncStorage.getItem(UserStorageKeys.name);
-			const did = await AsyncStorage.getItem(UserStorageKeys.did);
-			const verifyKey = await AsyncStorage.getItem(UserStorageKeys.verifyKey);
+  const callRevealPassword = () => {
+    setRevealPassword(!revealPassword);
+  };
 
-			// this.setState({ userName: name });
+  const signIn = () => {
+    setLoading(true);
 
-			if (name && did && verifyKey) {
-				this.props.onUserInit({
-					name,
-					did,
-					verifyKey
-				});
-			}
-		} catch (error) {
-			console.error(error);
-		}
-	}
+    SInfo.getItem(SecureStorageKeys.password, {})
+      .then((newPassword) => {
+        // get phone password from secure store
+        if (newPassword === password) {
+          const gotoProjects = CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'Projects' }],
+          });
+          navigation.dispatch(gotoProjects);
+        } else {
+          Toast.show({
+            text: t('login:wrongPassword'),
+            buttonText: 'OK',
+            type: 'warning',
+            position: 'top',
+          });
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        Toast.show({
+          text: t('login:loginFailed'),
+          buttonText: 'OK',
+          type: 'warning',
+          position: 'top',
+        });
+        setLoading(false);
+      });
+  };
 
-	async scanFingerprint() {
-		// let result = await Fingerprint.authenticateAsync('Authenticate to sign in');
-		// if (result.success) {
-		// 	const resetAction = StackActions.reset({
-		// 		index: 0,
-		// 		actions: [NavigationActions.navigate({ routeName: 'Projects' })]
-		// 	});
-		// 	this.props.navigation.dispatch(resetAction);
-		// }
-	}
+  const callSetPassword = () => {
+    if (password.length < 8) {
+      showToast(t('register:passwordShort'), toastType.WARNING);
+      return;
+    }
 
-	showAndroidAlert() {
-		Alert.alert('Fingerprint Scan', 'Place your finger over the touch sensor and press scan.', [
-			{
-				text: 'Scan',
-				onPress: () => {
-					this.scanFingerprint();
-				}
-			},
-			{ text: 'Cancel', onPress: () => console.log('Cancel'), style: 'cancel' }
-		]);
-	}
+    SInfo.setItem(SecureStorageKeys.password, password, {});
+    userSetPassword();
+    const resetAction = CommonActions.reset({
+      index: 0,
+      routes: [{ name: 'Projects' }],
+    });
+    navigation.dispatch(resetAction);
+  };
 
-	revealPassword = () => {
-		this.setState({ revealPassword: !this.state.revealPassword });
-	};
+  const renderExistingUser = () => {
+    return (
+      <KeyboardAvoidingView
+        behavior={'position'}
+        enabled={Platform.OS === 'ios'}>
+        <View style={[ContainerStyles.flexRow, LoginStyles.logoContainer]}>
+          <Image
+            resizeMode={'contain'}
+            style={LoginStyles.logo}
+            source={logo}
+          />
+        </View>
+        <InputField
+          containerStyle={{ flex: 0.1, marginBottom: 30 }}
+          prefixIcon={<CustomIcon name="lock" style={LoginStyles.inputIcons} />}
+          suffixIcon={
+            <TouchableOpacity onPress={() => callRevealPassword()}>
+              <CustomIcon name="eyeoff" style={LoginStyles.inputIcons} />
+            </TouchableOpacity>
+          }
+          underlinePositionRatio={0.03}
+          labelName={t('login:password')}
+          onChangeText={(newPassword) => setPassword(newPassword)}
+          password={revealPassword}
+        />
+        <View style={[{ flex: 0.2 }]}>
+          {loading ? (
+            <ActivityIndicator color={ThemeColors.blue_medium} />
+          ) : (
+            <DarkButton text={t('login:signIn')} onPress={() => signIn()} />
+          )}
+        </View>
+        <TouchableOpacity onPress={() => navigation.navigate('Recover')}>
+          <Text style={LoginStyles.recover}>{t('login:recover')}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[ContainerStyles.flexRow, { flex: 0.1, marginVertical: 20 }]}
+          onPress={() =>
+            Platform.OS === 'android' ? showAndroidAlert() : scanFingerprint()
+          }>
+          <Image
+            resizeMode={'contain'}
+            style={LoginStyles.fingerImage}
+            source={IconFingerprint}
+          />
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
+    );
+  };
 
-	forgotPassword = () => {
-		const resetAction = StackActions.reset({
-			index: 0,
-			actions: [NavigationActions.navigate({ routeName: 'ConnectIXO' })]
-		});
+  const renderNewUser = () => {
+    return (
+      <KeyboardAvoidingView
+        behavior={'position'}
+        enabled={Platform.OS === 'ios'}
+        style={{ flex: 1, justifyContent: 'flex-end' }}>
+        <View style={[LoginStyles.flexLeft]}>
+          <Text style={LoginStyles.header}>
+            {t('login:hi')} {userName}
+          </Text>
+        </View>
+        <View style={{ width: '100%' }}>
+          <View style={LoginStyles.divider} />
+        </View>
+        {!userStore.isLoginPasswordSet && (
+          <View style={LoginStyles.flexLeft}>
+            <Text style={LoginStyles.infoBox}>{t('login:attention')} </Text>
+          </View>
+        )}
+        <View style={LoginStyles.flexLeft}>
+          <Text style={[LoginStyles.infoBoxLong]}>{t('login:secure')} </Text>
+        </View>
+        <InputField
+          containerStyle={{ flex: 0.3, marginBottom: 30 }}
+          prefixIcon={<CustomIcon name="lock" style={LoginStyles.inputIcons} />}
+          suffixIcon={
+            <CustomIcon name="eyeoff" style={LoginStyles.inputIcons} />
+          }
+          onSuffixImagePress={callRevealPassword}
+          underlinePositionRatio={0.03}
+          labelName={t('login:createPassword')}
+          onChangeText={(newPassword) => setPassword(newPassword)}
+          password={revealPassword}
+        />
 
-		Alert.alert(
-			`${this.props.screenProps.t('login:resetPassword')}`,
-			`${this.props.screenProps.t('login:requiredToReset')}`,
-			[
-				{ text: 'Continue', onPress: () => this.props.navigation.dispatch(resetAction) },
-				{ text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' }
-			],
-			{ cancelable: false }
-		);
-	};
+        {loading ? (
+          <ActivityIndicator color={ThemeColors.blue_medium} />
+        ) : (
+          <DarkButton
+            text={t('login:signIn')}
+            onPress={() => callSetPassword()}
+          />
+        )}
+      </KeyboardAvoidingView>
+    );
+  };
 
-	signIn() {
-		this.setState({ loading: true });
-		// @ts-ignore
-		SInfo.getItem(SecureStorageKeys.password, {})
-			.then((password: string) => {
-				// get phone password from secure store
-				if (password === this.state.password) {
-					this.props.navigation.dispatch(
-						StackActions.reset({
-							index: 0,
-							actions: [NavigationActions.navigate({ routeName: 'Projects' })]
-						})
-					);
-				} else {
-					Toast.show({
-						text: this.props.screenProps.t('login:wrongPassword'),
-						buttonText: 'OK',
-						type: 'warning',
-						position: 'top'
-					});
-					this.setState({ loading: false });
-				}
-			})
-			.catch(() => {
-				Toast.show({
-					text: this.props.screenProps.t('login:loginFailed'),
-					buttonText: 'OK',
-					type: 'warning',
-					position: 'top'
-				});
-				this.setState({ loading: false });
-			});
-	}
+  return (
+    <View style={[LoginStyles.wrapper, { backgroundColor: '#0c2938' }]}>
+      <Video
+        source={globe}
+        rate={1.0}
+        volume={1.0}
+        muted={false}
+        resizeMode={'cover'}
+        repeat
+        style={LoginStyles.globeView}
+      />
+      <View style={[ContainerStyles.flexColumn]}>
+        <StatusBar
+          backgroundColor={ThemeColors.blue_dark}
+          barStyle="light-content"
+        />
+        {userStore.isLoginPasswordSet ? renderExistingUser() : renderNewUser()}
+      </View>
+    </View>
+  );
+};
 
-	setPassword() {
-		if (this.state.password.length < 8) {
-			showToast(this.props.screenProps.t('register:passwordShort'), toastType.WARNING);
-			return;
-		}
-		// @ts-ignore
-		SInfo.setItem(SecureStorageKeys.password, this.state.password!, {});
-		this.props.onUserPasswordSet();
-		this.props.navigation.dispatch(
-			StackActions.reset({
-				index: 0,
-				actions: [NavigationActions.navigate({ routeName: 'Projects' })]
-			})
-		);
-	}
-
-	renderExistingUser() {
-		return (
-			<KeyboardAvoidingView behavior={'position'} enabled={Platform.OS === 'ios'}>
-				<View style={[ContainerStyles.flexRow, LoginStyles.logoContainer]}>
-					<Image resizeMode={'contain'} style={LoginStyles.logo} source={logo} />
-				</View>
-				<InputField
-					containerStyle={{ flex: 0.1, marginBottom: 30 }}
-					prefixIcon={<CustomIcon name="lock" style={LoginStyles.inputIcons} />}
-					suffixIcon={
-						<TouchableOpacity onPress={() => this.revealPassword()}>
-							<CustomIcon name="eyeoff" style={LoginStyles.inputIcons} />
-						</TouchableOpacity>
-					}
-					underlinePositionRatio={0.03}
-					labelName={this.props.screenProps.t('login:password')}
-					onChangeText={(password: string) => this.setState({ password })}
-					password={this.state.revealPassword}
-				/>
-				<View style={[{ flex: 0.2 }]}>
-					{this.state.loading ? (
-						<ActivityIndicator color={ThemeColors.blue_medium} />
-					) : (
-						<DarkButton text={this.props.screenProps.t('login:signIn')} onPress={() => this.signIn()} />
-					)}
-				</View>
-				<TouchableOpacity onPress={() => this.props.navigation.navigate('Recover')}>
-					<Text style={LoginStyles.recover}>{this.props.screenProps.t('login:recover')}</Text>
-				</TouchableOpacity>
-				<TouchableOpacity
-					style={[ContainerStyles.flexRow, { flex: 0.1, marginVertical: 20 }]}
-					onPress={() => (Platform.OS === 'android' ? this.showAndroidAlert() : this.scanFingerprint())}
-				>
-					<Image resizeMode={'contain'} style={LoginStyles.fingerImage} source={IconFingerprint} />
-				</TouchableOpacity>
-			</KeyboardAvoidingView>
-		);
-	}
-
-	renderNewUser() {
-		return (
-			<KeyboardAvoidingView behavior={'position'} enabled={Platform.OS === 'ios'} style={{ flex: 1, justifyContent: 'flex-end' }}>
-				<View style={[LoginStyles.flexLeft]}>
-					<Text style={LoginStyles.header}>
-						{this.props.screenProps.t('login:hi')} {this.state.userName}
-					</Text>
-				</View>
-				<View style={{ width: '100%' }}>
-					<View style={LoginStyles.divider} />
-				</View>
-				{
-					!this.props.isPasswordSet &&
-					<View style={LoginStyles.flexLeft}>
-						<Text style={LoginStyles.infoBox}>{this.props.screenProps.t('login:attention')} </Text>
-					</View>
-				}
-				<View style={LoginStyles.flexLeft}>
-					<Text style={[LoginStyles.infoBoxLong]}>{this.props.screenProps.t('login:secure')} </Text>
-				</View>
-				<InputField
-					containerStyle={{ flex: 0.3, marginBottom: 30 }}
-					prefixIcon={<CustomIcon name="lock" style={LoginStyles.inputIcons} />}
-					suffixIcon={<CustomIcon name="eyeoff" style={LoginStyles.inputIcons} />}
-					onSuffixImagePress={this.revealPassword}
-					underlinePositionRatio={0.03}
-					labelName={this.props.screenProps.t('login:createPassword')}
-					onChangeText={(password: string) => this.setState({ password })}
-					password={this.state.revealPassword}
-				/>
-
-				{this.state.loading ? (
-					<ActivityIndicator color={ThemeColors.blue_medium} />
-				) : (
-					<DarkButton text={this.props.screenProps.t('login:signIn')} onPress={() => this.setPassword()} />
-				)}
-			</KeyboardAvoidingView>
-		);
-	}
-
-	render() {
-		return (
-			<View style={[LoginStyles.wrapper, { backgroundColor: '#0c2938' }]}>
-				<Video source={globe} rate={1.0} volume={1.0} muted={false} resizeMode={'cover'} repeat style={LoginStyles.globeView} />
-				<View style={[ContainerStyles.flexColumn]}>
-					<StatusBar backgroundColor={ThemeColors.blue_dark} barStyle="light-content" />
-					{this.props.isPasswordSet ? this.renderExistingUser() : this.renderNewUser()}
-				</View>
-			</View>
-		);
-	}
-}
-
-function mapDispatchToProps(dispatch: any): DispatchProps {
-	return {
-		onUserInit: (user: IUser) => {
-			dispatch(initUser(user));
-		},
-		onUserPasswordSet: () => {
-			dispatch(userSetPassword());
-		}
-	};
-}
-
-function mapStateToProps(state: PublicSiteStoreState) {
-	return {
-		user: state.userStore.user,
-		isPasswordSet: state.userStore.isLoginPasswordSet
-	};
-}
-
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Login);
+export default Login;
