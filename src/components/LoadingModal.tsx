@@ -8,24 +8,31 @@ import ModalStyle from '../styles/Modal';
 interface State {}
 
 interface ParentProps {
-	isModalVisible: boolean;
+  isModalVisible: boolean;
 }
 
 interface Props extends ParentProps {}
 
 export default class LoadingModal extends React.Component<Props, State> {
-	render() {
-		return (
-			<Modal animationType="none" transparent={true} visible={this.props.isModalVisible}>
-				<View>
-					<View style={[ModalStyle.overlayContainer]} />
-					<View style={[ModalStyle.modalOuterContainer, { marginTop: 0, alignItems: 'center' }]}>
-						<View style={ModalStyle.modalInnerContainer}>
-							<Spinner color={ThemeColors.white} />
-						</View>
-					</View>
-				</View>
-			</Modal>
-		);
-	}
+  render() {
+    return (
+      <Modal
+        animationType="none"
+        transparent={true}
+        visible={this.props.isModalVisible}>
+        <View>
+          <View style={[ModalStyle.overlayContainer]} />
+          <View
+            style={[
+              ModalStyle.modalOuterContainer,
+              { marginTop: 0, alignItems: 'center' },
+            ]}>
+            <View style={ModalStyle.modalInnerContainer}>
+              <Spinner color={ThemeColors.white} />
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
 }
